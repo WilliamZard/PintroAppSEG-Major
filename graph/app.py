@@ -9,8 +9,8 @@ api = Api(app)
 # TODO: type anotation
 # TODO: use swagger.
 
-os.environ["NEO4J_URI"] = "bolt://35.246.56.244:7687"
-os.environ["NEO4J_PASSWORD"] = "L0nd0n&EU"
+# os.environ["NEO4J_URI"] = "bolt://35.246.56.244:7687"
+# os.environ["NEO4J_PASSWORD"] = "L0nd0n&EU"
 
 uri = os.getenv("NEO4J_URI")
 db_user = 'neo4j'
@@ -22,10 +22,6 @@ def create_session():
         g.neo4j_db = driver.session()
     return g.neo4j_db
 
-
-# @app.route('/')
-# def hello_world():
-#     return 'Hello World!'
 
 user_email = api.model('User email', {'email' : fields.String('The new user email')}) #description for user emails.
 
