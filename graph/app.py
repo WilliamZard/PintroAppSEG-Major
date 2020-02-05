@@ -1,15 +1,15 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
 from .transaction_functions import get_user
+import os
 
 app = Flask(__name__)
 # TODO: type anotation
 
-# NOTE: database IP and password need to be manually added to source for now.
-# TODO: set env variables
+uri = os.getenv("NEO4J_URI")
 db_user = 'neo4j'
+password = os.getenv("NEO4J_PASSWORD")
 driver = GraphDatabase.driver(uri, auth=(db_user, password))
-
 
 def create_session():
     if not hasattr(g, 'neo4j_db'):
