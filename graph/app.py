@@ -23,7 +23,6 @@ def hello_world():
     return 'Hello World!'
 
 
-# TODO: improve this function
 @app.route('/user/<email>', methods=['GET'])
 def get_single_user(email):
     with create_session() as session:
@@ -33,6 +32,7 @@ def get_single_user(email):
             return jsonify(dict(user['user'].items())), 200
         return "", 404
 
+# TODO: support updating user info
 
 if __name__ == '__main__':
     app.run(debug=True)
