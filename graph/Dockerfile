@@ -1,10 +1,13 @@
 FROM python:3.7
 
-WORKDIR .
+WORKDIR /graph_api
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY app.py app.py
-COPY transaction_functions.py transaction_functions.py
-COPY __init__.py __init__.py
+ENV NEO4J_URI=bolt://35.246.56.244
+ENV NEO4J_PASSWORD=L0nd0n&EU
+
+
+ENTRYPOINT [ "python" ]
+CMD [ "app.py" ]
