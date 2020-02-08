@@ -1,7 +1,19 @@
-# SEG-Major-BlueJ
-Team BlueJ Major SEG Project: 2.1 MVP for Pintro
-## Repository Information:
-![Team BlueJ](https://github.com/JVK1890728/SEG-Major-BlueJ/blob/master-dev/diagrams/repo-structure.svg)
-### Naming Conventions:
-All feature branches under front-dev will be named beginning with "f-"\
-All feature branches under back-dev will be names beginning with "b-"
+**Basic Structure for the project**
+
+Basic structrue to start the work. Created with `expo init Pintro`  <br>
+To run it, clone it to your local machine, then <br>
+ `cd Pintro`  <br>
+ `npm install` <br>
+ `npm start` <br>
+ Requires an up-to-date version of Node.js and npm.
+ 
+
+
+Uses following Packages: <br>
+1) ` react-native-animatable": ^1.3.3 ` <br>
+2) `react-native-keyboard-aware-scroll-view": "^0.9.1`
+
+----------------------------------------
+
+1) For animations
+2) To make the views move if the keyboard hides them
