@@ -1,6 +1,6 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
-from transaction_functions import get_user, set_user_email, create_user
+from transaction_functions import get_user, set_user_email, create_user, check_user
 import os
 from flask_restplus import Api, Resource, fields
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,8 +10,7 @@ api = Api(app)
 # TODO: type anotation
 # TODO: use swagger.
 
-os.environ["NEO4J_URI"] = "bolt://35.246.56.244:7687"
-os.environ["NEO4J_PASSWORD"] = "L0nd0n&EU"
+
 
 uri = os.getenv("NEO4J_URI")
 db_user = 'neo4j'
@@ -24,13 +23,21 @@ def create_session():
     return g.neo4j_db
 
 
-user_email = api.model('User email', {'email' : fields.String('The new user email')}) #description for user emails.
-account = api.model('User data', {'email' : fields.String('The user email'),
-                               'full_name': fields.String('The user full name'),
-                               'preferred_name': fields.String('The user preferred name'),
-                               'password': fields.String('The user password with no hashing yet'),
-                               'phone': fields.Integer('The user\'s phone number'),
-                               'gender': fields.String('male or female')})
+user_email = api.model('User email', {'email' : fields.String(description= 'The new user email')}) #description for user emails.
+account = api.model('User data', {'email' : fields.String(description= 'The user email. MANDATORY.'),
+                               'password': fields.String(description= 'The user password with no hashing yet. MANDATORY.'),
+                               'full_name': fields.String(description= 'The user full name. MANDATORY.'),
+                               'preferred_name': fields.String(description= 'The user preferred name.'),
+                               'image': fields.String(description= 'image saved as array of Bytes representing the user\'s profile pic.'),
+                               'phone': fields.Integer(description= 'The user\'s phone number.'),
+                               'gender': fields.String(description= 'male or female.'),
+                               'job_title': fields.String(description= 'current job title of the user.'),
+                               'location': fields.String(description= 'current city of the user.'),
+                               'short_bio': fields.String(description= 'short bio describing the user of maximum 250 characters.'),
+                               'story': fields.String(description= 'story describing the user of maximum 250 words.'),
+                               'education': fields.String(description= 'Highest level obtained.')})#description for accounts that needs to be created.
+login_credentials = api.model('Login credentials', {'email': fields.String(description= 'User\'s email'),
+                                                    'password': fields.String(description= 'Plain user\'s password')})
 
 @api.route('/user/<email>')
 class user(Resource):
@@ -43,9 +50,12 @@ class user(Resource):
             return "", 404
 
     @api.expect(user_email)#You need to specify what is expected to be posted as body of the http message on this post.
-    def post(self, email):
+    def put(self, email):
          with create_session() as session:
             response = session.read_transaction(set_user_email, email, api.payload.get('email'))
+            if type(response) is dict:
+                return response
+
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
@@ -58,11 +68,28 @@ class SignUp(Resource):
     def post(self):
         with create_session() as session:
             response = session.read_transaction(create_user, api.payload)
+            if type(response) is dict:
+                return response
+
             profile = response.single()
             if profile:
-                print(profile['newUser'])
                 return dict(profile['newUser'].items()), 200
             return "", 404
+
+@api.route('/login')
+class LogIn(Resource):
+    
+    @api.expect(login_credentials)
+    def post(self):
+        with create_session() as session:
+            profile = session.read_transaction(check_user, api.payload)
+            if type(profile) is dict:
+                return profile
+            
+            if profile:
+                return dict(profile['p'].items()), 200
+            return "", 404
+
                 
 
 # TODO: support updating user info
