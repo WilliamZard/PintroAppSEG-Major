@@ -1,16 +1,17 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
-from transaction_functions import get_user, set_user_email
+from transaction_functions import get_user, set_user_email, create_user
 import os
 from flask_restplus import Api, Resource, fields
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 api = Api(app)
 # TODO: type anotation
 # TODO: use swagger.
 
-# os.environ["NEO4J_URI"] = "bolt://35.246.56.244:7687"
-# os.environ["NEO4J_PASSWORD"] = "L0nd0n&EU"
+os.environ["NEO4J_URI"] = "bolt://35.246.56.244:7687"
+os.environ["NEO4J_PASSWORD"] = "L0nd0n&EU"
 
 uri = os.getenv("NEO4J_URI")
 db_user = 'neo4j'
@@ -24,6 +25,12 @@ def create_session():
 
 
 user_email = api.model('User email', {'email' : fields.String('The new user email')}) #description for user emails.
+account = api.model('User data', {'email' : fields.String('The user email'),
+                               'full_name': fields.String('The user full name'),
+                               'preferred_name': fields.String('The user preferred name'),
+                               'password': fields.String('The user password with no hashing yet'),
+                               'phone': fields.Integer('The user\'s phone number'),
+                               'gender': fields.String('male or female')})
 
 @api.route('/user/<email>')
 class user(Resource):
@@ -44,6 +51,19 @@ class user(Resource):
                 return dict(user['user'].items()), 200
             return "", 404
 
+@api.route('/signup')
+class SignUp(Resource):
+
+    @api.expect(account)
+    def post(self):
+        with create_session() as session:
+            response = session.read_transaction(create_user, api.payload)
+            profile = response.single()
+            if profile:
+                print(profile['newUser'])
+                return dict(profile['newUser'].items()), 200
+            return "", 404
+                
 
 # TODO: support updating user info
 
