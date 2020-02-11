@@ -3,7 +3,7 @@ from neo4j import exceptions
 from neobolt.exceptions import ConstraintError
 
 #TODO docstrings
-def get_user(tx, user_email):
+def get_user_by_email(tx, user_email):
     '''
         Function that gets all the data related to a user with a particular email.
         It returns a BoltStatementResult. 
@@ -14,10 +14,21 @@ def get_user(tx, user_email):
     '''
     return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) return user")
 
+def get_user_by_full_name(tx, user_fullname):
+    '''
+        Function that gets all the data related to a user with a particular full name.
+        It returns a BoltStatementResult. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_fullname = the full name of the user whose data needs to be retrieved.
+    '''
+    return tx.run(f"MATCH (user:Person {{fullName: '{user_fullname}'}}) return user")
+
 def set_user_email(tx, user_email, new_email):
     '''
         Function for setting a new email of a user which has a particular email saved in database.
-        It returns a BoltStatementResult. 
+        It returns a BoltStatementResult containing the record of the edited user. 
     '''
     '''Args:
         tx = the context from where to run chipher statements and retreiving information from the db.
@@ -25,6 +36,20 @@ def set_user_email(tx, user_email, new_email):
         new_email = the new email to assign to that user.
     '''
     return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.email = '{new_email}' RETURN user")
+
+
+def set_user_full_name(tx, user_full_name, new_fullname):
+    '''
+        Function for setting a new full name of a user who has a specific full name saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_full_name = the full name of the user whose data needs to be edited.
+        new_fullname = the new full name to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{fullName: '{user_full_name}'}}) SET user.email = '{new_fullname}' RETURN user")
+
 
 def create_user(tx, user):
     '''

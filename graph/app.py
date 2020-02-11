@@ -1,6 +1,6 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
-from transaction_functions import get_user, set_user_email, create_user, check_user
+from transaction_functions import get_user_by_email, get_user_by_full_name, set_user_email, set_user_full_name, create_user, check_user
 import os
 from flask_restplus import Api, Resource, fields
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -23,8 +23,9 @@ def create_session():
     return g.neo4j_db
 
 
-user_email = api.model('User email', {'email' : fields.String(description= 'The new user email')}) #description for user emails.
-account = api.model('User data', {'email' : fields.String(description= 'The user email. MANDATORY.'),
+user_email_model = api.model('User email', {'email' : fields.String(description= 'The new user email')}) #description for user emails.
+user_fullname_model = api.model('User full name', {'fullName' : fields.String(description= 'The new user email')})
+account_model = api.model('User data', {'email' : fields.String(description= 'The user email. MANDATORY.'),
                                'password': fields.String(description= 'The user password with no hashing yet. MANDATORY.'),
                                'full_name': fields.String(description= 'The user full name. MANDATORY.'),
                                'preferred_name': fields.String(description= 'The user preferred name.'),
@@ -39,32 +40,51 @@ account = api.model('User data', {'email' : fields.String(description= 'The user
 login_credentials = api.model('Login credentials', {'email': fields.String(description= 'User\'s email'),
                                                     'password': fields.String(description= 'Plain user\'s password')})
 
-@api.route('/user/<email>')
+@api.route('/user/email/<email>')
 class user(Resource):
     def get(self, email):
         with create_session() as session:
-            response = session.read_transaction(get_user, email)
+            response = session.read_transaction(get_user_by_email, email)
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
             return "", 404
 
-    @api.expect(user_email)#You need to specify what is expected to be posted as body of the http message on this post.
+    @api.expect(user_email_model)#You need to specify what is expected to be posted as body of the http message on this post.
     def put(self, email):
          with create_session() as session:
             response = session.read_transaction(set_user_email, email, api.payload.get('email'))
-            if type(response) is dict:
-                return response
 
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
             return "", 404
+
+@api.route('/user/full-name/<full_name>')
+class user(Resource):
+    def get(self, full_name):
+        with create_session() as session:
+            response = session.read_transaction(get_user_by_full_name, full_name)
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+    @api.expect(user_fullname_model)    
+    def put(self, full_name):
+         with create_session() as session:
+            response = session.read_transaction(set_user_full_name, full_name, api.payload.get('fullName'))
+
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
 
 @api.route('/signup')
 class SignUp(Resource):
 
-    @api.expect(account)
+    @api.expect(account_model)
     def post(self):
         with create_session() as session:
             response = session.read_transaction(create_user, api.payload)
