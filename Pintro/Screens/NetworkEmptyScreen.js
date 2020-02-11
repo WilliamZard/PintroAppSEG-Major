@@ -5,8 +5,8 @@ import SignInUpButton from '../Components/SignInUpButton';
 import Colors from '../Constants/Colors';
 
 /**
- * Empty Screen which allows the user to decide whether he wants to sign in
- * or sign up. The screen consists of two custom buttons and the logo.
+ * Empty Screen which shows a message when there is no internet connection.
+ * The screen consists of a message, a WiFi image and the logo.
  * @param {} props 
  */
 const NetworkEmptyScreen = props => {
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        //backgroundColor:'blue'
     }, pintroText: {
         color: 'white',
         fontFamily: 'Poppins-Bold',
@@ -54,7 +53,6 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     buttonContainer: {
-        //backgroundColor:'green',
         paddingTop: 20,
         width: '70%',
         fontFamily:'Poppins-Regular'
