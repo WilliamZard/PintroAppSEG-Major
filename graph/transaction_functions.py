@@ -50,6 +50,30 @@ def set_user_full_name(tx, user_full_name, new_fullname):
     '''
     return tx.run(f"MATCH (user:Person {{fullName: '{user_full_name}'}}) SET user.email = '{new_fullname}' RETURN user")
 
+def set_user_short_bio(tx, user_email, new_shortbio):
+    '''
+        Function for setting a new full name of a user who has a specific full name saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_shortbio = the new full name to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.short_bio = '{new_shortbio}' RETURN user")
+
+def set_user_story(tx, user_email, new_story):
+    '''
+        Function for setting a new full name of a user who has a specific full name saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_story = the new story to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.story = '{new_story}' RETURN user")
+
 
 def create_user(tx, user):
     '''

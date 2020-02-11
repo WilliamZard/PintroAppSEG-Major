@@ -1,6 +1,6 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
-from transaction_functions import get_user_by_email, get_user_by_full_name, set_user_email, set_user_full_name, create_user, check_user
+from transaction_functions import get_user_by_email, get_user_by_full_name, set_user_email, set_user_full_name, set_user_short_bio, set_user_story, create_user, check_user
 import os
 from flask_restplus import Api, Resource, fields
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -25,6 +25,8 @@ def create_session():
 
 user_email_model = api.model('User email', {'email' : fields.String(description= 'The new user email')}) #description for user emails.
 user_fullname_model = api.model('User full name', {'fullName' : fields.String(description= 'The new user email')})
+user_short_bio_model = api.model('User short bio', {'short_bio' : fields.String(description= 'The new user\'s short bio')})
+user_story_model = api.model('User story', {'story' : fields.String(description= 'The new user\'s story')})
 account_model = api.model('User data', {'email' : fields.String(description= 'The user email. MANDATORY.'),
                                'password': fields.String(description= 'The user password with no hashing yet. MANDATORY.'),
                                'full_name': fields.String(description= 'The user full name. MANDATORY.'),
@@ -37,7 +39,7 @@ account_model = api.model('User data', {'email' : fields.String(description= 'Th
                                'short_bio': fields.String(description= 'short bio describing the user of maximum 250 characters.'),
                                'story': fields.String(description= 'story describing the user of maximum 250 words.'),
                                'education': fields.String(description= 'Highest level obtained.')})#description for accounts that needs to be created.
-login_credentials = api.model('Login credentials', {'email': fields.String(description= 'User\'s email'),
+login_credentials_model = api.model('Login credentials', {'email': fields.String(description= 'User\'s email'),
                                                     'password': fields.String(description= 'Plain user\'s password')})
 
 @api.route('/user/email/<email>')
@@ -48,17 +50,16 @@ class user(Resource):
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
-            return "", 404
+            return "User was not found", 404
 
     @api.expect(user_email_model)#You need to specify what is expected to be posted as body of the http message on this post.
     def put(self, email):
          with create_session() as session:
             response = session.read_transaction(set_user_email, email, api.payload.get('email'))
-
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
-            return "", 404
+            return "User was not found", 404
 
 @api.route('/user/full-name/<full_name>')
 class user(Resource):
@@ -74,7 +75,29 @@ class user(Resource):
     def put(self, full_name):
          with create_session() as session:
             response = session.read_transaction(set_user_full_name, full_name, api.payload.get('fullName'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
 
+@api.route('/user/short-bio/<user_email>')
+class user(Resource):
+    @api.expect(user_short_bio_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_short_bio, user_email, api.payload.get('short_bio'))
+
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/story/<user_email>')
+class user(Resource):
+    @api.expect(user_story_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_story, user_email, api.payload.get('story'))
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
@@ -94,12 +117,12 @@ class SignUp(Resource):
             profile = response.single()
             if profile:
                 return dict(profile['newUser'].items()), 200
-            return "", 404
+            return "User was not found", 404
 
 @api.route('/login')
 class LogIn(Resource):
     
-    @api.expect(login_credentials)
+    @api.expect(login_credentials_model)
     def post(self):
         with create_session() as session:
             profile = session.read_transaction(check_user, api.payload)
@@ -108,7 +131,7 @@ class LogIn(Resource):
             
             if profile:
                 return dict(profile['p'].items()), 200
-            return "", 404
+            return "User was not found", 404
 
                 
 
