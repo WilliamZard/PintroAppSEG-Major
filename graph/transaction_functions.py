@@ -25,6 +25,17 @@ def get_user_by_full_name(tx, user_fullname):
     '''
     return tx.run(f"MATCH (user:Person {{fullName: '{user_fullname}'}}) return user")
 
+def get_user_by_preferred_name(tx, user_preferred_name):
+    '''
+        Function that gets all the data related to a user with a particular full name.
+        It returns a BoltStatementResult. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_preferred_name = the full name of the user whose data needs to be retrieved.
+    '''
+    return tx.run(f"MATCH (user:Person {{preferredName: '{user_preferred_name}'}}) return user")
+
 def set_user_email(tx, user_email, new_email):
     '''
         Function for setting a new email of a user which has a particular email saved in database.
@@ -38,17 +49,29 @@ def set_user_email(tx, user_email, new_email):
     return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.email = '{new_email}' RETURN user")
 
 
-def set_user_full_name(tx, user_full_name, new_fullname):
+def set_user_full_name(tx, user_email, new_fullname):
     '''
-        Function for setting a new full name of a user who has a specific full name saved in the database.
+        Function for setting a new full name of a user who has a specific emailfull name saved in the database.
         It returns a BoltStatementResult containing the record of the edited user. 
     '''
     '''Args:
         tx = the context from where to run chipher statements and retreiving information from the db.
-        user_full_name = the full name of the user whose data needs to be edited.
+        user_email = the email of the user whose data needs to be edited.
         new_fullname = the new full name to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{fullName: '{user_full_name}'}}) SET user.email = '{new_fullname}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.fullName = '{new_fullname}' RETURN user")
+
+def set_user_preferred_name(tx, user_email, new_preferred_name):
+    '''
+        Function for setting a new preferred name of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_preferred_name = the new preferred name to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.fullName = '{new_preferred_name}' RETURN user")
 
 def set_user_short_bio(tx, user_email, new_shortbio):
     '''

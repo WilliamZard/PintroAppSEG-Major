@@ -1,6 +1,6 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
-from transaction_functions import get_user_by_email, get_user_by_full_name, set_user_email, set_user_full_name, set_user_short_bio, set_user_story, create_user, check_user
+from transaction_functions import get_user_by_email, get_user_by_full_name, get_user_by_preferred_name, set_user_email, set_user_full_name, set_user_preferred_name, set_user_short_bio, set_user_story, create_user, check_user
 import os
 from flask_restplus import Api, Resource, fields
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -24,7 +24,10 @@ def create_session():
 
 
 user_email_model = api.model('User email', {'email' : fields.String(description= 'The new user email')}) #description for user emails.
-user_fullname_model = api.model('User full name', {'fullName' : fields.String(description= 'The new user email')})
+user_fullname_model = api.model('User full name', {'fullName' : fields.String(description= 'The new user\' full name'),
+                                                    'email' : fields.String(description= 'The user\'s email')})
+user_preferredname_model = api.model('User preferred name', {'preferredName' : fields.String(description= 'The new user\'s preferred name'),
+                                                              'email' : fields.String(description= 'The user\'s email')})
 user_short_bio_model = api.model('User short bio', {'short_bio' : fields.String(description= 'The new user\'s short bio')})
 user_story_model = api.model('User story', {'story' : fields.String(description= 'The new user\'s story')})
 account_model = api.model('User data', {'email' : fields.String(description= 'The user email. MANDATORY.'),
@@ -43,7 +46,7 @@ login_credentials_model = api.model('Login credentials', {'email': fields.String
                                                     'password': fields.String(description= 'Plain user\'s password')})
 
 @api.route('/user/email/<email>')
-class user(Resource):
+class EmailUser(Resource):
     def get(self, email):
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
@@ -62,7 +65,7 @@ class user(Resource):
             return "User was not found", 404
 
 @api.route('/user/full-name/<full_name>')
-class user(Resource):
+class FullNameUser(Resource):
     def get(self, full_name):
         with create_session() as session:
             response = session.read_transaction(get_user_by_full_name, full_name)
@@ -71,17 +74,40 @@ class user(Resource):
                 return dict(user['user'].items()), 200
             return "User was not found", 404
 
+@api.route('/user/full-name')
+class FullName(Resource):
     @api.expect(user_fullname_model)    
-    def put(self, full_name):
+    def put(self):
          with create_session() as session:
-            response = session.read_transaction(set_user_full_name, full_name, api.payload.get('fullName'))
+            response = session.read_transaction(set_user_full_name, api.payload.get('email'), api.payload.get('fullName'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/preferred-name/<preferred_name>')
+class PreferredNameUser(Resource):
+    def get(self, preferred_name):
+        with create_session() as session:
+            response = session.read_transaction(get_user_by_preferred_name, preferred_name)
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/preferred-name')
+class PreferredName(Resource):
+    @api.expect(user_preferredname_model)    
+    def put(self):
+         with create_session() as session:
+            response = session.read_transaction(set_user_preferred_name, api.payload.get('email'), api.payload.get('preferredName'))
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
             return "User was not found", 404
 
 @api.route('/user/short-bio/<user_email>')
-class user(Resource):
+class ShortBio(Resource):
     @api.expect(user_short_bio_model)    
     def put(self, user_email):
          with create_session() as session:
@@ -93,7 +119,7 @@ class user(Resource):
             return "User was not found", 404
 
 @api.route('/user/story/<user_email>')
-class user(Resource):
+class Story(Resource):
     @api.expect(user_story_model)    
     def put(self, user_email):
          with create_session() as session:
@@ -135,8 +161,8 @@ class LogIn(Resource):
 
                 
 
-# TODO: support updating user info
-
 if __name__ == '__main__':
     app.run(debug=True)
 
+#TODO Put endpoints for education, gender, phone, profilePic, location, job_titles
+#TODO Get endpoints for education, gender, phone, profilePic, location, job_titles
