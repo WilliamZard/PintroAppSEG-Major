@@ -1,14 +1,14 @@
 from flask import Flask, g, jsonify
 from neo4j import GraphDatabase
-from transaction_functions import get_user_by_email, get_user_by_full_name, get_user_by_preferred_name, set_user_email, set_user_full_name, set_user_preferred_name, set_user_short_bio, set_user_story, create_user, check_user
+from transaction_functions import get_user_by_email, get_user_by_full_name, get_user_by_preferred_name, set_user_email, set_user_job_title 
+from transaction_functions import set_user_full_name, set_user_preferred_name, set_user_short_bio, set_user_story, create_user
+from transaction_functions import check_user, set_user_education, set_user_gender, set_user_phone, set_user_profile_pic, set_user_location
 import os
 from flask_restplus import Api, Resource, fields
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 api = Api(app)
-# TODO: type anotation
-# TODO: use swagger.
 
 
 
@@ -23,19 +23,25 @@ def create_session():
     return g.neo4j_db
 
 
-user_email_model = api.model('User email', {'email' : fields.String(description= 'The new user email')}) #description for user emails.
-user_fullname_model = api.model('User full name', {'fullName' : fields.String(description= 'The new user\' full name'),
-                                                    'email' : fields.String(description= 'The user\'s email')})
-user_preferredname_model = api.model('User preferred name', {'preferredName' : fields.String(description= 'The new user\'s preferred name'),
-                                                              'email' : fields.String(description= 'The user\'s email')})
-user_short_bio_model = api.model('User short bio', {'short_bio' : fields.String(description= 'The new user\'s short bio')})
-user_story_model = api.model('User story', {'story' : fields.String(description= 'The new user\'s story')})
+user_email_model = api.model('User email', {'new_email' : fields.String(description= 'The new user email')}) #description for user emails.
+user_fullname_model = api.model('User full name', {'new_full_name' : fields.String(description= 'The new user\' full name'),
+                                                    'user_email' : fields.String(description= 'The user\'s email')})
+user_preferredname_model = api.model('User preferred name', {'new_preferred_name' : fields.String(description= 'The new user\'s preferred name'),
+                                                              'user_email' : fields.String(description= 'The user\'s email')})
+user_short_bio_model = api.model('User short bio', {'new_short_bio' : fields.String(description= 'The new user\'s short bio')})
+user_story_model = api.model('User story', {'new_story' : fields.String(description= 'The new user\'s story')})
+user_education_model = api.model('User education', {'new_education' : fields.String(description= 'The new user\'s education')})
+user_gender_model = api.model('User gender', {'new_gender' : fields.String(description= 'The new user\'s gender')})
+user_phone_model = api.model('User phone', {'new_phone' : fields.String(description= 'The new user\'s phone')})
+user_profile_pic_model = api.model('User profile pic', {'new_profile_pic' : fields.String(description= 'The new user\'s profile pic')})
+user_location_model = api.model('User location', {'new_location' : fields.String(description= 'The new user\'s location')})
+user_job_title_model = api.model('User job title', {'new_job_title' : fields.String(description= 'The new user\'s job title')})
 account_model = api.model('User data', {'email' : fields.String(description= 'The user email. MANDATORY.'),
                                'password': fields.String(description= 'The user password with no hashing yet. MANDATORY.'),
                                'full_name': fields.String(description= 'The user full name. MANDATORY.'),
                                'preferred_name': fields.String(description= 'The user preferred name.'),
                                'image': fields.String(description= 'image saved as array of Bytes representing the user\'s profile pic.'),
-                               'phone': fields.Integer(description= 'The user\'s phone number.'),
+                               'phone': fields.String(description= 'The user\'s phone number.'),
                                'gender': fields.String(description= 'male or female.'),
                                'job_title': fields.String(description= 'current job title of the user.'),
                                'location': fields.String(description= 'current city of the user.'),
@@ -58,7 +64,7 @@ class EmailUser(Resource):
     @api.expect(user_email_model)#You need to specify what is expected to be posted as body of the http message on this post.
     def put(self, email):
          with create_session() as session:
-            response = session.read_transaction(set_user_email, email, api.payload.get('email'))
+            response = session.read_transaction(set_user_email, email, api.payload.get('new_email'))
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
@@ -79,7 +85,7 @@ class FullName(Resource):
     @api.expect(user_fullname_model)    
     def put(self):
          with create_session() as session:
-            response = session.read_transaction(set_user_full_name, api.payload.get('email'), api.payload.get('fullName'))
+            response = session.read_transaction(set_user_full_name, api.payload.get('user_email'), api.payload.get('new_full_name'))
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
@@ -100,7 +106,7 @@ class PreferredName(Resource):
     @api.expect(user_preferredname_model)    
     def put(self):
          with create_session() as session:
-            response = session.read_transaction(set_user_preferred_name, api.payload.get('email'), api.payload.get('preferredName'))
+            response = session.read_transaction(set_user_preferred_name, api.payload.get('user_email'), api.payload.get('new_preferred_name'))
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
@@ -111,7 +117,7 @@ class ShortBio(Resource):
     @api.expect(user_short_bio_model)    
     def put(self, user_email):
          with create_session() as session:
-            response = session.read_transaction(set_user_short_bio, user_email, api.payload.get('short_bio'))
+            response = session.read_transaction(set_user_short_bio, user_email, api.payload.get('new_short_bio'))
 
             user = response.single()
             if user:
@@ -123,12 +129,77 @@ class Story(Resource):
     @api.expect(user_story_model)    
     def put(self, user_email):
          with create_session() as session:
-            response = session.read_transaction(set_user_story, user_email, api.payload.get('story'))
+            response = session.read_transaction(set_user_story, user_email, api.payload.get('new_story'))
             user = response.single()
             if user:
                 return dict(user['user'].items()), 200
             return "User was not found", 404
 
+@api.route('/user/education/<user_email>')
+class Education(Resource):
+    @api.expect(user_education_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_education, user_email, api.payload.get('new_education'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/gender/<user_email>')
+class Gender(Resource):
+    @api.expect(user_gender_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_gender, user_email, api.payload.get('new_gender'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/phone/<user_email>')
+class Phone(Resource):
+    @api.expect(user_phone_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_phone, user_email, api.payload.get('new_phone'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/profile-pic/<user_email>')
+class ProfilePic(Resource):
+    @api.expect(user_profile_pic_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_profile_pic, user_email, api.payload.get('new_profile_pic'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/location/<user_email>')
+class Location(Resource):
+    @api.expect(user_location_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_location, user_email, api.payload.get('new_location'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
+
+@api.route('/user/job-title/<user_email>')
+class JobTitle(Resource):
+    @api.expect(user_job_title_model)    
+    def put(self, user_email):
+         with create_session() as session:
+            response = session.read_transaction(set_user_job_title, user_email, api.payload.get('new_job_title'))
+            user = response.single()
+            if user:
+                return dict(user['user'].items()), 200
+            return "User was not found", 404
 
 @api.route('/signup')
 class SignUp(Resource):
@@ -164,5 +235,5 @@ class LogIn(Resource):
 if __name__ == '__main__':
     app.run(debug=True)
 
-#TODO Put endpoints for education, gender, phone, profilePic, location, job_titles
+
 #TODO Get endpoints for education, gender, phone, profilePic, location, job_titles

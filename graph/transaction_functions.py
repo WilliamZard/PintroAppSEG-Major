@@ -87,7 +87,7 @@ def set_user_short_bio(tx, user_email, new_shortbio):
 
 def set_user_story(tx, user_email, new_story):
     '''
-        Function for setting a new full name of a user who has a specific full name saved in the database.
+        Function for setting a new story of a user who has a specific email saved in the database.
         It returns a BoltStatementResult containing the record of the edited user. 
     '''
     '''Args:
@@ -96,6 +96,78 @@ def set_user_story(tx, user_email, new_story):
         new_story = the new story to assign to that user.
     '''
     return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.story = '{new_story}' RETURN user")
+
+def set_user_education(tx, user_email, new_education):
+    '''
+        Function for setting a new education of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_education = the new education to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.education = '{new_education}' RETURN user")
+
+def set_user_gender(tx, user_email, new_gender):
+    '''
+        Function for setting a new gender of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_gender = the new gender to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.gender = '{new_gender}' RETURN user")
+
+def set_user_phone(tx, user_email, new_phone):
+    '''
+        Function for setting a new phone of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_phone = the new phone to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.phone = '{new_phone}' RETURN user")
+
+def set_user_profile_pic(tx, user_email, new_profile_pic):
+    '''
+        Function for setting a new profile pic of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_profile_pic = the new profile pic to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.profilePic = '{new_profile_pic}' RETURN user")
+
+def set_user_location(tx, user_email, new_location):
+    '''
+        Function for setting a new location of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_location = the new location to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.location = '{new_location}' RETURN user")
+
+def set_user_job_title(tx, user_email, new_job_title):
+    '''
+        Function for setting a new job title of a user who has a specific email saved in the database.
+        It returns a BoltStatementResult containing the record of the edited user. 
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_job_title = the new job title to assign to that user.
+    '''
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.job_title = '{new_job_title}' RETURN user")
 
 
 def create_user(tx, user):
