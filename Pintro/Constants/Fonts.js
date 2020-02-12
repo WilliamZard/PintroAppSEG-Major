@@ -1,7 +1,6 @@
-import React from 'react';
 import { Stylesheet } from 'react-native';
 
-const styles = Stylesheet.create({
+const fonts = Stylesheet.create({
     name_black: {
         color: Colors.pintroBlack,
         fontFamily: 'Poppins-Bold',
@@ -37,4 +36,22 @@ const styles = Stylesheet.create({
         fontFamily: 'Poppins-Light',
         fontSize: 10 
     },
+    story: {
+        color: grey,
+        fontFamily: 'Poppins-Bold',
+        fontSize:12
+    },
+    more_yellow: {
+        color: Colors.pintroYellow,
+        fontFamily: 'Poppins-Bold',
+        fontSize:8
+    },
+    more_white: {
+        color: grey,
+        fontFamily: 'Poppins-light',
+        fontSize: 8,
+        textAlign: 'right'
+    }
 });
+
+export { fonts };
