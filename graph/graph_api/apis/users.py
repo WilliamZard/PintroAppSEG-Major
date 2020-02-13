@@ -21,7 +21,7 @@ users = api.model('Users', {
 })  # title for accounts that needs to be created.
 
 
-@api.route('/user/<email>')
+@api.route('/')
 @api.param('email', 'The email of the user')
 @api.response(404, 'User not found')
 class Users(Resource):
@@ -50,6 +50,22 @@ class Users(Resource):
                 return user, 204
             return "User not found", 404
 
+    @api.expect(users)
+    @api.marshal_with(users)
+    def put(self, email):
+        '''Update a user by the given fields.'''
+        # TODO: validate user email
+        # TODO: validate payload
+        with create_session() as session:
+            response = session.read_transaction(
+                set_user_fields, email, api.payload)
+            if response:
+                return 204
+            return "User was not found", 404
+
+
+# Commented for now as user posting will happen elsewher
+"""
     @api.doc('create_user')
     @api.expect(users)
     @api.marshal_with(users, code=201)
@@ -61,20 +77,9 @@ class Users(Resource):
             user = response.single()
             if user:
                 return user, 204
-            return "User not found", 404
+            return "User not found", 404"""
 
-    # You need to specify what is expected to be posted as body of the http message on this post.
-    @api.expect(users)
-    @api.marshal_with(users)
-    def put(self, email):
-        # TODO: validate user email
-        # TODO: validate payload
-        with create_session() as session:
-            response = session.read_transaction(
-                set_user_fields, email, api.payload)
-            if response:
-                return 204
-            return "User was not found", 404
+# You need to specify what is expected to be posted as body of the http message on this post.
 
 
 """
