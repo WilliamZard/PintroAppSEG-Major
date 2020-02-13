@@ -14,7 +14,7 @@ def get_user_by_email(tx, user_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) return user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}})")
 
 
 def get_user_by_full_name(tx, user_fullname):
@@ -51,7 +51,7 @@ def set_user_email(tx, user_email, new_email):
         user_email = the email of the user whose data needs to be edited.
         new_email = the new email to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.email = '{new_email}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.email = '{new_email}'")
 
 
 def set_user_full_name(tx, user_email, new_fullname):
@@ -64,7 +64,7 @@ def set_user_full_name(tx, user_email, new_fullname):
         user_email = the email of the user whose data needs to be edited.
         new_fullname = the new full name to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.fullName = '{new_fullname}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.fullName = '{new_fullname}'")
 
 
 def set_user_preferred_name(tx, user_email, new_preferred_name):
@@ -77,7 +77,7 @@ def set_user_preferred_name(tx, user_email, new_preferred_name):
         user_email = the email of the user whose data needs to be edited.
         new_preferred_name = the new preferred name to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.fullName = '{new_preferred_name}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.fullName = '{new_preferred_name}'")
 
 
 def set_user_short_bio(tx, user_email, new_shortbio):
@@ -90,7 +90,7 @@ def set_user_short_bio(tx, user_email, new_shortbio):
         user_email = the email of the user whose data needs to be edited.
         new_shortbio = the new full name to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.short_bio = '{new_shortbio}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.short_bio = '{new_shortbio}'")
 
 
 def set_user_story(tx, user_email, new_story):
@@ -103,7 +103,7 @@ def set_user_story(tx, user_email, new_story):
         user_email = the email of the user whose data needs to be edited.
         new_story = the new story to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.story = '{new_story}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.story = '{new_story}'")
 
 
 def set_user_education(tx, user_email, new_education):
@@ -116,7 +116,7 @@ def set_user_education(tx, user_email, new_education):
         user_email = the email of the user whose data needs to be edited.
         new_education = the new education to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.education = '{new_education}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.education = '{new_education}'")
 
 
 def set_user_gender(tx, user_email, new_gender):
@@ -129,7 +129,7 @@ def set_user_gender(tx, user_email, new_gender):
         user_email = the email of the user whose data needs to be edited.
         new_gender = the new gender to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.gender = '{new_gender}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.gender = '{new_gender}'")
 
 
 def set_user_phone(tx, user_email, new_phone):
@@ -142,7 +142,7 @@ def set_user_phone(tx, user_email, new_phone):
         user_email = the email of the user whose data needs to be edited.
         new_phone = the new phone to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.phone = '{new_phone}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.phone = '{new_phone}'")
 
 
 def set_user_profile_pic(tx, user_email, new_profile_pic):
@@ -155,7 +155,7 @@ def set_user_profile_pic(tx, user_email, new_profile_pic):
         user_email = the email of the user whose data needs to be edited.
         new_profile_pic = the new profile pic to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.profilePic = '{new_profile_pic}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.profilePic = '{new_profile_pic}'")
 
 
 def set_user_location(tx, user_email, new_location):
@@ -168,7 +168,7 @@ def set_user_location(tx, user_email, new_location):
         user_email = the email of the user whose data needs to be edited.
         new_location = the new location to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.location = '{new_location}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.location = '{new_location}'")
 
 
 def set_user_job_title(tx, user_email, new_job_title):
@@ -181,7 +181,7 @@ def set_user_job_title(tx, user_email, new_job_title):
         user_email = the email of the user whose data needs to be edited.
         new_job_title = the new job title to assign to that user.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.job_title = '{new_job_title}' RETURN user")
+    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET user.job_title = '{new_job_title}'")
 
 
 def create_user(tx, user):

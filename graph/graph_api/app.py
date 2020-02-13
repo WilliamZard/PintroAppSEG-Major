@@ -68,7 +68,7 @@ class EmailUser(Resource):
             response = session.read_transaction(get_user_by_email, email)
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
     # You need to specify what is expected to be posted as body of the http message on this post.
@@ -77,9 +77,8 @@ class EmailUser(Resource):
         with create_session() as session:
             response = session.read_transaction(
                 set_user_email, email, api.payload.get('new_email'))
-            user = response.single()
-            if user:
-                return dict(user['user'].items()), 200
+            if response:
+                return 200
             return "User was not found", 404
 
 
@@ -92,7 +91,7 @@ class FullName(Resource):
                 'user_email'), api.payload.get('new_full_name'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -105,7 +104,7 @@ class PreferredName(Resource):
                 'user_email'), api.payload.get('new_preferred_name'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -119,7 +118,7 @@ class ShortBio(Resource):
 
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -132,7 +131,7 @@ class Story(Resource):
                 set_user_story, user_email, api.payload.get('new_story'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -145,7 +144,7 @@ class Education(Resource):
                 set_user_education, user_email, api.payload.get('new_education'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -158,7 +157,7 @@ class Gender(Resource):
                 set_user_gender, user_email, api.payload.get('new_gender'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -171,7 +170,7 @@ class Phone(Resource):
                 set_user_phone, user_email, api.payload.get('new_phone'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -184,7 +183,7 @@ class ProfilePic(Resource):
                 set_user_profile_pic, user_email, api.payload.get('new_profile_pic'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -197,7 +196,7 @@ class Location(Resource):
                 set_user_location, user_email, api.payload.get('new_location'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
@@ -210,7 +209,7 @@ class JobTitle(Resource):
                 set_user_job_title, user_email, api.payload.get('new_job_title'))
             user = response.single()
             if user:
-                return dict(user['user'].items()), 200
+                return 200
             return "User was not found", 404
 
 
