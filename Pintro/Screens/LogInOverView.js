@@ -4,6 +4,7 @@ import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import StartScreen from './StartScreen';
 import NetworkEmptyScreen from './NetworkEmptyScreen'
+import UserAccountScreen from './UserAccountScreen'
 
 const LogInOverView = props => {
 
@@ -31,14 +32,15 @@ const LogInOverView = props => {
      * Depending on the state, we switch. This if else block is executed 
      * every time this file is rendered.
      */
-    let content = <StartScreen onSignUp={userWantsToSignUp} onLogIn={userWantsToSignIn} />
+    /**let content = <StartScreen onSignUp={userWantsToSignUp} onLogIn={userWantsToSignIn} />
     if (currentLogInState === "wantsToSignIn") {
         content = <SignInScreen onPressGoBack={userWantsToGoBack} />
     } else if (currentLogInState === "wantsToSignUp") {
         content = <SignUpScreen onPressGoBack={userWantsToGoBack} />
     } else {
         content = <StartScreen onSignUp={userWantsToSignUp} onLogIn={userWantsToSignIn} />
-    }
+    }**/
+    let content = <UserAccountScreen/>
 
     return (
         <View style={styles.screen}>
