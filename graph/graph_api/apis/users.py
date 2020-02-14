@@ -21,7 +21,7 @@ users = api.model('Users', {
 })  # title for accounts that needs to be created.
 
 
-@api.route('/')
+@api.route('/<string:email>')
 @api.param('email', 'The email of the user')
 @api.response(404, 'User not found')
 class Users(Resource):
