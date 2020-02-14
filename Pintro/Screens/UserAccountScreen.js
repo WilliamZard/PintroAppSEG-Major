@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput, Image, ScrollView } from 're
 import { fonts } from '../Constants/Fonts.js';
 import BlackTag from '../Components/BlackTag.js';
 import WhiteTag from '../Components/WhiteTag.js';
+import Colors from '../Constants/Colors';
 
 /**
  * The account page for a personal account

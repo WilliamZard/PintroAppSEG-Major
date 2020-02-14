@@ -1,11 +1,12 @@
 import React from 'react';
 import {View,Text,StyleSheet,TouchableOpacity} from 'react-native';
+import Colors from '../Constants/Colors';
 
 const WhiteTag = props => {
     return(
         <TouchableOpacity onPress={props.onPress} activeOpacity={0.6}>
             <View style={styles.tag}>
-                <Text style={stlyes.tag_text}>{props.children}</Text>
+                <Text style={styles.tag_text}>{props.children}</Text>
             </View>
         </TouchableOpacity> 
     );
