@@ -1,6 +1,13 @@
 from flask import Flask
 from apis import api
+import config
+import os
 
 app = Flask(__name__)
+if os.environ['ENV'] == 'prod':
+    app.config.from_object('config.ProductionConfig')
+else:
+    app.config.from_object('config.DevelopmentConfig')
+
 api.init_app(app)
-app.run(debug=True, host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=8080)
