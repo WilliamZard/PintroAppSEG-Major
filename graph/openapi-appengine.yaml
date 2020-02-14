@@ -14,35 +14,13 @@ schemes:
 - "https"
 basePath: /
 paths:
-  "/users":
+  '/users/{email}':
     parameters:
-      - in: query
+      - in: path
         description: The email of the user
         name: email
+        required: true
         type: string
-    put:
-      responses:
-        '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/Users'
-        '404':
-          description: User not found
-      summary: Update a user by the given fields
-      operationId: put_users
-      parameters:
-        - name: payload
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/Users'
-        - name: X-Fields
-          in: header
-          type: string
-          format: mask
-          description: An optional fields mask
-      tags:
-        - users
     get:
       responses:
         '200':
@@ -69,6 +47,29 @@ paths:
           description: User not found
       summary: Delete a user given its email
       operationId: delete_user
+      tags:
+        - users
+    put:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Users'
+        '404':
+          description: User not found
+      summary: Update a user by the given fields
+      operationId: put_users
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Users'
+        - name: X-Fields
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
       tags:
         - users
 definitions:
