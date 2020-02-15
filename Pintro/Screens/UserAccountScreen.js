@@ -23,9 +23,9 @@ const UserAccountScreen = props => {
                 <Text style={fonts.bio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
             </View>
             <View>
-                <View><Button style={styles.followMe}>+ FOLLOW ME</Button></View>
-                <View><Image source={require('../images/message-icon.png')} style={{ width: 30, width: 30}}/><Button style={styles.msgMe}>MESSAGE ME</Button></View>
-                <Button style={styles.edit}>...</Button>
+                <View><Button style={styles.followMe} title="+ FOLLOW ME" color="#1a1a1a" /></View>
+                <View><Image source={require('../images/message-icon.png')} style={{ width: 30, width: 30}}/><Button style={styles.msgMe} title="MESSAGE ME" /></View>
+                <Button style={styles.edit} title="..." />
             </View>
             <View>
                 <ScrollView>

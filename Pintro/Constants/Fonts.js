@@ -5,7 +5,7 @@ const fonts = StyleSheet.create({
     name_black: {
         color: Colors.pintroBlack,
         fontFamily: 'Poppins-Bold',
-        fontSize: 14
+        fontSize: 16
     },
     title_black: {
         color: Colors.pintroBlack,
@@ -20,7 +20,7 @@ const fonts = StyleSheet.create({
     bio: {
         color: 'grey',
         fontFamily: 'Poppins-Light',
-        fontSize: 8
+        fontSize: 10
     },
     location: {
         color: Colors.pintroBlack,
@@ -40,7 +40,7 @@ const fonts = StyleSheet.create({
     story: {
         color: 'grey',
         fontFamily: 'Poppins-Bold',
-        fontSize:12
+        fontSize: 10
     },
     more_yellow: {
         color: Colors.pintroYellow,
