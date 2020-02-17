@@ -10,7 +10,7 @@ users = api.model('Users', {
     'password': fields.String(required=True, title='The user password.'),
     'full_name': fields.String(required=True, title='The user full name.'),
     'preferred_name': fields.String(title='The user preferred name.'),
-    'image': fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
+    'profile_image': fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
     'phone': fields.String(title="The user's phone number."),
     'gender': fields.String(title="The User's geneder"),
     'job_title': fields.String(title='current job title of the user.'),
@@ -33,8 +33,10 @@ class Users(Resource):
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
             user = response.single()
+            # TODO: a lot going on here. See if this can be improved.
+            data = dict(user.data()['user'].items())
             if user:
-                return user.data, 200
+                return data, 200
             return "User not found", 404
 
     @api.doc('delete_user')
