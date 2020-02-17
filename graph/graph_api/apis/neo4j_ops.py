@@ -41,4 +41,4 @@ def set_user_fields(tx, user_email, fields):
         new_email = the new email to assign to that user.
     '''
     return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET " +
-                  ", ".join("user.{}={}".format(k, v) for (k, v) in fields.items()))
+                  ", ".join(f"user.{k}={v}" for (k, v) in fields.items()))

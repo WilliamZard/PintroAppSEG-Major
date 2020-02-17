@@ -5,7 +5,7 @@ __Requirements__
  * Docker installed locally
  * Neo4j database credentials(ask Giulio or Seb for now)
  * Nothing else!
-
+#TODO: update README with new setup
  __To run container locally__
  1) Open your command line and cd into graph/graph_api directory
  2) Build the Docker Image by running: `docker build .. -t graph_api`
