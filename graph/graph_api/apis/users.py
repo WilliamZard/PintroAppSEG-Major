@@ -3,6 +3,7 @@ from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, 
 from marshmallow import Schema, fields
 
 # TODO: enable swagger API spec
+# TODO: email validation
 
 
 class UserSchema(Schema):
@@ -21,6 +22,7 @@ class UserSchema(Schema):
 
 
 api = Namespace('users', title='User related operations')
+user_schema = UserSchema()
 
 
 @api.route('/<string:email>')
@@ -31,8 +33,6 @@ class Users(Resource):
     @api.response(200, 'User Found')
     def get(self, email):
         '''Fetch a user given its email.'''
-        # if not valid_email(email):
-        #    return 'Invalid email given.', 400
 
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
@@ -40,7 +40,7 @@ class Users(Resource):
             # TODO: a lot going on here. See if this can be improved.
             if user:
                 data = dict(user.data()['user'].items())
-                return marshal(data, users), 200
+                return user_schema.dumps(data), 200
             return "User not found", 404
 
     @api.doc('delete_user')
