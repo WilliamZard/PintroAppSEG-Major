@@ -1,8 +1,8 @@
-from flask_restplus import Namespace, Resource, fields
+from flask_restplus import Namespace, Resource, fields, marshal
 from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
+from .utils import valid_email
 
-# TODO: add additional api details in parameters.
-# TODO: Update field titles
+
 api = Namespace('users', title='User related operations')
 users = api.model('Users', {
     'email': fields.String(required=True, title='The user email.'),
@@ -26,17 +26,18 @@ users = api.model('Users', {
 @api.response(404, 'User not found')
 class Users(Resource):
     @api.doc('get_user')
-    @api.marshal_with(users)
     def get(self, email):
-        # TODO: email validation, use a regex
         '''Fetch a user given its email.'''
+        if not valid_email(email):
+            return 'Invalid email given.', 400
+
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
             user = response.single()
             # TODO: a lot going on here. See if this can be improved.
-            data = dict(user.data()['user'].items())
             if user:
-                return data, 200
+                data = dict(user.data()['user'].items())
+                return marshal(data, users), 200
             return "User not found", 404
 
     @api.doc('delete_user')
