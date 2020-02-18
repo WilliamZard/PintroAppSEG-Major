@@ -42,9 +42,9 @@ class Users(Resource):
 
     @api.doc('delete_user')
     @api.response(204, 'User Deleted')
+    @validate_email
     def delete(self, email):
         '''Delete a user given its email.'''
-        # TODO: email validation
         with create_session() as session:
             response = session.read_transaction(delete_user_by_email, email)
             # TODO: not sure how to handle neo4j response for this yet
@@ -55,9 +55,9 @@ class Users(Resource):
 
     @api.expect(users)
     @api.marshal_with(users)
+    @validate_email
     def put(self, email):
         '''Update a user by the given fields.'''
-        # TODO: validate user email
         # TODO: validate payload
         with create_session() as session:
             response = session.read_transaction(
