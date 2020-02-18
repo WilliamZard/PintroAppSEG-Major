@@ -1,23 +1,26 @@
 from flask_restx import Namespace, Resource, fields, marshal
 from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
-from .utils import validate_email
+from marshmallow import Schema, fields
+
+# TODO: enable swagger API spec
+
+
+class UserSchema(Schema):
+    email = fields.Email(required=True)
+    password = fields.Str(required=True)
+    full_name = fields.Str(required=True)
+    preferred_name = fields.String()
+    profile_image = fields.String()
+    phone = fields.String()
+    gender = fields.String()
+    job_title = fields.String()
+    location = fields.String()
+    short_bio = fields.String()
+    story = fields.String()
+    education = fields.String()
+
 
 api = Namespace('users', title='User related operations')
-users = api.model('Users', {
-    'email': fields.String(required=True, title='The user email.'),
-    # TODO: could do hashing in a function here
-    'password': fields.String(required=True, title='The user password.'),
-    'full_name': fields.String(required=True, title='The user full name.'),
-    'preferred_name': fields.String(title='The user preferred name.'),
-    'profile_image': fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
-    'phone': fields.String(title="The user's phone number."),
-    'gender': fields.String(title="The User's geneder"),
-    'job_title': fields.String(title='current job title of the user.'),
-    'location': fields.String(title='current city of the user.'),
-    'short_bio': fields.String(title='short bio describing the user of maximum 250 characters.'),
-    'story': fields.String(title='story describing the user of maximum 250 words.'),
-    'education': fields.String(title='Highest level obtained.')
-})  # title for accounts that needs to be created.
 
 
 @api.route('/<string:email>')
@@ -25,7 +28,7 @@ users = api.model('Users', {
 @api.response(404, 'User not found')
 class Users(Resource):
     @api.doc('get_user')
-    @validate_email
+    @api.response(200, 'User Found')
     def get(self, email):
         '''Fetch a user given its email.'''
         # if not valid_email(email):
@@ -42,7 +45,6 @@ class Users(Resource):
 
     @api.doc('delete_user')
     @api.response(204, 'User Deleted')
-    @validate_email
     def delete(self, email):
         '''Delete a user given its email.'''
         with create_session() as session:
@@ -53,9 +55,8 @@ class Users(Resource):
                 return user, 204
             return "User not found", 404
 
-    @api.expect(users)
-    @api.marshal_with(users)
-    @validate_email
+    @api.doc('update_user')
+    @api.response(204, 'User Fields Deleted')
     def put(self, email):
         '''Update a user by the given fields.'''
         # TODO: validate payload
@@ -66,23 +67,19 @@ class Users(Resource):
                 return 204
             return "User was not found", 404
 
-
-# Commented for now as user posting will happen elsewher
-"""
     @api.doc('create_user')
-    @api.expect(users)
-    @api.marshal_with(users, code=201)
+    @api.response(204, 'User created')
     def post(self):
-        # TODO: input validation
+        '''Create a user in the database.
+
+        Validation is done in expect decorator.'''
         with create_session() as session:
             response = session.read_transaction(create_user, api.payload())
             # TODO: not sure how to handle neo4j response for this yet
             user = response.single()
             if user:
                 return user, 204
-            return "User not found", 404"""
-
-# You need to specify what is expected to be posted as body of the http message on this post.
+            return "User not found", 404
 
 
 """
