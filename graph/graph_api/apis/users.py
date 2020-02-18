@@ -1,4 +1,4 @@
-from flask_restplus import Namespace, Resource, fields, marshal
+from flask_restx import Namespace, Resource, fields, marshal
 from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
 from .utils import validate_email
 
