@@ -1,7 +1,6 @@
 from flask_restplus import Namespace, Resource, fields, marshal
 from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
-from .utils import valid_email
-
+from .utils import validate_email
 
 api = Namespace('users', title='User related operations')
 users = api.model('Users', {
@@ -26,10 +25,11 @@ users = api.model('Users', {
 @api.response(404, 'User not found')
 class Users(Resource):
     @api.doc('get_user')
+    @validate_email
     def get(self, email):
         '''Fetch a user given its email.'''
-        if not valid_email(email):
-            return 'Invalid email given.', 400
+        # if not valid_email(email):
+        #    return 'Invalid email given.', 400
 
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
