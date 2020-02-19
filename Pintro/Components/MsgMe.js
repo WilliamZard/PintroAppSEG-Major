@@ -21,13 +21,14 @@ const styles = StyleSheet.create({
         paddingHorizontal:30,
         borderRadius:13,
         marginTop:10,
-        marginRight:10
+        marginRight:10,
+        marginBottom:15
     },
     buttonText:{
         color: Colors.pintroBlack,
         textAlign: 'center',
-        fontFamily:'Poppins-Light'
-
+        fontFamily:'Poppins-Light',
+        fontSize: 10
     }
 });
 

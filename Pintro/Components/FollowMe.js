@@ -23,13 +23,14 @@ const styles = StyleSheet.create({
         borderRadius:13,
         marginTop:10,
         marginRight:10,
-        marginLeft:10
+        marginLeft:10,
+        marginBottom:15
     },
     buttonText:{
         color: Colors.pintroWhite,
         textAlign: 'center',
-        fontFamily:'Poppins-Light'
-
+        fontFamily:'Poppins-Light',
+        fontSize: 10
     }
 });
 export default FollowMe;

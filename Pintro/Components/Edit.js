@@ -20,13 +20,14 @@ const styles = StyleSheet.create({
         width:'7%',
         paddingHorizontal:30,
         borderRadius:13,
-        marginTop:10
+        marginTop:10,
+        marginBottom:15
     },
     buttonText:{
         color: Colors.pintroBlack,
         textAlign: 'center',
-        fontFamily:'Poppins-Light'
-
+        fontFamily:'Poppins-Light',
+        fontSize: 10
     }
 });
 
