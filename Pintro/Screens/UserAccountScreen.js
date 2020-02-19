@@ -4,6 +4,9 @@ import { fonts } from '../Constants/Fonts.js';
 import BlackTag from '../Components/BlackTag.js';
 import WhiteTag from '../Components/WhiteTag.js';
 import Colors from '../Constants/Colors';
+import FollowMe from '../Components/FollowMe.js';
+import MsgMe from '../Components/MsgMe.js';
+import Edit from '../Components/Edit.js';
 
 /**
  * The account page for a personal account
@@ -21,11 +24,12 @@ const UserAccountScreen = props => {
                 <Text style={fonts.name_black}>John Doe</Text>
                 <Text style={fonts.title_black}>Founder of John Doe industries</Text>
                 <Text style={fonts.bio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
+                <Text style={fonts.location}>King's College London</Text>
             </View>
-            <View>
-                <View><Button style={styles.followMe} title="+ FOLLOW ME" color="#1a1a1a" /></View>
-                <View><Image source={require('../images/message-icon.png')} style={{ width: 30, width: 30}}/><Button style={styles.msgMe} title="MESSAGE ME" /></View>
-                <Button style={styles.edit} title="..." />
+            <View style={styles.rowContainer}>
+                <FollowMe props={props.FollowMe}>+ FOLLOW ME</FollowMe>
+                <MsgMe props={props.MsgMe}>MESSAGE ME</MsgMe>
+                <Edit props={props.Edit}>. . .</Edit>
             </View>
             <View>
                 <ScrollView>
@@ -131,14 +135,8 @@ const styles = StyleSheet.create({
     helpUs_button: {
         color: Colors.pintroWhite
     },
-    followMe: {
-        color: Colors.pintroWhite
-    },
-    msgMe: {
-        color: Colors.pintroWhite
-    },
-    edit: {
-        colors: Colors.pintroWhite
+    rowContainer: {
+        flexDirection: 'row'
     }
 });
 
