@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ScrollView, Group } from 'react-native';
 import { fonts } from '../Constants/Fonts.js';
 import BlackTag from '../Components/BlackTag.js';
 import WhiteTag from '../Components/WhiteTag.js';
@@ -7,6 +7,7 @@ import Colors from '../Constants/Colors';
 import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
 import Edit from '../Components/Edit.js';
+import HelpMeWith from '../Components/HelpMeWith.js';
 
 /**
  * The account page for a personal account
@@ -21,10 +22,12 @@ const UserAccountScreen = props => {
         <ScrollView style={styles.background}>
             <View style={styles.name_title}>
                 <Image source={require('../images/blank-profile-picture.png')} style={{ width: 60, height: 60}}/>
-                <Text style={fonts.name_black}>John Doe</Text>
-                <Text style={fonts.title_black}>Founder of John Doe industries</Text>
-                <Text style={fonts.bio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
-                <Text style={fonts.location}>King's College London</Text>
+                <View>
+                    <Text style={fonts.name_black}>John Doe</Text>
+                    <Text style={fonts.title_black}>Founder of John Doe industries</Text>
+                    <Text style={fonts.bio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
+                    <Text style={fonts.location}>King's College London</Text>
+                    </View>
             </View>
             <View style={styles.rowContainer}>
                 <FollowMe props={props.FollowMe}>+ FOLLOW ME</FollowMe>
@@ -32,28 +35,10 @@ const UserAccountScreen = props => {
                 <Edit props={props.Edit}>. . .</Edit>
             </View>
             <View>
-                <ScrollView>
-                    <View style={styles.name_title}>
-                        <Button>
-                            <Text style={fonts.title_black}>Help me with</Text>
-                            <Text style={fonts.story}>interdimensional travel</Text>
-                        </Button>
-                        <Image source={require('../images/message-icon.png')}/>
-                    </View>
-                    <View>
-                        <Button>
-                            <Text style={fonts.title_black}>Help me with</Text>
-                            <Text style={fonts.story}>find the szechuan sauce</Text>
-                        </Button>
-                        <Image source={require('../images/message-icon.png')}/>
-                    </View>
-                    <View>
-                        <Button>
-                            <Text style={fonts.title_black}>Help me with</Text>
-                            <Text style={fonts.story}>Heists</Text>
-                        </Button>
-                        <Image source={require('../images/message-icon.png')}/>
-                    </View>
+                <ScrollView> 
+                    <HelpMeWith props={props.HelpMeWith}>interdimensional travel</HelpMeWith>
+                    <HelpMeWith props={props.HelpMeWith}>find the szechuan sauce</HelpMeWith>
+                    <HelpMeWith props={props.HelpMeWith}>Heists</HelpMeWith>
                 </ScrollView>
             </View>
             <View>
@@ -66,18 +51,18 @@ const UserAccountScreen = props => {
             </View>
             <View>
                 <Text style={fonts.title_black}>Talk to me about</Text>
-                <View>
-                    <BlackTag>Rick and Morty</BlackTag>
-                    <BlackTag>Comedy</BlackTag>
-                    <BlackTag>Memes</BlackTag>
+                <View style={styles.rowContainer}>
+                    <BlackTag props={props.BlackTag}>Rick and Morty</BlackTag>
+                    <BlackTag props={props.BlackTag}>Comedy</BlackTag>
+                    <BlackTag props={props.BlackTag}>Memes</BlackTag>
                 </View>
             </View>
             <View>
-                <Text style={fonts.title_black}>Help me with</Text>
-                <View>
-                    <WhiteTag>Cooking</WhiteTag>
-                    <WhiteTag>2 shots off my golf game</WhiteTag>
-                    <WhiteTag>Oooweee</WhiteTag>
+                <Text style={fonts.title_black}>I can help with</Text>
+                <View style={styles.rowContainer}>
+                    <WhiteTag props={props.WhiteTag}>Cooking</WhiteTag>
+                    <WhiteTag props={props.WhiteTag}>My golf game</WhiteTag>
+                    <WhiteTag props={props.WhiteTag}>Oooweee</WhiteTag>
                 </View>
             </View> 
             <View>
@@ -130,7 +115,7 @@ const styles = StyleSheet.create({
     },
     name_title: {
         flex: 1,
-        alignContent: 'left',
+        flexDirection: 'row'
     },
     helpUs_button: {
         color: Colors.pintroWhite
