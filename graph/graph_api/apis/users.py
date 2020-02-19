@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource, fields, marshal
 from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
 from marshmallow import Schema, fields
+from flask.json import jsonify
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -37,10 +38,10 @@ class Users(Resource):
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
             user = response.single()
-            # TODO: a lot going on here. See if this can be improved.
             if user:
+                # TODO: a lot going on here. See if this can be improved.
                 data = dict(user.data()['user'].items())
-                return user_schema.dumps(data), 200
+                return jsonify(user_schema.dump(data))
             return "User not found", 404
 
     @api.doc('delete_user')
