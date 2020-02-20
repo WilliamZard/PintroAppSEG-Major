@@ -11,9 +11,11 @@ RUN pip install -r requirements.txt
 
 ENV NEO4J_URI=bolt://35.246.56.244
 ENV NEO4J_PASSWORD=L0nd0n&EU
-ENV ENV=prod
+ENV FLASK_RUN_PORT=8080
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_APP=app.py
 
 EXPOSE 8080:8080 
 
-ENTRYPOINT [ "python" ]
-CMD [ "app.py" ]
+ENTRYPOINT [ "flask" ]
+CMD [ "run" ]

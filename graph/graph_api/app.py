@@ -1,13 +1,10 @@
-from flask import Flask
-from apis.users import users
-import config
+from flask import Flask, Config
+from graph_api.apis.users import users
+#from graph_api.config import ProductionConfig, DevelopmentConfig
 import os
 
-app = Flask(__name__)
-if os.environ['ENV'] == 'prod':
-    app.config.from_object('config.ProductionConfig')
-else:
-    app.config.from_object('config.DevelopmentConfig')
 
-app.register_blueprint(users)
-app.run(host='0.0.0.0', port=8080)
+def create_app():
+    app = Flask(__name__)
+    app.register_blueprint(users)
+    return app
