@@ -1,5 +1,5 @@
 from flask import Flask
-from apis import api
+from apis.users import users
 import config
 import os
 
@@ -9,5 +9,5 @@ if os.environ['ENV'] == 'prod':
 else:
     app.config.from_object('config.DevelopmentConfig')
 
-api.init_app(app)
+app.register_blueprint(users)
 app.run(host='0.0.0.0', port=8080)

@@ -1,4 +1,4 @@
-from flask_restx import Namespace, Resource, fields, marshal
+from flask import Blueprint
 from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
 from marshmallow import Schema, fields
 from flask.json import jsonify
@@ -22,65 +22,60 @@ class UserSchema(Schema):
     education = fields.String()
 
 
-api = Namespace('users', title='User related operations')
+users = Blueprint('users', __name__, url_prefix='/users')
 user_schema = UserSchema()
 
 
-@api.route('/<string:email>')
-@api.param('email', 'The email of the user')
-@api.response(404, 'User not found')
-class Users(Resource):
-    @api.doc('get_user')
-    @api.response(200, 'User Found')
-    def get(self, email):
-        '''Fetch a user given its email.'''
+@users.route('/<string:email>', methods=['GET'])
+def get_user(email):
+    '''Fetch a user given its email.'''
 
-        with create_session() as session:
-            response = session.read_transaction(get_user_by_email, email)
-            user = response.single()
-            if user:
-                # TODO: a lot going on here. See if this can be improved.
-                data = dict(user.data()['user'].items())
-                return jsonify(user_schema.dump(data))
-            return "User not found", 404
+    with create_session() as session:
+        response = session.read_transaction(get_user_by_email, email)
+        user = response.single()
+        if user:
+            # TODO: a lot going on here. See if this can be improved.
+            data = dict(user.data()['user'].items())
+            return user_schema.dump(data)
+        return "User not found", 404
 
-    @api.doc('delete_user')
-    @api.response(204, 'User Deleted')
-    def delete(self, email):
-        '''Delete a user given its email.'''
-        with create_session() as session:
-            response = session.read_transaction(delete_user_by_email, email)
-            # TODO: not sure how to handle neo4j response for this yet
-            user = response.single()
-            if user:
-                return user, 204
-            return "User not found", 404
 
-    @api.doc('update_user')
-    @api.response(204, 'User Fields Deleted')
-    def put(self, email):
-        '''Update a user by the given fields.'''
-        # TODO: validate payload
-        with create_session() as session:
-            response = session.read_transaction(
-                set_user_fields, email, api.payload)
-            if response:
-                return 204
-            return "User was not found", 404
+@users.route('/<string:email>', methods=['DELETE'])
+def delete(email):
+    '''Delete a user given its email.'''
+    with create_session() as session:
+        response = session.read_transaction(delete_user_by_email, email)
+        # TODO: not sure how to handle neo4j response for this yet
+        user = response.single()
+        if user:
+            return user, 204
+        return "User not found", 404
 
-    @api.doc('create_user')
-    @api.response(204, 'User created')
-    def post(self):
-        '''Create a user in the database.
 
-        Validation is done in expect decorator.'''
-        with create_session() as session:
-            response = session.read_transaction(create_user, api.payload())
-            # TODO: not sure how to handle neo4j response for this yet
-            user = response.single()
-            if user:
-                return user, 204
-            return "User not found", 404
+@users.route('/<string:email>', methods=['PUT'])
+def put(email):
+    '''Update a user by the given fields.'''
+    # TODO: validate payload
+    with create_session() as session:
+        response = session.read_transaction(
+            set_user_fields, email, api.payload)
+        if response:
+            return 204
+        return "User was not found", 404
+
+
+@users.route('', methods=['POST'])
+def post(self):
+    '''Create a user in the database.
+
+    Validation is done in expect decorator.'''
+    with create_session() as session:
+        response = session.read_transaction(create_user, api.payload())
+        # TODO: not sure how to handle neo4j response for this yet
+        user = response.single()
+        if user:
+            return user, 204
+        return "User not found", 404
 
 
 """
