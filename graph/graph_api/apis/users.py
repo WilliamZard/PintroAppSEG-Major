@@ -7,8 +7,12 @@ from flask.json import jsonify
 # TODO: email validation
 
 
-class UserSchema(Schema):
+class UserEmail(Schema):
     email = fields.Email(required=True)
+
+
+class UserSchema(Schema):
+    email = UserEmail
     password = fields.Str(required=True)
     full_name = fields.Str(required=True)
     preferred_name = fields.String()
@@ -28,7 +32,21 @@ user_schema = UserSchema()
 
 @users.route('/<string:email>', methods=['GET'])
 def get_user(email):
-    '''Fetch a user given its email.'''
+    """ Get user by email.
+    ---
+    get:
+      parameters:
+      - name: email
+        in: path
+        schema: UserEmail
+      description: Get user by email
+      responses:
+        200:
+          description: User data
+          content:
+            application/json:
+              schema: UserSchema
+    """
 
     with create_session() as session:
         response = session.read_transaction(get_user_by_email, email)
@@ -41,8 +59,24 @@ def get_user(email):
 
 
 @users.route('/<string:email>', methods=['DELETE'])
-def delete(email):
-    '''Delete a user given its email.'''
+def delete_user(email):
+    """ Delete user by email.
+    ---
+    delete:
+      parameters:
+      - name: email
+        in: path
+        schema: UserEmail
+      description: Delete user by email
+      responses:
+        204:
+          description: User data
+          content:
+            application/json:
+              schema: UserSchema
+        404:
+          description: User not found
+    """
     with create_session() as session:
         response = session.read_transaction(delete_user_by_email, email)
         # TODO: not sure how to handle neo4j response for this yet

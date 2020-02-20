@@ -1,5 +1,5 @@
 from flask import Flask, Config
-from graph_api.apis.users import users
+from apis.users import users
 #from graph_api.config import ProductionConfig, DevelopmentConfig
 import os
 
