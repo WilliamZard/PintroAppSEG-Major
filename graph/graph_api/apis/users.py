@@ -27,11 +27,8 @@ user_schema = UserSchema()
 
 
 @api.route('/<string:email>')
-@api.param('email', 'The email of the user')
-@api.response(404, 'User not found')
+@api.produces('application/json')
 class Users(Resource):
-    @api.doc('get_user')
-    @api.response(200, 'User Found')
     def get(self, email):
         '''Fetch a user given its email.'''
 
@@ -56,6 +53,26 @@ class Users(Resource):
                 return user, 204
             return "User not found", 404
 
+
+@api.route('/')
+@api.produces('application/json')
+class UsersPost(Resource):
+    @api.doc('create_user')
+    @api.response(204, 'User created')
+    def post(self):
+        '''Create a user in the database.
+
+        Validation is done in expect decorator.'''
+        with create_session() as session:
+            response = session.read_transaction(create_user, api.payload())
+            # TODO: not sure how to handle neo4j response for this yet
+            user = response.single()
+            if user:
+                return user, 204
+            return "User not found", 404
+
+
+"""
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
     def put(self, email):
@@ -81,7 +98,7 @@ class Users(Resource):
             if user:
                 return user, 204
             return "User not found", 404
-
+"""
 
 """
 @api.route('/signup')
