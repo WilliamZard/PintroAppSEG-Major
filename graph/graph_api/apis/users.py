@@ -1,19 +1,10 @@
-from flask.json import jsonify
+from flask_restx import Namespace, Resource, fields, marshal
+from .neo4j_ops import create_session, get_user_by_email, delete_user_by_email, set_user_fields
 from marshmallow import Schema, fields
-
-from flask_restx import Namespace, Resource
-from flask_restx import fields as restx_fields
-
-from .neo4j_ops import (create_session, delete_user_by_email,
-                        get_user_by_email, set_user_fields)
+from flask.json import jsonify
 
 # TODO: enable swagger API spec
 # TODO: email validation
-
-
-api = Namespace('users', title='User related operations')
-
-# Schema used for serialisations
 
 
 class UserSchema(Schema):
@@ -31,28 +22,12 @@ class UserSchema(Schema):
     education = fields.String()
 
 
-# Schema used for doc generation
-users = api.model('Users', {
-    'email': restx_fields.String(required=True, title='The user email.'),
-    'password': restx_fields.String(required=True, title='The user password.'),
-    'full_name': restx_fields.String(required=True, title='The user full name.'),
-    'preferred_name': restx_fields.String(title='The user preferred name.'),
-    'profile_image': restx_fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
-    'phone': restx_fields.String(title="The user's phone number."),
-    'gender': restx_fields.String(title="The User's geneder"),
-    'job_title': restx_fields.String(title='current job title of the user.'),
-    'location': restx_fields.String(title='current city of the user.'),
-    'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
-    'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
-    'education': restx_fields.String(title='Highest level obtained.')
-})  # title for accounts that needs to be created.
-
+api = Namespace('users', title='User related operations')
 user_schema = UserSchema()
 
 
 @api.route('/<string:email>')
 @api.produces('application/json')
-@api.expect(users)
 class Users(Resource):
     def get(self, email):
         '''Fetch a user given its email.'''
