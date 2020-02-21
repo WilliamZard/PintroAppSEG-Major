@@ -1,11 +1,11 @@
 from flask.json import jsonify
 from marshmallow import Schema, fields
-
+from neo4j.exceptions import ConstraintError
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 
 from .neo4j_ops import (create_session, delete_user_by_email,
-                        get_user_by_email, set_user_fields)
+                        get_user_by_email, set_user_fields, create_user)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -78,81 +78,32 @@ class Users(Resource):
                 return user, 204
             return "User not found", 404
 
-
-@api.route('/')
-@api.produces('application/json')
-class UsersPost(Resource):
-    @api.doc('create_user')
-    @api.response(204, 'User created')
-    def post(self):
-        '''Create a user in the database.
-
-        Validation is done in expect decorator.'''
-        with create_session() as session:
-            response = session.read_transaction(create_user, api.payload())
-            # TODO: not sure how to handle neo4j response for this yet
-            user = response.single()
-            if user:
-                return user, 204
-            return "User not found", 404
-
-
-"""
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
     def put(self, email):
         '''Update a user by the given fields.'''
         # TODO: validate payload
         with create_session() as session:
-            response = session.read_transaction(
+            response = session.write_transaction(
                 set_user_fields, email, api.payload)
             if response:
                 return 204
             return "User was not found", 404
 
+
+@api.route('/')
+@api.produces('application/json')
+@api.expect(users)
+class UsersPost(Resource):
     @api.doc('create_user')
     @api.response(204, 'User created')
+    @api.response(409, 'User with that email already exists')
     def post(self):
-        '''Create a user in the database.
-
-        Validation is done in expect decorator.'''
+        '''Create a user.'''
         with create_session() as session:
-            response = session.read_transaction(create_user, api.payload())
-            # TODO: not sure how to handle neo4j response for this yet
-            user = response.single()
-            if user:
-                return user, 204
-            return "User not found", 404
-"""
-
-"""
-@api.route('/signup')
-class SignUp(Resource):
-
-    @api.expect(account_model)
-    def post(self):
-        with create_session() as session:
-            response = session.read_transaction(create_user, api.payload)
-            if type(response) is dict:
-                return response
-
-            profile = response.single()
-            if profile:
-                return dict(profile['newUser'].items()), 200
-            return "User was not found", 404
-
-
-@api.route('/login')
-class LogIn(Resource):
-
-    @api.expect(login_credentials_model)
-    def post(self):
-        with create_session() as session:
-            profile = session.read_transaction(check_user, api.payload)
-            if type(profile) is dict:
-                return profile
-
-            if profile:
-                return dict(profile['p'].items()), 200
-            return "User was not found", 404
-"""
+            try:
+                response = session.write_transaction(create_user, api.payload)
+            except ConstraintError as e:
+                return str(e), 409
+            else:
+                return 'User created', 204
