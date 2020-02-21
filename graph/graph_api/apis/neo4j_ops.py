@@ -14,6 +14,15 @@ def create_session():
     return g.neo4j_db
 
 
+# TODO: consider using something like this:
+"""
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'neo4j_db'):
+        g.neo4j_db.close()
+"""
+
+
 def get_user_by_email(tx, user_email):
     '''
         Function that gets all the data related to a user with a particular email.
