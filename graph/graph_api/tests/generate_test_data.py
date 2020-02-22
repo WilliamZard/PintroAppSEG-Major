@@ -6,6 +6,22 @@ from neo4j import GraphDatabase
 
 SEB_NEO4J_IMPORT_DIR = '/Users/Seb/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-06fda328-94b7-4295-8d15-6dd8a4d56b97/installation-3.5.14/import/'
 
+USERS_PROPERTIES = [
+    "password",
+    "profile_image",
+    "education",
+    "full_name",
+    "gender",
+    "phone",
+    "short_bio",
+    "location",
+    "job_title",
+    "preferred_name",
+    "email",
+    "story"]
+VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
+                                         'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']))
+
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -36,21 +52,6 @@ def populate_db(rewrite_test_data=False):
 
 def generate_test_data_csv():
     print("generating")
-    USERS_PROPERTIES = [
-        "password",
-        "profile_image",
-        "education",
-        "full_name",
-        "gender",
-        "phone",
-        "short_bio",
-        "location",
-        "job_title",
-        "preferred_name",
-        "email",
-        "story"]
-    VALID_USER = ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
-                  'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']
     data = [
         VALID_USER
     ]
@@ -68,7 +69,7 @@ def create_test_data(tx, test_data):
     # TODO: when database gets more complex, will need to start populating constraints as well
     # https://neo4j.com/docs/getting-started/current/cypher-intro/load-csv/
     query = f'LOAD CSV WITH HEADERS FROM "file:///{test_data}" AS csvLine' + \
-        """ CREATE (u:User {
+        """ CREATE (u:Person {
             password: csvLine.password,
             profile_image: csvLine.profile_image,
             education: csvLine.education,
