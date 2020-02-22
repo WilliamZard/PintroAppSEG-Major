@@ -1,3 +1,5 @@
+# TODO: finish Dockerfile configuration.
+# for now just run tests on host machine. Requires exporting key envs.
 FROM python:3.7
 
 
