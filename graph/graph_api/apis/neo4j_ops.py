@@ -2,10 +2,16 @@ from neo4j import GraphDatabase
 from flask import g
 import os
 
-uri = os.getenv("NEO4J_URI")
-db_user = 'neo4j'
-password = os.getenv("NEO4J_PASSWORD")
-driver = GraphDatabase.driver(uri, auth=(db_user, password))
+
+def connect():
+    uri = os.getenv('NEO4J_URI')
+    db_user = 'neo4j'
+    password = os.getenv("NEO4J_PASSWORD")
+    driver = GraphDatabase.driver(uri, auth=(db_user, password))
+    return driver
+
+
+driver = connect()
 
 
 def create_session():
@@ -26,7 +32,7 @@ def close_db(error):
 def get_user_by_email(tx, user_email):
     '''
         Function that gets all the data related to a user with a particular email.
-        It returns a BoltStatementResult. 
+        It returns a BoltStatementResult.
     '''
     '''Args:
         tx = the context from where to run chipher statements and retreiving information from the db.
@@ -42,7 +48,7 @@ def delete_user_by_email(tx, user_email):
 def set_user_fields(tx, user_email, fields):
     '''
         Function for setting a new email of a user which has a particular email saved in database.
-        It returns a BoltStatementResult containing the record of the edited user. 
+        It returns a BoltStatementResult containing the record of the edited user.
     '''
     '''Args:
         tx = the context from where to run chipher statements and retreiving information from the db.
@@ -55,4 +61,4 @@ def set_user_fields(tx, user_email, fields):
 
 
 def create_user(tx, fields):
-    return tx.run("CREATE(new_user: Person {" + ", ".join(f"{k}: '{v}'" for (k, v) in fields.items()) + "})")
+    return tx.run("create(new_user: person {" + ", ".join(f"{k}: '{v}'" for (k, v) in fields.items()) + "})")
