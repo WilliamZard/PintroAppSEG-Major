@@ -54,9 +54,8 @@ def populate_db(rewrite_test_data=False):
         generate_test_data_csv()
     driver = connect()
     with driver.session() as session:
-        print("about to write")
-        response = session.write_transaction(create_test_data, test_data_file)
-        print(response)
+        session.write_transaction(create_unique_email_constraint)
+        session.write_transaction(create_test_data, test_data_file)
     # TODO: do this properly. Move all db stuff connect() function. Use yield.
     driver.close()
     print('Database populated')
@@ -104,6 +103,11 @@ def create_test_data(tx, test_data):
             email: csvLine.email,
             story: csvLine.story
             })"""
+    return tx.run(query)
+
+
+def create_unique_email_constraint(tx):
+    query = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
     return tx.run(query)
 
 
