@@ -55,12 +55,18 @@ def populate_db(rewrite_test_data=False):
     driver = connect()
     with driver.session() as session:
         print("about to write")
-        print(session.sync())
         response = session.write_transaction(create_test_data, test_data_file)
         print(response)
     # TODO: do this properly. Move all db stuff connect() function. Use yield.
     driver.close()
     print('Database populated')
+
+
+def clear_db():
+    driver = connect()
+    with driver.session() as session:
+        print("about to delete")
+        response = session.write_transaction(delete_all_nodes)
 
 
 def generate_test_data_csv():
@@ -97,4 +103,10 @@ def create_test_data(tx, test_data):
             email: csvLine.email,
             story: csvLine.story
             })"""
+    return tx.run(query)
+
+
+def delete_all_nodes(tx):
+    print("Deleting")
+    query = "MATCH(n) DETACH DELETE n"
     return tx.run(query)

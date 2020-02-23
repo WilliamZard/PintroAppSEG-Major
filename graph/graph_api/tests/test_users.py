@@ -14,21 +14,23 @@ from .generate_test_data import (NONEXISTANT_USER_EMAIL,
                                  VALID_USER, VALID_USER_TO_BE_DELETED, INVALID_EMAIL,
                                  VALID_USER_TO_BE_UPDATED, VALID_USER_TO_BE_UPDATED_NEW_FIELDS,
                                  VALID_USER_TO_BE_CREATED, INVALID_USER_TO_BE_CREATED,
-                                 populate_db)
+                                 populate_db, clear_db)
 
 
 # TODO: consider changing scope of fixture so client object does not creating every time.
-@pytest.fixture
+@pytest.fixture(scope='module')
 def app():
     app = create_app()
     app.testing = True
 
-    # TODO: populate database when testing.
-    print("ey!")
+    # TODO: right now this populates and clears the database for all tests, as opposed to every test
+    # Not sure which if this should happen per test or per module.
+    # Figure this out.
     with app.test_client() as client:
         # NOTE commented out populate db
-       # populate_db(rewrite_test_data=True)
+        populate_db(rewrite_test_data=True)
         yield client
+    clear_db()
 
 # TODO: some duplicate code here for each endpoint test. Refactor.
 
