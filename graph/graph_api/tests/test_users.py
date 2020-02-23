@@ -58,12 +58,12 @@ class TestGet:
     def test_get_user_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
-        assert response.data == jsonify({}).data
+        assert response.data == b''
 
     def test_get_user_with_invalid_email(self, app):
         response = app.get(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
-        assert response.data == jsonify({}).data
+        assert response.data == b''
 
 
 @pytest.mark.delete
@@ -83,12 +83,12 @@ class TestDelete:
     def test_delete_user_with_valid_email_that_does_not_exist(self, app):
         response = app.delete(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
-        assert response.data == jsonify({}).data
+        assert response.data == b''
 
     def test_delete_user_with_invalid_email(self, app):
         response = app.delete(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
-        assert response.data == jsonify({}).data
+        assert response.data == b''
 
 
 @pytest.mark.put

@@ -59,7 +59,7 @@ class Users(Resource):
     def get(self, email):
         '''Fetch a user given its email.'''
         if not valid_email(email):
-            return make_response(jsonify({}), 422)
+            return make_response('', 422)
 
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
@@ -68,20 +68,20 @@ class Users(Resource):
                 # TODO: a lot going on here. See if this can be improved.
                 data = dict(user.data()['user'].items())
                 return jsonify(user_schema.dump(data))
-            return make_response(jsonify({}), 404)
+            return make_response('', 404)
 
     @api.doc('delete_user')
     @api.response(204, 'User Deleted')
     def delete(self, email):
         '''Delete a user given its email.'''
         if not valid_email(email):
-            return make_response(jsonify({}), 422)
+            return make_response('', 422)
 
         with create_session() as session:
             response = session.read_transaction(delete_user_by_email, email)
             if response.summary().counters.nodes_deleted == 1:
                 return make_response('', 204)
-            return make_response(jsonify({}), 404)
+            return make_response('', 404)
 
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
