@@ -122,19 +122,19 @@ class TestPost:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-        # Assert user was actually deleted in the database
+        # Assert user was actually created in the database
         response = app.get(f"/users/{VALID_USER_TO_BE_CREATED['email']}")
-        assert response.status == '200 OKAY'
+        assert response.status == '200 OK'
         assert response.data == jsonify(VALID_USER_TO_BE_CREATED).data
 
     def test_post_user_with_valid_payload_that_exists(self, app):
         response = app.post(
             "/users/", json=VALID_USER)
         assert response.status == '409 CONFLICT'
-        # TODO: what about assert response data?
+        assert response.data == b'Node with that email already exists.'
 
     def test_post_user_with_invalid_payload(self, app):
         response = app.post(
             "/users/", json=INVALID_USER_TO_BE_CREATED)
-        assert response.status == '422 Invalid Email'
-        assert response.data == b''
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b'Not a valid email address.'

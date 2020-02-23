@@ -62,4 +62,6 @@ def set_user_fields(tx, user_email, fields):
 
 
 def create_user(tx, fields):
-    return tx.run("create(new_user: Person {" + ", ".join(f"{k}: '{v}'" for (k, v) in fields.items()) + "})")
+    query = "CREATE (new_user: Person {" + ", ".join(
+        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+    return tx.run(query)

@@ -3,6 +3,7 @@ from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from marshmallow import Schema, fields
+from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
@@ -109,10 +110,14 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
+        try:
+            deserialised_payload = user_schema.load(api.payload)
+        except ValidationError as e:
+            return make_response(e.messages['email'][0], 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(create_user, api.payload)
-            except ConstraintError as e:
-                return str(e), 409
-            else:
-                return 'User created', 204
+                if response.summary().counters.nodes_created == 1:
+                    return make_response('', 201)
+            except ConstraintError:
+                return make_response('Node with that email already exists.', 409)
