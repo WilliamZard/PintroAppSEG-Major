@@ -73,6 +73,7 @@ def generate_test_data_csv():
     print("generating")
     data = [
         VALID_USER,
+        VALID_USER_TO_BE_UPDATED,
         VALID_USER_TO_BE_DELETED
     ]
     test_df = pd.DataFrame(data, columns=USERS_PROPERTIES)

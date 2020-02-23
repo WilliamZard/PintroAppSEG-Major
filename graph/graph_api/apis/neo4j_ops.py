@@ -56,8 +56,9 @@ def set_user_fields(tx, user_email, fields):
         new_email = the new email to assign to that user.
     '''
     # NOTE: this could error when assigning string values that need quotations
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) SET " +
-                  ", ".join(f"user.{k}={v}" for (k, v) in fields.items()))
+    query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
+        ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
+    return tx.run(query)
 
 
 def create_user(tx, fields):

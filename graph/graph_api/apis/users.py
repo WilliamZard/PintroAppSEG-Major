@@ -87,13 +87,17 @@ class Users(Resource):
     @api.response(204, 'User Fields Deleted')
     def put(self, email):
         '''Update a user by the given fields.'''
+        if not valid_email(email):
+            return make_response('', 422)
+
         # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_user_fields, email, api.payload)
-            if response:
-                return 204
-            return "User was not found", 404
+            print(response.summary().counters)
+            if response.summary().counters.properties_set == len(api.payload):
+                return make_response('', 204)
+            return make_response('', 404)
 
 
 @api.route('/')

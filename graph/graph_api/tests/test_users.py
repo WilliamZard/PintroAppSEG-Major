@@ -96,20 +96,22 @@ class TestPut:
     def test_put_user_with_valid_email_that_exists(self, app):
         response = app.put(
             f"/users/{VALID_USER_TO_BE_UPDATED['email']}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
-        assert response.status == '204 No Content'
-        assert response.data == jsonify({}).data
+        assert response.status == '204 NO CONTENT'
+        assert response.data == b''
 
     def test_put_user_with_valid_email_that_does_not_exist(self, app):
         response = app.put(
-            f"/users/{VALID_USER_TO_BE_UPDATED['email']}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+            f"/users/{NONEXISTANT_USER_EMAIL}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
         assert response.status == '404 NOT FOUND'
-        assert response.data == jsonify({}).data
+        assert response.data == b''
 
     def test_put_user_with_invalid_email(self, app):
         response = app.put(
-            f"/users/{VALID_USER_TO_BE_UPDATED['email']}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
-        assert response.status == '422 Invalid Email'
-        assert response.data == jsonify({}).data
+            f"/users/{INVALID_EMAIL}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+    # TODO: add test for validating payload
 
 
 @pytest.mark.post
@@ -117,8 +119,8 @@ class TestPost:
     def test_post_user_with_valid_payload_that_does_not_exist(self, app):
         response = app.post(
             "/users/", json=VALID_USER_TO_BE_CREATED)
-        assert response.status == '204 NO CONTENT'
-        assert response.data == jsonify({}).data
+        assert response.status == '201 CREATED'
+        assert response.data == b''
 
         # Assert user was actually deleted in the database
         response = app.get(f"/users/{VALID_USER_TO_BE_CREATED['email']}")
@@ -135,4 +137,4 @@ class TestPost:
         response = app.post(
             "/users/", json=INVALID_USER_TO_BE_CREATED)
         assert response.status == '422 Invalid Email'
-        assert response.data == jsonify({}).data
+        assert response.data == b''
