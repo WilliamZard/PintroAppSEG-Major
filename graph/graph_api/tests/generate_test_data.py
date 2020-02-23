@@ -3,7 +3,7 @@
 import pandas as pd
 import os
 from neo4j import GraphDatabase
-
+# TODO: format! line length is way too long
 SEB_NEO4J_IMPORT_DIR = '/Users/Seb/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-06fda328-94b7-4295-8d15-6dd8a4d56b97/installation-3.5.14/import/'
 
 USERS_PROPERTIES = [
@@ -21,15 +21,19 @@ USERS_PROPERTIES = [
     "story"]
 VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
                                          'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']))
-
-INVALID_EMAIL = 'invalidate@me.now'
-# TODO: do something with this
-MISC_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
-                                        'genius', 'whit house', 'Commander n sth', 'Mr Pres', 'geniusfakenews.cnn', 'Covfefe']))
-
+VALID_USER_TO_BE_UPDATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
+                                                       'genius', 'whit house', 'Commander n sth', 'Mr Pres', 'genius@fakenews.cnn', 'Covfefe']))
+VALID_USER_TO_BE_UPDATED_NEW_FIELDS = dict(zip(USERS_PROPERTIES, ['0000', 'new_image', 'Care Home', 'Donald Trump', 'masculine', '999',
+                                                                  'retired genius', 'Mar O Lago', 'Former Best President', 'GOAT', 'genius@fakenews.cnn', 'revolutionary']))
 VALID_USER_TO_BE_DELETED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'Taaj', 'man', '123',
                                                        'going places', 'Gatwick init', 'going places', 'just Taaj', 'taaj@hotmail.co.uk', 'you get me?']))
+VALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
+                                                       'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'precious@gmail.com', 'Likeable and devout.']))
+
+INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
+                                                         'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'preciousgmail.com', 'Likeable and devout.']))
 NONEXISTANT_USER_EMAIL = 'does@not.exist'
+INVALID_EMAIL = 'invalidateme.now'
 
 
 def connect():

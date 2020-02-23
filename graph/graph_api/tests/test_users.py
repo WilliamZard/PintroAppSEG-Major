@@ -13,6 +13,7 @@ from graph_api.apis.users import UserSchema
 from .generate_test_data import (NONEXISTANT_USER_EMAIL,
                                  VALID_USER, VALID_USER_TO_BE_DELETED, INVALID_EMAIL,
                                  VALID_USER_TO_BE_UPDATED, VALID_USER_TO_BE_UPDATED_NEW_FIELDS,
+                                 VALID_USER_TO_BE_CREATED, INVALID_USER_TO_BE_CREATED,
                                  populate_db)
 
 
@@ -45,6 +46,7 @@ def test_api_endpoint(app, email, status, response_data):
 """
 
 
+@pytest.mark.get
 class TestGet:
     def test_get_user_with_valid_email_that_exists(self, app):
         response = app.get(f"/users/{VALID_USER['email']}")
@@ -62,6 +64,7 @@ class TestGet:
         assert response.data == jsonify({}).data
 
 
+@pytest.mark.delete
 class TestDelete:
     # TODO: some duplicate code here for each endpoint test. Refactor.
     def test_delete_user_with_valid_email_that_exists(self, app):
@@ -86,6 +89,7 @@ class TestDelete:
         assert response.data == jsonify({}).data
 
 
+@pytest.mark.put
 class TestPut:
     def test_put_user_with_valid_email_that_exists(self, app):
         response = app.put(
@@ -102,5 +106,31 @@ class TestPut:
     def test_put_user_with_invalid_email(self, app):
         response = app.put(
             f"/users/{VALID_USER_TO_BE_UPDATED['email']}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+        assert response.status == '422 Invalid Email'
+        assert response.data == jsonify({}).data
+
+
+@pytest.mark.post
+class TestPost:
+    def test_post_user_with_valid_payload_that_does_not_exist(self, app):
+        response = app.post(
+            "/users/", json=VALID_USER_TO_BE_CREATED)
+        assert response.status == '204 NO CONTENT'
+        assert response.data == jsonify({}).data
+
+        # Assert user was actually deleted in the database
+        response = app.get(f"/users/{VALID_USER_TO_BE_CREATED['email']}")
+        assert response.status == '200 OKAY'
+        assert response.data == jsonify(VALID_USER_TO_BE_CREATED).data
+
+    def test_post_user_with_valid_payload_that_exists(self, app):
+        response = app.post(
+            "/users/", json=VALID_USER)
+        assert response.status == '409 CONFLICT'
+        # TODO: what about assert response data?
+
+    def test_post_user_with_invalid_payload(self, app):
+        response = app.post(
+            "/users/", json=INVALID_USER_TO_BE_CREATED)
         assert response.status == '422 Invalid Email'
         assert response.data == jsonify({}).data
