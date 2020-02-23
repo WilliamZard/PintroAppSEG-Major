@@ -22,6 +22,9 @@ USERS_PROPERTIES = [
 VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
                                          'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']))
 
+INVALID_EMAIL_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
+                                                 'genius', 'whit house', 'Commander n sth', 'Mr Pres', 'geniusfakenews.cnn', 'Covfefe']))
+
 
 def connect():
     uri = os.getenv('NEO4J_URI')
