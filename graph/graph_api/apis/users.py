@@ -1,11 +1,13 @@
 from flask.json import jsonify
-from marshmallow import Schema, fields
-from neo4j.exceptions import ConstraintError
+from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
+from marshmallow import Schema, fields
+from neo4j.exceptions import ConstraintError
+from .utils import valid_email
 
-from .neo4j_ops import (create_session, delete_user_by_email,
-                        get_user_by_email, set_user_fields, create_user)
+from .neo4j_ops import (create_session, create_user, delete_user_by_email,
+                        get_user_by_email, set_user_fields)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -56,7 +58,8 @@ user_schema = UserSchema()
 class Users(Resource):
     def get(self, email):
         '''Fetch a user given its email.'''
-
+        if not valid_email(email):
+            return make_response(jsonify({}), 422)
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
             user = response.single()
@@ -64,7 +67,7 @@ class Users(Resource):
                 # TODO: a lot going on here. See if this can be improved.
                 data = dict(user.data()['user'].items())
                 return jsonify(user_schema.dump(data))
-            return "User not found", 404
+            return make_response(jsonify({}), 404)
 
     @api.doc('delete_user')
     @api.response(204, 'User Deleted')

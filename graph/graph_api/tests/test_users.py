@@ -60,7 +60,7 @@ class TestGet:
 
     def test_get_user_with_invalid_email(self, app):
         response = app.get(f"/users/{INVALID_EMAIL}")
-        assert response.status == '422 Invalid Email'
+        assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == jsonify({}).data
 
 
