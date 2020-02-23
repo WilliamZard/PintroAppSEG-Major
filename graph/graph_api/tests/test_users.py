@@ -15,6 +15,7 @@ from .generate_test_data import (NONEXISTANT_USER_EMAIL,
                                  populate_db)
 
 
+# TODO: consider changing scope of fixture so client object does not creating every time.
 @pytest.fixture
 def app():
     app = create_app()
@@ -30,40 +31,50 @@ def app():
 # TODO: some duplicate code here for each endpoint test. Refactor.
 
 
-def test_get_user_with_valid_email_that_exists(app):
-    response = app.get(f"/users/{VALID_USER['email']}")
-    assert response.status == '200 OK'
+# TODO: below is an attempt as reducing duplicate code in tests.
+# Failed because it leads to pytest output being less informative.
+# Come back to this later.
+"""
+@pytest.mark.skip
+def test_api_endpoint(app, email, status, response_data):
+    response = app.get(f"/users/{email}")
+    assert response.status == status
     # TODO: consider using standard json.dumps instead of jsonify
-    assert response.data == jsonify(VALID_USER).data
+    assert response.data == jsonify(response_data).data
+"""
 
 
-def test_get_user_with_valid_email_that_does_not_exist(app):
-    response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")
-    assert response.status == '404 NOT FOUND'
-    assert response.data == jsonify({}).data
+class TestGet:
+    def test_get_user_with_valid_email_that_exists(self, app):
+        response = app.get(f"/users/{VALID_USER['email']}")
+        assert response.status == '200 OK'
+        assert response.data == jsonify(VALID_USER).data
+
+    def test_get_user_with_valid_email_that_does_not_exist(self, app):
+        response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")
+        assert response.status == '404 NOT FOUND'
+        assert response.data == jsonify({}).data
+
+    def test_get_user_with_invalid_email(self, app):
+        response = app.get(f"/users/{INVALID_EMAIL}")
+        assert response.status == '422 Invalid Email'
+        assert response.data == jsonify({}).data
 
 
-def test_get_user_with_invalid_email(app):
-    response = app.get(f"/users/{INVALID_EMAIL}")
-    assert response.status == '422 Invalid Email'
-    assert response.data == jsonify({}).data
+class TestDelete:
+    # TODO: some duplicate code here for each endpoint test. Refactor.
+    def test_delete_user_with_valid_email_that_exists(app):
+        response = app.delete(f"/users/{VALID_USER_TO_BE_DELETED['email']}")
+        assert response.status == '204 OK'
+        # TODO: consider using standard json.dumps instead of jsonify
+        assert response.data == jsonify(VALID_USER_TO_BE_DELETED).data
 
+    def test_delete_user_with_valid_email_that_does_not_exist(app):
+        response = app.delete(f"/users/{NONEXISTANT_USER_EMAIL}")
+        assert response.status == '404 NOT FOUND'
+        assert response.data == jsonify({}).data
 
-# TODO: some duplicate code here for each endpoint test. Refactor.
-def test_delete_user_with_valid_email_that_exists(app):
-    response = app.delete(f"/users/{VALID_USER_TO_BE_DELETED['email']}")
-    assert response.status == '204 OK'
-    # TODO: consider using standard json.dumps instead of jsonify
-    assert response.data == jsonify(VALID_USER_TO_BE_DELETED).data
-
-
-def test_delete_user_with_valid_email_that_does_not_exist(app):
-    response = app.delete(f"/users/{NONEXISTANT_USER_EMAIL}")
-    assert response.status == '404 NOT FOUND'
-    assert response.data == jsonify({}).data
-
-
-def test_delete_user_with_invalid_email(app):
-    response = app.delete(f"/users/{INVALID_EMAIL}")
-    assert response.status == '422 Invalid Email'
-    assert response.data == jsonify({}).data
+    def test_delete_user_with_invalid_email(app):
+        response = app.delete(f"/users/{INVALID_EMAIL}")
+        assert response.status == '422 Invalid Email'
+        assert response.data == jsonify({}).data
