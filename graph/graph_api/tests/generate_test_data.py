@@ -22,8 +22,14 @@ USERS_PROPERTIES = [
 VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
                                          'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']))
 
-INVALID_EMAIL_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
-                                                 'genius', 'whit house', 'Commander n sth', 'Mr Pres', 'geniusfakenews.cnn', 'Covfefe']))
+INVALID_EMAIL = 'invalidate@me.now'
+# TODO: do something with this
+MISC_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
+                                        'genius', 'whit house', 'Commander n sth', 'Mr Pres', 'geniusfakenews.cnn', 'Covfefe']))
+
+VALID_USER_TO_BE_DELETED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'Taaj', 'man', '123',
+                                                       'going places', 'Gatwick init', 'going places', 'just Taaj', 'taaj@hotmail.co.uk', 'you get me?']))
+NONEXISTANT_USER_EMAIL = 'does@not.exist'
 
 
 def connect():
@@ -56,7 +62,8 @@ def populate_db(rewrite_test_data=False):
 def generate_test_data_csv():
     print("generating")
     data = [
-        VALID_USER
+        VALID_USER,
+        VALID_USER_TO_BE_DELETED
     ]
     test_df = pd.DataFrame(data, columns=USERS_PROPERTIES)
     print(test_df)
