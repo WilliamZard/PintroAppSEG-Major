@@ -60,6 +60,7 @@ class Users(Resource):
         '''Fetch a user given its email.'''
         if not valid_email(email):
             return make_response(jsonify({}), 422)
+
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
             user = response.single()
@@ -73,13 +74,14 @@ class Users(Resource):
     @api.response(204, 'User Deleted')
     def delete(self, email):
         '''Delete a user given its email.'''
+        if not valid_email(email):
+            return make_response(jsonify({}), 422)
+
         with create_session() as session:
             response = session.read_transaction(delete_user_by_email, email)
-            # TODO: not sure how to handle neo4j response for this yet
-            user = response.single()
-            if user:
-                return user, 204
-            return "User not found", 404
+            if response.summary().counters.nodes_deleted == 1:
+                return make_response(jsonify({}), 201)
+            return make_response(jsonify({}), 404)
 
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')

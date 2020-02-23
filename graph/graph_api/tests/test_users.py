@@ -72,9 +72,9 @@ class TestDelete:
     def test_delete_user_with_valid_email_that_exists(self, app):
         email = VALID_USER_TO_BE_DELETED['email']
         response = app.delete(f"/users/{email}")
-        assert response.status == '204 OK'
+        assert response.status == '201 CREATED'
         # TODO: consider using standard json.dumps instead of jsonify
-        assert response.data == jsonify(VALID_USER_TO_BE_DELETED).data
+        assert response.data == jsonify({}).data
 
         # Assert user was actually deleted in the database
         response = app.get(f"/users/{email}")
@@ -87,7 +87,7 @@ class TestDelete:
 
     def test_delete_user_with_invalid_email(self, app):
         response = app.delete(f"/users/{INVALID_EMAIL}")
-        assert response.status == '422 Invalid Email'
+        assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == jsonify({}).data
 
 
