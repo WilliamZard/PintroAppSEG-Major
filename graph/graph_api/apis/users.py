@@ -80,7 +80,7 @@ class Users(Resource):
         with create_session() as session:
             response = session.read_transaction(delete_user_by_email, email)
             if response.summary().counters.nodes_deleted == 1:
-                return make_response(jsonify({}), 201)
+                return make_response('', 204)
             return make_response(jsonify({}), 404)
 
     @api.doc('update_user')
