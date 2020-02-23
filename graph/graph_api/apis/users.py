@@ -116,7 +116,8 @@ class UsersPost(Resource):
             return make_response(e.messages['email'][0], 422)
         with create_session() as session:
             try:
-                response = session.write_transaction(create_user, api.payload)
+                response = session.write_transaction(
+                    create_user, deserialised_payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:
