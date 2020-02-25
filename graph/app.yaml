@@ -1,0 +1,14 @@
+runtime: custom
+env: flex
+
+#network:
+#    forwarded_ports:
+#        - 8080:5000
+
+# [START configuration]
+endpoints_api_service:
+  # The following values are to be replaced by information from the output of
+  # 'gcloud endpoints services deploy openapi-appengine.yaml' command.
+  name: bluej-pintro-project.appspot.com 
+  rollout_strategy: managed
+ # [END configuration]

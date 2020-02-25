@@ -1,0 +1,123 @@
+# [START swagger]
+swagger: "2.0"
+info:
+  description: "API for running CRUD operations on Piintro's Graph database."
+  title: "Piintro Graph API"
+  version: "0.1"
+host: "bluej-pintro-project.appspot.com"
+# [END swagger]
+consumes:
+- "application/json"
+produces:
+- "application/json"
+schemes:
+- "https"
+basePath: /
+paths:
+  '/users/{email}':
+    parameters:
+      - in: path
+        description: The email of the user
+        name: email
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Users'
+        '404':
+          description: User not found
+      summary: Fetch a user given its email
+      operationId: get_user
+      parameters:
+        - name: X-Fields
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - users
+    delete:
+      responses:
+        '204':
+          description: User Deleted
+        '404':
+          description: User not found
+      summary: Delete a user given its email
+      operationId: delete_user
+      tags:
+        - users
+    put:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Users'
+        '404':
+          description: User not found
+      summary: Update a user by the given fields
+      operationId: put_users
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Users'
+        - name: X-Fields
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - users
+definitions:
+  Users:
+    required:
+      - email
+      - full_name
+      - password
+    properties:
+      email:
+        type: string
+        title: The user email.
+      password:
+        type: string
+        title: The user password.
+      full_name:
+        type: string
+        title: The user full name.
+      preferred_name:
+        type: string
+        title: The user preferred name.
+      image:
+        type: string
+        title: image saved as array of Bytes representing the user's profile pic.
+      phone:
+        type: string
+        title: The user's phone number.
+      gender:
+        type: string
+        title: The User's geneder
+      job_title:
+        type: string
+        title: current job title of the user.
+      location:
+        type: string
+        title: current city of the user.
+      short_bio:
+        type: string
+        title: short bio describing the user of maximum 250 characters.
+      story:
+        type: string
+        title: story describing the user of maximum 250 words.
+      education:
+        type: string
+        title: Highest level obtained.
+    type: object
+responses:
+  ParseError:
+    description: When a mask can't be parsed
+  MaskError:
+    description: When any error occurs on mask
