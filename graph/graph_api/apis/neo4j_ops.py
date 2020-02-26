@@ -1,7 +1,7 @@
 from neo4j import GraphDatabase
 from flask import g
 import os
-
+import datetime
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -64,4 +64,23 @@ def set_user_fields(tx, user_email, fields):
 def create_user(tx, fields):
     query = "CREATE (new_user: Person {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+    return tx.run(query)
+
+def get_posts_by_user_email(tx, user_email):
+    query = f"MATCH (user: Person {{email:'{user_email}'}})-[:POSTED]->(post:Post) RETURN post "
+    return tx.run(query)
+
+def create_post_to_user(tx, user_email, post_content):
+    query = f"""MATCH (person:Person {{email:'{user_email}'}})   
+                CREATE (post:Post {{content:'{post_content}'}})
+                CREATE (person)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post)
+            """
+    return tx.run(query)
+
+#TODO Tere is a bug as if the user has more thatn one post with the exact same content they both get deleted. It is unlikely but that's bad.
+def modify_post_of_given_user(tx, user_email, post_old_content, post_new_content):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:POSTED]->(m:Post {{content:'{post_old_content}'}}) 
+                SET m.content='{post_new_content}'
+                RETURN m
+            """
     return tx.run(query)
