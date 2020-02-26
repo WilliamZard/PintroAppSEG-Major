@@ -64,6 +64,8 @@ def populate_db(rewrite_test_data=False):
     driver = connect()
     with driver.session() as session:
         session.write_transaction(create_unique_email_constraint)
+        session.write_transaction(create_user_email_existence_constraint)
+        session.write_transaction(create_post_content_existence_constraint)
         session.write_transaction(create_test_data, test_data_file)
     # TODO: do this properly. Move all db stuff connect() function. Use yield.
     driver.close()
@@ -122,10 +124,18 @@ def create_test_data(tx, test_data):
     return tx.run(query)
 
 
+# TODO REFACTOR THESE FUNCTIONS TO HAVE AN ONLY ONE FUNCTION FOR ADDING ALL CONSTRAINTS TO DB.
 def create_unique_email_constraint(tx):
     query = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
     return tx.run(query)
 
+def create_user_email_existence_constraint(tx):
+    query = "CREATE CONSTRAINT ON(user: Person) ASSERT EXISTS (user.email)"
+    return tx.run(query)
+
+def create_post_content_existence_constraint(tx):
+    query = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS (post.content)"
+    return tx.run(query)
 
 def delete_all_nodes(tx):
     print("Deleting")

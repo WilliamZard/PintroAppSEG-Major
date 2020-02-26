@@ -55,7 +55,6 @@ user_schema = UserSchema()
 
 @api.route('/<string:email>')
 @api.produces('application/json')
-@api.expect(users)
 class Users(Resource):
     def get(self, email):
         '''Fetch a user given its email.'''
@@ -67,6 +66,7 @@ class Users(Resource):
             user = response.single()
             if user:
                 # TODO: a lot going on here. See if this can be improved.
+                print(user.data())
                 data = dict(user.data()['user'].items())
                 return jsonify(user_schema.dump(data))
             return make_response('', 404)
@@ -86,6 +86,7 @@ class Users(Resource):
 
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
+    @api.expect(users)
     def put(self, email):
         '''Update a user by the given fields.'''
         if not valid_email(email):
