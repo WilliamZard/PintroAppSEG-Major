@@ -22,7 +22,7 @@ from .generate_test_data import (NONEXISTANT_USER_EMAIL,
 def app():
     app = create_app()
     app.testing = True
-
+    
     # TODO: right now this populates and clears the database for all tests, as opposed to every test
     # Not sure which if this should happen per test or per module.
     # Figure this out.
@@ -134,6 +134,7 @@ class TestPost:
         assert response.data == b'Node with that email already exists.'
 
     def test_post_user_with_invalid_payload(self, app):
+        
         response = app.post(
             "/users/", json=INVALID_USER_TO_BE_CREATED)
         assert response.status == '422 UNPROCESSABLE ENTITY'

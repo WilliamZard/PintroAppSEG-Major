@@ -1,11 +1,11 @@
 # TODO: pandas should not needed in production and is a heavy library. Find a way to only use it in testing.
-
+import datetime
 import pandas as pd
 import os
 from neo4j import GraphDatabase
 # TODO: format! line length is way too long
 SEB_NEO4J_IMPORT_DIR = '/Users/Seb/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-06fda328-94b7-4295-8d15-6dd8a4d56b97/installation-3.5.14/import/'
-
+GIULIO_IMPORT_DIR = r"C:\Users\giuli\Desktop"
 USERS_PROPERTIES = [
     "password",
     "profile_image",
@@ -19,6 +19,8 @@ USERS_PROPERTIES = [
     "preferred_name",
     "email",
     "story"]
+POSTED_PROPERTIES= ["date"]
+POST_PROPERTIES = ["content"]
 VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
                                          'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']))
 VALID_USER_TO_BE_UPDATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
@@ -32,9 +34,16 @@ VALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gat
 
 INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
                                                          'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'preciousgmail.com', 'Likeable and devout.']))
+
+USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
+                                                         'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.']))                                                        
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
 
+# Commented out for now but it might be better to use these rather than statically creating posts in create_test_data()
+# POST_A = dict(zip(POST_PROPERTIES, ['This is my first post']))
+# POST_B = dict(zip(POST_PROPERTIES, ['Just a random post']))
+# POST_C = dict(zip(POST_PROPERTIES, ['My second random post']))
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -47,7 +56,7 @@ def connect():
 def populate_db(rewrite_test_data=False):
     print("populating")
     test_data_file = 'test_data.csv'
-    if rewrite_test_data or not os.path.isfile(SEB_NEO4J_IMPORT_DIR + test_data_file):
+    if rewrite_test_data or not os.path.isfile(GIULIO_IMPORT_DIR + test_data_file):
         print('writing test data')
         # NOTE: very bad practise importing test functionality into a production file.
         # TODO: refactor this.
@@ -73,7 +82,8 @@ def generate_test_data_csv():
     data = [
         VALID_USER,
         VALID_USER_TO_BE_UPDATED,
-        VALID_USER_TO_BE_DELETED
+        VALID_USER_TO_BE_DELETED,
+        USER_WITH_MULTIPLE_POSTS
     ]
     test_df = pd.DataFrame(data, columns=USERS_PROPERTIES)
     print(test_df)
@@ -81,7 +91,7 @@ def generate_test_data_csv():
     # TODO: populating db currently requires data CSV to bin a specific Neo4j related location
     # This is bad as it descreases portability between different machines
     # Fix this
-    test_df.to_csv(SEB_NEO4J_IMPORT_DIR + 'test_data.csv', index=False)
+    test_df.to_csv('test_data.csv', index=False)
 
 
 def create_test_data(tx, test_data):
@@ -89,7 +99,7 @@ def create_test_data(tx, test_data):
     # TODO: when database gets more complex, will need to start populating constraints as well
     # https://neo4j.com/docs/getting-started/current/cypher-intro/load-csv/
     query = f'LOAD CSV WITH HEADERS FROM "file:///{test_data}" AS csvLine' + \
-        """ CREATE (u:Person {
+        f""" CREATE (u:Person {{
             password: csvLine.password,
             profile_image: csvLine.profile_image,
             education: csvLine.education,
@@ -102,7 +112,13 @@ def create_test_data(tx, test_data):
             preferred_name: csvLine.preferred_name,
             email: csvLine.email,
             story: csvLine.story
-            })"""
+            }})
+            FOREACH (_ IN CASE WHEN u.email = 'user_with_posts@gmail.com' THEN [1] ELSE [] END |
+                CREATE (a:Post {{content:'post1'}})
+                MERGE (u)-[:POSTED {{date: '{datetime.datetime.now()}'}}]->(a)
+                CREATE (b:Post {{content:'post2'}})
+                MERGE (u)-[:POSTED{{date: '{datetime.datetime.now()}'}}]->(b)
+            )"""
     return tx.run(query)
 
 
