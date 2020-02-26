@@ -10,7 +10,7 @@ from flask.json import jsonify
 from graph_api import create_app
 from graph_api.apis.users import UserSchema
 
-from .generate_test_data import USER_WITH_MULTIPLE_POSTS, populate_db, clear_db
+from .generate_test_data import USER_WITH_MULTIPLE_POSTS, USER_POSTS, populate_db, clear_db
 
 
 # TODO: consider changing scope of fixture so client object does not creating every time.
@@ -28,9 +28,12 @@ def app():
         yield client
     clear_db()
 
+
+
 @pytest.mark.get
 class TestGet:
     def test_get_all_posts_of_person_with_at_least_one_post(self, app):
         response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_USER).data
+        print(response.get_json())
+        assert response.get_json() == USER_POSTS

@@ -38,9 +38,14 @@ class Posts(Resource):
 
         with create_session() as session:
             response = session.read_transaction(get_posts_by_user_email, email)
-            user = response.single()
-            if user:
+            posts = response.records()
+            if posts:
                 # TODO: a lot going on here. See if this can be improved.
-                data = dict(user.data()['post'].items())
-                return jsonify(post_schema.dump(data))
+                data = []
+                for post in posts:
+                    extracted_post = dict(post.data()['post'].items())
+                    formatted_post = post_schema.dump(extracted_post)
+                    data.append(formatted_post)
+                print(data)
+                return data
             return make_response('', 404)

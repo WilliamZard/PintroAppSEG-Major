@@ -37,6 +37,8 @@ INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'G
 
 USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                          'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.']))                                                        
+USER_POSTS = [dict(zip(POST_PROPERTIES, ['post2'])), dict(zip(POST_PROPERTIES, ['post1']))]
+
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
 
@@ -116,9 +118,9 @@ def create_test_data(tx, test_data):
             story: csvLine.story
             }})
             FOREACH (_ IN CASE WHEN u.email = 'user_with_posts@gmail.com' THEN [1] ELSE [] END |
-                CREATE (a:Post {{content:'post1'}})
+                CREATE (a:Post {{content:'{USER_POSTS[0]['content']}'}})
                 MERGE (u)-[:POSTED {{date: '{datetime.datetime.now()}'}}]->(a)
-                CREATE (b:Post {{content:'post2'}})
+                CREATE (b:Post {{content:'{USER_POSTS[1]['content']}'}})
                 MERGE (u)-[:POSTED{{date: '{datetime.datetime.now()}'}}]->(b)
             )"""
     return tx.run(query)
