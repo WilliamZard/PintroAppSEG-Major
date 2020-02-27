@@ -1,7 +1,7 @@
 # [START swagger]
 swagger: "2.0"
 info:
-  description: "API for running CRUD operations on Piintro's Graph database."
+  description: "API for interacting with Pintro's Graph database."
   title: "Piintro Graph API"
   version: "0.1"
 host: "bluej-pintro-project.appspot.com"
@@ -14,62 +14,68 @@ schemes:
 - "https"
 basePath: /
 paths:
+  "/users":
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Users'
+    post:
+      responses:
+        '201':
+          description: User created
+        '409':
+          description: User with that email already exists
+        '422':
+          description: Invalid Email
+      summary: Create a user
+      operationId: create_user
+      tags:
+        - users
   '/users/{email}':
     parameters:
-      - in: path
-        description: The email of the user
-        name: email
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Users'
+      - name: email
+        in: path
         required: true
         type: string
-    get:
+    put:
       responses:
-        '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/Users'
+        '204':
+          description: User fields updated.
         '404':
           description: User not found
+        '422':
+          description: Invalid Email
+      summary: Update a user by the given fields
+      operationId: update_user
+      tags:
+        - users
+    get:
+      responses:
+        '404':
+          description: User not found
+        '422':
+          description: Invalid Email
       summary: Fetch a user given its email
-      operationId: get_user
-      parameters:
-        - name: X-Fields
-          in: header
-          type: string
-          format: mask
-          description: An optional fields mask
+      operationId: get_users
       tags:
         - users
     delete:
       responses:
         '204':
-          description: User Deleted
+          description: User deleted.
         '404':
           description: User not found
+        '422':
+          description: Invalid Email
       summary: Delete a user given its email
       operationId: delete_user
-      tags:
-        - users
-    put:
-      responses:
-        '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/Users'
-        '404':
-          description: User not found
-      summary: Update a user by the given fields
-      operationId: put_users
-      parameters:
-        - name: payload
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/Users'
-        - name: X-Fields
-          in: header
-          type: string
-          format: mask
-          description: An optional fields mask
       tags:
         - users
 definitions:
