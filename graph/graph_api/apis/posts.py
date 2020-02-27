@@ -8,7 +8,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, get_posts_by_user_email, create_post_to_user, 
-                        modify_post_of_given_user, get_list_of_user_post_dates)
+                        modify_post_of_given_user, delete_post_of_give_user, get_list_of_user_post_dates)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -26,9 +26,9 @@ class PostRelationSchema(Schema):
 
 # Schema used for doc generation
 post_model = api.model('Post', {'content': restx_fields.String(required=True, title='The content of the post.')})
-update_post_model = api.model('Posts', {'post_date': restx_fields.String(required=True, title='The content of the post before updating it.'),
-                                        'new_content': restx_fields.String(required=True, title='The new content to give to the post')})
-
+update_post_model = api.model('Modifying a post', {'post_date': restx_fields.String(required=True, title='The date and time when the post was posted.'),
+                                                    'new_content': restx_fields.String(title='The new content to give to the post')})
+delete_post_model = api.model('Deleting a post', {'post_date': restx_fields.String(required=True, title='The date and time when the post was posted.')})
 post_schema = PostSchema()
 
 #TODO There should be an authorization system to do that.
@@ -78,6 +78,21 @@ class Posts(Resource):
             if post:
                 return dict(post.data()['post'].items())
             return make_response('', 404)
+    
+    @api.doc('create_post')#TODO It will be necessary to have authorization to do that.
+    @api.response(204, 'Post deleted')
+    @api.expect(delete_post_model)
+    def delete(self, email):
+        '''Delete a user's post given the user's email and the time when he published the post.'''
+
+        with create_session() as session:
+            response = session.read_transaction(delete_post_of_give_user, email, api.payload['post_date'])
+            content_deleted = response.single()
+            if content_deleted:#TODO Check wether returning a value in the transaction function is worth it or not.
+                return make_response('', 204)
+            return make_response('', 404)
+
+
 
 #Move it to a different folder and then fix test_posts
 @api.route('/dates/<email>')
