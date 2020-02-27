@@ -32,6 +32,7 @@ update_post_model = api.model('Posts', {'post_date': restx_fields.String(require
 post_schema = PostSchema()
 
 #TODO There should be an authorization system to do that.
+#TODO Check that after any operation the number of posts of that user is the expected one.
 @api.route('/<string:email>')
 @api.produces('application/json')
 class Posts(Resource):
@@ -65,17 +66,17 @@ class Posts(Resource):
                 return make_response('', 204)
             return make_response('', 404)
 
-    @api.doc('delete_post')#TODO It will be necessary to have authorization to do that.
-    @api.response(204, 'Post deleted')
+    @api.doc('create_post')#TODO It will be necessary to have authorization to do that.
+    @api.response(204, 'Post created')
     @api.expect(post_model)
     def post(self, email):
-        '''Delete a user's post given its email and the time when he posted it.'''
+        '''Create a user's post given its email and the content of the post.'''
 
         with create_session() as session:
             response = session.read_transaction(create_post_to_user, email, api.payload['content'])
             post = response.single()
             if post:
-                return make_response('', 204)
+                return dict(post.data()['post'].items())
             return make_response('', 404)
 
 #Move it to a different folder and then fix test_posts
