@@ -37,15 +37,18 @@ INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'G
 
 USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                          'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.']))                                                        
-USER_POSTS = [dict(zip(POST_PROPERTIES, ['post2'])), dict(zip(POST_PROPERTIES, ['post1']))]
+# These 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
+USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
+USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))
+
+
+POST_UPDATE_A = {'new_content': 'Hey I have just update my post content. This is POST_UPDATE_A'}
+POST_UPDATE_B = {'new_content': 'Hey I have just update my post content. This is POST_UPDATE_B'}
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
 
-# Commented out for now but it might be better to use these rather than statically creating posts in create_test_data()
-# POST_A = dict(zip(POST_PROPERTIES, ['This is my first post']))
-# POST_B = dict(zip(POST_PROPERTIES, ['Just a random post']))
-# POST_C = dict(zip(POST_PROPERTIES, ['My second random post']))
+
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -118,9 +121,9 @@ def create_test_data(tx, test_data):
             story: csvLine.story
             }})
             FOREACH (_ IN CASE WHEN u.email = 'user_with_posts@gmail.com' THEN [1] ELSE [] END |
-                CREATE (a:Post {{content:'{USER_POSTS[0]['content']}'}})
+                CREATE (a:Post {{content:'{USER_POST_A['content']}'}})
                 MERGE (u)-[:POSTED {{date: '{datetime.datetime.now()}'}}]->(a)
-                CREATE (b:Post {{content:'{USER_POSTS[1]['content']}'}})
+                CREATE (b:Post {{content:'{USER_POST_B['content']}'}})
                 MERGE (u)-[:POSTED{{date: '{datetime.datetime.now()}'}}]->(b)
             )"""
     return tx.run(query)
