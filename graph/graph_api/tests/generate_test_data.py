@@ -37,10 +37,10 @@ INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'G
 
 USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                          'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.']))                                                        
-# These 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
+# The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
 USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
 USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))
-
+USER_POST_C = dict(zip(POST_PROPERTIES, ['post3']))
 
 POST_UPDATE_A = {'new_content': 'Hey I have just update my post content. This is POST_UPDATE_A'}
 POST_UPDATE_B = {'new_content': 'Hey I have just update my post content. This is POST_UPDATE_B'}

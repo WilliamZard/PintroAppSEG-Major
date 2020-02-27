@@ -12,7 +12,7 @@ from graph_api import create_app
 from graph_api.apis.users import UserSchema
 from graph_api.apis.neo4j_ops import get_list_of_user_post_dates
 
-from .generate_test_data import (USER_WITH_MULTIPLE_POSTS, USER_POST_B, USER_POST_A, 
+from .generate_test_data import (USER_WITH_MULTIPLE_POSTS, USER_POST_C, USER_POST_B, USER_POST_A, 
                                 POST_UPDATE_A, POST_UPDATE_B, populate_db, clear_db)
 
 
@@ -38,7 +38,6 @@ class TestGet:
     def test_get_all_posts_of_person_with_at_least_one_post(self, app):
         response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")
         assert response.status == '200 OK'
-        print(response.get_json())
         assert response.get_json() == [USER_POST_B, USER_POST_A]
 
 @pytest.mark.get
@@ -53,4 +52,12 @@ class TestPut:
             f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=merge({'post_date': post_date}, POST_UPDATE_B)) #TODO find a way to have it all set in POST_UPDATE_B and A
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
+
+
+@pytest.mark.get
+class TestPost:
+    def test_get_all_posts_of_person_with_at_least_one_post(self, app):
+        response = app.post(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=USER_POST_C)
+        assert response.status == '200 OK'
+        assert response.get_json() == USER_POST_C
 
