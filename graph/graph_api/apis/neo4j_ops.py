@@ -74,13 +74,20 @@ def create_post_to_user(tx, user_email, post_content):
     query = f"""MATCH (person:Person {{email:'{user_email}'}})   
                 CREATE (post:Post {{content:'{post_content}'}})
                 CREATE (person)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post)
+                return post 
             """
     return tx.run(query)
 
 #TODO Tere is a bug as if the user has more thatn one post with the exact same content they both get deleted. It is unlikely but that's bad.
-def modify_post_of_given_user(tx, user_email, post_old_content, post_new_content):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:POSTED]->(post:Post {{content:'{post_old_content}'}})
+def modify_post_of_given_user(tx, user_email, post_date_time, post_new_content):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED {{date:'{post_date_time}'}}]->(post:Post)
                 SET post.content='{post_new_content}'
                 RETURN post
             """
+    return tx.run(query)
+
+def get_list_of_user_post_dates(tx, user_email):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->()
+                return collect(posted.date)
+             """
     return tx.run(query)

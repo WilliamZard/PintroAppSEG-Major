@@ -10,6 +10,7 @@ from jsonmerge import merge
 
 from graph_api import create_app
 from graph_api.apis.users import UserSchema
+from graph_api.apis.neo4j_ops import get_list_of_user_post_dates
 
 from .generate_test_data import (USER_WITH_MULTIPLE_POSTS, USER_POST_B, USER_POST_A, 
                                 POST_UPDATE_A, POST_UPDATE_B, populate_db, clear_db)
@@ -38,13 +39,18 @@ class TestGet:
         response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")
         assert response.status == '200 OK'
         print(response.get_json())
-        assert response.get_json() == [USER_POST_A, USER_POST_B]
+        assert response.get_json() == [USER_POST_B, USER_POST_A]
 
 @pytest.mark.get
 class TestPut:
     def test_editing_an_existing_post_should_succeed(self, app):
+        #First retrieve all the dates of a particular user and then get the second date which will correspond to the
+        #the date of the post that it's gonna be edited.
+        dates_response = app.get(f"/posts/dates/{USER_WITH_MULTIPLE_POSTS['email']}")# TODO TEST THIS ENDPOINT TOO. 
+        post_date = dates_response.get_json()[1] 
+
         response = app.put(
-            f"/users/{USER_WITH_MULTIPLE_POSTS['email']}", json=merge(USER_POST_B, POST_UPDATE_B))
+            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=merge({'post_date': post_date}, POST_UPDATE_B)) #TODO find a way to have it all set in POST_UPDATE_B and A
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
