@@ -79,8 +79,8 @@ def create_post_to_user(tx, user_email, post_content):
 
 #TODO Tere is a bug as if the user has more thatn one post with the exact same content they both get deleted. It is unlikely but that's bad.
 def modify_post_of_given_user(tx, user_email, post_old_content, post_new_content):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:POSTED]->(m:Post {{content:'{post_old_content}'}}) 
-                SET m.content='{post_new_content}'
-                RETURN m
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:POSTED]->(post:Post {{content:'{post_old_content}'}})
+                SET post.content='{post_new_content}'
+                RETURN post
             """
     return tx.run(query)
