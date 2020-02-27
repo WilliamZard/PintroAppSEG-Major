@@ -61,3 +61,13 @@ class TestPost:
         assert response.status == '200 OK'
         assert response.get_json() == USER_POST_C
 
+class TestDelete:
+    def test_that_deleting_a_post_should_succeed(self, app):
+        dates_response = app.get(f"/posts/dates/{USER_WITH_MULTIPLE_POSTS['email']}")# TODO TEST THIS ENDPOINT TOO. 
+        post_date = dates_response.get_json()[0] 
+
+        response = app.delete(
+            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json={'post_date': post_date}) #TODO find a way to have it all set in POST_UPDATE_B and A
+        assert response.status == '204 NO CONTENT'
+        assert response.data == b''
+
