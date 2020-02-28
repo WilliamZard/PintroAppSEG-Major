@@ -11,8 +11,8 @@ from jsonmerge import merge
 from graph_api import create_app
 from graph_api.apis.users import UserSchema
 
-from .generate_test_data import (USER_WITH_THREE_FOLLOWINGS, USER_WITH_TWO_FOLLOWINGS_POST_A, USER_WITH_TWO_FOLLOWINGS_POST_B,
-                                 USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
+from .generate_test_data import (USER_WITH_THREE_FOLLOWINGS, USER_WITH_TWO_FOLLOWINGS,  USER_WITH_TWO_FOLLOWINGS_POST_A, 
+                                 USER_WITH_TWO_FOLLOWINGS_POST_B, USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
                                  USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B, populate_db, clear_db)
 
 
@@ -33,9 +33,14 @@ def app():
 
 @pytest.mark.get
 class TestGetPosts:
-    def test_get_all_posts_of_person_with_at_least_one_post(self, app):
+    def test_order_of_posts_from_user_followings_is_chronological(self, app):
         response = app.get(f"/followings/posts/{USER_WITH_THREE_FOLLOWINGS['email']}")
         assert response.status == '200 OK'
         assert response.get_json() == [USER_WITH_TWO_FOLLOWINGS_POST_A, USER_WITH_TWO_FOLLOWINGS_POST_B,
                                        USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
                                        USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B]
+    
+    def test_number_of_posts_returned_for_user_following_posts_is_correct(self, app):
+        response = app.get(f"/followings/posts/{USER_WITH_TWO_FOLLOWINGS['email']}")
+        assert response.status == '200 OK'
+        assert len(response.get_json()) == 3
