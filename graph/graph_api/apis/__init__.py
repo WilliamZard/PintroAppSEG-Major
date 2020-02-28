@@ -1,6 +1,7 @@
 from flask_restx import Api
 from .users import api as users
 from .posts import api as posts
+from .followings import api as followings
 
 api = Api(
     title='Pintro Graph Api',
@@ -10,3 +11,4 @@ api = Api(
 
 api.add_namespace(users)
 api.add_namespace(posts)
+api.add_namespace(followings)

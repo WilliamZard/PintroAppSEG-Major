@@ -98,3 +98,12 @@ def get_list_of_user_post_dates(tx, user_email):
                 return collect(posted.date)
              """
     return tx.run(query)
+
+def get_posts_for_timeline(tx, user_email):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:FOLLOWS]->()-[posted:POSTED]->(post:Post)
+                WITH posted, post
+                ORDER BY posted.date
+                return post
+             """
+    return tx.run(query)
+
