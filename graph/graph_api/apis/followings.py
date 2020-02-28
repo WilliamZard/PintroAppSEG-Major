@@ -41,7 +41,7 @@ post_schema = PostSchema()
 @api.produces('application/json')
 class FollowingPosts(Resource):
     def get(self, email):
-        '''Fetch a user given its email.'''
+        '''Get all posts of all followings of a specific user.'''
         if not valid_email(email):
             return make_response('', 422)
 
