@@ -63,8 +63,8 @@ USER_WITH_TWO_FOLLOWINGS_POST_C = dict(zip(POST_PROPERTIES, ['USER_WITH_TWO_FOLL
 
 USER_WITH_ONE_FOLLOWING_POST_A = dict(zip(POST_PROPERTIES, ['USER_WITH_ONE_FOLLOWING first post']))
 
-USER_WITH_NO_FOLLOWING_POST_A = dict(zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS first post']))
-USER_WITH_NO_FOLLOWING_POST_B = dict(zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS second post']))
+USER_WITH_NO_FOLLOWINGS_POST_A = dict(zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS first post']))
+USER_WITH_NO_FOLLOWINGS_POST_B = dict(zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS second post']))
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
@@ -159,28 +159,28 @@ def create_posts_to_people_in_test_db(tx):
                 
                 CREATE (post_a:Post {{content:'{USER_WITH_THREE_FOLLOWINGS_POST_A['content']}'}})
                 CREATE (post_b:Post {{content:'{USER_WITH_THREE_FOLLOWINGS_POST_B['content']}'}})
-                CREATE (user_a)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_a)
-                CREATE (user_a)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_b)
+                CREATE (user_a)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,1)}'}}]->(post_a)
+                CREATE (user_a)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,2)}'}}]->(post_b)
 
                 CREATE (post_c:Post {{content:'{USER_WITH_TWO_FOLLOWINGS_POST_A['content']}'}})
                 CREATE (post_d:Post {{content:'{USER_WITH_TWO_FOLLOWINGS_POST_B['content']}'}})
                 CREATE (post_e:Post {{content:'{USER_WITH_TWO_FOLLOWINGS_POST_C['content']}'}})
-                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_c)
-                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_d)
-                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_e)
+                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,3)}'}}]->(post_c)
+                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,4)}'}}]->(post_d)
+                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,5)}'}}]->(post_e)
 
                 CREATE (post_f:Post {{content:'{USER_WITH_ONE_FOLLOWING_POST_A['content']}'}})
-                CREATE (user_c)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_f)
+                CREATE (user_c)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,6)}'}}]->(post_f)
 
-                CREATE (post_g:Post {{content:'{USER_WITH_NO_FOLLOWING_POST_A['content']}'}})
-                CREATE (post_h:Post {{content:'{USER_WITH_NO_FOLLOWING_POST_B['content']}'}})
-                CREATE (user_d)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_g)
-                CREATE (user_d)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_h)
+                CREATE (post_g:Post {{content:'{USER_WITH_NO_FOLLOWINGS_POST_A['content']}'}})
+                CREATE (post_h:Post {{content:'{USER_WITH_NO_FOLLOWINGS_POST_B['content']}'}})
+                CREATE (user_d)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,7)}'}}]->(post_g)
+                CREATE (user_d)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,8)}'}}]->(post_h)
 
                 CREATE (post_j:Post {{content:'{USER_POST_A['content']}'}})
                 CREATE (post_k:Post {{content:'{USER_POST_B['content']}'}})
-                CREATE (user_e)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post_j)
-                CREATE (user_e)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,1)}'}}]->(post_k)            
+                CREATE (user_e)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,9)}'}}]->(post_j)
+                CREATE (user_e)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,10)}'}}]->(post_k)            
              """
     return tx.run(query)
 
