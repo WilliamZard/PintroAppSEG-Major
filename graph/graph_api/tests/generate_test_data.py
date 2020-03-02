@@ -3,8 +3,7 @@ import datetime
 import pandas as pd
 import os
 from neo4j import GraphDatabase
-# TODO: format! line length is way too long
-SEB_NEO4J_IMPORT_DIR = '/Users/Seb/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-06fda328-94b7-4295-8d15-6dd8a4d56b97/installation-3.5.14/import/'
+
 
 USERS_PROPERTIES = [
     "password",
@@ -19,21 +18,21 @@ USERS_PROPERTIES = [
     "preferred_name",
     "email",
     "story"]
-# POSTED_PROPERTIES= ["date"]
+
 POST_PROPERTIES = ["content"]
 VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
                                          'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?']))
-VALID_USER_TO_BE_UPDATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'D Trump', 'male?', '000',
-                                                       'genius', 'whit house', 'Commander n sth', 'Mr Pres', 'genius@fakenews.cnn', 'Covfefe']))
+VALID_USER_TO_BE_UPDATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'DTrump', 'male?', '000',
+                                                       'genius', 'whit house', 'Commander n sth', 'MrPres', 'genius@fakenews.cnn', 'Covfefe']))
 VALID_USER_TO_BE_UPDATED_NEW_FIELDS = dict(zip(USERS_PROPERTIES, ['0000', 'new_image', 'Care Home', 'Donald Trump', 'masculine', '999',
                                                                   'retired genius', 'Mar O Lago', 'Former Best President', 'GOAT', 'genius@fakenews.cnn', 'revolutionary']))
 VALID_USER_TO_BE_DELETED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'Taaj', 'man', '123',
-                                                       'going places', 'Gatwick init', 'going places', 'just Taaj', 'taaj@hotmail.co.uk', 'you get me?']))
+                                                       'going places', 'Gatwick init', 'going places', 'Taaj', 'taaj@hotmail.co.uk', 'you get me?']))
 VALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
                                                        'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'precious@gmail.com', 'Likeable and devout.']))
 
 INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
-                                                         'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'preciousgmail.com', 'Likeable and devout.']))
+                                                         'best kiosk in town', 'Gatwickk', 'Precious', 'Preciousest', 'preciousgmail.com', 'Likeable and devout.']))
 
 USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                          'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.']))                                                        
@@ -46,11 +45,11 @@ POST_UPDATE_A = {'new_content': 'Hey I have just update my post content. This is
 POST_UPDATE_B = {'new_content': 'Hey I have just update my post content. This is POST_UPDATE_B'}
 
 USER_WITH_THREE_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
-                                         'not godless', 'strand', 'Duke', 'Duke', 'yes_ucl@kcl.ac.uk', 'What is GKT?']))
-USER_WITH_TWO_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Bachelor\'s', 'Leonardo Di Caprio', 'male', '000',
-                                         'I am the MVP', 'US', 'Actor', 'Lello', 'lello@gmail.com', 'I won an Oscar']))
+                                         'not godless', 'strand', 'Duke', 'Dukee', 'yes_ucl@kcl.ac.uk', 'What is GKT?']))
+USER_WITH_TWO_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Bachelors', 'Leonardo Di Caprio', 'male', '000',
+                                         'I am the MVP', 'US', 'Actor', 'Lello', 'lello@gmail.com', 'I won a best movie award']))
 USER_WITH_ONE_FOLLOWING = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Secondary school', 'John Jonny', 'male', '111',
-                                         'I am millionaire', 'London', 'Entrepreneur', 'Sweet guy', 'jj@gmail.com', 'I started as a taxi driver.']))
+                                         'I am millionaire', 'London', 'Entrepreneur', 'Sweety', 'jj@gmail.com', 'I started as a taxi driver.']))
 USER_WITH_NO_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Diploma', 'John Kennedy', 'male', '121',
                                          'The only one pres', 'Unknown', 'Retired', 'JFK', 'jfk@gmail.com', 'They thought they killed me.']))  
 
@@ -69,7 +68,16 @@ USER_WITH_NO_FOLLOWINGS_POST_B = dict(zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOW
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
 
-
+USERS_TO_TEST = [
+        VALID_USER,
+        VALID_USER_TO_BE_UPDATED,
+        VALID_USER_TO_BE_DELETED,
+        USER_WITH_MULTIPLE_POSTS,
+        USER_WITH_THREE_FOLLOWINGS,
+        USER_WITH_TWO_FOLLOWINGS,
+        USER_WITH_ONE_FOLLOWING,
+        USER_WITH_NO_FOLLOWINGS
+]
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -81,18 +89,12 @@ def connect():
 
 def populate_db(rewrite_test_data=False):
     print("populating")
-    test_data_file = 'test_data.csv'
-    if rewrite_test_data or not os.path.isfile(GIULIO_IMPORT_DIR + test_data_file):
-        print('writing test data')
-        # NOTE: very bad practise importing test functionality into a production file.
-        # TODO: refactor this.
-        generate_test_data_csv()
     driver = connect()
     with driver.session() as session:
         session.write_transaction(create_unique_email_constraint)
         session.write_transaction(create_user_email_existence_constraint)
         session.write_transaction(create_post_content_existence_constraint)
-        session.write_transaction(create_test_data, test_data_file)
+        session.write_transaction(create_test_data)
         session.write_transaction(create_posts_to_people_in_test_db)
         session.write_transaction(create_follows_relationships_to_people_in_test_db)
     # TODO: do this properly. Move all db stuff connect() function. Use yield.
@@ -107,47 +109,27 @@ def clear_db():
         response = session.write_transaction(delete_all_nodes)
 
 
-def generate_test_data_csv():
-    print("generating")
-    data = [
-        VALID_USER,
-        VALID_USER_TO_BE_UPDATED,
-        VALID_USER_TO_BE_DELETED,
-        USER_WITH_MULTIPLE_POSTS,
-        USER_WITH_THREE_FOLLOWINGS,
-        USER_WITH_TWO_FOLLOWINGS,
-        USER_WITH_ONE_FOLLOWING,
-        USER_WITH_NO_FOLLOWINGS  
-    ]
-    test_df = pd.DataFrame(data, columns=USERS_PROPERTIES)
-    print(test_df)
 
-    # TODO: populating db currently requires data CSV to bin a specific Neo4j related location
-    # This is bad as it descreases portability between different machines
-    # Fix this
-    test_df.to_csv('test_data.csv', index=False)
-
-
-def create_test_data(tx, test_data):
+def create_test_data(tx):
     print("creating")
-    # TODO: when database gets more complex, will need to start populating constraints as well
-    # https://neo4j.com/docs/getting-started/current/cypher-intro/load-csv/
-    query = f'LOAD CSV WITH HEADERS FROM "file:///{test_data}" AS csvLine' + \
-        f""" CREATE (u:Person {{
-            password: csvLine.password,
-            profile_image: csvLine.profile_image,
-            education: csvLine.education,
-            full_name: csvLine.full_name,
-            gender: csvLine.gender,
-            phone: csvLine.phone,
-            short_bio: csvLine.short_bio,
-            location: csvLine.location,
-            job_title: csvLine.job_title,
-            preferred_name: csvLine.preferred_name,
-            email: csvLine.email,
-            story: csvLine.story
-            }})
-            """
+    query = ""
+    
+    for USER in USERS_TO_TEST:
+        print(USER['email'])
+        query += "CREATE (" + USER['preferred_name'] + ":Person { "
+        query += "password: \'" +  USER['password'] + "\' , "
+        query += "profile_image: \'" + USER['profile_image'] + "\' , "
+        query += "education: \'" + USER['education'] + "\' , "
+        query += "full_name: \'" + USER['full_name'] + "\' , "
+        query += "gender: \'" + USER['gender'] + "\' , "
+        query += "phone: \'" + USER['phone'] + "\' , "
+        query += "short_bio: \'" + USER['short_bio'] + "\' , "
+        query += "location: \'" + USER['location'] + "\' , "
+        query += "job_title: \'" + USER['job_title'] + "\' , "
+        query += "preferred_name: \'" + USER['preferred_name'] + "\' , "
+        query += "email: \'" + USER['email'] + "\' , "
+        query += "story: \'" + USER['story'] + "\'}) \n"
+
     return tx.run(query)
 
 def create_posts_to_people_in_test_db(tx):

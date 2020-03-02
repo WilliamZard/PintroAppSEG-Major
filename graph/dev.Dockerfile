@@ -7,11 +7,11 @@ WORKDIR /graph_api
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-ENV NEO4J_URI=bolt://35.246.56.244
-ENV NEO4J_PASSWORD=L0nd0n&EU
+ENV NEO4J_URI=bolt://34.89.74.180
+ENV NEO4J_PASSWORD=L0nd0n£EU!.dev
 ENV FLASK_ENV=development
 ENV FLASK_RUN_PORT=8080
-ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_HOST=127.0.0.1
 ENV FLASK_APP=graph_api:create_app
 
 ENTRYPOINT [ "flask" ]
