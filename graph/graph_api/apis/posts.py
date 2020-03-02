@@ -19,6 +19,7 @@ api = Namespace('posts', title='Posting related operations')
 # Schema representing a post element
 class PostSchema(Schema):
     content = fields.Str(required=True)
+    id = fields.Str(required=True)
 
 # Schema representing a relation between a user and a post.
 class PostRelationSchema(Schema):
@@ -26,9 +27,9 @@ class PostRelationSchema(Schema):
 
 # Schema used for doc generation
 post_model = api.model('Post', {'content': restx_fields.String(required=True, title='The content of the post.')})
-update_post_model = api.model('Modifying a post', {'post_date': restx_fields.String(required=True, title='The date and time when the post was posted.'),
+update_post_model = api.model('Modifying a post', {'post_id': restx_fields.String(required=True, title='Id of the post that needs to be deleted. '),
                                                     'new_content': restx_fields.String(title='The new content to give to the post')})
-delete_post_model = api.model('Deleting a post', {'post_date': restx_fields.String(required=True, title='The date and time when the post was posted.')})
+delete_post_model = api.model('Deleting a post', {'post_id': restx_fields.String(required=True, title='Id of the post that needs to be deleted. ')})
 post_schema = PostSchema()
 
 #TODO There should be an authorization system to do that.
@@ -60,7 +61,7 @@ class Posts(Resource):
         '''Fetch user's post given its email.'''
 
         with create_session() as session:
-            response = session.read_transaction(modify_post_of_given_user, email, api.payload['post_date'], api.payload['new_content'])
+            response = session.read_transaction(modify_post_of_given_user, email, api.payload['post_id'], api.payload['new_content'])
             post = response.single()
             if post:
                 return make_response('', 204)
@@ -86,23 +87,10 @@ class Posts(Resource):
         '''Delete a user's post given the user's email and the time when he published the post.'''
 
         with create_session() as session:
-            response = session.read_transaction(delete_post_of_give_user, email, api.payload['post_date'])
+            response = session.read_transaction(delete_post_of_give_user, email, api.payload['post_id'])
             content_deleted = response.single()
             if content_deleted:#TODO Check wether returning a value in the transaction function is worth it or not.
                 return make_response('', 204)
             return make_response('', 404)
 
 
-
-#Move it to a different folder and then fix test_posts
-@api.route('/dates/<email>')
-@api.produces('application/json')
-class UserPostedRelationship(Resource):
-        def get(self, email):
-            '''Fetch and get all post dates of a user in ascending order'''
-            with create_session() as session:
-                response = session.read_transaction(get_list_of_user_post_dates, email)
-                dates = response.single()
-                if dates:
-                    return dates
-                return make_response('', 404)

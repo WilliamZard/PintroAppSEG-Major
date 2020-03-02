@@ -1,4 +1,4 @@
-from neo4j import GraphDatabase
+from neo4j import GraphDatabase, BoltStatementResult
 from flask import g
 import os
 import datetime
@@ -71,22 +71,24 @@ def get_posts_by_user_email(tx, user_email):
     return tx.run(query)
 
 def create_post_to_user(tx, user_email, post_content):
+    if len(post_content) == 0:
+        return BoltStatementResult(hydrant='', metadata='', session='')
     query = f"""MATCH (person:Person {{email:'{user_email}'}})   
-                CREATE (post:Post {{content:'{post_content}'}})
+                CREATE (post:Post {{id: apoc.create.uuid(), content:'{post_content}'}})
                 CREATE (person)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post)
                 return post 
             """
     return tx.run(query)
 
-def modify_post_of_given_user(tx, user_email, post_date_time, post_new_content):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED {{date:'{post_date_time}'}}]->(post:Post)
+def modify_post_of_given_user(tx, user_email, post_uuid, post_new_content):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post {{id:'{post_uuid}'}})
                 SET post.content='{post_new_content}'
                 RETURN post
             """
     return tx.run(query)
 
-def delete_post_of_give_user(tx, user_email, post_date_time):
-    query = f"""MATCH (person:Person {{email:'{user_email}'}})-[posted:POSTED {{date:'{post_date_time}'}}]->(post:Post)
+def delete_post_of_give_user(tx, user_email, post_uuid):
+    query = f"""MATCH (person:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post {{id:'{post_uuid}'}})
                 WITH post, post.content AS content
                 DETACH DELETE post
                 RETURN content

@@ -1,7 +1,4 @@
-# TODO: note need for local neo4j db setup
 # TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
-# TODO: have a folder for database stuff? That could make it easier to separate
-# TODO: add logic for wether or not to populate db
 from ast import literal_eval
 
 import pytest
@@ -22,11 +19,7 @@ def app():
     app = create_app()
     app.testing = True
 
-    # TODO: right now this populates and clears the database for all tests, as opposed to every test
-    # Not sure which if this should happen per test or per module.
-    # Figure this out.
     with app.test_client() as client:
-        # NOTE commented out populate db
         populate_db(rewrite_test_data=True)
         yield client
     clear_db()
@@ -35,39 +28,52 @@ def app():
 
 @pytest.mark.get
 class TestGet:
-    def test_get_all_posts_of_person_with_at_least_one_post(self, app):
+    #TODO refactor the assertions.
+    def test_get_all_posts_should_return_all_user_posts(self, app):
         response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")
         assert response.status == '200 OK'
-        assert response.get_json() == [USER_POST_B, USER_POST_A]
+        assert len(response.get_json()) == 2
+        for resp in response.get_json():
+            if resp['content'] == USER_POST_B['content']:
+                assert True
+                continue
+            if resp['content'] == USER_POST_A['content']:
+                assert True
+                continue
+            assert False
 
 @pytest.mark.get
 class TestPut:
     def test_editing_an_existing_post_should_succeed(self, app):
-        #First retrieve all the dates of a particular user and then get the second date which will correspond to the
-        #the date of the post that it's gonna be edited.
-        dates_response = app.get(f"/posts/dates/{USER_WITH_MULTIPLE_POSTS['email']}")# TODO TEST THIS ENDPOINT TOO. 
-        post_date = dates_response.get_json()[1] 
+        #First retrieve all the posts so that we can select extract the id of the user's second post and edit it.
+        posts_response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")# TODO TEST THIS ENDPOINT TOO. 
+        post_id = posts_response.get_json()[1]['id']  
 
         response = app.put(
-            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=merge({'post_date': post_date}, POST_UPDATE_B)) #TODO find a way to have it all set in POST_UPDATE_B and A
+            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=merge({'post_id': post_id}, POST_UPDATE_B)) #TODO find a way to have it all set in POST_UPDATE_B and A
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
 
 @pytest.mark.get
 class TestPost:
-    def test_get_all_posts_of_person_with_at_least_one_post(self, app):
+    def test_posting_a_post__should_post_given_content(self, app):
         response = app.post(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=USER_POST_C)
         assert response.status == '200 OK'
-        assert response.get_json() == USER_POST_C
+        assert response.get_json()['content'] == USER_POST_C['content']
+
+    def test_posting_post_with_empty_content_should_not_work(self, app):
+        response = app.post(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json={'content': ''})
+        assert response.status == '404 NOT FOUND'
 
 class TestDelete:
     def test_that_deleting_a_post_should_succeed(self, app):
-        dates_response = app.get(f"/posts/dates/{USER_WITH_MULTIPLE_POSTS['email']}")# TODO TEST THIS ENDPOINT TOO. 
-        post_date = dates_response.get_json()[0] 
+        posts_response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")# TODO TEST THIS ENDPOINT TOO. 
+
+        post_id = posts_response.get_json()[0]['id'] 
 
         response = app.delete(
-            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json={'post_date': post_date}) #TODO find a way to have it all set in POST_UPDATE_B and A
+            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json={'post_id': post_id}) #TODO find a way to have it all set in POST_UPDATE_B and A
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
