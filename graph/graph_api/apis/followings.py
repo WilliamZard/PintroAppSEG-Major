@@ -15,7 +15,10 @@ from .neo4j_ops import (create_session, get_posts_for_timeline)
 
 api = Namespace('followings', title='Followings related operations')
 
+# TODO: no need to replicate user schema here
 # Schema used for serializations for user nodes
+
+
 class UserSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
@@ -30,13 +33,18 @@ class UserSchema(Schema):
     story = fields.String()
     education = fields.String()
 
+# TODO: add more fields. See Trello board and specs.
 # Schema used for serialization for user nodes
+
+
 class PostSchema(Schema):
     content = fields.Str(required=True)
+
 
 user_schema = UserSchema()
 post_schema = PostSchema()
 
+# TODO: consider url different structure. users/email/followings/posts
 @api.route('/posts/<string:email>')
 @api.produces('application/json')
 class FollowingPosts(Resource):
@@ -51,11 +59,12 @@ class FollowingPosts(Resource):
             if posts:
                 data = []
                 for post in posts:
+                    # TODO: remove prints
                     print(post)
-                    # TODO: a lot going on here. See if this can be improved.
                     extracted_post = dict(post.data()['post'].items())
                     formatted_post = post_schema.dump(extracted_post)
                     data.append(formatted_post)
                 print(data)
+                # TODO: check correct response code here
                 return data
             return make_response('', 404)

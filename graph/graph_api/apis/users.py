@@ -86,6 +86,7 @@ class Users(Resource):
 
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
+    # TODO: not sure if expect is necessary. Check what it is used for again.
     @api.expect(users)
     def put(self, email):
         '''Update a user by the given fields.'''

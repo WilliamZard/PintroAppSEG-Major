@@ -3,6 +3,7 @@ from flask import g
 import os
 import datetime
 
+
 def connect():
     uri = os.getenv('NEO4J_URI')
     db_user = 'neo4j'
@@ -27,6 +28,8 @@ def close_db(error):
     if hasattr(g, 'neo4j_db'):
         g.neo4j_db.close()
 """
+
+# TODO: start grouping functions by resource type for organisation's sake
 
 
 def get_user_by_email(tx, user_email):
@@ -66,9 +69,11 @@ def create_user(tx, fields):
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
     return tx.run(query)
 
+
 def get_posts_by_user_email(tx, user_email):
     query = f"MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post) RETURN post ORDER BY posted.date DESC"
     return tx.run(query)
+
 
 def create_post_to_user(tx, user_email, post_content):
     if len(post_content) == 0:
@@ -80,12 +85,16 @@ def create_post_to_user(tx, user_email, post_content):
             """
     return tx.run(query)
 
+# TODO: this function can be more dynamic, no need for fixed paramters. See create user function for guide.
+
+
 def modify_post_of_given_user(tx, user_email, post_uuid, post_new_content):
     query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post {{id:'{post_uuid}'}})
                 SET post.content='{post_new_content}'
                 RETURN post
             """
     return tx.run(query)
+
 
 def delete_post_of_give_user(tx, user_email, post_uuid):
     query = f"""MATCH (person:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post {{id:'{post_uuid}'}})
@@ -95,11 +104,15 @@ def delete_post_of_give_user(tx, user_email, post_uuid):
              """
     return tx.run(query)
 
+
 def get_list_of_user_post_dates(tx, user_email):
     query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->()
                 return collect(posted.date)
              """
     return tx.run(query)
+
+# TODO: different function name
+
 
 def get_posts_for_timeline(tx, user_email):
     query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:FOLLOWS]->()-[posted:POSTED]->(post:Post)
@@ -108,4 +121,3 @@ def get_posts_for_timeline(tx, user_email):
                 return post
              """
     return tx.run(query)
-

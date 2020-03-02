@@ -11,12 +11,13 @@ from jsonmerge import merge
 from graph_api import create_app
 from graph_api.apis.users import UserSchema
 
-from .generate_test_data import (USER_WITH_THREE_FOLLOWINGS, USER_WITH_TWO_FOLLOWINGS,  USER_WITH_TWO_FOLLOWINGS_POST_A, 
+from .generate_test_data import (USER_WITH_THREE_FOLLOWINGS, USER_WITH_TWO_FOLLOWINGS,  USER_WITH_TWO_FOLLOWINGS_POST_A,
                                  USER_WITH_TWO_FOLLOWINGS_POST_B, USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
                                  USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B, populate_db, clear_db)
 
 
 # TODO: consider changing scope of fixture so client object does not creating every time.
+# TODO: app() fixture is used everywhere, move it somewhere else
 @pytest.fixture(scope='module')
 def app():
     app = create_app()
@@ -27,16 +28,19 @@ def app():
         yield client
     clear_db()
 
+# TODO: parameterising of pytests needs to become per endpoint, instead of per HTTP method
 @pytest.mark.get
 class TestGetPosts:
     def test_order_of_posts_from_user_followings_is_chronological(self, app):
-        response = app.get(f"/followings/posts/{USER_WITH_THREE_FOLLOWINGS['email']}")
+        response = app.get(
+            f"/followings/posts/{USER_WITH_THREE_FOLLOWINGS['email']}")
         assert response.status == '200 OK'
         assert response.get_json() == [USER_WITH_TWO_FOLLOWINGS_POST_A, USER_WITH_TWO_FOLLOWINGS_POST_B,
                                        USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
                                        USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B]
-    
+
     def test_number_of_posts_returned_for_user_following_posts_is_correct(self, app):
-        response = app.get(f"/followings/posts/{USER_WITH_TWO_FOLLOWINGS['email']}")
+        response = app.get(
+            f"/followings/posts/{USER_WITH_TWO_FOLLOWINGS['email']}")
         assert response.status == '200 OK'
         assert len(response.get_json()) == 3
