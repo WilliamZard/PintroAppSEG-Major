@@ -8,32 +8,21 @@ from jsonmerge import merge
 from graph_api import create_app
 from graph_api.apis.users import UserSchema
 from graph_api.apis.neo4j_ops import get_list_of_user_post_dates
+from .conftest import app
 
 from .generate_test_data import (USER_WITH_MULTIPLE_POSTS, USER_POST_C, USER_POST_B, USER_POST_A,
-                                 POST_UPDATE_A, POST_UPDATE_B, populate_db, clear_db)
-
-
-# TODO: consider changing scope of fixture so client object does not creating every time.
-@pytest.fixture(scope='module')
-def app():
-    app = create_app()
-    app.testing = True
-
-    with app.test_client() as client:
-        populate_db(rewrite_test_data=True)
-        yield client
-    clear_db()
+                                 POST_UPDATE_A, POST_UPDATE_B)
 
 
 @pytest.mark.get_post
 class TestGet:
     def test_get_post_that_exists(self, app):
+
         raise NotImplementedError
 
     def test_get_post_that_does_not_exist(self, app):
         raise NotImplementedError
     # TODO refactor the assertions.
-
 
     # TODO: this is for user/id/posts. Move or delete it.
 """    def test_get_all_posts_should_return_all_user_posts(self, app):
