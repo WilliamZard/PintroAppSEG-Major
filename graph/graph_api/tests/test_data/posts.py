@@ -1,3 +1,8 @@
+import uuid
+import datetime
+
+NOW = str(datetime.datetime.now())
+
 # POSTS
 POST_PROPERTIES = [
     "content",
@@ -8,11 +13,11 @@ POST_PROPERTIES = [
 
 # TODO: adjust existing_user data to fit data model
 EXISTING_POST = dict(
-    zip(POST_PROPERTIES, ['content x', 'created', 'modified', 'uuid']))
+    zip(POST_PROPERTIES, ['content x', NOW, NOW, uuid.uuid4()]))
 NON_EXISTING_POST_UUID = 'uuid'
 
 POST_TO_BE_UPDATED_THAT_EXISTS = dict(
-    zip(POST_PROPERTIES, ['content y', 'created', 'modified', 'uuid']))
+    zip(POST_PROPERTIES, ['content y', NOW, NOW, uuid.uuid4]))
 # The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
 USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
 USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))

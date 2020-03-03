@@ -30,9 +30,10 @@ class PostSchema(Schema):
 # Schema representing a relation between a user and a post.
 
 
+"""
 class POSTEDRelationSchema(Schema):
     created = fields.DateTime(required=True)
-
+"""
 
 # TODO: review this
 # Schema used for doc generation
@@ -61,7 +62,7 @@ class Posts(Resource):
             post = response.single()
             if post:
                 data = dict(post.data()['post'].items())
-                return jsonify(post_schema.dump(data))
+                return jsonify(data)
             return make_response('', 404)
 
     @api.doc('update_post')

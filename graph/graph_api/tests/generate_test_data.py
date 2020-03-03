@@ -63,37 +63,50 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "email: \'" + USER['email'] + "\' , "
     CREATE_TEST_DATA += "story: \'" + USER['story'] + "\'}) \n"
 
+CREATE_POSTS = f"""
+    MATCH (user_a:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
+
+    CREATE (post_a:Post {{uuid: '{EXISTING_POST['uuid']}',
+        content:'{EXISTING_POST['content']}',
+        created:'{EXISTING_POST['created']}',
+        modified:'{EXISTING_POST['modified']}'
+        }})
+
+    CREATE (user_a)-[:POSTED]->(post_a)
+"""
+
+"""
 # TODO: decompose this string
-CREATE_POSTS = f"""MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
-                MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
-                MATCH (user_c:Person {{email:'{USER_WITH_ONE_FOLLOWING['email']}'}})
-                MATCH (user_d:Person {{email:'{USER_WITH_NO_FOLLOWINGS['email']}'}})
-                MATCH (user_e:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
-                
-                CREATE (post_a:Post {{id: apoc.create.uuid(), content:'{USER_WITH_THREE_FOLLOWINGS_POST_A['content']}'}})
-                CREATE (post_b:Post {{id: apoc.create.uuid(), content:'{USER_WITH_THREE_FOLLOWINGS_POST_B['content']}'}})
-                CREATE (user_a)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,1)}'}}]->(post_a)
-                CREATE (user_a)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,2)}'}}]->(post_b)
+CREATE_POSTS = fMATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
+                MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
+                MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
+                MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
+                MATCH(user_e: Person {{email: '{USER_WITH_MULTIPLE_POSTS['email']}'}})
 
-                CREATE (post_c:Post {{id: apoc.create.uuid(), content:'{USER_WITH_TWO_FOLLOWINGS_POST_A['content']}'}})
-                CREATE (post_d:Post {{id: apoc.create.uuid(), content:'{USER_WITH_TWO_FOLLOWINGS_POST_B['content']}'}})
-                CREATE (post_e:Post {{id: apoc.create.uuid(), content:'{USER_WITH_TWO_FOLLOWINGS_POST_C['content']}'}})
-                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,3)}'}}]->(post_c)
-                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,4)}'}}]->(post_d)
-                CREATE (user_b)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,5)}'}}]->(post_e)
+                CREATE(post_a: Post {{id: apoc.create.uuid(), content: '{USER_WITH_THREE_FOLLOWINGS_POST_A['content']}'}})
+                CREATE(post_b: Post {{id: apoc.create.uuid(), content: '{USER_WITH_THREE_FOLLOWINGS_POST_B['content']}'}})
+                CREATE(user_a)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,1)}'}}] -> (post_a)
+                CREATE(user_a)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,2)}'}}] -> (post_b)
 
-                CREATE (post_f:Post {{id: apoc.create.uuid(), content:'{USER_WITH_ONE_FOLLOWING_POST_A['content']}'}})
-                CREATE (user_c)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,6)}'}}]->(post_f)
+                CREATE(post_c: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_A['content']}'}})
+                CREATE(post_d: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_B['content']}'}})
+                CREATE(post_e: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_C['content']}'}})
+                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,3)}'}}] -> (post_c)
+                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,4)}'}}] -> (post_d)
+                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,5)}'}}] -> (post_e)
 
-                CREATE (post_g:Post {{id: apoc.create.uuid(), content:'{USER_WITH_NO_FOLLOWINGS_POST_A['content']}'}})
-                CREATE (post_h:Post {{id: apoc.create.uuid(), content:'{USER_WITH_NO_FOLLOWINGS_POST_B['content']}'}})
-                CREATE (user_d)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,7)}'}}]->(post_g)
-                CREATE (user_d)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,8)}'}}]->(post_h)
+                CREATE(post_f: Post {{id: apoc.create.uuid(), content: '{USER_WITH_ONE_FOLLOWING_POST_A['content']}'}})
+                CREATE(user_c)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,6)}'}}] -> (post_f)
 
-                CREATE (post_j:Post {{id: apoc.create.uuid(), content:'{USER_POST_A['content']}'}})
-                CREATE (post_k:Post {{id: apoc.create.uuid(), content:'{USER_POST_B['content']}'}})
-                CREATE (user_e)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,9)}'}}]->(post_j)
-                CREATE (user_e)-[:POSTED {{date:'{datetime.datetime.now() + datetime.timedelta(0,10)}'}}]->(post_k)            
+                CREATE(post_g: Post {{id: apoc.create.uuid(), content: '{USER_WITH_NO_FOLLOWINGS_POST_A['content']}'}})
+                CREATE(post_h: Post {{id: apoc.create.uuid(), content: '{USER_WITH_NO_FOLLOWINGS_POST_B['content']}'}})
+                CREATE(user_d)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,7)}'}}] -> (post_g)
+                CREATE(user_d)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,8)}'}}] -> (post_h)
+
+                CREATE(post_j: Post {{id: apoc.create.uuid(), content: '{USER_POST_A['content']}'}})
+                CREATE(post_k: Post {{id: apoc.create.uuid(), content: '{USER_POST_B['content']}'}})
+                CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,9)}'}}] -> (post_j)
+                CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,10)}'}}] -> (post_k)
              """
 
 
