@@ -1,4 +1,4 @@
-from neo4j import GraphDatabase, BoltStatementResult
+from neo4j import GraphDatabase
 from flask import g
 import os
 import datetime
@@ -75,13 +75,11 @@ def get_post_by_uuid(tx, uuid):
     return tx.run(query)
 
 
-def create_post_to_user(tx, user_email, post_content):
-    if len(post_content) == 0:
-        return BoltStatementResult(hydrant='', metadata='', session='')
-    query = f"""MATCH (person:Person {{email:'{user_email}'}})   
-                CREATE (post:Post {{id: apoc.create.uuid(), content:'{post_content}'}})
-                CREATE (person)-[:POSTED {{date:'{datetime.datetime.now()}'}}]->(post)
-                return post 
+def create_post(tx, post_content, user_email, created, modified, uuid):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})   
+                CREATE (post:Post {{uuid: {uuid}, content: '{post_content}', created: {created}, modified: {modified}}})
+                CREATE (person)-[:POSTED]->(post)
+                RETURN post 
             """
     return tx.run(query)
 

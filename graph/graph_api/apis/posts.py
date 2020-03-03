@@ -1,3 +1,4 @@
+import uuid
 from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
@@ -7,8 +8,9 @@ from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
-from .neo4j_ops import (create_session, get_post_by_uuid, create_post_to_user,
-                        set_post_fields, delete_post_of_give_user, get_list_of_user_post_dates)
+from .neo4j_ops import (create_session, get_post_by_uuid,
+                        set_post_fields, delete_post_of_give_user, get_list_of_user_post_dates, create_post)
+import datetime
 
 # TODO: email validation
 # TODO: docstrings of functions need updating
@@ -22,9 +24,10 @@ api = Namespace('posts', title='Posting related operations')
 
 class PostSchema(Schema):
     content = fields.Str(required=True)
-    uuid = fields.Str(required=True)
-    created = fields.DateTime(required=True)
-    modified = fields.DateTime(required=True)
+    uuid = fields.Str()
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    user_email = fields.Email()
 
 # TODO: look into how relationship propeties should work
 # Schema representing a relation between a user and a post.
@@ -79,20 +82,6 @@ class Posts(Resource):
             return make_response('', 404)
 
     # TODO It will be necessary to have authorization to do that.
-    @api.doc('create_post')
-    @api.response(204, 'Post created')
-    @api.expect(posts)
-    def post(self, email):
-        '''Create a user's post given its email and the content of the post.'''
-
-        with create_session() as session:
-            response = session.read_transaction(
-                create_post_to_user, email, api.payload['content'])
-            post = response.single()
-            if post:
-                return dict(post.data()['post'].items())
-            return make_response('', 404)
-
     # TODO It will be necessary to have authorization to do that.
     @api.doc('create_post')
     @api.response(204, 'Post deleted')
@@ -108,3 +97,33 @@ class Posts(Resource):
             if content_deleted:
                 return make_response('', 204)
             return make_response('', 404)
+
+
+@api.route('/')
+@api.produces('application/json')
+@api.expect(posts)
+class UsersPost(Resource):
+    @api.doc('create_post')
+    @api.response(204, 'Post created')
+    def post(self):
+        '''Create a post.'''
+        print('\n')
+        print(api.payload)
+        print(post_schema.load(api.payload))
+        try:
+            deserialised_payload = post_schema.load(api.payload)
+        except ValidationError as e:
+            return make_response(e, 422)
+        created = modified = str(datetime.datetime.now())
+        post_uuid = uuid.uuid4()
+        content = deserialised_payload['content']
+        user_email = deserialised_payload['user_email']
+        with create_session() as session:
+            try:
+                response = session.write_transaction(
+                    create_post, content, user_email,
+                    created, modified, post_uuid)
+                if response.summary().counters.nodes_created == 1:
+                    return make_response('', 201)
+            except ConstraintError:
+                return make_response('Node with that email already exists.', 409)

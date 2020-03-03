@@ -12,7 +12,7 @@ from .conftest import app
 
 from .generate_test_data import (USER_WITH_MULTIPLE_POSTS, USER_POST_C, USER_POST_B, USER_POST_A,
                                  POST_UPDATE_A, POST_UPDATE_B)
-from .test_data.posts import EXISTING_POST, NON_EXISTING_POST_UUID, POST_TO_BE_UPDATED_THAT_EXISTS
+from .test_data.posts import EXISTING_POST, NON_EXISTING_POST_UUID, POST_TO_BE_UPDATED_THAT_EXISTS, POST_TO_BE_CREATED
 
 
 @pytest.mark.get_post
@@ -52,25 +52,15 @@ class TestPut:
         pass
         # TODO: define invalid changes
 
-    """def test_editing_an_existing_post_should_succeed(self, app):
-        # First retrieve all the posts so that we can select extract the id of the user's second post and edit it.
-        # TODO TEST THIS ENDPOINT TOO.
-        posts_response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")
-        post_id = posts_response.get_json()[1]['id']
-
-        response = app.put(
-            f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json=merge({'post_id': post_id}, POST_UPDATE_B))  # TODO find a way to have it all set in POST_UPDATE_B and A
-        assert response.status == '204 NO CONTENT'
-        assert response.data == b''"""
-
 # TODO: use upper case for HTTP method to avoid confusion. Eg test_POST_post...
 @pytest.mark.post_post
 class TestPost:
+    # TODO: add created and modified related assertions like in above TODOs
     def test_post_post_with_valid_payload(self, app):
         response = app.post(
-            f"/posts/", json=USER_POST_C)
+            f"/posts/", json=POST_TO_BE_CREATED)
         assert response.status == '200 OK'
-        assert response.get_json()['content'] == USER_POST_C['content']
+        assert response.get_json()['content'] == POST_TO_BE_CREATED['content']
 
     def test_post_post_with_invalid_payload(self, app):
         response = app.post(
