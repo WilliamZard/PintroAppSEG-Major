@@ -1,5 +1,7 @@
 from flask_restx import Api
 from .users import api as users
+from .businesses import api as businesses
+from .spaces import api as spaces
 
 api = Api(
     title='Piintro Graph Api',
@@ -8,3 +10,5 @@ api = Api(
 )
 
 api.add_namespace(users)
+api.add_namespace(businesses)
+api.add_namespace(spaces)
