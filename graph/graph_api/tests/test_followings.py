@@ -29,18 +29,17 @@ def app():
     clear_db()
 
 # TODO: parameterising of pytests needs to become per endpoint, instead of per HTTP method
-@pytest.mark.get
-class TestGetPosts:
-    def test_order_of_posts_from_user_followings_is_chronological(self, app):
+@pytest.mark.get_followings
+class TestGetUserFollowersPosts:
+    # TODO: delete ordering in query
+    def test_get_posts_of_followers_of_valid_user(self, app):
         response = app.get(
-            f"/followings/posts/{USER_WITH_THREE_FOLLOWINGS['email']}")
+            f"/users/{USER_WITH_THREE_FOLLOWINGS['email']}/followings/posts")
         assert response.status == '200 OK'
         assert response.get_json() == [USER_WITH_TWO_FOLLOWINGS_POST_A, USER_WITH_TWO_FOLLOWINGS_POST_B,
                                        USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
                                        USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B]
 
-    def test_number_of_posts_returned_for_user_following_posts_is_correct(self, app):
-        response = app.get(
-            f"/followings/posts/{USER_WITH_TWO_FOLLOWINGS['email']}")
-        assert response.status == '200 OK'
-        assert len(response.get_json()) == 3
+    # TODO: test for non existent user <must_have>
+    # TODO: test for user with no followers <edge_case>
+    # TODO: test for user with followers with no posts <edge_case>
