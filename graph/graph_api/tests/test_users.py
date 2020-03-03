@@ -149,6 +149,7 @@ class TestUsersGetFollowings:
         raise NotImplementedError
 
 
+@pytest.mark.get_user_followings_posts
 class TestUsersGetFollowingsPosts:
     def test_get_all_posts_of_all_followers(self, app):
         raise NotImplementedError

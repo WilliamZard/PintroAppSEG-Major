@@ -1,4 +1,4 @@
-# TODO: note need for local neo4j db setup
+"""# TODO: note need for local neo4j db setup
 # TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
 # TODO: have a folder for database stuff? That could make it easier to separate
 # TODO: add logic for wether or not to populate db
@@ -43,3 +43,4 @@ class TestGetUserFollowersPosts:
     # TODO: test for non existent user <must_have>
     # TODO: test for user with no followers <edge_case>
     # TODO: test for user with followers with no posts <edge_case>
+"""
