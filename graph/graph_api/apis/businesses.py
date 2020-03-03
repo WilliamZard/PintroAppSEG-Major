@@ -14,7 +14,7 @@ from .neo4j_ops import (create_session, create_business, delete_business_by_emai
 # TODO: email validation
 
 
-api = Namespace('businesses', title='User related operations')
+api = Namespace('businesses', title='Business related operations')
 
 # Schema used for serialisations
 
@@ -31,15 +31,15 @@ class BusinessSchema(Schema):
 
 
 # Schema used for doc generation
-businesses = api.model('Users', {
-    'email': restx_fields.String(required=True, title='The user email.'),
-    'password': restx_fields.String(required=True, title='The user password.'),
-    'full_name': restx_fields.String(required=True, title='The user full name.'),
-    'profile_image': restx_fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
-    'phone': restx_fields.String(title="The user's phone number."),
-    'location': restx_fields.String(title='current city of the user.'),
-    'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
-    'story': restx_fields.String(title='story describing the user of maximum 250 words.')
+businesses = api.model('Businesses', {
+    'email': restx_fields.String(required=True, title='The business email.'),
+    'password': restx_fields.String(required=True, title='The business password.'),
+    'full_name': restx_fields.String(required=True, title='The business full name.'),
+    'profile_image': restx_fields.String(title='image saved as array of Bytes representing the business\'s profile pic.'),
+    'phone': restx_fields.String(title="The business's phone number."),
+    'location': restx_fields.String(title='current city of the business.'),
+    'short_bio': restx_fields.String(title='short bio describing the business of maximum 250 characters.'),
+    'story': restx_fields.String(title='story describing the business of maximum 250 words.')
 })  # title for accounts that needs to be created.
 
 business_schema = BusinessSchema()
@@ -50,7 +50,7 @@ business_schema = BusinessSchema()
 @api.expect(businesses)
 class Businesses(Resource):
     def get(self, email):
-        '''Fetch a user given its email.'''
+        '''Fetch a business given its email.'''
         if not valid_email(email):
             return make_response('', 422)
 
