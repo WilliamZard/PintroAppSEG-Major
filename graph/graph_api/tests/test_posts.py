@@ -12,17 +12,21 @@ from .conftest import app
 
 from .generate_test_data import (USER_WITH_MULTIPLE_POSTS, USER_POST_C, USER_POST_B, USER_POST_A,
                                  POST_UPDATE_A, POST_UPDATE_B)
+from .test_data.posts import EXISTING_POST, NON_EXISTING_POST_UUID, POST_TO_BE_UPDATED_THAT_EXISTS
 
 
 @pytest.mark.get_post
 class TestGet:
     def test_get_post_that_exists(self, app):
-
-        raise NotImplementedError
+        response = app.get(f"/posts/{EXISTING_POST['uuid']}")
+        assert response.status == '200 OK'
+        assert response.data == jsonify(EXISTING_POST).data
 
     def test_get_post_that_does_not_exist(self, app):
-        raise NotImplementedError
-    # TODO refactor the assertions.
+        response = app.get(f"/posts/{NON_EXISTING_POST_UUID}")
+        assert response.status == '404 NOT FOUND'
+        assert response.data == b''
+
 
     # TODO: this is for user/id/posts. Move or delete it.
 """    def test_get_all_posts_should_return_all_user_posts(self, app):
@@ -43,13 +47,21 @@ class TestGet:
 class TestPut:
     # TODO: save UUID of that post in testing data
     def test_put_existing_post(self, app):
-        raise NotImplementedError
+        response = app.put(
+            f"/posts/{POST_TO_BE_UPDATED_THAT_EXISTS['uuid']}", json=POST_TO_BE_UPDATED_THAT_EXISTS)
+        assert response.status == '204 NO CONTENT'
+        assert response.data == b''
+        # TODO: get request and assertion to check correct update
 
     def test_put_non_existent_post(self, app):
-        raise NotImplementedError
+        response = app.put(
+            f"/posts/{NON_EXISTING_POST_UUID}", json=POST_TO_BE_UPDATED_THAT_EXISTS)
+        assert response.status == '404 NOT FOUND'
+        assert response.data == b''
 
     def test_put_existing_post_invalid_changes(self, app):
         raise NotImplementedError
+        # TODO: define invalid changes
 
     """def test_editing_an_existing_post_should_succeed(self, app):
         # First retrieve all the posts so that we can select extract the id of the user's second post and edit it.

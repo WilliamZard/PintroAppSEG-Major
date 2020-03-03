@@ -84,6 +84,7 @@ class TestPut:
             f"/users/{VALID_USER_TO_BE_UPDATED['email']}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
+        # TODO: add requests and assertions for checking the resource was actually updated properly, not just good response.
 
     def test_put_user_with_valid_email_that_does_not_exist(self, app):
         response = app.put(

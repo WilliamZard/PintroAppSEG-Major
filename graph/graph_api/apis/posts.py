@@ -7,10 +7,9 @@ from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
-from .neo4j_ops import (create_session, get_posts_by_user_email, create_post_to_user,
+from .neo4j_ops import (create_session, get_post_by_uuid, create_post_to_user,
                         modify_post_of_given_user, delete_post_of_give_user, get_list_of_user_post_dates)
 
-# TODO: enable swagger API spec
 # TODO: email validation
 # TODO: docstrings of functions need updating
 
@@ -23,52 +22,51 @@ api = Namespace('posts', title='Posting related operations')
 
 class PostSchema(Schema):
     content = fields.Str(required=True)
-    id = fields.Str(required=True)
+    uuid = fields.Str(required=True)
+    created = fields.DateTime(required=True)
+    modified = fields.DateTime(required=True)
 
 # TODO: look into how relationship propeties should work
 # Schema representing a relation between a user and a post.
 
 
-class PostRelationSchema(Schema):
-    date = fields.DateTime(required=True)
+class POSTEDRelationSchema(Schema):
+    created = fields.DateTime(required=True)
 
 
 # TODO: review this
 # Schema used for doc generation
-post_model = api.model('Post', {'content': restx_fields.String(
-    required=True, title='The content of the post.')})
+posts = api.model('Post', {
+    'content': restx_fields.String(required=True, title='The content of the post.'),
+    'uuid': restx_fields.String(required=True),
+    'created': restx_fields.DateTime(required=True),
+    'modified': restx_fields.DateTime(required=True)
+})
+"""
 update_post_model = api.model('Modifying a post', {'post_id': restx_fields.String(required=True, title='Id of the post that needs to be deleted. '),
                                                    'new_content': restx_fields.String(title='The new content to give to the post')})
 delete_post_model = api.model('Deleting a post', {'post_id': restx_fields.String(
-    required=True, title='Id of the post that needs to be deleted. ')})
+    required=True, title='Id of the post that needs to be deleted. ')})"""
 post_schema = PostSchema()
 
-# TODO There should be an authorization system to do that.
-# TODO Check that after any operation the number of posts of that user is the expected one.
-@api.route('/<string:email>')
+
+@api.route('/<string:uuid>')
 @api.produces('application/json')
 class Posts(Resource):
-    # TODO: review this function and cypher query
-    def get(self, email):
-        '''Fetch user's post given its email.'''
+    def get(self, uuid):
+        '''Fetch a post based on its UUID.'''
 
         with create_session() as session:
-            response = session.read_transaction(get_posts_by_user_email, email)
-            posts = response.records()
-            if posts:
-                data = []
-                for post in posts:
-                    # TODO: a lot going on here. See if this can be improved.
-                    extracted_post = dict(post.data()['post'].items())
-                    formatted_post = post_schema.dump(extracted_post)
-                    data.append(formatted_post)
-                print(data)
-                return data
+            response = session.read_transaction(get_post_by_uuid, uuid)
+            post = response.single()
+            if post:
+                data = dict(post.data()['post'].items())
+                return jsonify(post_schema.dump(data))
             return make_response('', 404)
 
     @api.doc('update_post')
     @api.response(204, 'Post updated')
-    @api.expect(update_post_model)
+    @api.expect(posts)
     def put(self, email):
         '''Fetch user's post given its email.'''
 
@@ -83,7 +81,7 @@ class Posts(Resource):
     # TODO It will be necessary to have authorization to do that.
     @api.doc('create_post')
     @api.response(204, 'Post created')
-    @api.expect(post_model)
+    @api.expect(posts)
     def post(self, email):
         '''Create a user's post given its email and the content of the post.'''
 
@@ -98,7 +96,7 @@ class Posts(Resource):
     # TODO It will be necessary to have authorization to do that.
     @api.doc('create_post')
     @api.response(204, 'Post deleted')
-    @api.expect(delete_post_model)
+    @api.expect(posts)
     def delete(self, email):
         '''Delete a user's post given the user's email and the time when he published the post.'''
 

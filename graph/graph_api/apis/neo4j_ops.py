@@ -70,8 +70,8 @@ def create_user(tx, fields):
     return tx.run(query)
 
 
-def get_posts_by_user_email(tx, user_email):
-    query = f"MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post) RETURN post ORDER BY posted.date DESC"
+def get_post_by_uuid(tx, uuid):
+    query = f"MATCH (post:Post {{uuid:'{uuid}'}}) RETURN post"
     return tx.run(query)
 
 
