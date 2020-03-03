@@ -7,7 +7,6 @@ from ast import literal_eval
 import pytest
 from flask.json import jsonify
 
-from graph_api import create_app
 from graph_api.apis.users import UserSchema
 from .conftest import app
 
