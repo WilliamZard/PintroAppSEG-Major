@@ -112,4 +112,4 @@ class TestDelete:
         response = app.delete(
             f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}", json={'post_id': post_id})  # TODO find a way to have it all set in POST_UPDATE_B and A
         assert response.status == '204 NO CONTENT'
-        assert response.data == b''""""
+        assert response.data == b''"""
