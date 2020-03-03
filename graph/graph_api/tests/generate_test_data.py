@@ -1,6 +1,5 @@
 # TODO: pandas should not needed in production and is a heavy library. Find a way to only use it in testing.
 import datetime
-import pandas as pd
 import os
 from neo4j import GraphDatabase
 from .test_data.users import *
@@ -28,16 +27,12 @@ def connect():
 
 
 def populate_db(rewrite_test_data=False):
-    print("populating")
-    # TODO: have constants for creating queries to run, then just run those
     driver = connect()
-    # TODO: Python is first class function language. Use that.
     with driver.session() as session:
         for query in queries:
             session.write_transaction(_run_query, query)
     # TODO: do this properly. Move all db stuff connect() function. Use yield.
     driver.close()
-    print('Database populated')
 
 
 def clear_db():
@@ -51,7 +46,8 @@ def _run_query(tx, query):
     return tx.run(query)
 
 
-CREATE_TEST_DATA = ""  # TODO: this could be
+# TODO: restructure this
+CREATE_TEST_DATA = ""
 for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
     CREATE_TEST_DATA += "password: \'" + USER['password'] + "\' , "
@@ -67,7 +63,7 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "email: \'" + USER['email'] + "\' , "
     CREATE_TEST_DATA += "story: \'" + USER['story'] + "\'}) \n"
 
-
+# TODO: decompose this string
 CREATE_POSTS = f"""MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
                 MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
                 MATCH (user_c:Person {{email:'{USER_WITH_ONE_FOLLOWING['email']}'}})
