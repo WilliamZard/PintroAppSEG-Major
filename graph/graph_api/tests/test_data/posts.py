@@ -17,7 +17,7 @@ EXISTING_POST = dict(
 NON_EXISTING_POST_UUID = 'uuid'
 
 POST_TO_BE_UPDATED_THAT_EXISTS = dict(
-    zip(POST_PROPERTIES, ['content y', NOW, NOW, uuid.uuid4]))
+    zip(POST_PROPERTIES, ['content y', NOW, NOW, uuid.uuid4()]))
 # The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
 USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
 USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))

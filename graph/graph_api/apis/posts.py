@@ -8,7 +8,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, get_post_by_uuid, create_post_to_user,
-                        modify_post_of_given_user, delete_post_of_give_user, get_list_of_user_post_dates)
+                        set_post_fields, delete_post_of_give_user, get_list_of_user_post_dates)
 
 # TODO: email validation
 # TODO: docstrings of functions need updating
@@ -68,14 +68,13 @@ class Posts(Resource):
     @api.doc('update_post')
     @api.response(204, 'Post updated')
     @api.expect(posts)
-    def put(self, email):
-        '''Fetch user's post given its email.'''
+    def put(self, uuid):
+        '''Update a Post's content.'''
 
         with create_session() as session:
-            response = session.read_transaction(
-                modify_post_of_given_user, email, api.payload['post_id'], api.payload['new_content'])
-            post = response.single()
-            if post:
+            response = session.write_transaction(
+                set_post_fields, uuid, api.payload)
+            if response.summary().counters.properties_set == 1:
                 return make_response('', 204)
             return make_response('', 404)
 

@@ -28,39 +28,28 @@ class TestGet:
         assert response.data == b''
 
 
-    # TODO: this is for user/id/posts. Move or delete it.
-"""    def test_get_all_posts_should_return_all_user_posts(self, app):
-        response = app.get(f"/posts/{USER_WITH_MULTIPLE_POSTS['email']}")
-        assert response.status == '200 OK'
-        assert len(response.get_json()) == 2
-        for resp in response.get_json():
-            if resp['content'] == USER_POST_B['content']:
-                assert True
-                continue
-            if resp['content'] == USER_POST_A['content']:
-                assert True
-                continue
-            assert False"""
-
-
 @pytest.mark.put_post
 class TestPut:
     # TODO: save UUID of that post in testing data
     def test_put_existing_post(self, app):
         response = app.put(
-            f"/posts/{POST_TO_BE_UPDATED_THAT_EXISTS['uuid']}", json=POST_TO_BE_UPDATED_THAT_EXISTS)
+            f"/posts/{POST_TO_BE_UPDATED_THAT_EXISTS['uuid']}", json=POST_TO_BE_UPDATED_THAT_EXISTS['content'])
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
         # TODO: get request and assertion to check correct update
+        # TODO: assert modified was changed properly
+        # TODO: assert created was not changed
+        # TODO: created and modified should not be writable. How can we do this?
 
     def test_put_non_existent_post(self, app):
         response = app.put(
-            f"/posts/{NON_EXISTING_POST_UUID}", json=POST_TO_BE_UPDATED_THAT_EXISTS)
+            f"/posts/{NON_EXISTING_POST_UUID}", json=POST_TO_BE_UPDATED_THAT_EXISTS['content'])
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
+    # TODO: test validation. Add character limit to post schema.
     def test_put_existing_post_invalid_changes(self, app):
-        raise NotImplementedError
+        pass
         # TODO: define invalid changes
 
     """def test_editing_an_existing_post_should_succeed(self, app):

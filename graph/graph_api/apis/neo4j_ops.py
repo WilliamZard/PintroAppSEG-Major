@@ -88,11 +88,18 @@ def create_post_to_user(tx, user_email, post_content):
 # TODO: this function can be more dynamic, no need for fixed paramters. See create user function for guide.
 
 
-def modify_post_of_given_user(tx, user_email, post_uuid, post_new_content):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post {{id:'{post_uuid}'}})
-                SET post.content='{post_new_content}'
-                RETURN post
-            """
+def set_post_fields(tx, uuid, content):
+    '''
+        Function for setting a new email of a user which has a particular email saved in database.
+        It returns a BoltStatementResult containing the record of the edited user.
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_email = the new email to assign to that user.
+    '''
+    # NOTE: this could error when assigning string values that need quotations
+    query = f"MATCH (post:Post {{uuid: '{uuid}'}}) SET post.content='{content}'"
     return tx.run(query)
 
 
