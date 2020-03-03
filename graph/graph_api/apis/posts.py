@@ -24,10 +24,10 @@ api = Namespace('posts', title='Posting related operations')
 
 class PostSchema(Schema):
     content = fields.Str(required=True)
+    user_email = fields.Email()
     uuid = fields.Str()
     created = fields.DateTime()
     modified = fields.DateTime()
-    user_email = fields.Email()
 
 # TODO: look into how relationship propeties should work
 # Schema representing a relation between a user and a post.
@@ -42,9 +42,10 @@ class POSTEDRelationSchema(Schema):
 # Schema used for doc generation
 posts = api.model('Post', {
     'content': restx_fields.String(required=True, title='The content of the post.'),
-    'uuid': restx_fields.String(required=True),
-    'created': restx_fields.DateTime(required=True),
-    'modified': restx_fields.DateTime(required=True)
+    'uuid': restx_fields.String(),
+    'created': restx_fields.DateTime(),
+    'modified': restx_fields.DateTime(),
+    'user_email': restx_fields.String()
 })
 """
 update_post_model = api.model('Modifying a post', {'post_id': restx_fields.String(required=True, title='Id of the post that needs to be deleted. '),
@@ -107,9 +108,11 @@ class UsersPost(Resource):
     @api.response(204, 'Post created')
     def post(self):
         '''Create a post.'''
+        post_schema = PostSchema()
+
         print('\n')
-        print(api.payload)
         print(post_schema.load(api.payload))
+        print('\n')
         try:
             deserialised_payload = post_schema.load(api.payload)
         except ValidationError as e:
