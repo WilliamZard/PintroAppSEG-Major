@@ -9,39 +9,18 @@ from .utils import valid_email
 
 from .neo4j_ops import (create_session, get_posts_for_timeline)
 
-# TODO: enable swagger API spec
 # TODO: email validation
 
 
 api = Namespace('followings', title='Followings related operations')
 
-# TODO: no need to replicate user schema here
-# Schema used for serializations for user nodes
-
-
-class UserSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
-    full_name = fields.Str(required=True)
-    preferred_name = fields.String()
-    profile_image = fields.String()
-    phone = fields.String()
-    gender = fields.String()
-    job_title = fields.String()
-    location = fields.String()
-    short_bio = fields.String()
-    story = fields.String()
-    education = fields.String()
 
 # TODO: add more fields. See Trello board and specs.
 # Schema used for serialization for user nodes
-
-
 class PostSchema(Schema):
     content = fields.Str(required=True)
 
 
-user_schema = UserSchema()
 post_schema = PostSchema()
 
 # TODO: consider url different structure. users/email/followings/posts
@@ -59,12 +38,9 @@ class FollowingPosts(Resource):
             if posts:
                 data = []
                 for post in posts:
-                    # TODO: remove prints
-                    print(post)
                     extracted_post = dict(post.data()['post'].items())
                     formatted_post = post_schema.dump(extracted_post)
                     data.append(formatted_post)
-                print(data)
                 # TODO: check correct response code here
                 return data
             return make_response('', 404)
