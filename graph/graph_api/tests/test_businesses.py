@@ -8,7 +8,7 @@ import pytest
 from flask.json import jsonify
 
 from graph_api import create_app
-from graph_api.apis.users import UserSchema
+from graph_api.apis.businesses import BusinessSchema
 
 from .generate_test_data import (NONEXISTANT_BUSINESS_EMAIL,
                                  VALID_BUSINESS, VALID_BUSINESS_TO_BE_DELETED, INVALID_EMAIL,
@@ -51,7 +51,7 @@ def test_api_endpoint(app, email, status, response_data):
 @pytest.mark.get
 class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app):
-        response = app.get(f"/businesses/{VALID_BUSINESS['email']}") """make sure to change users.py to businesses.py"""
+        response = app.get(f"/businesses/{VALID_BUSINESS['email']}")
         assert response.status == '200 OK'
         assert response.data == jsonify(VALID_BUSINESS).data
 
@@ -76,7 +76,7 @@ class TestDelete:
         # TODO: consider using standard json.dumps instead of jsonify
         assert response.data == b''
 
-        # Assert user was actually deleted in the database
+        # Assert business was actually deleted in the database
         response = app.get(f"/businesses/{email}")
         assert response.status == '404 NOT FOUND'
 
@@ -118,11 +118,11 @@ class TestPut:
 class TestPost:
     def test_post_business_with_valid_payload_that_does_not_exist(self, app):
         response = app.post(
-            "/users/", json=VALID_BUSINESS_TO_BE_CREATED)
+            "/businesses/", json=VALID_BUSINESS_TO_BE_CREATED)
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-        # Assert user was actually created in the database
+        # Assert business was actually created in the database
         response = app.get(f"/businesses/{VALID_BUSINESS_TO_BE_CREATED['email']}")
         assert response.status == '200 OK'
         assert response.data == jsonify(VALID_BUSINESS_TO_BE_CREATED).data
