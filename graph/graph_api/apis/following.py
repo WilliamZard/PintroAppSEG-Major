@@ -16,8 +16,10 @@ api = Namespace(
 
 
 @api.route('/<string:follower_email>/<string:following_email>')
+@api.produces('application/json')
 class Following(Resource):
     def post(self, follower_email, following_email):
+        '''Create a FOLLOW relationship, where follower_email follows following_email'''
         with create_session() as session:
             response = session.write_transaction(
                 create_follow_relationship, follower_email, following_email)
@@ -26,6 +28,7 @@ class Following(Resource):
             return 400
 
     def delete(self, follower_email, following_email):
+        '''Delete the FOLLOW relationship, where follower_email follows following_email'''
         with create_session() as session:
             response = session.write_transaction(
                 delete_follow_relationship, follower_email, following_email)

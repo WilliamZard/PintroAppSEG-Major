@@ -6,6 +6,7 @@ from marshmallow import Schema, fields
 from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
+from .posts import posts
 
 from .neo4j_ops import (create_session, create_user, delete_user_by_email,
                         get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user, get_posts_of_followings_of_a_user)
@@ -159,7 +160,7 @@ class UsersGETFollowings(Resource):
 
 @api.route('/<string:email>/followings/posts')
 @api.produces('application/json')
-@api.expect(users)
+@api.expect(posts)
 class UsersGETPOSTSOfFollowings(Resource):
     @api.doc('Get the posts of users the given user follows.')
     def get(self, email):
