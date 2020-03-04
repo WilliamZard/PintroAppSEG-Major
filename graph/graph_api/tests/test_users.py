@@ -2,20 +2,19 @@
 # TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
 # TODO: have a folder for database stuff? That could make it easier to separate
 # TODO: add logic for wether or not to populate db
+# TODO: upper case HTTP verbs like in test_posts.py
 from ast import literal_eval
 
 import pytest
 from flask.json import jsonify
 
-from graph_api.apis.users import UserSchema
 from .conftest import app
-
-from .generate_test_data import (NONEXISTANT_USER_EMAIL,
-                                 VALID_USER, VALID_USER_TO_BE_DELETED, INVALID_EMAIL,
-                                 VALID_USER_TO_BE_UPDATED, VALID_USER_TO_BE_UPDATED_NEW_FIELDS,
-                                 VALID_USER_TO_BE_CREATED, INVALID_USER_TO_BE_CREATED,
-                                 )
-
+from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
+                                 NONEXISTANT_USER_EMAIL, VALID_USER,
+                                 VALID_USER_TO_BE_CREATED,
+                                 VALID_USER_TO_BE_DELETED,
+                                 VALID_USER_TO_BE_UPDATED,
+                                 VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
 
 # TODO: consider changing scope of fixture so client object does not creating every time.
 # TODO: some duplicate code here for each endpoint test. Refactor.
