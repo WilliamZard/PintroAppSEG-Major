@@ -126,3 +126,13 @@ def get_posts_for_timeline(tx, user_email):
                 return post
              """
     return tx.run(query)
+
+
+def create_follow_relationship(tx, follower_email, following_email):
+    query = f"""
+        MATCH (follower_user:Person),(following_user:Person)
+        WHERE follower_user.email = '{follower_email}' AND following_user.email = '{following_email}'
+        CREATE (follower_user)-[f:FOLLOWS]->(following_user)
+        RETURN f
+    """
+    return tx.run(query)

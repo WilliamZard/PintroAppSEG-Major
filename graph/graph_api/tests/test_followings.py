@@ -1,4 +1,4 @@
-"""# TODO: note need for local neo4j db setup
+# TODO: note need for local neo4j db setup
 # TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
 # TODO: have a folder for database stuff? That could make it easier to separate
 # TODO: add logic for wether or not to populate db
@@ -8,36 +8,47 @@ import pytest
 from flask.json import jsonify
 from jsonmerge import merge
 
-from graph_api import create_app
-from graph_api.apis.users import UserSchema
-
-from .generate_test_data import (USER_WITH_THREE_FOLLOWINGS, USER_WITH_TWO_FOLLOWINGS,  USER_WITH_TWO_FOLLOWINGS_POST_A,
-                                 USER_WITH_TWO_FOLLOWINGS_POST_B, USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
-                                 USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B, populate_db, clear_db)
+from .generate_test_data import USER_BEING_FOLLOWED, USER_FOLLOWING, NONEXISTANT_USER_EMAIL
 
 
-# TODO: consider changing scope of fixture so client object does not creating every time.
-# TODO: app() fixture is used everywhere, move it somewhere else
-@pytest.fixture(scope='module')
-def app():
-    app = create_app()
-    app.testing = True
+@pytest.mark.POST_following
+class TestPOSTFollowing:
+    def test_POST_following_on_existing_users(self, app):
+        response = app.post(
+            f"/following/{USER_FOLLOWING['email']}/{USER_BEING_FOLLOWED['email']}")
+        assert response.status == '201 CREATED'
+        assert response.data == b''
 
-    with app.test_client() as client:
-        populate_db(rewrite_test_data=True)
-        yield client
-    clear_db()
+        # TODO: get request to assert follow relationship was created.
+        # use endpoint to get all followings of user_following and check exists a follow to user being followed
 
-# TODO: parameterising of pytests needs to become per endpoint, instead of per HTTP method
+    @pytest.mark.xfail
+    # TODO: finish this test. Put on hold for now as niche usecase
+    def test_POST_following_on_non_existing_users(self, app):
+        response = app.post(
+            f"/following/{NONEXISTANT_USER_EMAIL}/{USER_BEING_FOLLOWED['email']}")
+        assert response.status == '404 NOT FOUND'
+        assert response.data == b''
+
+    @pytest.mark.xfail
+    def test_POST_following_where_following_already_exists(self, app):
+        raise NotImplementedError
+
+    @pytest.mark.xfail
+    def test_POST_followinig_self(self, app):
+        raise NotImplementedError
+
+
+"""
 @pytest.mark.get_followings
 class TestGetUserFollowersPosts:
     # TODO: delete ordering in query
     def test_get_posts_of_followers_of_valid_user(self, app):
         response = app.get(
-            f"/users/{USER_WITH_THREE_FOLLOWINGS['email']}/followings/posts")
+            f"/users/{USER_FOLLOWING['email']}/followings/posts")
         assert response.status == '200 OK'
-        assert response.get_json() == [USER_WITH_TWO_FOLLOWINGS_POST_A, USER_WITH_TWO_FOLLOWINGS_POST_B,
-                                       USER_WITH_TWO_FOLLOWINGS_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
+        assert response.get_json() == [USER_BEING_FOLLOWED_POST_A, USER_BEING_FOLLOWED_POST_B,
+                                       USER_BEING_FOLLOWED_POST_C, USER_WITH_ONE_FOLLOWING_POST_A,
                                        USER_WITH_NO_FOLLOWINGS_POST_A, USER_WITH_NO_FOLLOWINGS_POST_B]
 
     # TODO: test for non existent user <must_have>

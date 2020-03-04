@@ -107,14 +107,17 @@ class TestPost:
 
 @pytest.mark.GET_user_followings
 class TestUsersGETFollowings:
+    @pytest.mark.xfail
     def test_GET_all_followers_of_existing_user(self, app):
         raise NotImplementedError
 
+    @pytest.mark.xfail
     def test_GET_all_followers_of_non_existing_user(self, app):
         raise NotImplementedError
 
 
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
+    @pytest.mark.xfail
     def test_GET_all_posts_of_all_followers(self, app):
         raise NotImplementedError

@@ -7,22 +7,25 @@ from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
-from .neo4j_ops import (create_session, get_posts_for_timeline)
-
-# TODO: email validation
+from .neo4j_ops import (create_session, create_follow_relationship)
 
 
-api = Namespace('followings', title='Followings related operations')
+api = Namespace(
+    'following', title='Operations related to the FOLLOW relationship')
 
 
-# TODO: add more fields. See Trello board and specs.
-# Schema used for serialization for user nodes
-class PostSchema(Schema):
-    content = fields.Str(required=True)
+@api.route('/<string:follower_email>/<string:following_email>')
+class Following(Resource):
+    def post(self, follower_email, following_email):
+        with create_session() as session:
+            response = session.write_transaction(
+                create_follow_relationship, follower_email, following_email)
+            if response.summary().counters.relationships_created == 1:
+                return make_response('', 201)
+            return 400
 
 
-post_schema = PostSchema()
-
+"""
 # TODO: consider url different structure. users/email/followings/posts
 @api.route('/posts/<string:email>')
 @api.produces('application/json')
@@ -44,3 +47,4 @@ class FollowingPosts(Resource):
                 # TODO: check correct response code here
                 return data
             return make_response('', 404)
+"""
