@@ -144,3 +144,10 @@ def delete_follow_relationship(tx, follower_email, following_email):
         DELETE f
     """
     return tx.run(query)
+
+
+def get_followers_of_a_user(tx, email):
+    query = f"""
+        MATCH (follower)-[:FOLLOWS]->(:Person {{email: '{email}'}}) RETURN follower.full_name AS full_name, follower.email AS email
+    """
+    return tx.run(query)

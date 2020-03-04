@@ -8,7 +8,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, create_user, delete_user_by_email,
-                        get_user_by_email, set_user_fields)
+                        get_user_by_email, set_user_fields, get_followers_of_a_user)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -123,3 +123,19 @@ class UsersPost(Resource):
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)
+
+
+@api.route('/<string:email>/followers')
+@api.produces('application/json')
+@api.expect(users)
+class UsersGETFollowers(Resource):
+    @api.doc('get followers of a user')
+    def get(self, email):
+        '''Get followers of a user'''
+        with create_session() as session:
+            response = session.read_transaction(
+                get_followers_of_a_user, email)
+            data = response.data()
+            if data:
+                return jsonify(data)
+            return make_response('', 404)

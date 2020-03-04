@@ -10,7 +10,11 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
                                  VALID_USER_TO_BE_CREATED,
                                  VALID_USER_TO_BE_DELETED,
                                  VALID_USER_TO_BE_UPDATED,
-                                 VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+                                 VALID_USER_TO_BE_UPDATED_NEW_FIELDS,
+                                 USER_WITH_THREE_FOLLOWINGS,
+                                 USER_WITH_TWO_FOLLOWINGS,
+                                 USER_WITH_ONE_FOLLOWING,
+                                 USER_WITH_NO_FOLLOWINGS)
 
 
 @pytest.mark.GET_user
@@ -105,14 +109,38 @@ class TestPost:
         assert response.data == b'Not a valid email address.'
 
 
+@pytest.mark.GET_user_followers
+class TestUsersGETFollowers:
+    def test_GET_followers_of_existing_user(self, app):
+        response = app.get(
+            f"/users/{USER_WITH_ONE_FOLLOWING['email']}/followers")
+        assert response.status == '200 OK'
+        results = [{'full_name': user['full_name'], 'email': user['email']}
+                   for user in [USER_WITH_TWO_FOLLOWINGS, USER_WITH_THREE_FOLLOWINGS]]
+        assert response.data == jsonify(results).data
+
+    def test_GET_followers_of_non_existing_user(self, app):
+        response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
+        assert response.status == '404 NOT FOUND'
+        assert response.data == b''
+
+    @pytest.mark.xfail
+    def test_GET_followers_of_user_with_no_followers(self, app):
+        raise NotImplementedError
+
+
 @pytest.mark.GET_user_followings
 class TestUsersGETFollowings:
     @pytest.mark.xfail
-    def test_GET_all_followers_of_existing_user(self, app):
+    def test_GET_followings_of_existing_user(self, app):
         raise NotImplementedError
 
     @pytest.mark.xfail
-    def test_GET_all_followers_of_non_existing_user(self, app):
+    def test_GET_followings_of_non_existing_user(self, app):
+        raise NotImplementedError
+
+    @pytest.mark.xfail
+    def test_GET_followings_of_user_with_no_followers(self, app):
         raise NotImplementedError
 
 
