@@ -158,3 +158,12 @@ def get_followings_of_a_user(tx, email):
         MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email
     """
     return tx.run(query)
+
+
+def get_posts_of_followings_of_a_user(tx, email):
+    query = f"""
+        MATCH (:Person {{email: '{email}'}})
+        -[:FOLLOWS]->(user:Person)
+        -[:POSTED]->(post:Post)
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+    return tx.run(query)

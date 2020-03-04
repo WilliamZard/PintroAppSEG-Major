@@ -7,7 +7,7 @@ from jsonmerge import merge
 
 from .conftest import app
 from .generate_test_data import (POST_UPDATE_A, POST_UPDATE_B, USER_POST_A,
-                                 USER_POST_B, USER_POST_C,
+                                 USER_POST_B,
                                  USER_WITH_MULTIPLE_POSTS)
 from .test_data.posts import (EXISTING_POST, NON_EXISTING_POST_UUID,
                               POST_TO_BE_CREATED,

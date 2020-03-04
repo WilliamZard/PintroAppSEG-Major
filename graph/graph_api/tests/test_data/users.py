@@ -1,4 +1,5 @@
 # USERS
+# TODO: what about using a dictionary to describe data needed for each test? Could give it some structure.
 USERS_PROPERTIES = [
     "password",
     "profile_image",
@@ -49,26 +50,12 @@ USER_WITH_ONE_FOLLOWING = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Seco
                                                       'I am millionaire', 'London', 'Entrepreneur', 'Sweety', 'jj@gmail.com', 'I started as a taxi driver.']))
 USER_WITH_NO_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Diploma', 'John Kennedy', 'male', '121',
                                                       'The only one pres', 'Unknown', 'Retired', 'JFK', 'jfk@gmail.com', 'They thought they killed me.']))
-"""
-USER_WITH_THREE_FOLLOWINGS_POST_A = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_THREE_FOLLOWINGS first post']))
-USER_WITH_THREE_FOLLOWINGS_POST_B = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_THREE_FOLLOWINGS second post']))
+USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Winter', 'John Snow', 'male', '121',
+                                                                   'King of the noorth', 'Unknown', 'Up and coming', 'Snowy', 'john.snow@winteriscoming.wes', 'ay']))
+USER_THAT_POSTED_POST_A = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Winter', 'James Bond', 'male', '007',
+                                                      'James, James Bond', 'Unknown', 'Up and coming', 'Shaken', 'james.bond@mi5.co.uk', 'Yessir']))
+USER_THAT_POSTED_POST_B = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'M', 'female', '121',
+                                                      'Siberia', 'Unknown', 'Up and coming', 'Queen_of_numbers', 'm@m.co.uk', 'shut it 007']))
 
-USER_WITH_TWO_FOLLOWINGS_POST_A = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_TWO_FOLLOWINGS first post']))
-USER_WITH_TWO_FOLLOWINGS_POST_B = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_TWO_FOLLOWINGS second post']))
-USER_WITH_TWO_FOLLOWINGS_POST_C = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_TWO_FOLLOWINGS third post']))
-
-USER_WITH_ONE_FOLLOWING_POST_A = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_ONE_FOLLOWING first post']))
-
-USER_WITH_NO_FOLLOWINGS_POST_A = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS first post']))
-USER_WITH_NO_FOLLOWINGS_POST_B = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS second post']))
-"""
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'

@@ -14,7 +14,7 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
                                  USER_WITH_THREE_FOLLOWINGS,
                                  USER_WITH_TWO_FOLLOWINGS,
                                  USER_WITH_ONE_FOLLOWING,
-                                 USER_WITH_NO_FOLLOWINGS)
+                                 USER_WITH_NO_FOLLOWINGS, USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS, USER_POST_A, USER_POST_B)
 
 
 @pytest.mark.GET_user
@@ -152,6 +152,18 @@ class TestUsersGETFollowings:
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
     def test_GET_all_posts_of_all_followers(self, app):
-        response = app.get(f'/users/email/followers/posts')
-        assert response.status == '200 OKAY'
-        assert response.data == ''
+        response = app.get(
+            f"/users/{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}/followings/posts")
+        assert response.status == '200 OK'
+        results = [{'content': post['content'], 'modified': post['modified'], 'uuid': post['uuid']}
+                   for post in [USER_POST_A, USER_POST_B]]
+        # BUG: there's a bug here where the order of the items in the below comparison changes, causing the test to fail.
+        # Most likely due to the fact that one of them relies on a dictionary, which is orderless
+        # Suggest using a set, as what we really want to check is containment.
+        assert response.data == jsonify(results).data
+
+    @pytest.mark.xfail
+    def test_get_all_posts_of_all_followers_of_non_existing_user(self, app):
+        raise NotImplementedError
+
+    # TODO: consider tests at different cardinalities

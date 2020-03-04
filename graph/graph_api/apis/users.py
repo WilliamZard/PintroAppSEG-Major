@@ -8,7 +8,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, create_user, delete_user_by_email,
-                        get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user)
+                        get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user, get_posts_of_followings_of_a_user)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -151,6 +151,22 @@ class UsersGETFollowings(Resource):
         with create_session() as session:
             response = session.read_transaction(
                 get_followings_of_a_user, email)
+            data = response.data()
+            if data:
+                return jsonify(data)
+            return make_response('', 404)
+
+
+@api.route('/<string:email>/followings/posts')
+@api.produces('application/json')
+@api.expect(users)
+class UsersGETPOSTSOfFollowings(Resource):
+    @api.doc('Get the posts of users the given user follows.')
+    def get(self, email):
+        '''Get the posts of users the given user follows.'''
+        with create_session() as session:
+            response = session.read_transaction(
+                get_posts_of_followings_of_a_user, email)
             data = response.data()
             if data:
                 return jsonify(data)

@@ -18,7 +18,10 @@ USERS_TO_TEST = [
     USER_ABOUT_TO_FOLLOW,
     USER_ABOUT_TO_BE_FOLLOWED,
     USER_FOLLOWING,
-    USER_BEING_FOLLOWED
+    USER_BEING_FOLLOWED,
+    USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
+    USER_THAT_POSTED_POST_A,
+    USER_THAT_POSTED_POST_B
 ]
 
 
@@ -69,6 +72,8 @@ for USER in USERS_TO_TEST:
 
 CREATE_POSTS = f"""
     MATCH (user_a:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
+    MATCH (user_b:Person {{email:'{USER_THAT_POSTED_POST_A['email']}'}})
+    MATCH (user_c:Person {{email:'{USER_THAT_POSTED_POST_B['email']}'}})
 
     CREATE (post_a:Post {{uuid: '{EXISTING_POST['uuid']}',
         content:'{EXISTING_POST['content']}',
@@ -87,9 +92,32 @@ CREATE_POSTS = f"""
         modified:'{POST_TO_BE_DELETED_THAT_EXISTS['modified']}'
         }})
 
+    CREATE (post_d:Post {{uuid: '{USER_POST_A['uuid']}',
+        content:'{USER_POST_A['content']}',
+        created:'{USER_POST_A['created']}',
+        modified:'{USER_POST_A['modified']}'
+        }})
+    
+    CREATE (post_e:Post {{uuid: '{USER_POST_B['uuid']}',
+        content:'{USER_POST_B['content']}',
+        created:'{USER_POST_B['created']}',
+        modified:'{USER_POST_B['modified']}'
+        }})
+    
     CREATE (user_a)-[:POSTED]->(post_a)
     CREATE (user_a)-[:POSTED]->(post_b)
     CREATE (user_a)-[:POSTED]->(post_c)
+
+    CREATE (user_b)-[:POSTED]->(post_d)
+    CREATE (user_c)-[:POSTED]->(post_e)
+"""
+
+CREATE_FOLLOWS_FOR_POSTS_USERS = f"""
+    MATCH (user_a:Person {{email:'{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}'}})
+    MATCH (user_b:Person {{email:'{USER_THAT_POSTED_POST_A['email']}'}})
+    MATCH (user_c:Person {{email:'{USER_THAT_POSTED_POST_B['email']}'}})
+    CREATE (user_a)-[:FOLLOWS]->(user_b)
+    CREATE (user_a)-[:FOLLOWS]->(user_c)
 """
 
 """
@@ -167,6 +195,7 @@ queries = [
     CREATE_TEST_DATA,
     FOLLOWS_AA,
     CREATE_POSTS,
+    CREATE_FOLLOWS_FOR_POSTS_USERS,
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C
