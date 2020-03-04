@@ -22,6 +22,10 @@ POST_TO_BE_UPDATED_THAT_EXISTS = dict(
 
 POST_TO_BE_CREATED = {'content': 'content z',
                       'user_email': USER_WITH_MULTIPLE_POSTS['email']}
+
+UUID_OF_POST_TO_BE_DELETED = uuid.uuid4()
+POST_TO_BE_DELETED_THAT_EXISTS = dict(
+    zip(POST_PROPERTIES, ['content y', NOW, NOW, UUID_OF_POST_TO_BE_DELETED]))
 # The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
 USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
 USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))

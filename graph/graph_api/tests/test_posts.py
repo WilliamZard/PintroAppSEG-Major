@@ -1,6 +1,6 @@
 # TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
 from ast import literal_eval
-
+import uuid
 import pytest
 from flask.json import jsonify
 from jsonmerge import merge
@@ -11,7 +11,7 @@ from .generate_test_data import (POST_UPDATE_A, POST_UPDATE_B, USER_POST_A,
                                  USER_WITH_MULTIPLE_POSTS)
 from .test_data.posts import (EXISTING_POST, NON_EXISTING_POST_UUID,
                               POST_TO_BE_CREATED,
-                              POST_TO_BE_UPDATED_THAT_EXISTS)
+                              POST_TO_BE_UPDATED_THAT_EXISTS, UUID_OF_POST_TO_BE_DELETED)
 
 
 @pytest.mark.GET_post
@@ -74,10 +74,17 @@ class TestPOST:
 @pytest.mark.DELETE_post
 class TestDELETE:
     def test_DELETE_existing_post(self, app):
-        raise NotImplementedError
+        response = app.delete(
+            f"/posts/{UUID_OF_POST_TO_BE_DELETED}")
+        assert response.status == '204 NO CONTENT'
+        assert response.data == b''
 
     def test_DELETE_non_existing_post(self, app):
-        raise NotImplementedError
+        uuid_that_does_not_exist = uuid.uuid4()
+        response = app.delete(
+            f"/posts/{uuid_that_does_not_exist}")
+        assert response.status == '404 NOT FOUND'
+        assert response.data == b''
 
     @pytest.mark.xfail
     def test_DELETE_existing_post_deletes_posted_relation(self, app):

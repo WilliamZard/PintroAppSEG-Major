@@ -101,11 +101,9 @@ def set_post_fields(tx, uuid, content):
     return tx.run(query)
 
 
-def delete_post_of_give_user(tx, user_email, post_uuid):
-    query = f"""MATCH (person:Person {{email:'{user_email}'}})-[posted:POSTED]->(post:Post {{id:'{post_uuid}'}})
-                WITH post, post.content AS content
+def delete_post(tx, uuid):
+    query = f"""MATCH (post:Post {{uuid: '{uuid}'}})
                 DETACH DELETE post
-                RETURN content
              """
     return tx.run(query)
 

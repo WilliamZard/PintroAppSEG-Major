@@ -9,7 +9,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, get_post_by_uuid,
-                        set_post_fields, delete_post_of_give_user, get_list_of_user_post_dates, create_post)
+                        set_post_fields, delete_post, get_list_of_user_post_dates, create_post)
 import time
 
 
@@ -98,15 +98,15 @@ class Posts(Resource):
     @api.doc('create_post')
     @api.response(204, 'Post deleted')
     @api.expect(posts)
-    def delete(self, email):
-        '''Delete a user's post given the user's email and the time when he published the post.'''
+    def delete(self, uuid):
+        '''Delete a post given its uuid.'''
+        # TODO: assumes only other response is not found. This needs more details.
 
         with create_session() as session:
             response = session.read_transaction(
-                delete_post_of_give_user, email, api.payload['post_id'])
-            content_deleted = response.single()
-            # TODO Check wether returning a value in the transaction function is worth it or not.
-            if content_deleted:
+                delete_post, uuid)
+            counters = response.summary().counters
+            if counters.nodes_deleted == 1 and counters.relationships_deleted == 1:
                 return make_response('', 204)
             return make_response('', 404)
 

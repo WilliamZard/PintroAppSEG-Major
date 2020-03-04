@@ -77,8 +77,15 @@ CREATE_POSTS = f"""
         modified:'{POST_TO_BE_UPDATED_THAT_EXISTS['modified']}'
         }})
 
+    CREATE (post_c:Post {{uuid: '{POST_TO_BE_DELETED_THAT_EXISTS['uuid']}',
+        content:'{POST_TO_BE_DELETED_THAT_EXISTS['content']}',
+        created:'{POST_TO_BE_DELETED_THAT_EXISTS['created']}',
+        modified:'{POST_TO_BE_DELETED_THAT_EXISTS['modified']}'
+        }})
+
     CREATE (user_a)-[:POSTED]->(post_a)
     CREATE (user_a)-[:POSTED]->(post_b)
+    CREATE (user_a)-[:POSTED]->(post_c)
 """
 
 """
