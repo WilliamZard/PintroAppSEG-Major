@@ -74,12 +74,6 @@ paths:
           description: Post deleted
       summary: Delete a post given its uuid
       operationId: delete_post
-      parameters:
-        - name: payload
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/Post'
       tags:
         - posts
     get:
@@ -159,11 +153,6 @@ paths:
         - users
   '/users/{email}/followers':
     parameters:
-      - name: payload
-        required: true
-        in: body
-        schema:
-          $ref: '#/definitions/Users'
       - name: email
         in: path
         required: true
@@ -178,11 +167,6 @@ paths:
         - users
   '/users/{email}/followings':
     parameters:
-      - name: payload
-        required: true
-        in: body
-        schema:
-          $ref: '#/definitions/Users'
       - name: email
         in: path
         required: true
@@ -197,11 +181,6 @@ paths:
         - users
   '/users/{email}/followings/posts':
     parameters:
-      - name: payload
-        required: true
-        in: body
-        schema:
-          $ref: '#/definitions/Post'
       - name: email
         in: path
         required: true

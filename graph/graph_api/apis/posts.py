@@ -97,7 +97,6 @@ class Posts(Resource):
     # TODO It will be necessary to have authorization to do that.
     @api.doc('delete_post')
     @api.response(204, 'Post deleted')
-    @api.expect(posts)
     def delete(self, uuid):
         '''Delete a post given its uuid.'''
         # TODO: assumes only other response is not found. This needs more details.

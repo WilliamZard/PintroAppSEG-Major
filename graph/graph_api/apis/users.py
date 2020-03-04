@@ -128,7 +128,6 @@ class UsersPost(Resource):
 
 @api.route('/<string:email>/followers')
 @api.produces('application/json')
-@api.expect(users)
 class UsersGETFollowers(Resource):
     @api.doc('get followers of a user')
     def get(self, email):
@@ -144,7 +143,6 @@ class UsersGETFollowers(Resource):
 
 @api.route('/<string:email>/followings')
 @api.produces('application/json')
-@api.expect(users)
 class UsersGETFollowings(Resource):
     @api.doc('Get the users that the given user is following')
     def get(self, email):
@@ -160,7 +158,6 @@ class UsersGETFollowings(Resource):
 
 @api.route('/<string:email>/followings/posts')
 @api.produces('application/json')
-@api.expect(posts)
 class UsersGETPOSTSOfFollowings(Resource):
     @api.doc('Get the posts of users the given user follows.')
     def get(self, email):
