@@ -59,15 +59,17 @@ class TestPost:
     def test_post_post_with_valid_payload(self, app):
         response = app.post(
             f"/posts/", json=POST_TO_BE_CREATED)
-        assert response.status == '200 OK'
-        assert response.get_json()['content'] == POST_TO_BE_CREATED['content']
+        assert response.status == '201 CREATED'
+        assert response.data == b''
 
+    @pytest.mark.skip
     def test_post_post_with_invalid_payload(self, app):
         response = app.post(
-            f"/posts/", json={'content': ''})
+            f"/posts/", json={'content': '', 'user_email': POST_TO_BE_CREATED['user_email']})
         assert response.status == '404 NOT FOUND'
         raise NotImplementedError
 
+    @pytest.mark.skip
     def test_post_post_creates_posted_relation(self, app):
         raise NotImplementedError
 

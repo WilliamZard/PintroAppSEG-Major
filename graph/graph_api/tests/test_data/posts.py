@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from .users import USER_THAT_CREATES_POST
+from .users import USER_WITH_MULTIPLE_POSTS
 
 NOW = str(datetime.datetime.now())
 
@@ -21,7 +21,7 @@ POST_TO_BE_UPDATED_THAT_EXISTS = dict(
     zip(POST_PROPERTIES, ['content y', NOW, NOW, uuid.uuid4()]))
 
 POST_TO_BE_CREATED = {'content': 'content z',
-                      'user_email': USER_THAT_CREATES_POST['email']}
+                      'user_email': USER_WITH_MULTIPLE_POSTS['email']}
 # The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
 USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
 USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))

@@ -10,8 +10,17 @@ from .utils import valid_email
 
 from .neo4j_ops import (create_session, get_post_by_uuid,
                         set_post_fields, delete_post_of_give_user, get_list_of_user_post_dates, create_post)
-import datetime
+import time
 
+
+def get_time():
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+
+
+def convert_to_cypher_datetime(datetime):
+    # Assumes there is a single space separating date and time sections
+    # Assumes is in UTC time and is timezone naive
+    return datetime.replace(' ', 'T') + 'Z'
 # TODO: email validation
 # TODO: docstrings of functions need updating
 
@@ -108,16 +117,11 @@ class UsersPost(Resource):
     @api.response(204, 'Post created')
     def post(self):
         '''Create a post.'''
-        post_schema = PostSchema()
-
-        print('\n')
-        print(post_schema.load(api.payload))
-        print('\n')
         try:
             deserialised_payload = post_schema.load(api.payload)
         except ValidationError as e:
             return make_response(e, 422)
-        created = modified = str(datetime.datetime.now())
+        created = modified = convert_to_cypher_datetime(get_time())
         post_uuid = uuid.uuid4()
         content = deserialised_payload['content']
         user_email = deserialised_payload['user_email']
@@ -126,7 +130,8 @@ class UsersPost(Resource):
                 response = session.write_transaction(
                     create_post, content, user_email,
                     created, modified, post_uuid)
-                if response.summary().counters.nodes_created == 1:
+                counters = response.summary().counters
+                if counters.nodes_created == 1 and counters.relationships_created == 1 and counters.labels_added == 1 and counters.properties_set == 4:
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)
