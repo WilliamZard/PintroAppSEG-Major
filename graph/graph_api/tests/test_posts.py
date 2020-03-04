@@ -60,11 +60,11 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-    @pytest.mark.xfail
     def test_POST_post_with_invalid_payload(self, app):
         response = app.post(
             f"/posts/", json={'content': '', 'user_email': POST_TO_BE_CREATED['user_email']})
-        assert response.status == '400'
+        assert response.status == '400 BAD REQUEST'
+        assert response.data == b"{'content': ['Length must be between 1 and 200.']}"
 
     @pytest.mark.xfail
     def test_POST_post_creates_posted_relation(self, app):

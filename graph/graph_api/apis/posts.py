@@ -3,7 +3,7 @@ from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
@@ -32,11 +32,13 @@ api = Namespace('posts', title='Posting related operations')
 
 
 class PostSchema(Schema):
-    content = fields.Str(required=True)
+    # TODO: set these datetime fields to be tz aware
+    content = fields.Str(required=True, validate=validate.Length(1, 200))
     user_email = fields.Email()
-    uuid = fields.Str()
+    uuid = fields.UUID()
     created = fields.DateTime()
     modified = fields.DateTime()
+
 
 # TODO: look into how relationship propeties should work
 # Schema representing a relation between a user and a post.
@@ -120,7 +122,7 @@ class UsersPost(Resource):
         try:
             deserialised_payload = post_schema.load(api.payload)
         except ValidationError as e:
-            return make_response(e, 422)
+            return make_response(str(e), 400)
         created = modified = convert_to_cypher_datetime(get_time())
         post_uuid = uuid.uuid4()
         content = deserialised_payload['content']
