@@ -38,7 +38,6 @@ class TestPUT:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    @pytest.mark.xfail
     def test_PUT_non_existent_post(self, app):
         response = app.put(
             f"/posts/{NON_EXISTING_POST_UUID}", json=POST_TO_BE_UPDATED_THAT_EXISTS['content'])
