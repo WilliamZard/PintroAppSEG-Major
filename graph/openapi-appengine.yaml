@@ -1,75 +1,217 @@
 # [START swagger]
 swagger: "2.0"
 info:
-  description: "API for running CRUD operations on Piintro's Graph database."
-  title: "Piintro Graph API"
-  version: "0.1"
-host: "bluej-pintro-project.appspot.com"
-# [END swagger]
-consumes:
-- "application/json"
+  title: Pintro Graph Api
+  version: '0.1'
 produces:
-- "application/json"
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: users
+  - name: posts
+  - name: following
 schemes:
 - "https"
+host: "bluej-pintro-project.appspot.com"
+# [END swagger]
 basePath: /
 paths:
-  '/users/{email}':
+  '/following/{follower_email}/{following_email}':
     parameters:
-      - in: path
-        description: The email of the user
-        name: email
+      - name: follower_email
+        in: path
         required: true
         type: string
+      - name: following_email
+        in: path
+        required: true
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: >-
+        Create a FOLLOW relationship, where follower_email follows
+        following_email
+      operationId: post_following
+      tags:
+        - following
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: >-
+        Delete the FOLLOW relationship, where follower_email follows
+        following_email
+      operationId: delete_following
+      tags:
+        - following
+  /posts:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Post'
+    post:
+      responses:
+        '204':
+          description: Post created
+      summary: Create a post
+      operationId: create_post
+      tags:
+        - posts
+  '/posts/{uuid}':
+    parameters:
+      - name: uuid
+        in: path
+        required: true
+        type: string
+    delete:
+      responses:
+        '204':
+          description: Post deleted
+      summary: Delete a post given its uuid
+      operationId: delete_post
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Post'
+      tags:
+        - posts
     get:
       responses:
         '200':
           description: Success
-          schema:
-            $ref: '#/definitions/Users'
-        '404':
-          description: User not found
-      summary: Fetch a user given its email
-      operationId: get_user
+      summary: Fetch a post based on its UUID
+      operationId: get_posts
+      tags:
+        - posts
+    put:
+      responses:
+        '204':
+          description: Post updated
+      summary: Update a Post's content
+      operationId: update_post
       parameters:
-        - name: X-Fields
-          in: header
-          type: string
-          format: mask
-          description: An optional fields mask
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Post'
+      tags:
+        - posts
+  /users:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Users'
+    post:
+      responses:
+        '204':
+          description: User created
+        '409':
+          description: User with that email already exists
+      summary: Create a user
+      operationId: create_user
       tags:
         - users
+  '/users/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
     delete:
       responses:
         '204':
           description: User Deleted
-        '404':
-          description: User not found
       summary: Delete a user given its email
       operationId: delete_user
       tags:
         - users
-    put:
+    get:
       responses:
         '200':
           description: Success
-          schema:
-            $ref: '#/definitions/Users'
-        '404':
-          description: User not found
+      summary: Fetch a user given its email
+      operationId: get_users
+      tags:
+        - users
+    put:
+      responses:
+        '204':
+          description: User Fields Deleted
       summary: Update a user by the given fields
-      operationId: put_users
+      operationId: update_user
       parameters:
         - name: payload
           required: true
           in: body
           schema:
             $ref: '#/definitions/Users'
-        - name: X-Fields
-          in: header
-          type: string
-          format: mask
-          description: An optional fields mask
+      tags:
+        - users
+  '/users/{email}/followers':
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Users'
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get followers of a user
+      operationId: get followers of a user
+      tags:
+        - users
+  '/users/{email}/followings':
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Users'
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get the users that the given user is following
+      operationId: Get the users that the given user is following
+      tags:
+        - users
+  '/users/{email}/followings/posts':
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Post'
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get the posts of users the given user follows
+      operationId: Get the posts of users the given user follows.
       tags:
         - users
 definitions:
@@ -91,7 +233,7 @@ definitions:
       preferred_name:
         type: string
         title: The user preferred name.
-      image:
+      profile_image:
         type: string
         title: image saved as array of Bytes representing the user's profile pic.
       phone:
@@ -115,6 +257,24 @@ definitions:
       education:
         type: string
         title: Highest level obtained.
+    type: object
+  Post:
+    required:
+      - content
+    properties:
+      content:
+        type: string
+        title: The content of the post.
+      uuid:
+        type: string
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+      user_email:
+        type: string
     type: object
 responses:
   ParseError:
