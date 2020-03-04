@@ -15,6 +15,8 @@ USERS_TO_TEST = [
     USER_WITH_TWO_FOLLOWINGS,
     USER_WITH_ONE_FOLLOWING,
     USER_WITH_NO_FOLLOWINGS,
+    USER_ABOUT_TO_FOLLOW,
+    USER_ABOUT_TO_BE_FOLLOWED,
     USER_FOLLOWING,
     USER_BEING_FOLLOWED
 ]
@@ -123,8 +125,11 @@ CREATE_POSTS = fMATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['emai
                 CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,9)}'}}] -> (post_j)
                 CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,10)}'}}] -> (post_k)
              """
-
-
+FOLLOWS_AA = f"""
+    MATCH (user_a:Person {{email:'{USER_FOLLOWING['email']}'}})
+    MATCH (user_b:Person {{email:'{USER_BEING_FOLLOWED['email']}'}})
+    CREATE (user_a)-[:FOLLOWS]->(user_b)
+"""
 RELATIONSHIPS_FOLLOWS_USER_A = f"""
     MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
     MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
@@ -161,6 +166,7 @@ queries = [
     CONSTRAINT_USER_EMAIL_UNIQUE,
     CREATE_TEST_DATA,
     CREATE_POSTS,
+    FOLLOWS_AA,
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C

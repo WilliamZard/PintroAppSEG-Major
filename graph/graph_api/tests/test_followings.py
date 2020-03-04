@@ -8,14 +8,14 @@ import pytest
 from flask.json import jsonify
 from jsonmerge import merge
 
-from .generate_test_data import USER_BEING_FOLLOWED, USER_FOLLOWING, NONEXISTANT_USER_EMAIL
+from .generate_test_data import USER_ABOUT_TO_BE_FOLLOWED, USER_ABOUT_TO_FOLLOW, NONEXISTANT_USER_EMAIL, USER_BEING_FOLLOWED, USER_FOLLOWING
 
 
 @pytest.mark.POST_following
 class TestPOSTFollowing:
     def test_POST_following_on_existing_users(self, app):
         response = app.post(
-            f"/following/{USER_FOLLOWING['email']}/{USER_BEING_FOLLOWED['email']}")
+            f"/following/{USER_ABOUT_TO_FOLLOW['email']}/{USER_ABOUT_TO_BE_FOLLOWED['email']}")
         assert response.status == '201 CREATED'
         assert response.data == b''
 
@@ -26,7 +26,7 @@ class TestPOSTFollowing:
     # TODO: finish this test. Put on hold for now as niche usecase
     def test_POST_following_on_non_existing_users(self, app):
         response = app.post(
-            f"/following/{NONEXISTANT_USER_EMAIL}/{USER_BEING_FOLLOWED['email']}")
+            f"/following/{NONEXISTANT_USER_EMAIL}/{USER_ABOUT_TO_BE_FOLLOWED['email']}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
@@ -36,6 +36,21 @@ class TestPOSTFollowing:
 
     @pytest.mark.xfail
     def test_POST_followinig_self(self, app):
+        raise NotImplementedError
+
+
+@pytest.mark.DELETE_following
+class TestDELETEFollowing:
+    def test_DELETE_existing_following(self, app):
+        response = app.delete(
+            f"/following/{USER_FOLLOWING['email']}/{USER_BEING_FOLLOWED['email']}")
+        assert response.status == '204 NO CONTENT'
+        assert response.data == b''
+        # TODO: get request to assert follow relationship was deleted.
+        # use endpoint to get all followings of user_following and check does not exist a follow to user being followed
+
+    @pytest.mark.xfail
+    def test_DELETE_non_existing_following(self, app):
         raise NotImplementedError
 
 

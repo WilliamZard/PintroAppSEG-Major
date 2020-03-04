@@ -136,3 +136,11 @@ def create_follow_relationship(tx, follower_email, following_email):
         RETURN f
     """
     return tx.run(query)
+
+
+def delete_follow_relationship(tx, follower_email, following_email):
+    query = f"""
+        MATCH (follower {{email: '{follower_email}' }})-[f:FOLLOWS]->(following {{email: '{following_email}'}})
+        DELETE f
+    """
+    return tx.run(query)

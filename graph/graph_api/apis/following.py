@@ -7,7 +7,8 @@ from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
-from .neo4j_ops import (create_session, create_follow_relationship)
+from .neo4j_ops import (
+    create_session, create_follow_relationship, delete_follow_relationship)
 
 
 api = Namespace(
@@ -22,6 +23,14 @@ class Following(Resource):
                 create_follow_relationship, follower_email, following_email)
             if response.summary().counters.relationships_created == 1:
                 return make_response('', 201)
+            return 400
+
+    def delete(self, follower_email, following_email):
+        with create_session() as session:
+            response = session.write_transaction(
+                delete_follow_relationship, follower_email, following_email)
+            if response.summary().counters.relationships_deleted == 1:
+                return make_response('', 204)
             return 400
 
 
