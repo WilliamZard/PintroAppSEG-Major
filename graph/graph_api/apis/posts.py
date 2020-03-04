@@ -95,7 +95,7 @@ class Posts(Resource):
 
     # TODO It will be necessary to have authorization to do that.
     # TODO It will be necessary to have authorization to do that.
-    @api.doc('create_post')
+    @api.doc('delete_post')
     @api.response(204, 'Post deleted')
     @api.expect(posts)
     def delete(self, uuid):
