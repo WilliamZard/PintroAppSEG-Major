@@ -45,3 +45,4 @@ urllib3==1.24.3
 wcwidth==0.1.8
 Werkzeug==0.16.1
 zipp==2.2.0
+jsonmerge==1.7.0
