@@ -46,7 +46,7 @@ class TestPUT:
 
     @pytest.mark.xfail
     def test_PUT_existing_post_invalid_changes(self, app):
-        pass
+        raise NotImplementedError
 
 
 @pytest.mark.POST_post
@@ -68,7 +68,7 @@ class TestPOST:
 
     @pytest.mark.xfail
     def test_POST_post_creates_posted_relation(self, app):
-        pass
+        raise NotImplementedError
 
 
 @pytest.mark.DELETE_post
@@ -88,4 +88,4 @@ class TestDELETE:
 
     @pytest.mark.xfail
     def test_DELETE_existing_post_deletes_posted_relation(self, app):
-        pass
+        raise NotImplementedError

@@ -151,6 +151,7 @@ class TestUsersGETFollowings:
 
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
-    @pytest.mark.xfail
     def test_GET_all_posts_of_all_followers(self, app):
-        raise NotImplementedError
+        response = app.get(f'/users/email/followers/posts')
+        assert response.status == '200 OKAY'
+        assert response.data == ''
