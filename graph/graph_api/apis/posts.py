@@ -115,7 +115,7 @@ class Posts(Resource):
 @api.route('/')
 @api.produces('application/json')
 @api.expect(posts)
-class UsersPost(Resource):
+class PostsPost(Resource):
     @api.doc('create_post')
     @api.response(204, 'Post created')
     def post(self):
