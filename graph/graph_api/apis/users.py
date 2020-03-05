@@ -158,7 +158,7 @@ class UsersGETFollowings(Resource):
 
 @api.route('/<string:email>/followings/posts')
 @api.produces('application/json')
-class UsersGETPOSTSOfFollowings(Resource):
+class UsersGETPostsOfFollowings(Resource):
     @api.doc('Get the posts of users the given user follows.')
     def get(self, email):
         '''Get the posts of users the given user follows.'''
@@ -166,6 +166,12 @@ class UsersGETPOSTSOfFollowings(Resource):
             response = session.read_transaction(
                 get_posts_of_followings_of_a_user, email)
             data = response.data()
+
+            # Adjusting different in datetime format. Should not be like this.
+            for post in data:
+                for key in post:
+                    if key in ['created', 'modified']:
+                        post[key] = str(post[key]).replace('+00:00', 'Z')
             if data:
                 return jsonify(data)
             return make_response('', 404)
