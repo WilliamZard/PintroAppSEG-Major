@@ -103,37 +103,6 @@ def set_business_fields(tx, business_email, fields):
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
     return tx.run(query)
 
-def get_post_by_uuid(tx, uuid):
-    query = f"MATCH (post:Post {{uuid:'{uuid}'}}) RETURN post"
-    return tx.run(query)
-
-
-def create_post(tx, post_content, user_email, created, modified, uuid):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})   
-                CREATE (post:Post {{uuid: '{uuid}', content: '{post_content}', created: datetime('{created}'), modified: datetime('{modified}')}})
-                CREATE (user)-[:POSTED]->(post)
-                RETURN post 
-            """
-    return tx.run(query)
-
-# TODO: this function can be more dynamic, no need for fixed paramters. See create user function for guide.
-
-
-def set_post_fields(tx, uuid, content):
-    '''
-        Function for setting a new email of a user which has a particular email saved in database.
-        It returns a BoltStatementResult containing the record of the edited user.
-    '''
-    '''Args:
-        tx = the context from where to run chipher statements and retreiving information from the db.
-        user_email = the email of the user whose data needs to be edited.
-        new_email = the new email to assign to that user.
-    '''
-    # NOTE: this could error when assigning string values that need quotations
-    query = f"MATCH (post:Post {{uuid: '{uuid}'}}) SET post.content='{content}'"
-    return tx.run(query)
-
-
 def create_business(tx, fields):
     query = "CREATE (new_user: Business {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
@@ -182,6 +151,38 @@ def create_space(tx, fields):
     return tx.run(query)
 
 
+"""functions for POSTS"""
+def get_post_by_uuid(tx, uuid):
+    query = f"MATCH (post:Post {{uuid:'{uuid}'}}) RETURN post"
+    return tx.run(query)
+
+
+def create_post(tx, post_content, user_email, created, modified, uuid):
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})   
+                CREATE (post:Post {{uuid: '{uuid}', content: '{post_content}', created: datetime('{created}'), modified: datetime('{modified}')}})
+                CREATE (user)-[:POSTED]->(post)
+                RETURN post 
+            """
+    return tx.run(query)
+
+# TODO: this function can be more dynamic, no need for fixed paramters. See create user function for guide.
+
+
+def set_post_fields(tx, uuid, content):
+    '''
+        Function for setting a new email of a user which has a particular email saved in database.
+        It returns a BoltStatementResult containing the record of the edited user.
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        user_email = the email of the user whose data needs to be edited.
+        new_email = the new email to assign to that user.
+    '''
+    # NOTE: this could error when assigning string values that need quotations
+    query = f"MATCH (post:Post {{uuid: '{uuid}'}}) SET post.content='{content}'"
+    return tx.run(query)
+
+
 def delete_post(tx, uuid):
     query = f"""MATCH (post:Post {{uuid: '{uuid}'}})
                 DETACH DELETE post
@@ -208,6 +209,17 @@ def get_posts_for_timeline(tx, user_email):
              """
     return tx.run(query)
 
+
+def get_posts_of_followings_of_a_user(tx, email):
+    query = f"""
+        MATCH (:Person {{email: '{email}'}})
+        -[:FOLLOWS]->(user:Person)
+        -[:POSTED]->(post:Post)
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+    return tx.run(query)
+
+
+"""functions for FOLLOW RELATIONSHIPS"""
 
 def create_follow_relationship(tx, follower_email, following_email):
     query = f"""
@@ -240,11 +252,3 @@ def get_followings_of_a_user(tx, email):
     """
     return tx.run(query)
 
-
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
-    return tx.run(query)
