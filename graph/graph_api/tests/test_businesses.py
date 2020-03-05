@@ -7,66 +7,43 @@ from ast import literal_eval
 import pytest
 from flask.json import jsonify
 
-from graph_api import create_app
-from graph_api.apis.businesses import BusinessSchema
+#from graph_api import create_app
+from .conftest import app
 
-from .generate_test_data import (NONEXISTANT_BUSINESS_EMAIL,
-                                 VALID_BUSINESS, VALID_BUSINESS_TO_BE_DELETED, INVALID_EMAIL,
-                                 VALID_BUSINESS_TO_BE_UPDATED, VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS,
-                                 VALID_BUSINESS_TO_BE_CREATED, INVALID_BUSINESS_TO_BE_CREATED,
-                                 populate_db, clear_db)
-
-
-# TODO: consider changing scope of fixture so client object does not creating every time.
-@pytest.fixture(scope='module')
-def app():
-    app = create_app()
-    app.testing = True
-
-    # TODO: right now this populates and clears the database for all tests, as opposed to every test
-    # Not sure which if this should happen per test or per module.
-    # Figure this out.
-    with app.test_client() as client:
-        # NOTE commented out populate db
-        populate_db(rewrite_test_data=True)
-        yield client
-    clear_db()
-
-# TODO: some duplicate code here for each endpoint test. Refactor.
+from .generate_test_data import (INVALID_EMAIL, INVALID_BUSINESS_TO_BE_CREATED,
+                                 NONEXISTANT_BUSINESS_EMAIL, VALID_BUSINESS,
+                                 VALID_BUSINESS_TO_BE_CREATED,
+                                 VALID_BUSINESS_TO_BE_DELETED,
+                                 VALID_BUSINESS_TO_BE_UPDATED,
+                                 VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS,
+                                 BUSINESS_WITH_THREE_FOLLOWINGS,
+                                 BUSINESS_WITH_TWO_FOLLOWINGS,
+                                 BUSINESS_WITH_ONE_FOLLOWING,
+                                 BUSINESS_WITH_NO_FOLLOWINGS, BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS)
 
 
-# TODO: below is an attempt as reducing duplicate code in tests.
-# Failed because it leads to pytest output being less informative.
-# Come back to this later.
-"""
-@pytest.mark.skip
-def test_api_endpoint(app, email, status, response_data):
-    response = app.get(f"/users/{email}")
-    assert response.status == status
-    # TODO: consider using standard json.dumps instead of jsonify
-    assert response.data == jsonify(response_data).data
-"""
 
-
-@pytest.mark.get
+@pytest.mark.GET_business
 class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app):
         response = app.get(f"/businesses/{VALID_BUSINESS['email']}")
         assert response.status == '200 OK'
         assert response.data == jsonify(VALID_BUSINESS).data
 
+    @pytest.mark.skip
     def test_get_business_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
+    @pytest.mark.skip
     def test_get_business_with_invalid_email(self, app):
         response = app.get(f"/businesses/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
 
-@pytest.mark.delete
+@pytest.mark.DELETE_business
 class TestDelete:
     # TODO: some duplicate code here for each endpoint test. Refactor.
     def test_delete_business_with_valid_email_that_exists(self, app):
@@ -91,7 +68,7 @@ class TestDelete:
         assert response.data == b''
 
 
-@pytest.mark.put
+@pytest.mark.PUT_business
 class TestPut:
     def test_put_business_with_valid_email_that_exists(self, app):
         response = app.put(
@@ -114,7 +91,7 @@ class TestPut:
     # TODO: add test for validating payload
 
 
-@pytest.mark.post
+@pytest.mark.POST_business
 class TestPost:
     def test_post_business_with_valid_payload_that_does_not_exist(self, app):
         response = app.post(

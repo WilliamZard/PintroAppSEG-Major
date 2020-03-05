@@ -81,7 +81,8 @@ def get_business_by_email(tx, business_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    return tx.run(f"MATCH (user:Business {{email: '{business_email}'}}) RETURN user")
+    query = f"MATCH (user:Business {{email: '{business_email}'}}) RETURN user"
+    return tx.run(query)
 
 
 def delete_business_by_email(tx, business_email):

@@ -59,7 +59,7 @@ class Businesses(Resource):
             business = response.single()
             if business:
                 # TODO: a lot going on here. See if this can be improved.
-                data = dict(business.data()['business'].items())
+                data = dict(business.data()['user'].items())
                 return jsonify(business_schema.dump(data))
             return make_response('', 404)
 
@@ -87,7 +87,6 @@ class Businesses(Resource):
         with create_session() as session:
             response = session.write_transaction(
                 set_business_fields, email, api.payload)
-            print(response.summary().counters)
             if response.summary().counters.properties_set == len(api.payload):
                 return make_response('', 204)
             return make_response('', 404)

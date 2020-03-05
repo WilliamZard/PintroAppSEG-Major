@@ -2,9 +2,12 @@
 import datetime
 import os
 from neo4j import GraphDatabase
+
+
 from .test_data.users import *
-from .test_data.posts import *
-# TODO: organise test data. Different script?
+from .test_data.businesses import *
+from .test_data.posts import * 
+# TODO: organise test data. Different script? 
 
 USERS_TO_TEST = [
     VALID_USER,
@@ -59,7 +62,6 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
     CREATE_TEST_DATA += "password: \'" + USER['password'] + "\' , "
     CREATE_TEST_DATA += "profile_image: \'" + USER['profile_image'] + "\' , "
-    CREATE_TEST_DATA += "education: \'" + USER['education'] + "\' , "
     CREATE_TEST_DATA += "full_name: \'" + USER['full_name'] + "\' , "
     CREATE_TEST_DATA += "gender: \'" + USER['gender'] + "\' , "
     CREATE_TEST_DATA += "phone: \'" + USER['phone'] + "\' , "
@@ -188,6 +190,40 @@ CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS
 
 DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
 
+BUSINESSES_TO_TEST = [
+    VALID_BUSINESS,
+    VALID_BUSINESS_TO_BE_UPDATED,
+    VALID_BUSINESS_TO_BE_DELETED,
+    BUSINESS_WITH_MULTIPLE_POSTS,
+    BUSINESS_WITH_THREE_FOLLOWINGS,
+    BUSINESS_WITH_TWO_FOLLOWINGS,
+    BUSINESS_WITH_ONE_FOLLOWING,
+    BUSINESS_WITH_NO_FOLLOWINGS,
+    BUSINESS_ABOUT_TO_FOLLOW,
+    BUSINESS_ABOUT_TO_BE_FOLLOWED,
+    BUSINESS_FOLLOWING,
+    BUSINESS_BEING_FOLLOWED,
+    BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS
+
+    
+]
+
+
+
+# TODO: restructure this
+CREATE_TEST_BUSINESS_DATA = ""
+for BUSINESS in BUSINESSES_TO_TEST:
+    CREATE_TEST_BUSINESS_DATA += "CREATE (" + BUSINESS['full_name'] + ":Business { "
+    CREATE_TEST_BUSINESS_DATA += "full_name: \'" + BUSINESS['full_name'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "password: \'" + BUSINESS['password'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "profile_image: \'" + BUSINESS['profile_image'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "phone: \'" + BUSINESS['phone'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "short_bio: \'" + BUSINESS['short_bio'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "location: \'" + BUSINESS['location'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "email: \'" + BUSINESS['email'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "story: \'" + BUSINESS['story'] + "\'}) \n"
+
+
 queries = [
     CONSTRAINT_POST_CONTENT_EXISTS,
     CONSTRAINT_USER_EMAIL_EXISTS,
@@ -198,5 +234,6 @@ queries = [
     CREATE_FOLLOWS_FOR_POSTS_USERS,
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
-    RELATIONSHIPS_FOLLOWS_USER_C
+    RELATIONSHIPS_FOLLOWS_USER_C,
+    CREATE_TEST_BUSINESS_DATA
 ]

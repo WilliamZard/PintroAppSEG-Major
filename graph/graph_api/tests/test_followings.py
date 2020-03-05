@@ -6,7 +6,6 @@ from ast import literal_eval
 
 import pytest
 from flask.json import jsonify
-from jsonmerge import merge
 
 from .generate_test_data import USER_ABOUT_TO_BE_FOLLOWED, USER_ABOUT_TO_FOLLOW, NONEXISTANT_USER_EMAIL, USER_BEING_FOLLOWED, USER_FOLLOWING
 
