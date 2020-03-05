@@ -2,7 +2,12 @@ import uuid
 import datetime
 from .users import USER_WITH_MULTIPLE_POSTS
 
-NOW = str(datetime.datetime.now())
+# cypher datetime object requires T between date and time components
+# and uses nanosecond precision
+# and uses Z as shorthand for UTC time
+# hence additional string operations below
+NOW = str(datetime.datetime.now()).replace(' ', 'T') + '000Z'
+
 
 # POSTS
 POST_PROPERTIES = [

@@ -77,31 +77,31 @@ CREATE_POSTS = f"""
 
     CREATE (post_a:Post {{uuid: '{EXISTING_POST['uuid']}',
         content:'{EXISTING_POST['content']}',
-        created:'{EXISTING_POST['created']}',
-        modified:'{EXISTING_POST['modified']}'
+        created: datetime('{EXISTING_POST['created']}'),
+        modified: datetime('{EXISTING_POST['modified']}')
         }})
     CREATE (post_b:Post {{uuid: '{POST_TO_BE_UPDATED_THAT_EXISTS['uuid']}',
         content:'{POST_TO_BE_UPDATED_THAT_EXISTS['content']}',
-        created:'{POST_TO_BE_UPDATED_THAT_EXISTS['created']}',
-        modified:'{POST_TO_BE_UPDATED_THAT_EXISTS['modified']}'
+        created: datetime('{POST_TO_BE_UPDATED_THAT_EXISTS['created']}'),
+        modified: datetime('{POST_TO_BE_UPDATED_THAT_EXISTS['modified']}')
         }})
 
     CREATE (post_c:Post {{uuid: '{POST_TO_BE_DELETED_THAT_EXISTS['uuid']}',
         content:'{POST_TO_BE_DELETED_THAT_EXISTS['content']}',
-        created:'{POST_TO_BE_DELETED_THAT_EXISTS['created']}',
-        modified:'{POST_TO_BE_DELETED_THAT_EXISTS['modified']}'
+        created: datetime('{POST_TO_BE_DELETED_THAT_EXISTS['created']}'),
+        modified: datetime('{POST_TO_BE_DELETED_THAT_EXISTS['modified']}')
         }})
 
     CREATE (post_d:Post {{uuid: '{USER_POST_A['uuid']}',
         content:'{USER_POST_A['content']}',
-        created:'{USER_POST_A['created']}',
-        modified:'{USER_POST_A['modified']}'
+        created: datetime('{USER_POST_A['created']}'),
+        modified: datetime('{USER_POST_A['modified']}')
         }})
     
     CREATE (post_e:Post {{uuid: '{USER_POST_B['uuid']}',
         content:'{USER_POST_B['content']}',
-        created:'{USER_POST_B['created']}',
-        modified:'{USER_POST_B['modified']}'
+        created: datetime('{USER_POST_B['created']}'),
+        modified: datetime('{USER_POST_B['modified']}')
         }})
     
     CREATE (user_a)-[:POSTED]->(post_a)

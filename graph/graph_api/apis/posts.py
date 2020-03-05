@@ -77,6 +77,8 @@ class Posts(Resource):
             post = response.single()
             if post:
                 data = dict(post.data()['post'].items())
+                data['modified'] = str(data['modified']).replace('+00:00', 'Z')
+                data['created'] = str(data['created']).replace('+00:00', 'Z')
                 return jsonify(data)
             return make_response('', 404)
 
