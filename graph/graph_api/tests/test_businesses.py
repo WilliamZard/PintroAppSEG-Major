@@ -30,13 +30,12 @@ class TestGet:
         assert response.status == '200 OK'
         assert response.data == jsonify(VALID_BUSINESS).data
 
-    @pytest.mark.skip
+    
     def test_get_business_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.skip
     def test_get_business_with_invalid_email(self, app):
         response = app.get(f"/businesses/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -107,6 +106,7 @@ class TestPost:
     def test_post_business_with_valid_payload_that_exists(self, app):
         response = app.post(
             "/businesses/", json=VALID_BUSINESS)
+        print(VALID_BUSINESS)   
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
