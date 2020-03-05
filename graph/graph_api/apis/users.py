@@ -6,9 +6,10 @@ from marshmallow import Schema, fields
 from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
+from .posts import posts
 
 from .neo4j_ops import (create_session, create_user, delete_user_by_email,
-                        get_user_by_email, set_user_fields)
+                        get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user, get_posts_of_followings_of_a_user)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -55,7 +56,6 @@ user_schema = UserSchema()
 
 @api.route('/<string:email>')
 @api.produces('application/json')
-@api.expect(users)
 class Users(Resource):
     def get(self, email):
         '''Fetch a user given its email.'''
@@ -67,6 +67,7 @@ class Users(Resource):
             user = response.single()
             if user:
                 # TODO: a lot going on here. See if this can be improved.
+                print(user.data())
                 data = dict(user.data()['user'].items())
                 return jsonify(user_schema.dump(data))
             return make_response('', 404)
@@ -86,6 +87,8 @@ class Users(Resource):
 
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
+    # TODO: not sure if expect is necessary. Check what it is used for again.
+    @api.expect(users)
     def put(self, email):
         '''Update a user by the given fields.'''
         if not valid_email(email):
@@ -95,7 +98,6 @@ class Users(Resource):
         with create_session() as session:
             response = session.write_transaction(
                 set_user_fields, email, api.payload)
-            print(response.summary().counters)
             if response.summary().counters.properties_set == len(api.payload):
                 return make_response('', 204)
             return make_response('', 404)
@@ -122,3 +124,54 @@ class UsersPost(Resource):
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)
+
+
+@api.route('/<string:email>/followers')
+@api.produces('application/json')
+class UsersGETFollowers(Resource):
+    @api.doc('get followers of a user')
+    def get(self, email):
+        '''Get followers of a user'''
+        with create_session() as session:
+            response = session.read_transaction(
+                get_followers_of_a_user, email)
+            data = response.data()
+            if data:
+                return jsonify(data)
+            return make_response('', 404)
+
+
+@api.route('/<string:email>/followings')
+@api.produces('application/json')
+class UsersGETFollowings(Resource):
+    @api.doc('Get the users that the given user is following')
+    def get(self, email):
+        '''Get the users that the given user is following'''
+        with create_session() as session:
+            response = session.read_transaction(
+                get_followings_of_a_user, email)
+            data = response.data()
+            if data:
+                return jsonify(data)
+            return make_response('', 404)
+
+
+@api.route('/<string:email>/followings/posts')
+@api.produces('application/json')
+class UsersGETPostsOfFollowings(Resource):
+    @api.doc('Get the posts of users the given user follows.')
+    def get(self, email):
+        '''Get the posts of users the given user follows.'''
+        with create_session() as session:
+            response = session.read_transaction(
+                get_posts_of_followings_of_a_user, email)
+            data = response.data()
+
+            # Adjusting different in datetime format. Should not be like this.
+            for post in data:
+                for key in post:
+                    if key in ['created', 'modified']:
+                        post[key] = str(post[key]).replace('+00:00', 'Z')
+            if data:
+                return jsonify(data)
+            return make_response('', 404)
