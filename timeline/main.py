@@ -19,6 +19,9 @@ def generate_timeline(request):
         return make_response(b'', 422)
     response = requests.get(
         f'https://bluej-pintro-project.appspot.com/users/{email}/followings/posts')
+    if response.status_code > 500:
+        return make_response(b'', response.status_code)
+
     posts_schema = PostSchema()
     deserialised = posts_schema.load(response.json(), many=True)
     deserialised.sort(key=itemgetter('modified'))
