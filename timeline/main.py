@@ -12,6 +12,8 @@ def generate_timeline(request):
             return "Invalid Email"  # TODO add status code
         response = requests.get(
             f'https://bluej-pintro-project.appspot.com/users/{email}/followings/posts')
+        if response.status_code == 404:
+            return "404 USER NOT FOUND"
         if response.status_code > 500:
             return response.status_code
 
