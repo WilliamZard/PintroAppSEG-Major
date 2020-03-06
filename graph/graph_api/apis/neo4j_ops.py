@@ -145,14 +145,14 @@ def set_space_fields(tx, space_email, fields):
 
 
 def create_space(tx, fields):
-    query = "CREATE (new_user: Space {" + ", ".join(
+    query = "CREATE (user: Space {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
     return tx.run(query)
-    query = f"MATCH (post:Post {{uuid: '{uuid}'}}) SET post.content='{content}'"
-    return tx.run(query)
+    
 
 
 """functions for POSTS"""
+
 def get_post_by_uuid(tx, uuid):
     query = f"MATCH (post:Post {{uuid:'{uuid}'}}) RETURN post"
     return tx.run(query)

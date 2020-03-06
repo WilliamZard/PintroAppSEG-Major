@@ -105,8 +105,7 @@ class TestPost:
 
     def test_post_business_with_valid_payload_that_exists(self, app):
         response = app.post(
-            "/businesses/", json=VALID_BUSINESS)
-        print(VALID_BUSINESS)   
+            "/businesses/", json=VALID_BUSINESS) 
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 

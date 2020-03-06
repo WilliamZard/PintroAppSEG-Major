@@ -67,7 +67,6 @@ class Users(Resource):
             user = response.single()
             if user:
                 # TODO: a lot going on here. See if this can be improved.
-                print(user.data())
                 data = dict(user.data()['user'].items())
                 return jsonify(user_schema.dump(data))
             return make_response('', 404)

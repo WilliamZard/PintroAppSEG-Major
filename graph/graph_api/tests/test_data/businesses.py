@@ -12,8 +12,10 @@ BUSINESS_PROPERTIES = [
 
 VALID_BUSINESS = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'SaraLovelace', '911',
                                          'not godless','strand','not_ucl@kcl.ac.uk','What is GKT?']))
+
 VALID_BUSINESS_TO_BE_UPDATED = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'DTrump', '000',
                                                        'genius', 'white house', 'genius@fakenews.cnn', 'Covfefe']))
+                                                       
 VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS = dict(zip(BUSINESS_PROPERTIES, ['0000', 'new_image', 'DonaldTrump', '999',
                                                                   'retired genius', 'Mar O Lago', 'genius@fakenews.cnn', 'revolutionary']))
 VALID_BUSINESS_TO_BE_DELETED = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'Taaj', '123',

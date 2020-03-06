@@ -6,6 +6,7 @@ from neo4j import GraphDatabase
 
 from .test_data.users import *
 from .test_data.businesses import *
+from .test_data.spaces import *
 from .test_data.posts import * 
 # TODO: organise test data. Different script? 
 
@@ -224,11 +225,47 @@ for BUSINESS in BUSINESSES_TO_TEST:
 
 CONSTRAINT_BUSINESS_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Business) ASSERT user.email IS UNIQUE"
 
+
+SPACES_TO_TEST = [
+    VALID_SPACE,
+    VALID_SPACE_TO_BE_UPDATED,
+    VALID_SPACE_TO_BE_DELETED,
+    SPACE_WITH_MULTIPLE_POSTS,
+    SPACE_WITH_THREE_FOLLOWINGS,
+    SPACE_WITH_TWO_FOLLOWINGS,
+    SPACE_WITH_ONE_FOLLOWING,
+    SPACE_WITH_NO_FOLLOWINGS,
+    SPACE_ABOUT_TO_FOLLOW,
+    SPACE_ABOUT_TO_BE_FOLLOWED,
+    SPACE_FOLLOWING,
+    SPACE_BEING_FOLLOWED,
+    SPACE_WITH_FOLLOWINGS_THAT_HAVE_POSTS
+]
+
+
+CREATE_TEST_SPACE_DATA = ""
+for SPACE in SPACES_TO_TEST:
+    CREATE_TEST_SPACE_DATA += "CREATE (" + SPACE['full_name'] + ":Space { "
+    CREATE_TEST_SPACE_DATA += "full_name: \'" + SPACE['full_name'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "password: \'" + SPACE['password'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "profile_image: \'" + SPACE['profile_image'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "phone: \'" + SPACE['phone'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "short_bio: \'" + SPACE['short_bio'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "location: \'" + SPACE['location'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "events: \'" + SPACE['events'] + "\'}) \n"
+
+
+CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
+
 queries = [
     CONSTRAINT_POST_CONTENT_EXISTS,
     CONSTRAINT_USER_EMAIL_EXISTS,
     CONSTRAINT_USER_EMAIL_UNIQUE,
+    CONSTRAINT_SPACE_EMAIL_UNIQUE,
+    CREATE_TEST_SPACE_DATA,
     CONSTRAINT_BUSINESS_EMAIL_UNIQUE,
+    CREATE_TEST_BUSINESS_DATA,
     CREATE_TEST_DATA,
     FOLLOWS_AA,
     CREATE_POSTS,
@@ -236,6 +273,4 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C,
-    CREATE_TEST_BUSINESS_DATA
-    
 ]

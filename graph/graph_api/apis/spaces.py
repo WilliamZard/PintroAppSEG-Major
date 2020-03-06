@@ -39,7 +39,7 @@ spaces = api.model('Spaces', {
     'phone': restx_fields.String(title="The co-working space's phone number."),
     'location': restx_fields.String(title='current city of the co-working space.'),
     'short_bio': restx_fields.String(title='short bio describing the co-working space of maximum 250 characters.'),
-    'story': restx_fields.String(title='describe any events going on here in 250 words.')
+    'events': restx_fields.String(title='describe any events going on here in 250 words.')
     })  # title for accounts that needs to be created.
 
 space_schema = SpaceSchema()
@@ -57,10 +57,10 @@ class Spaces(Resource):
         with create_session() as session:
             response = session.read_transaction(get_space_by_email, email)
             space = response.single()
-            if sapce:
+            if space:
                 # TODO: a lot going on here. See if this can be improved.
-                data = dict(space.data()['sapce'].items())
-                return jsonify(user_schema.dump(data))
+                data = dict(space.data()['user'].items())
+                return jsonify(space_schema.dump(data))
             return make_response('', 404)
 
     @api.doc('delete_space')
@@ -87,7 +87,6 @@ class Spaces(Resource):
         with create_session() as session:
             response = session.write_transaction(
                 set_space_fields, email, api.payload)
-            print(response.summary().counters)
             if response.summary().counters.properties_set == len(api.payload):
                 return make_response('', 204)
             return make_response('', 404)
