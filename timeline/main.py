@@ -20,7 +20,7 @@ def generate_timeline(request):
         # Sort by date modified
         data.sort(key=itemgetter('modified'), reverse=True)
 
-        return data
+        return str(data)
     else:
         return "Email field empty."
 
