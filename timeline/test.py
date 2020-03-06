@@ -30,7 +30,14 @@ class TestFunction(unittest.TestCase):
         expected_data = "404 USER NOT FOUND"
         self.assertEqual(generate_timeline(req), expected_data)
 
-# TODO: test for invalid email
+    def test_generate_timeline_on_invalid_email(self):
+        email = 'invalid'
+        data = {'email': email}
+        req = Mock(get_json=Mock(return_value=data), args=data)
+
+        expected_data = "422 INVALID EMAIL"
+        self.assertEqual(generate_timeline(req), expected_data)
+
 # TODO: test 500s
 
 

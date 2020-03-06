@@ -9,7 +9,7 @@ def generate_timeline(request):
     if request_json and 'email' in request_json:
         email = request_json['email']
         if not _valid_email(email):
-            return "Invalid Email"  # TODO add status code
+            return "422 INVALID EMAIL"
         response = requests.get(
             f'https://bluej-pintro-project.appspot.com/users/{email}/followings/posts')
         if response.status_code == 404:
