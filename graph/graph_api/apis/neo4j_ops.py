@@ -118,6 +118,13 @@ def get_list_of_user_post_dates(tx, user_email):
 
 # TODO: delete ORDER BY
 
+def get_posts_of_followings_of_a_user(tx, email):
+    query = f"""
+        MATCH (:Person {{email: '{email}'}})
+        -[:FOLLOWS]->(user:Person)
+        -[:POSTED]->(post:Post)
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+    return tx.run(query)
 
 def get_posts_for_timeline(tx, user_email):
     query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:FOLLOWS]->()-[posted:POSTED]->(post:Post)
@@ -159,11 +166,6 @@ def get_followings_of_a_user(tx, email):
     """
     return tx.run(query)
 
-
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+def get_nodes_for_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchIndex', '{search_string}~0.4')"""
     return tx.run(query)
