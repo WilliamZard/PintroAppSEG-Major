@@ -3,6 +3,8 @@ from neo4j import GraphDatabase
 import sys
 import os
 import pandas as pd
+import uuid
+import time
 
 
 def connect():
@@ -30,11 +32,23 @@ def generate_tags(csv_path):
         yield tag
 
 
+def get_time():
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+
+
+def convert_to_cypher_datetime(datetime):
+    # Assumes there is a single space separating date and time sections
+    # Assumes is in UTC time and is timezone naive
+    return datetime.replace(' ', 'T') + 'Z'
+
+
 def create_tag_node(tx, tag):
     tags_string = ':Tag'  # have all tag nodes have default label :Tags
+    tag_uuid = uuid.uuid4()
+    created = convert_to_cypher_datetime(get_time())
     if tag['labels']:
         tags_string = tags_string + ':' + ':'.join(tag['labels'])
-    query = f"""CREATE (new_tag{tags_string} {{Name: "{tag['Name']}"}})"""
+    query = f"""CREATE (new_tag{tags_string} {{Name: "{tag['Name']}", Created: datetime("{created}"), uuid: "{tag_uuid}"}})"""
     tx.run(query)
 
 
