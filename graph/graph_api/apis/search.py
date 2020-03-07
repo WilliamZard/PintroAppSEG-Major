@@ -1,4 +1,5 @@
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from marshmallow import Schema, fields
@@ -6,12 +7,16 @@ from marshmallow.exceptions import ValidationError
 
 from .neo4j_ops import create_session, get_nodes_for_search
 
+
+
 api = Namespace('search', title='Operations for full text search')
 
-### Schemas used for serializations
+### Schemas used for serializations TODO once you ll have the business, and spaces API and their schemas instance you might just 
+### want to import them from there and not creating them here, or event better create a schemas.py file and have em all in there.
 
 class UserResultSchema(Schema):
     email = fields.Email(required=True)
+    password = fields.String()
     full_name = fields.Str(required=True)
     preferred_name = fields.String()
     profile_image = fields.String()
@@ -27,6 +32,7 @@ class UserResultSchema(Schema):
     
 class SpaceResultSchema(Schema):
     email = fields.Email(required=True)
+    password = fields.String()
     full_name = fields.Str(required=True)
     profile_image = fields.String()
     phone = fields.String()
@@ -38,7 +44,7 @@ class SpaceResultSchema(Schema):
 
 class BusinessResultSchema(Schema):
     email = fields.Email(required=True)
-    password = fields.Str(required=True)
+    password = fields.String()
     full_name = fields.Str(required=True)
     profile_image = fields.String()
     phone = fields.String()
@@ -53,7 +59,7 @@ query = api.model('Query', {'query': restx_fields.String(required=True, title='S
 
 user_result_schema = UserResultSchema()
 space_result_schema = SpaceResultSchema()
-business_besult_schema = BusinessResultSchema()
+business_result_schema = BusinessResultSchema()
 
 @api.route('/')
 @api.produces('application/json')
@@ -79,7 +85,7 @@ class SearchPost(Resource):
                     extracted_business = dict(record.data().get('node').items())
                     extracted_business['score'] = record.data()['score']
                     formatted_business = business_result_schema.dump(extracted_business)
-                    data.appendPerson(formatted_business)
+                    data.append(formatted_business)
 
                 elif 'Person' in record.get('node').labels:
                     extracted_user = dict(record.data().get('node').items())
@@ -92,9 +98,5 @@ class SearchPost(Resource):
                     extracted_space['score'] = record.data()['score']
                     formatted_space = space_result_schema.dump(extracted_space)
                     data.append(formatted_space)
-
             return data
-             #   if response.summary().counters.nodes_created == 1:
-              #      return make_response('', 201)
-            #except ConstraintError:
-             #   return make_response('Node with that email already exists.', 409)
+

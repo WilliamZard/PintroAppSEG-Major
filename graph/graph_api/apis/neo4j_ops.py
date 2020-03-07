@@ -167,5 +167,5 @@ def get_followings_of_a_user(tx, email):
     return tx.run(query)
 
 def get_nodes_for_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchIndex', '"{search_string}"~0.4')"""
+    query = f"""CALL db.index.fulltext.queryNodes('SearchIndex', '"{search_string}"~0.2')"""
     return tx.run(query)
