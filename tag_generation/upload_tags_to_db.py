@@ -48,7 +48,7 @@ def create_tag_node(tx, tag):
     created = convert_to_cypher_datetime(get_time())
     if tag['labels']:
         tags_string = tags_string + ':' + ':'.join(tag['labels'])
-    query = f"""CREATE (new_tag{tags_string} {{Name: "{tag['Name']}", Created: datetime("{created}"), uuid: "{tag_uuid}"}})"""
+    query = f"""CREATE (new_tag{tags_string} {{name: "{tag['Name']}", created: datetime("{created}"), uuid: "{tag_uuid}"}})"""
     tx.run(query)
 
 

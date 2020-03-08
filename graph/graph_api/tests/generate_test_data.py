@@ -189,6 +189,18 @@ CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS
 
 DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
 
+TAGS = [KING_SLAYER, COLES]
+TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
+
+create_tag_queries = []
+for tag, tag_labels in zip(TAGS, TAG_LABELS):
+    print(tag)
+    labels = ':'.join(tag_labels)
+    query = f"""CREATE (new_tag:{labels} {{name: "{tag['name']}", created: datetime("{tag['created']}"), uuid: "{tag['uuid']}"}})"""
+    print(query)
+    create_tag_queries.append(query)
+
+
 queries = [
     CONSTRAINT_POST_CONTENT_EXISTS,
     CONSTRAINT_USER_EMAIL_EXISTS,
@@ -200,4 +212,4 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C
-]
+] + create_tag_queries

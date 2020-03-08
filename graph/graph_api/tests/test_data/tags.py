@@ -3,7 +3,7 @@ import datetime
 
 # TODO: this is duplicated across testing scripts. Refactor.
 NOW = str(datetime.datetime.now()).replace(' ', 'T') + '000Z'
-TAG_PROPERTIES = {'uuid', 'created', 'name'}
+TAG_PROPERTIES = ['uuid', 'created', 'name']
 
 # Using custom labels for testing to keep things simple
 LABEL_TAG = 'Tag'

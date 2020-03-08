@@ -167,3 +167,14 @@ def get_posts_of_followings_of_a_user(tx, email):
         -[:POSTED]->(post:Post)
         RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
     return tx.run(query)
+
+
+def get_tags(tx, labels):
+    labels = ' OR '.join(f'tag:{label}' for label in labels)
+    query = f"""
+        MATCH (tag)
+        WHERE {labels}
+        RETURN tag
+    """
+    print(query)
+    return tx.run(query)
