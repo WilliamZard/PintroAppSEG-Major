@@ -4,6 +4,7 @@ import os
 from neo4j import GraphDatabase
 from .test_data.users import *
 from .test_data.posts import *
+from .test_data.tags import *
 # TODO: organise test data. Different script?
 
 USERS_TO_TEST = [
