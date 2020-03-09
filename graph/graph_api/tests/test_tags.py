@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from .conftest import app
 from flask.json import jsonify
@@ -10,14 +11,11 @@ class TestGET:
     def test_GET_tags_with_all_labels(self, app):
         payload = list(COLES_LABELS | KING_SLAYER_LABELS)
         response = app.get("/tags/", json=payload)
-        tag_properties_not_in_response = 'created'
-        expected_tags = [KING_SLAYER, COLES]
-        expected_response_data = [
-            {k: tag[k] for k in tag.keys() - tag_properties_not_in_response}
-            for tag in expected_tags]
 
         assert response.status == "200 OK"
-        assert response.data == jsonify(expected_response_data).data
+        assert len(response.json) == 2
+        assert COLES in response.json
+        assert KING_SLAYER in response.json
 
     @pytest.mark.xfail
     def test_GET_tags_without_specifying_labels(self, app):

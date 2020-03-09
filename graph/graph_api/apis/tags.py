@@ -18,7 +18,7 @@ def get_time():
 def convert_to_cypher_datetime(datetime):
     # Assumes there is a single space separating date and time sections
     # Assumes is in UTC time and is timezone naive
-    return datetime.replace(' ', 'T') + 'Z'
+    return datetime.replace(' ', 'T') + '+00:00'
 
 
 api = Namespace('tags', description='Tag related operations.')
@@ -48,7 +48,7 @@ class Tags(Resource):
         with create_session() as session:
             response = session.read_transaction(
                 get_tags, api.payload)
-            print(response.data())
             if response:
-                return jsonify(response.data())
+                data = [dict(tag['tag'].items()) for tag in response.data()]
+                return tags_schema.dump(data, many=True)
             return make_response('', 404)
