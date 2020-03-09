@@ -17,10 +17,9 @@ class TestGET:
         assert COLES in response.json
         assert KING_SLAYER in response.json
 
-    @pytest.mark.xfail
     def test_GET_tags_without_specifying_labels(self, app):
         response = app.get("/tags/")
-        assert response.status == "404 PAYLOAD MUST SPECIFIY TAG LABELS"
-        assert response.data == b''
+        # TODO: add more details in error message
+        assert response.status == "400 BAD REQUEST"
 
     # TODO: test for invalid and valid labels.

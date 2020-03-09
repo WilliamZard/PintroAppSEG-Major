@@ -1,6 +1,6 @@
 import time
 
-from flask import make_response
+from flask import make_response, abort
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -44,6 +44,9 @@ tags_schema = TagSchema()
 class Tags(Resource):
     def get(self):
         '''Get all tags with the given labels.'''
+        print(api.payload)
+        if not api.payload:
+            abort(400)
 
         with create_session() as session:
             response = session.read_transaction(
@@ -51,4 +54,3 @@ class Tags(Resource):
             if response:
                 data = [dict(tag['tag'].items()) for tag in response.data()]
                 return tags_schema.dump(data, many=True)
-            return make_response('', 404)
