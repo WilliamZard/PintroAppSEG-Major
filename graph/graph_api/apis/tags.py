@@ -37,28 +37,31 @@ tags = api.model('Tag', {
     'name': restx_fields.String()
 })
 
+labels = api.model('Label', {
+    'labels': restx_fields.List(restx_fields.String())
+})
+
+
 tags_schema = TagSchema()
 
 
 @api.route('/')
 @api.produces('application/json')
+@api.expect(labels)
 class Tags(Resource):
-    def get(self):
+    def post(self):
         '''Get all tags with the given labels.'''
-        if not api.payload:
+        if not api.payload or not api.payload['labels']:
             abort(400)
-        print(api.payload)
         label_pattern = r"^[a-zA-Z]*"
-        for label in api.payload:
-            print('checking')
-            print(bool(re.fullmatch(label_pattern, label)))
+        for label in api.payload['labels']:
             if not re.fullmatch(label_pattern, label):
                 print('abort')
                 abort(400)
 
         with create_session() as session:
             response = session.read_transaction(
-                get_tags, api.payload)
+                get_tags, api.payload['labels'])
             if response:
                 data = [dict(tag['tag'].items()) for tag in response.data()]
                 return tags_schema.dump(data, many=True)
