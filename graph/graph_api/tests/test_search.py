@@ -40,7 +40,7 @@ class TestPOST:
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
 
-    def test_query_that_partially_matches_stories_or_events_should_return_correct_nodes(self,app):
+    def test_query_that_partially_matches_stories_should_return_correct_nodes(self,app):
         ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
             return all the nodes in the database which doesn't make sense in any situation
         '''

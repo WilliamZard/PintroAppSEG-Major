@@ -258,7 +258,7 @@ for SPACE in SPACES_TO_TEST:
 
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
 
-CREATE_SEARCH_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchIndex', ['Person', 'Space', 'Business'], ['full_name', 'email', 'short_bio', 'events', 'story'])"
+CREATE_SEARCH_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchIndex', ['Person', 'Space', 'Business'], ['full_name', 'email', 'short_bio', 'story'])"
 DROP_SEARCH_INDEX = "CALL db.index.fulltext.drop(\"SearchIndex\")"
 queries = [
     CREATE_SEARCH_INDEX,
