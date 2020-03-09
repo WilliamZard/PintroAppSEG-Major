@@ -63,12 +63,6 @@ MATCHING_SHORT_BIO_SEARCH = {
         "query" : "not godless"
     },
     'result' : [
-        SPACE_ABOUT_TO_BE_FOLLOWED,
-        SPACE_BEING_FOLLOWED,
-        SPACE_ABOUT_TO_FOLLOW,
-        VALID_SPACE,
-        SPACE_FOLLOWING,
-        SPACE_WITH_THREE_FOLLOWINGS,
         VALID_BUSINESS,
         BUSINESS_ABOUT_TO_BE_FOLLOWED,
         BUSINESS_WITH_THREE_FOLLOWINGS,
