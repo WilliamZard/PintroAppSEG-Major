@@ -7,6 +7,7 @@ from .test_data.posts import *
 # TODO: organise test data. Different script?
 
 USERS_TO_TEST = [
+    DEACTIVATED_USER,
     VALID_USER,
     VALID_USER_TO_BE_UPDATED,
     VALID_USER_TO_BE_DELETED,
@@ -68,6 +69,7 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "job_title: \'" + USER['job_title'] + "\' , "
     CREATE_TEST_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
     CREATE_TEST_DATA += "email: \'" + USER['email'] + "\' , "
+    CREATE_TEST_DATA += "state: \'" + str(USER['state']) + "\' , "
     CREATE_TEST_DATA += "story: \'" + USER['story'] + "\'}) \n"
 
 CREATE_POSTS = f"""

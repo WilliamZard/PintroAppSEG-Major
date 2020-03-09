@@ -33,6 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
+    state = fields.Boolean()
 
 
 # Schema used for doc generation
@@ -173,4 +174,22 @@ class UsersGETPostsOfFollowings(Resource):
                         post[key] = str(post[key]).replace('+00:00', 'Z')
             if data:
                 return jsonify(data)
+            return make_response('', 404)
+
+@api.route('/deactivate/<string:email>')
+@api.produces('application/json')
+class Users(Resource):
+    @api.doc('update_user')
+    @api.response(204, 'User deactivated.')
+    def put(self, email):
+        '''Update a user by the given fields.'''
+        if not valid_email(email):
+            return make_response('', 422)
+        fields = {'active': False}
+        # TODO: validate payload
+        with create_session() as session:
+            response = session.write_transaction(
+                set_user_fields, email, fields)
+            if response.summary().counters.properties_set == 1:
+                return make_response('', 204)
             return make_response('', 404)
