@@ -166,6 +166,17 @@ def get_followings_of_a_user(tx, email):
     """
     return tx.run(query)
 
-def get_nodes_for_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchIndex', '"{search_string}"~0.2')"""
+def get_nodes_for_user_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
     return tx.run(query)
+
+def get_nodes_for_business_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchBusinessIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
+    return tx.run(query)
+
+def get_nodes_for_space_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
+    return tx.run(query)    

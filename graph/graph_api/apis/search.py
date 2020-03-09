@@ -5,7 +5,7 @@ from flask_restx import fields as restx_fields
 from marshmallow import Schema, fields
 from marshmallow.exceptions import ValidationError
 
-from .neo4j_ops import create_session, get_nodes_for_search
+from .neo4j_ops import create_session, get_nodes_for_user_search, get_nodes_for_business_search, get_nodes_for_space_search
 
 
 
@@ -70,39 +70,45 @@ business_result_schema = BusinessResultSchema()
 class SearchPost(Resource):
     @api.doc('search_query')
     def post(self):
-        '''Search a user, business account, or co-working space given some keywords.
-           It returns a record.
+        '''Search users, business accounts, or co-working spaces given some keywords.
+           It returns a record. It limits the result to only contain at most 10 spaces,
+           business profiles, or users.
         '''
-        # try:
-        #     deserialised_payload = user_schema.load(api.payload)
-        # except ValidationError as e:
-        #     return make_response(e.messages['email'][0], 422)
         with create_session() as session:
-            #try:
-            response = session.write_transaction(get_nodes_for_search, api.payload['query'])
-            records = response.records()
+            user_response = session.write_transaction(get_nodes_for_user_search, api.payload['query'])
+            user_records = user_response.records()
+
+            business_response = session.write_transaction(get_nodes_for_business_search, api.payload['query'])
+            business_records = business_response.records()
+
+            space_response = session.write_transaction(get_nodes_for_space_search, api.payload['query'])
+            space_records = space_response.records()
+
+            limits = {'business' : 10,
+                      'person' : 10,
+                      'space' : 10}
             data = []
-            for record in records:
-                #TODO  lot of code duplication here . Might be solved with polymorphism
-                if 'Business' in record.get('node').labels:
-                    extracted_business = dict(record.data().get('node').items())
-                    extracted_business['score'] = record.data()['score']
-                    extracted_business['profile_type'] = "business"
-                    formatted_business = business_result_schema.dump(extracted_business)
-                    data.append(formatted_business)
+            for record in user_records:
+                extracted_user = dict(record.data().get('node').items())
+                extracted_user['score'] = record.data()['score']
+                extracted_user['profile_type'] = "person"
+                formatted_user = user_result_schema.dump(extracted_user)
+                data.append(formatted_user)
 
-                elif 'Person' in record.get('node').labels:
-                    extracted_user = dict(record.data().get('node').items())
-                    extracted_user['score'] = record.data()['score']
-                    extracted_user['profile_type'] = "person"
-                    formatted_user = user_result_schema.dump(extracted_user)
-                    data.append(formatted_user)
+            for record in business_records:
+                extracted_business = dict(record.data().get('node').items())
+                extracted_business['score'] = record.data()['score']
+                extracted_business['profile_type'] = "business"
+                formatted_business = business_result_schema.dump(extracted_business)
+                data.append(formatted_business)
 
-                elif 'Space' in record.get('node').labels:
-                    extracted_space = dict(record.data().get('node').items())
-                    extracted_space['score'] = record.data()['score']
-                    extracted_space['profile_type'] = "space"
-                    formatted_space = space_result_schema.dump(extracted_space)
-                    data.append(formatted_space)
+            for record in space_records:
+                extracted_space = dict(record.data().get('node').items())
+                extracted_space['score'] = record.data()['score']
+                extracted_space['profile_type'] = "space"
+                formatted_space = space_result_schema.dump(extracted_space)
+                data.append(formatted_space)
+            
             return data
+
 
