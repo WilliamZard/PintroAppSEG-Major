@@ -26,7 +26,6 @@ class SpaceSchema(Schema):
     profile_image = fields.String()
     phone = fields.String()
     location = fields.String()
-    events = fields.String()
     short_bio = fields.String()
 
 
@@ -38,8 +37,7 @@ spaces = api.model('Spaces', {
     'profile_image': restx_fields.String(title='image saved as array of Bytes representing the co-working space\'s profile pic.'),
     'phone': restx_fields.String(title="The co-working space's phone number."),
     'location': restx_fields.String(title='current city of the co-working space.'),
-    'short_bio': restx_fields.String(title='short bio describing the co-working space of maximum 250 characters.'),
-    'events': restx_fields.String(title='describe any events going on here in 250 words.')
+    'short_bio': restx_fields.String(title='short bio describing the co-working space of maximum 250 characters.')
     })  # title for accounts that needs to be created.
 
 space_schema = SpaceSchema()

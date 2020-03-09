@@ -252,8 +252,7 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "phone: \'" + SPACE['phone'] + "\' , "
     CREATE_TEST_SPACE_DATA += "short_bio: \'" + SPACE['short_bio'] + "\' , "
     CREATE_TEST_SPACE_DATA += "location: \'" + SPACE['location'] + "\' , "
-    CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\' , "
-    CREATE_TEST_SPACE_DATA += "events: \'" + SPACE['events'] + "\'}) \n"
+    CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\'}) \n"
 
 
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
