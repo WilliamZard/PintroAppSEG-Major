@@ -22,4 +22,8 @@ class TestGET:
         # TODO: add more details in error message
         assert response.status == "400 BAD REQUEST"
 
-    # TODO: test for invalid and valid labels.
+    def test_GET_tags_with_invalid_labels(self, app):
+        payload = ['bad label']
+        response = app.get("/tags/", json=payload)
+
+        assert response.status == "400 BAD REQUEST"

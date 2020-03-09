@@ -1,4 +1,5 @@
 import time
+import re
 
 from flask import make_response, abort
 from flask.json import jsonify
@@ -44,9 +45,16 @@ tags_schema = TagSchema()
 class Tags(Resource):
     def get(self):
         '''Get all tags with the given labels.'''
-        print(api.payload)
         if not api.payload:
             abort(400)
+        print(api.payload)
+        label_pattern = r"^[a-zA-Z]*"
+        for label in api.payload:
+            print('checking')
+            print(bool(re.fullmatch(label_pattern, label)))
+            if not re.fullmatch(label_pattern, label):
+                print('abort')
+                abort(400)
 
         with create_session() as session:
             response = session.read_transaction(
