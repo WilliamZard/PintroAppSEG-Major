@@ -35,6 +35,7 @@ class TestPOST:
         json_response = response.get_json()
         for element in json_response: 
             del element['score']
+            del element['profile_type']
         
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
@@ -47,6 +48,7 @@ class TestPOST:
         json_response = response.get_json()
         for element in json_response: 
             del element['score']
+            del element['profile_type']
 
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_STORY_OR_EVENTS_SEARCH['result'])
@@ -59,6 +61,7 @@ class TestPOST:
         json_response = response.get_json()
         for element in json_response: 
             del element['score']
+            del element['profile_type']
         
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_SHORT_BIO_SEARCH['result'])
