@@ -27,6 +27,7 @@ class UserResultSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
+    profile_type = fields.String()
     score = fields.String()
 
     
@@ -39,6 +40,7 @@ class SpaceResultSchema(Schema):
     location = fields.String()
     events = fields.String()
     short_bio = fields.String()
+    profile_type = fields.String()
     score = fields.String()
     
 
@@ -51,6 +53,7 @@ class BusinessResultSchema(Schema):
     location = fields.String()
     short_bio = fields.String()
     story = fields.String()
+    profile_type = fields.String()
     score = fields.String()
 
 ###  Models needed as payload in request for searching call
@@ -84,18 +87,21 @@ class SearchPost(Resource):
                 if 'Business' in record.get('node').labels:
                     extracted_business = dict(record.data().get('node').items())
                     extracted_business['score'] = record.data()['score']
+                    extracted_business['profile_type'] = "business"
                     formatted_business = business_result_schema.dump(extracted_business)
                     data.append(formatted_business)
 
                 elif 'Person' in record.get('node').labels:
                     extracted_user = dict(record.data().get('node').items())
                     extracted_user['score'] = record.data()['score']
+                    extracted_user['profile_type'] = "person"
                     formatted_user = user_result_schema.dump(extracted_user)
                     data.append(formatted_user)
 
                 elif 'Space' in record.get('node').labels:
                     extracted_space = dict(record.data().get('node').items())
                     extracted_space['score'] = record.data()['score']
+                    extracted_space['profile_type'] = "space"
                     formatted_space = space_result_schema.dump(extracted_space)
                     data.append(formatted_space)
             return data
