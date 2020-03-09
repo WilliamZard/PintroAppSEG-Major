@@ -49,7 +49,9 @@ def clear_db():
     with driver.session() as session:
         print("about to delete")
         session.write_transaction(_run_query, DELETE_ALL_NODES)
-        session.write_transaction(_run_query, DROP_SEARCH_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
 
 
 def _run_query(tx, query):
@@ -258,10 +260,19 @@ for SPACE in SPACES_TO_TEST:
 
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
 
-CREATE_SEARCH_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchIndex', ['Person', 'Space', 'Business'], ['full_name', 'email', 'short_bio', 'story'])"
-DROP_SEARCH_INDEX = "CALL db.index.fulltext.drop(\"SearchIndex\")"
+CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
+DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
+
+CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
+DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\")"
+
+CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
+DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
+
 queries = [
-    CREATE_SEARCH_INDEX,
+    CREATE_SEARCH_USER_INDEX,
+    CREATE_SEARCH_BUSINESS_INDEX,
+    CREATE_SEARCH_SPACE_INDEX,
     CONSTRAINT_POST_CONTENT_EXISTS,
     CONSTRAINT_USER_EMAIL_EXISTS,
     CONSTRAINT_USER_EMAIL_UNIQUE,
