@@ -11,9 +11,10 @@ LABEL_GOT = 'GOT'
 LABEL_KCL = 'KCL'
 
 
-KING_SLAYER = dict(
+KING_SLAYER_TAG = dict(
     zip(TAG_PROPERTIES, [str(uuid.uuid4()), NOW, 'King Slayer']))
 KING_SLAYER_LABELS = {LABEL_TAG, LABEL_GOT}
 
-COLES = dict(zip(TAG_PROPERTIES, [str(uuid.uuid4()), NOW, 'Space Explorer']))
+COLES_TAG = dict(
+    zip(TAG_PROPERTIES, [str(uuid.uuid4()), NOW, 'Space Explorer']))
 COLES_LABELS = {LABEL_TAG, LABEL_KCL}

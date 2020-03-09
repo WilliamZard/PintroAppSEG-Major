@@ -64,11 +64,12 @@ class Users(Resource):
 
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
-            user = response.single()
-            if user:
+            response = response.single()
+            if response:
                 # TODO: a lot going on here. See if this can be improved.
-                print(user.data())
-                data = dict(user.data()['user'].items())
+                user = dict(response.data()['user'].items())
+                labels = response.data()['tags']
+                user
                 return jsonify(user_schema.dump(data))
             return make_response('', 404)
 
@@ -87,7 +88,6 @@ class Users(Resource):
 
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
-    # TODO: not sure if expect is necessary. Check what it is used for again.
     @api.expect(users)
     def put(self, email):
         '''Update a user by the given fields.'''

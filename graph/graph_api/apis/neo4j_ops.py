@@ -41,7 +41,8 @@ def get_user_by_email(tx, user_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) RETURN user")
+    query = f"""MATCH (user:Person {{email: '{user_email}'}})-->(tag:Tag) RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
+    return tx.run(query)
 
 
 def delete_user_by_email(tx, user_email):

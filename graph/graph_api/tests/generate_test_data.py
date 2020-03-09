@@ -189,16 +189,22 @@ CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS
 
 DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
 
-TAGS = [KING_SLAYER, COLES]
+TAGS = [KING_SLAYER_TAG, COLES_TAG]
 TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
 
 create_tag_queries = []
 for tag, tag_labels in zip(TAGS, TAG_LABELS):
-    print(tag)
     labels = ':'.join(tag_labels)
     query = f"""CREATE (new_tag:{labels} {{name: "{tag['name']}", created: datetime("{tag['created']}"), uuid: "{tag['uuid']}"}})"""
-    print(query)
     create_tag_queries.append(query)
+
+ASSOCIATE_VALID_USER_TO_THEIR_TAGS = f"""
+MATCH (valid_user:Person {{email: '{VALID_USER['email']}'}})
+MATCH (tag_a:Tag {{uuid: '{COLES_TAG['uuid']}'}})
+MATCH (tag_b:Tag {{uuid: '{KING_SLAYER_TAG['uuid']}'}})
+CREATE (valid_user)-[:TAGGED]->(tag_a)
+CREATE (valid_user)-[:TAGGED]->(tag_b)
+"""
 
 
 queries = [
@@ -211,5 +217,7 @@ queries = [
     CREATE_FOLLOWS_FOR_POSTS_USERS,
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
-    RELATIONSHIPS_FOLLOWS_USER_C
-] + create_tag_queries
+    RELATIONSHIPS_FOLLOWS_USER_C,
+    *create_tag_queries,
+    ASSOCIATE_VALID_USER_TO_THEIR_TAGS
+]

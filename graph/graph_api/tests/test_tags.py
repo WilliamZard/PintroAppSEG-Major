@@ -3,7 +3,7 @@ import json
 
 from .conftest import app
 from flask.json import jsonify
-from .generate_test_data import LABEL_TAG, LABEL_GOT, LABEL_KCL, KING_SLAYER, COLES, KING_SLAYER_LABELS, COLES_LABELS, TAG_PROPERTIES
+from .generate_test_data import LABEL_TAG, LABEL_GOT, LABEL_KCL, KING_SLAYER_TAG, COLES_TAG, KING_SLAYER_LABELS, COLES_LABELS, TAG_PROPERTIES
 
 
 @pytest.mark.POST_tags
@@ -14,8 +14,8 @@ class TestPOST:
 
         assert response.status == "200 OK"
         assert len(response.json) == 2
-        assert COLES in response.json
-        assert KING_SLAYER in response.json
+        assert COLES_TAG in response.json
+        assert KING_SLAYER_TAG in response.json
 
     def test_POST_tags_without_specifying_labels(self, app):
         response = app.post("/tags/")
