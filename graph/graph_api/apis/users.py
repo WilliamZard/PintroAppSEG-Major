@@ -33,8 +33,6 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
-    tags_with_labels = fields.Dict(
-        keys=fields.String(), values=fields.List(fields.String))
     tags = fields.List(fields.String())
 
 
@@ -52,7 +50,6 @@ users = api.model('Users', {
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
     'education': restx_fields.String(title='Highest level obtained.'),
-    'tags_with_labels': restx_fields.Nested(model={restx_fields.String(): restx_fields.List(restx_fields.String)}, title='Tags the user has associated themself with.'),
     'tags_as_uuids': restx_fields.List(restx_fields.String())
 })  # title for accounts that needs to be created.
 
