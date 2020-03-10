@@ -12,15 +12,17 @@ class TestFunction(unittest.TestCase):
         data = {'email': email}
         req = Mock(get_json=Mock(return_value=data), args=data)
 
-        expected_data = str([
-            {"content": "second_post", "modified": "2020-03-05T21:41:42.000000000Z",
-                "uuid": "1066d651-0f2e-4a4d-84c4-093b88558685"},
-            {"content": "Post B Content", "modified": "2020-03-05T21:38:49.632236000Z",
-                "uuid": "5c7dd8ac-7ff4-44b0-aedb-de9ecd1e1086"},
-            {"content": "Post A Content", "modified": "2020-03-05T21:38:49.632236000Z",
-                "uuid": "3575c639-5b63-4e02-a959-f13051b855ff"}
-        ])
-        self.assertEqual(generate_timeline(req), expected_data)
+        # NOTE: this data is hardcoded. Every time graph_api tests are rerun modified and uuid fields change.
+        # One solution is hardcoding them in the dummy data scripts, which is not a problem.
+        post_b = {"content": "Post B Content", "modified": "2020-03-10T15:23:33.020296000Z",
+                  "uuid": "6566d860-d71f-4258-a222-7bb013086620"}
+        post_a = {"content": "Post A Content", "modified": "2020-03-10T15:23:33.020296000Z",
+                  "uuid": "791a95b0-77f9-4ccb-940f-04cec294b05e"}
+
+        results = generate_timeline(req)
+        self.assertEqual(len(results), 2)
+        self.assertIn(post_b, results)
+        self.assertIn(post_a, results)
 
     def test_generate_timeline_on_non_existing_email(self):
         email = 'does.not@exist.com'

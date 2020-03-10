@@ -2,11 +2,16 @@
 import datetime
 import os
 from neo4j import GraphDatabase
+
+
 from .test_data.users import *
 from .test_data.businesses import *
 from .test_data.spaces import *
 from .test_data.posts import *
-# TODO: organise test data. Different script?
+from .test_data.tags import *
+from .test_data.businesses import *
+from .test_data.spaces import *
+# TODO: organise test data. Different script? 
 
 USERS_TO_TEST = [
     VALID_USER,
@@ -64,7 +69,6 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
     CREATE_TEST_DATA += "password: \'" + USER['password'] + "\' , "
     CREATE_TEST_DATA += "profile_image: \'" + USER['profile_image'] + "\' , "
-    CREATE_TEST_DATA += "education: \'" + USER['education'] + "\' , "
     CREATE_TEST_DATA += "full_name: \'" + USER['full_name'] + "\' , "
     CREATE_TEST_DATA += "gender: \'" + USER['gender'] + "\' , "
     CREATE_TEST_DATA += "phone: \'" + USER['phone'] + "\' , "
@@ -193,6 +197,23 @@ CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS
 
 DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
 
+TAGS = [KING_SLAYER_TAG, COLES_TAG]
+TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
+
+create_tag_queries = []
+for tag, tag_labels in zip(TAGS, TAG_LABELS):
+    labels = ':'.join(tag_labels)
+    query = f"""CREATE (new_tag:{labels} {{name: "{tag['name']}", created: datetime("{tag['created']}"), uuid: "{tag['uuid']}"}})"""
+    create_tag_queries.append(query)
+
+ASSOCIATE_VALID_USER_TO_THEIR_TAGS = f"""
+MATCH (valid_user:Person {{email: '{VALID_USER['email']}'}})
+MATCH (tag_a:Tag {{uuid: '{COLES_TAG['uuid']}'}})
+MATCH (tag_b:Tag {{uuid: '{KING_SLAYER_TAG['uuid']}'}})
+CREATE (valid_user)-[:TAGGED]->(tag_a)
+CREATE (valid_user)-[:TAGGED]->(tag_b)
+"""
+
 BUSINESSES_TO_TEST = [
     VALID_BUSINESS,
     VALID_BUSINESS_TO_BE_UPDATED,
@@ -254,11 +275,12 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "phone: \'" + SPACE['phone'] + "\' , "
     CREATE_TEST_SPACE_DATA += "short_bio: \'" + SPACE['short_bio'] + "\' , "
     CREATE_TEST_SPACE_DATA += "location: \'" + SPACE['location'] + "\' , "
-    CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\' , "
-    CREATE_TEST_SPACE_DATA += "events: \'" + SPACE['events'] + "\'}) \n"
+    CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\'}) \n"
+
 
 
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
+
 
 CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
 DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
@@ -287,4 +309,6 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C,
+    *create_tag_queries,
+    ASSOCIATE_VALID_USER_TO_THEIR_TAGS
 ]

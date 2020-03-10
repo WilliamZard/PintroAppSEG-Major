@@ -33,6 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
+    tags = fields.List(fields.String())
 
 
 # Schema used for doc generation
@@ -48,7 +49,8 @@ users = api.model('Users', {
     'location': restx_fields.String(title='current city of the user.'),
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
-    'education': restx_fields.String(title='Highest level obtained.')
+    'education': restx_fields.String(title='Highest level obtained.'),
+    'tags_as_uuids': restx_fields.List(restx_fields.String())
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
@@ -64,12 +66,13 @@ class Users(Resource):
 
         with create_session() as session:
             response = session.read_transaction(get_user_by_email, email)
-            user = response.single()
-            if user:
-                # TODO: a lot going on here. See if this can be improved.
-                print(user.data())
-                data = dict(user.data()['user'].items())
-                return jsonify(user_schema.dump(data))
+            response = response.single()
+            if response:
+                user = dict(response.data()['user'].items())
+                tags = response.data()['tags']
+                labels = response.data()['tag_labels']
+                user['tags'] = dict(zip(tags, labels))
+                return jsonify(user_schema.dump(user))
             return make_response('', 404)
 
     @api.doc('delete_user')
@@ -80,13 +83,15 @@ class Users(Resource):
             return make_response('', 422)
 
         with create_session() as session:
-            response = session.read_transaction(delete_user_by_email, email)
-            if response.summary().counters.nodes_deleted == 1:
+            response = session.write_transaction(delete_user_by_email, email)
+            # >= because post nodes of user may have been deleted
+            if response.summary().counters.nodes_deleted >= 1:
                 return make_response('', 204)
             return make_response('', 404)
 
     @api.doc('update_user')
-    @api.response(204, 'User fields updated.')
+    @api.response(204, 'User Fields Deleted')
+    @api.expect(users)
     def put(self, email):
         '''Update a user by the given fields.'''
         if not valid_email(email):
@@ -111,10 +116,15 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
+        print(api.payload)
         try:
             deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:
-            return make_response(e.messages['email'][0], 422)
+            if 'email' in e.messages:
+                return make_response(e.messages['email'][0], 422)
+            if 'tags' in e.messages:
+                return make_response(e.messages['tags'][0], 422)
+            return make_response(e.messages, 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(

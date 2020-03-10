@@ -66,4 +66,6 @@ BUSINESS_THAT_POSTED_POST_B = dict(zip(BUSINESS_PROPERTIES, ['password', 'image'
                                                       'Siberia', 'Unknown','m@m.co.uk', 'shut it 007']))
 
 NONEXISTANT_BUSINESS_EMAIL = 'does@exist.not'
+
 INVALID_EMAIL = 'invalidateme.now'
+

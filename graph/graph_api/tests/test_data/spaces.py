@@ -7,8 +7,7 @@ SPACE_PROPERTIES = [
     "phone",
     "short_bio",
     "location",
-    "email",
-    "events"]
+    "email"]
 
 VALID_SPACE = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Sara_A_Lovelace', '911',
                                          'not godless','strand','nothing_ucl@kcl.ac.uk','What is GKT?']))
@@ -65,4 +64,5 @@ SPACE_THAT_POSTED_POST_B = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Mgf
                                                       'Siberia', 'Unknown','m@mdfr.co.uk', 'shut it 007']))
 
 NONEXISTANT_SPACE_EMAIL = 'does@exist.not'
+
 INVALID_EMAIL = 'invalidateme.now'

@@ -8,7 +8,7 @@ COPY graph_api graph_api
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-ENV NEO4J_URI=bolt://35.246.50.73
+ENV NEO4J_URI=bolt://34.89.14.174	
 ENV NEO4J_PASSWORD=L0nd0n£EU!.dev
 ENV NEO4J_USER=neo4j
 ENV ENV=prod
