@@ -67,11 +67,22 @@ class TestDelete:
 @pytest.mark.PUT_user
 class TestPut:
     def test_PUT_user_with_valid_email_that_exists(self, app):
+        email = VALID_USER_TO_BE_UPDATED['email']
         response = app.put(
-            f"/users/{VALID_USER_TO_BE_UPDATED['email']}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+            f"/users/{email}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
-        # TODO: add requests and assertions for checking the resource was actually updated properly, not just good response.
+
+        # TODO: complete these assertions.
+        """
+        response = app.get(f"/users/{email}")
+        assert response.status == '200 OK'
+        json = dict(response.get_json())
+        print(json)
+        assert len(json) == 13
+        for key, value in VALID_USER_TO_BE_UPDATED_NEW_FIELDS.items():
+            assert key in json
+            assert value == json[key]"""
 
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app):
         response = app.put(
