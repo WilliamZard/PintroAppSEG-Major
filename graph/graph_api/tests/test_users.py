@@ -179,12 +179,12 @@ class TestUsersGETFollowingsPosts:
         response = app.get(
             f"/users/{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}/followings/posts")
         assert response.status == '200 OK'
-        results = [{'content': post['content'], 'modified': post['modified'], 'uuid': post['uuid']}
-                   for post in [USER_POST_A, USER_POST_B]]
-        # BUG: there's a bug here where the order of the items in the below comparison changes, causing the test to fail.
-        # Most likely due to the fact that one of them relies on a dictionary, which is orderless
-        # Suggest using a set, as what we really want to check is containment.
-        assert response.data == jsonify(results).data
+        USER_POST_A.pop('created')
+        USER_POST_B.pop('created')
+        json = response.get_json()
+        assert len(json) == 2
+        assert USER_POST_A in json
+        assert USER_POST_B in json
 
     @pytest.mark.xfail
     def test_get_all_posts_of_all_followers_of_non_existing_user(self, app):
