@@ -46,7 +46,12 @@ def get_user_by_email(tx, user_email):
 
 
 def delete_user_by_email(tx, user_email):
-    return tx.run(f"MATCH (user:Person {{email: '{user_email}'}}) DELETE user")
+    '''Deletes user node, all outbound relationships, and all posts.'''
+    query = f"""
+    MATCH(n: Person {{email: '{user_email}'}})
+    OPTIONAL MATCH(n)--(p: Post)
+    DETACH DELETE n, p"""
+    return tx.run(query)
 
 
 def set_user_fields(tx, user_email, fields):

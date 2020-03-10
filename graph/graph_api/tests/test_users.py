@@ -41,11 +41,12 @@ class TestGET:
 
 @pytest.mark.DELETE_user
 class TestDelete:
+    # TODO: add tests for ensuring post nodes were deleted
+    # TODO: add tests for ensuring all relationships were deleted
     def test_DELETE_user_with_valid_email_that_exists(self, app):
         email = VALID_USER_TO_BE_DELETED['email']
         response = app.delete(f"/users/{email}")
         assert response.status == '204 NO CONTENT'
-        # TODO: consider using standard json.dumps instead of jsonify
         assert response.data == b''
 
         # Assert user was actually deleted in the database

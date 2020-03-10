@@ -83,8 +83,9 @@ class Users(Resource):
             return make_response('', 422)
 
         with create_session() as session:
-            response = session.read_transaction(delete_user_by_email, email)
-            if response.summary().counters.nodes_deleted == 1:
+            response = session.write_transaction(delete_user_by_email, email)
+            # >= because post nodes of user may have been deleted
+            if response.summary().counters.nodes_deleted >= 1:
                 return make_response('', 204)
             return make_response('', 404)
 
