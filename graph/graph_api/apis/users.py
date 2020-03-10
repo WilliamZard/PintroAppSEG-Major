@@ -76,7 +76,7 @@ class Users(Resource):
             return make_response('', 404)
 
     @api.doc('delete_user')
-    @api.response(204, 'User Deleted')
+    @api.response(204, 'User deleted.')
     def delete(self, email):
         '''Delete a user given its email.'''
         if not valid_email(email):
@@ -111,7 +111,8 @@ class Users(Resource):
 @api.expect(users)
 class UsersPost(Resource):
     @api.doc('create_user')
-    @api.response(204, 'User created')
+    @api.response(422, 'Invalid Email')
+    @api.response(201, 'User created')
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
