@@ -27,36 +27,14 @@ class FollowRequest(Resource):
                 return make_response('', 201)
             return 400
 
-    def delete(self, follower_email, following_email):
-        '''Delete the FOLLOW relationship, where follower_email follows following_email'''
+    def delete(self, follow_requester, follow_request_recipient):
+        '''Delete the FOLLOW relationship, where follow_requester follows follow_request_recipient'''
         with create_session() as session:
             response = session.write_transaction(
-                delete_follow_relationship, follower_email, following_email)
+                delete_follow_relationship, follow_requester, follow_request_recipient)
             if response.summary().counters.relationships_deleted == 1:
-                return make_response('', 204)
-            return 400
+                return make_response('', 204)   
+            return make_response('', 400)
 
 
-"""
-# TODO: consider url different structure. users/email/followings/posts
-@api.route('/posts/<string:email>')
-@api.produces('application/json')
-class FollowingPosts(Resource):
-    def get(self, email):
-        '''Get all posts of all followings of a specific user.'''
-        if not valid_email(email):
-            return make_response('', 422)
 
-        with create_session() as session:
-            response = session.read_transaction(get_posts_for_timeline, email)
-            posts = response.records()
-            if posts:
-                data = []
-                for post in posts:
-                    extracted_post = dict(post.data()['post'].items())
-                    formatted_post = post_schema.dump(extracted_post)
-                    data.append(formatted_post)
-                # TODO: check correct response code here
-                return data
-            return make_response('', 404)
-"""

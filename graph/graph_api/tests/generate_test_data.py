@@ -162,6 +162,13 @@ FOLLOWS_AA = f"""
     MATCH (user_b:Person {{email:'{USER_BEING_FOLLOWED['email']}'}})
     CREATE (user_a)-[:FOLLOWS]->(user_b)
 """
+
+CREATE_FOLLOW_REQUEST = f"""
+    MATCH (user_a:Person {{email:'{FOLLOW_REQUESTER['email']}'}})
+    MATCH (user_b:Person {{email:'{FOLLOW_REQUEST_RECIPIENT['email']}'}})
+    CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_b)
+"""
+
 RELATIONSHIPS_FOLLOWS_USER_A = f"""
     MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
     MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
@@ -301,5 +308,6 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C,
     *create_tag_queries,
-    ASSOCIATE_VALID_USER_TO_THEIR_TAGS
+    ASSOCIATE_VALID_USER_TO_THEIR_TAGS,
+    CREATE_FOLLOW_REQUEST
 ]
