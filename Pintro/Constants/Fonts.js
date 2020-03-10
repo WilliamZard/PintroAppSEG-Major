@@ -52,6 +52,11 @@ const fonts = StyleSheet.create({
         fontFamily: 'Poppins-light',
         fontSize: 8,
         textAlign: 'right'
+    },
+    name_white: {
+        color: Colors.pintroWhite,
+        fontFamily: 'Poppins-Bold',
+        fontSize: 16
     }
 });
 
