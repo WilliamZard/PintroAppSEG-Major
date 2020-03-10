@@ -1,5 +1,5 @@
 # USERS
-from .tags import COLES_TAG
+from .tags import COLES_TAG, KING_SLAYER_TAG
 # TODO: what about using a dictionary to describe data needed for each test? Could give it some structure.
 USERS_PROPERTIES = [
     "password",
@@ -27,8 +27,9 @@ VALID_USER_TO_BE_UPDATED_NEW_FIELDS = dict(zip(USERS_PROPERTIES, ['0000', 'new_i
                                                                   'retired genius', 'Mar O Lago', 'Former Best President', 'GOAT', 'genius@fakenews.cnn', 'revolutionary', VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS]))
 VALID_USER_TO_BE_DELETED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'Taaj', 'man', '123',
                                                        'going places', 'Gatwick init', 'going places', 'Taaj', 'taaj@hotmail.co.uk', 'you get me?']))
+VALID_USER_TO_BE_CREATED_TAGS = [COLES_TAG['uuid'], KING_SLAYER_TAG['uuid']]
 VALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
-                                                       'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'precious@gmail.com', 'Likeable and devout.']))
+                                                       'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'precious@gmail.com', 'Likeable and devout.', VALID_USER_TO_BE_CREATED_TAGS]))
 
 INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
                                                          'best kiosk in town', 'Gatwickk', 'Precious', 'Preciousest', 'preciousgmail.com', 'Likeable and devout.']))

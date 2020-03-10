@@ -78,8 +78,19 @@ def set_user_fields(tx, user_email, fields):
 
 
 def create_user(tx, fields):
-    query = "CREATE (new_user: Person {" + ", ".join(
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+    create_user_query = "CREATE (new_user: Person {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+
+    create_TAGGED_relationships_query = f"""
+    WITH {tags} AS tag_uuids
+    UNWIND tag_uuids AS tag_uuid
+    MATCH(tag: Tag {{uuid: tag_uuid}})
+    MATCH(user: Person {{email: '{fields['email']}'}})
+    CREATE(user)-[:TAGGED] -> (tag)"""
+    query = create_user_query + create_TAGGED_relationships_query
     return tx.run(query)
 
 

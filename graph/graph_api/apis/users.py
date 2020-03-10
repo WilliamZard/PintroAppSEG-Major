@@ -35,7 +35,7 @@ class UserSchema(Schema):
     education = fields.String()
     tags_with_labels = fields.Dict(
         keys=fields.String(), values=fields.List(fields.String))
-    tags_as_uuids = fields.List(fields.String())
+    tags = fields.List(fields.String())
 
 
 # Schema used for doc generation
@@ -118,10 +118,15 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
+        print(api.payload)
         try:
             deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:
-            return make_response(e.messages['email'][0], 422)
+            if 'email' in e.messages:
+                return make_response(e.messages['email'][0], 422)
+            if 'tags' in e.messages:
+                return make_response(e.messages['tags'][0], 422)
+            return make_response(e.messages, 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(
