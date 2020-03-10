@@ -15,7 +15,7 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
                                  USER_WITH_TWO_FOLLOWINGS,
                                  USER_WITH_ONE_FOLLOWING,
                                  USER_WITH_NO_FOLLOWINGS, USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
-                                 USER_POST_A, USER_POST_B, DEACTIVATED_USER)
+                                 USER_POST_A, USER_POST_B, DEACTIVATED_USER, ACTIVATED_USER)
 
 
 @pytest.mark.GET_user
@@ -171,9 +171,14 @@ class TestUsersGETFollowingsPosts:
 
 @pytest.mark.PUT_user_activation
 class TestUserPUTActivation:
-    def test_PUT_all_users_that_have_been_disabled(self,app):
+    def test_PUT_deactivated_users(self,app):
         response = app.put(
             f"/users/deactivate/{DEACTIVATED_USER['email']}")
+        assert response.status == '204 NO CONTENT'
+
+    def test_PUT_activated_users(self,app):
+        response = app.put(
+            f"/users/activate/{ACTIVATED_USER['email']}")
         assert response.status == '204 NO CONTENT'
         
 

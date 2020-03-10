@@ -8,6 +8,7 @@ from .test_data.posts import *
 
 USERS_TO_TEST = [
     DEACTIVATED_USER,
+    ACTIVATED_USER,
     VALID_USER,
     VALID_USER_TO_BE_UPDATED,
     VALID_USER_TO_BE_DELETED,

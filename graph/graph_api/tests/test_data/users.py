@@ -66,6 +66,9 @@ USER_THAT_POSTED_POST_B = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK',
 DEACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Dule Weington', 'male', '911',
                                          'not godless', 'strand', 'Dule', 'Dule', 'nothing_ucl@kcl.ac.uk', 'What is GKT?', not active]))
 
+ACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Sule Wule', 'male', '911',
+                                         'not godless', 'strand', 'Sule', 'Sule', 'Sule_wule@kcl.ac.uk', 'What is GKT?', active]))
+
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
