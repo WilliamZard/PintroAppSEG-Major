@@ -22,7 +22,11 @@ class TestGET:
     def test_GET_user_with_valid_email_that_exists(self, app):
         response = app.get(f"/users/{VALID_USER['email']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_USER).data
+        json = dict(response.get_json())
+        assert len(json) == 13
+        for key, value in VALID_USER.items():
+            assert key in json
+            assert value == json[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")

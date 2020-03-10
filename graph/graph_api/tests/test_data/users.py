@@ -15,7 +15,8 @@ USERS_PROPERTIES = [
     "story",
     "tags"]
 
-VALID_USER_TAGS = {'GOT': ['King Slayer'], 'KCL': ['Space Explorer']}
+VALID_USER_TAGS = {'King Slayer': [
+    'GOT', 'Tag'], 'Space Explorer': ['Tag', 'KCL']}
 VALID_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
                                          'not godless', 'strand', 'Duke', 'Duke', 'not_ucl@kcl.ac.uk', 'What is GKT?', VALID_USER_TAGS]))
 VALID_USER_TO_BE_UPDATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Home', 'DTrump', 'male?', '000',

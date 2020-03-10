@@ -33,6 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
+    tags = fields.Dict(keys=fields.String(), values=fields.List(fields.String))
 
 
 # Schema used for doc generation
@@ -48,7 +49,8 @@ users = api.model('Users', {
     'location': restx_fields.String(title='current city of the user.'),
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
-    'education': restx_fields.String(title='Highest level obtained.')
+    'education': restx_fields.String(title='Highest level obtained.'),
+    'tags': restx_fields.Nested(model={restx_fields.String(): restx_fields.List(restx_fields.String)}, title='Tags the user has associated themself with.')
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
@@ -66,11 +68,11 @@ class Users(Resource):
             response = session.read_transaction(get_user_by_email, email)
             response = response.single()
             if response:
-                # TODO: a lot going on here. See if this can be improved.
                 user = dict(response.data()['user'].items())
-                labels = response.data()['tags']
-                user
-                return jsonify(user_schema.dump(data))
+                tags = response.data()['tags']
+                labels = response.data()['tag_labels']
+                user['tags'] = dict(zip(tags, labels))
+                return jsonify(user_schema.dump(user))
             return make_response('', 404)
 
     @api.doc('delete_user')
