@@ -94,7 +94,9 @@ def create_user(tx, fields):
     query = create_user_query + create_TAGGED_relationships_query
     return tx.run(query)
 
+
 """ Functions for Businesses """
+
 
 def get_business_by_email(tx, business_email):
     '''
@@ -128,13 +130,14 @@ def set_business_fields(tx, business_email, fields):
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
     return tx.run(query)
 
+
 def create_business(tx, fields):
     query = "CREATE (new_user: Business {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
     return tx.run(query)
 
-
     """ Functions for Co-working spaces """
+
 
 def get_space_by_email(tx, space_email):
     '''
@@ -172,10 +175,10 @@ def create_space(tx, fields):
     query = "CREATE (user: Space {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
     return tx.run(query)
-    
 
 
 """functions for POSTS"""
+
 
 def get_post_by_uuid(tx, uuid):
     query = f"MATCH (post:Post {{uuid:'{uuid}'}}) RETURN post"
@@ -246,19 +249,20 @@ def get_posts_of_followings_of_a_user(tx, email):
 
 """functions for FOLLOW RELATIONSHIPS"""
 
-def create_follow_relationship(tx, follower_email, following_email):
+
+def create_follow_relationship(tx, follow_requester, follow_request_recipient):
     query = f"""
-        MATCH (follower_user:Person),(following_user:Person)
-        WHERE follower_user.email = '{follower_email}' AND following_user.email = '{following_email}'
-        CREATE (follower_user)-[f:FOLLOWS]->(following_user)
+        MATCH (follow_requester:Person),(follow_request_recipient:Person)
+        WHERE follow_requester.email = '{follow_requester}' AND follow_request_recipient.email = '{follow_request_recipient}'
+        CREATE (follow_requester)-[f:REQUESTED_FOLLOW]->(follow_request_recipient)
         RETURN f
     """
     return tx.run(query)
 
 
-def delete_follow_relationship(tx, follower_email, following_email):
+def delete_follow_relationship(tx, follow_requester, follow_request_recipient):
     query = f"""
-        MATCH (follower {{email: '{follower_email}' }})-[f:FOLLOWS]->(following {{email: '{following_email}'}})
+        MATCH (follower {{email: '{follow_requester}' }})-[f:FOLLOWS]->(following {{email: '{follow_request_recipient}'}})
         DELETE f
     """
     return tx.run(query)
@@ -276,7 +280,6 @@ def get_followings_of_a_user(tx, email):
         MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email
     """
     return tx.run(query)
-
 
 
 def get_posts_of_followings_of_a_user(tx, email):

@@ -12,17 +12,17 @@ from .neo4j_ops import (
 
 
 api = Namespace(
-    'following', title='Operations related to the FOLLOW relationship')
+    'follow', title='Operations related to the FOLLOW relationship')
 
 
-@api.route('/<string:follower_email>/<string:following_email>')
+@api.route('/request/<string:follow_requester>/<string:follow_request_recipient>')
 @api.produces('application/json')
-class Following(Resource):
-    def post(self, follower_email, following_email):
-        '''Create a FOLLOW relationship, where follower_email follows following_email'''
+class FollowRequest(Resource):
+    def post(self, follow_requester, follow_request_recipient):
+        '''Create a FOLLOW_REQUEST relationship, where follow_requester has requested to follow follow_request_recipient.'''
         with create_session() as session:
             response = session.write_transaction(
-                create_follow_relationship, follower_email, following_email)
+                create_follow_relationship, follow_requester, follow_request_recipient)
             if response.summary().counters.relationships_created == 1:
                 return make_response('', 201)
             return 400

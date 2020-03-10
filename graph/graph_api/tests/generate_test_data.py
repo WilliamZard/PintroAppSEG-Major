@@ -9,7 +9,7 @@ from .test_data.posts import *
 from .test_data.tags import *
 from .test_data.businesses import *
 from .test_data.spaces import *
-# TODO: organise test data. Different script? 
+# TODO: organise test data. Different script?
 
 USERS_TO_TEST = [
     VALID_USER,
@@ -20,8 +20,8 @@ USERS_TO_TEST = [
     USER_WITH_TWO_FOLLOWINGS,
     USER_WITH_ONE_FOLLOWING,
     USER_WITH_NO_FOLLOWINGS,
-    USER_ABOUT_TO_FOLLOW,
-    USER_ABOUT_TO_BE_FOLLOWED,
+    FOLLOW_REQUESTER,
+    FOLLOW_REQUEST_RECIPIENT,
     USER_FOLLOWING,
     USER_BEING_FOLLOWED,
     USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
@@ -226,19 +226,25 @@ BUSINESSES_TO_TEST = [
     BUSINESS_BEING_FOLLOWED,
     BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS
 
-    
+
 ]
 
 # TODO: restructure this
 CREATE_TEST_BUSINESS_DATA = ""
 for BUSINESS in BUSINESSES_TO_TEST:
-    CREATE_TEST_BUSINESS_DATA += "CREATE (" + BUSINESS['full_name'] + ":Business { "
-    CREATE_TEST_BUSINESS_DATA += "full_name: \'" + BUSINESS['full_name'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "password: \'" + BUSINESS['password'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "profile_image: \'" + BUSINESS['profile_image'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "CREATE (" + \
+        BUSINESS['full_name'] + ":Business { "
+    CREATE_TEST_BUSINESS_DATA += "full_name: \'" + \
+        BUSINESS['full_name'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "password: \'" + \
+        BUSINESS['password'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "profile_image: \'" + \
+        BUSINESS['profile_image'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "phone: \'" + BUSINESS['phone'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "short_bio: \'" + BUSINESS['short_bio'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "location: \'" + BUSINESS['location'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "short_bio: \'" + \
+        BUSINESS['short_bio'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "location: \'" + \
+        BUSINESS['location'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "email: \'" + BUSINESS['email'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "story: \'" + BUSINESS['story'] + "\'}) \n"
 
@@ -268,7 +274,8 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "CREATE (" + SPACE['full_name'] + ":Space { "
     CREATE_TEST_SPACE_DATA += "full_name: \'" + SPACE['full_name'] + "\' , "
     CREATE_TEST_SPACE_DATA += "password: \'" + SPACE['password'] + "\' , "
-    CREATE_TEST_SPACE_DATA += "profile_image: \'" + SPACE['profile_image'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "profile_image: \'" + \
+        SPACE['profile_image'] + "\' , "
     CREATE_TEST_SPACE_DATA += "phone: \'" + SPACE['phone'] + "\' , "
     CREATE_TEST_SPACE_DATA += "short_bio: \'" + SPACE['short_bio'] + "\' , "
     CREATE_TEST_SPACE_DATA += "location: \'" + SPACE['location'] + "\' , "
