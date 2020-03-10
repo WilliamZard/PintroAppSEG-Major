@@ -20,7 +20,8 @@ USERS_TO_TEST = [
     USER_WITH_TWO_FOLLOWINGS,
     USER_WITH_ONE_FOLLOWING,
     USER_WITH_NO_FOLLOWINGS,
-    FOLLOW_REQUESTER,
+    FOLLOW_REQUESTER_A,
+    FOLLOW_REQUESTER_B,
     FOLLOW_REQUEST_RECIPIENT,
     USER_FOLLOWING,
     USER_BEING_FOLLOWED,
@@ -124,49 +125,18 @@ CREATE_FOLLOWS_FOR_POSTS_USERS = f"""
     CREATE (user_a)-[:FOLLOWS]->(user_c)
 """
 
-"""
-# TODO: decompose this string
-CREATE_POSTS = fMATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
-                MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
-                MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
-                MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
-                MATCH(user_e: Person {{email: '{USER_WITH_MULTIPLE_POSTS['email']}'}})
-
-                CREATE(post_a: Post {{id: apoc.create.uuid(), content: '{USER_WITH_THREE_FOLLOWINGS_POST_A['content']}'}})
-                CREATE(post_b: Post {{id: apoc.create.uuid(), content: '{USER_WITH_THREE_FOLLOWINGS_POST_B['content']}'}})
-                CREATE(user_a)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,1)}'}}] -> (post_a)
-                CREATE(user_a)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,2)}'}}] -> (post_b)
-
-                CREATE(post_c: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_A['content']}'}})
-                CREATE(post_d: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_B['content']}'}})
-                CREATE(post_e: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_C['content']}'}})
-                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,3)}'}}] -> (post_c)
-                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,4)}'}}] -> (post_d)
-                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,5)}'}}] -> (post_e)
-
-                CREATE(post_f: Post {{id: apoc.create.uuid(), content: '{USER_WITH_ONE_FOLLOWING_POST_A['content']}'}})
-                CREATE(user_c)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,6)}'}}] -> (post_f)
-
-                CREATE(post_g: Post {{id: apoc.create.uuid(), content: '{USER_WITH_NO_FOLLOWINGS_POST_A['content']}'}})
-                CREATE(post_h: Post {{id: apoc.create.uuid(), content: '{USER_WITH_NO_FOLLOWINGS_POST_B['content']}'}})
-                CREATE(user_d)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,7)}'}}] -> (post_g)
-                CREATE(user_d)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,8)}'}}] -> (post_h)
-
-                CREATE(post_j: Post {{id: apoc.create.uuid(), content: '{USER_POST_A['content']}'}})
-                CREATE(post_k: Post {{id: apoc.create.uuid(), content: '{USER_POST_B['content']}'}})
-                CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,9)}'}}] -> (post_j)
-                CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,10)}'}}] -> (post_k)
-             """
 FOLLOWS_AA = f"""
     MATCH (user_a:Person {{email:'{USER_FOLLOWING['email']}'}})
     MATCH (user_b:Person {{email:'{USER_BEING_FOLLOWED['email']}'}})
     CREATE (user_a)-[:FOLLOWS]->(user_b)
 """
 
-CREATE_FOLLOW_REQUEST = f"""
-    MATCH (user_a:Person {{email:'{FOLLOW_REQUESTER['email']}'}})
+CREATE_FOLLOW_REQUEST_A = f"""
+    MATCH (user_a:Person {{email:'{FOLLOW_REQUESTER_A['email']}'}})
+    MATCH (user_c:Person {{email:'{FOLLOW_REQUESTER_B['email']}'}})
     MATCH (user_b:Person {{email:'{FOLLOW_REQUEST_RECIPIENT['email']}'}})
     CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_b)
+    CREATE (user_c)-[:REQUESTED_FOLLOW]->(user_b)
 """
 
 RELATIONSHIPS_FOLLOWS_USER_A = f"""
@@ -309,5 +279,5 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_C,
     *create_tag_queries,
     ASSOCIATE_VALID_USER_TO_THEIR_TAGS,
-    CREATE_FOLLOW_REQUEST
+    CREATE_FOLLOW_REQUEST_A
 ]

@@ -17,4 +17,4 @@ def app():
         # NOTE commented out populate db
         populate_db(rewrite_test_data=True)
         yield client
-    clear_db()
+#    clear_db()

@@ -260,7 +260,18 @@ def create_follow_relationship(tx, follow_requester, follow_request_recipient):
     return tx.run(query)
 
 
+def approve_follow_request(tx, follow_requester, follow_request_recipient):
+    query = f"""
+        MATCH (follow_requester:Person)-[req:REQUESTED_FOLLOW]->(follow_request_recipient:Person)
+        WHERE follow_requester.email = '{follow_requester}' AND follow_request_recipient.email = '{follow_request_recipient}'
+        CALL apoc.refactor.setType(req, 'FOLLOWS') YIELD input, output RETURN follow_requester, follow_request_recipient
+    """
+    print(query)
+    return tx.run(query)
+
+
 def delete_follow_relationship(tx, follow_requester, follow_request_recipient):
+    print(query)
     query = f"""
         MATCH (follower {{email: '{follow_requester}' }})-[f:REQUESTED_FOLLOW]->(following {{email: '{follow_request_recipient}'}})
         DELETE f
