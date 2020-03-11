@@ -3,7 +3,6 @@ from ast import literal_eval
 import uuid
 import pytest
 from flask.json import jsonify
-from jsonmerge import merge
 
 from .conftest import app
 from .generate_test_data import (POST_UPDATE_A, POST_UPDATE_B, USER_POST_A,

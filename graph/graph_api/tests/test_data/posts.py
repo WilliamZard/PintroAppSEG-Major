@@ -38,9 +38,9 @@ POST_UPDATE_B = {
     'new_content': 'Hey I have just update my post content. This is POST_UPDATE_B'}
 
 USER_POST_A = dict(
-    zip(POST_PROPERTIES, ['Post A Content', NOW, NOW, uuid.uuid4()]))
+    zip(POST_PROPERTIES, ['Post A Content', NOW, NOW, str(uuid.uuid4())]))
 USER_POST_B = dict(
-    zip(POST_PROPERTIES, ['Post B Content', NOW, NOW, uuid.uuid4()]))
+    zip(POST_PROPERTIES, ['Post B Content', NOW, NOW, str(uuid.uuid4())]))
 
 """
 # The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
