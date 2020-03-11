@@ -13,18 +13,15 @@ import {Image} from 'react-native' ;
 import Colors from '../Constants/Colors';
 import WhatAreYourPassions from '../Screens/WhatAreYourPassions';
 import HowCanYouHelpOthers from '../Screens/HowCanYouHelpOthers';
-
 import EditPhoto from '../Screens/EditScreens/EditPhoto';
 import MainMenubutton from '../Components/MainMenubutton';
-
 import FirstScreen from '../Screens/MainScreens/FirstScreen';
 import TimelinePage from '../Screens/MainScreens/TimelinePage';
 import HomeScreen from '../Screens/MainScreens/HomeScreen';
 import SearchScreen from '../Screens/MainScreens/SearchScreen';
 import MessageScreen from '../Screens/MainScreens/MessageScreen';
-
-
 import MapScreen from '../Screens/MainScreens/MapScreen';
+
 
 const defaultStackNavOptions = {
     headerStyle: {
@@ -35,19 +32,11 @@ const defaultStackNavOptions = {
     headerBackTitle:" ",
     title:' '
 };
-
-
-
-
 const mapOrFeed = createSwitchNavigator({
-
     Map:MapScreen,
     Feed:TimelinePage
 });
-
-
 const MainNav = createBottomTabNavigator({
-
     firstScreen:{
         screen:mapOrFeed, navigationOptions:{
             //tabBarLabel:'Screen 1',
@@ -57,10 +46,11 @@ const MainNav = createBottomTabNavigator({
                         source= {require('../images/homeIcon.png')} />
             },
             tabBarOptions:{
+                showLabel: false,
                activeTintColor:'white',
                style: {
                  backgroundColor: 'white',
-               },tabBarLabel:''
+               },
            }
         }
     },
@@ -70,13 +60,15 @@ const MainNav = createBottomTabNavigator({
             tabBarIcon: (tabInfo) => {
                return  <Image 
                         style={{height: 25, width: 25}}
+                        
                         source= {require('../images/searchIcon.png')} />
             },
             tabBarOptions:{
+                showLabel: false,
                activeTintColor:'white',
                style: {
                  backgroundColor: 'white',
-               }, tabBarLabel:''
+               }, 
            }
         }
     },
@@ -88,10 +80,11 @@ const MainNav = createBottomTabNavigator({
                          source= {require('../images/plusCircle.png')} />
              },
             tabBarOptions:{
+                showLabel: false,
                 activeTintColor:'white',
                 style: {
                   backgroundColor: 'white' 
-                }, tabBarLabel:''
+                }, 
             }
         }
     },
@@ -100,14 +93,15 @@ const MainNav = createBottomTabNavigator({
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 
-                        style={{height: 25, width: 25}}
+                        style={{height: 25, width: 25,resizeMode:'contain'}}
                         source= {require('../images/messageTab.png')} />
             },
             tabBarOptions:{
                activeTintColor:'white',
+               showLabel: false,
                style: {
                  backgroundColor: 'white',
-               }, tabBarLabel:''
+               }, 
            }
         }
     },
@@ -121,29 +115,23 @@ const MainNav = createBottomTabNavigator({
         },
         tabBarOptions:{
             activeTintColor:'white',
+                showLabel: false,
             style: {
               backgroundColor: 'white',
              
-            }, tabBarLabel:''
+            }, 
         }
       
         }
     },
-
 });
-
-
-
 const LogInNavigator = createStackNavigator({
-
     Start:{
         screen:StartScreen
     },
     LetsGetStarted:{
         screen:LetsGetStarted},
-
         Camera:{screen:ShowUsYourFace},
-
     WhatsYourStory:{screen:WhatsYourStory},
     
     TellUsHistory:{screen:HistoryScreen},
@@ -152,15 +140,10 @@ const LogInNavigator = createStackNavigator({
     SignIn:{screen:SignInScreen}
 },{
 defaultNavigationOptions:defaultStackNavOptions});
-
-
-
 const MySwitchNavigator = createSwitchNavigator(
     {
     routeOne: LogInNavigator, 
     routeTwo: MainNav  
     },
-
   );
-
 export default createAppContainer(MySwitchNavigator);

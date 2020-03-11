@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     },
     pintroText: {
         color: 'black',
-        //fontFamily: 'Poppins-Bold',
+        fontFamily: 'Poppins-Bold',
         fontSize: 40
     },
     yellowAccent: {
