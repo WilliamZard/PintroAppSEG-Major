@@ -61,20 +61,23 @@ def set_user_fields(tx, user_email, fields):
     The query is dynamic. It only operates on fields that are given in the fields paramater.
     This query will also update relationships with tags.
     '''
+    create_tag_query = None
     if 'tags' in fields:
         tags = fields['tags']
         fields.pop('tags')
+        create_tag_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH (tag:Tag {{uuid: tag_uuid}})
+        MATCH (user:Person {{email: '{user_email}'}})
+        MERGE (user)-[:TAGGED]->(tag)"""
 
     # NOTE: this could error when assigning string values that need quotations
-    match_query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
+    query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
-    create_tag_query = f"""
-    WITH {tags} AS tag_uuids
-    UNWIND tag_uuids AS tag_uuid
-    MATCH (tag:Tag {{uuid: tag_uuid}})
-    MATCH (user:Person {{email: '{user_email}'}})
-    MERGE (user)-[:TAGGED]->(tag)"""
-    query = match_query + create_tag_query
+    
+    if create_tag_query:
+        query = query + create_tag_query
     return tx.run(query)
 
 
@@ -315,6 +318,5 @@ def get_tags(tx, labels):
         WHERE {labels}
         RETURN tag
     """
-    print(query)
     return tx.run(query)
 
