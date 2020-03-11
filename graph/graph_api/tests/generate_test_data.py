@@ -59,6 +59,7 @@ def clear_db():
         session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
         session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
         session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_TAG_INDEX)
 
 
 def _run_query(tx, query):
@@ -296,10 +297,14 @@ DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\
 CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
 DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
 
+CREATE_SEARCH_TAG_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchTagIndex', ['Tag'], ['name'])"
+DROP_SEARCH_TAG_INDEX = "CALL db.index.fulltext.drop(\"SearchTagIndex\")"
+
 queries = [
     CREATE_SEARCH_USER_INDEX,
     CREATE_SEARCH_BUSINESS_INDEX,
     CREATE_SEARCH_SPACE_INDEX,
+    CREATE_SEARCH_TAG_INDEX,
     CONSTRAINT_POST_CONTENT_EXISTS,
     CONSTRAINT_USER_EMAIL_EXISTS,
     CONSTRAINT_USER_EMAIL_UNIQUE,

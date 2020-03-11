@@ -302,6 +302,11 @@ def get_nodes_for_space_search(tx, search_string):
                 RETURN node, score LIMIT 10"""
     return tx.run(query)    
 
+def get_nodes_for_tag_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchTagIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
+    return tx.run(query) 
+
 def get_posts_of_followings_of_a_user(tx, email):
     query = f"""
         MATCH (:Person {{email: '{email}'}})

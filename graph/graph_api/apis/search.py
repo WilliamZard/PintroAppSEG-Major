@@ -85,6 +85,13 @@ class SearchPost(Resource):
             space_response = session.write_transaction(get_nodes_for_space_search, api.payload['query'])
             space_records = space_response.records()
 
+            tag_response = session.write_transaction(get_nodes_for_tag_search, api.payload['query'])
+            tag_records = tag_response.records()
+
+            users_with_tags = set()
+            for tag in tag_records:
+                user_with_tags.add(session.write_transaction(get_user_by_tag, tag))
+
             data = []
             for record in user_records:
                 extracted_user = dict(record.data().get('node').items())
