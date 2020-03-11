@@ -6,6 +6,7 @@ from .posts import api as posts
 from .following import api as following
 from .search import api as search
 from .tags import api as tags
+from .chatrooms import api as chatrooms
 
 
 api = Api(
@@ -21,3 +22,4 @@ api.add_namespace(posts)
 api.add_namespace(following)
 api.add_namespace(search)
 api.add_namespace(tags)
+api.add_namespace(chatrooms)
