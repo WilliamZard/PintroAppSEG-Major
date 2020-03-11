@@ -16,7 +16,7 @@ USERS_PROPERTIES = [
     "preferred_name",
     "email",
     "story",
-    "state"]
+    "active"]
 
 
 

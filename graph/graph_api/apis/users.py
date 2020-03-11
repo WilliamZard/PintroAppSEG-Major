@@ -33,7 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
-    state = fields.Boolean()
+    active = fields.Boolean()
 
 
 # Schema used for doc generation
@@ -179,10 +179,10 @@ class UsersGETPostsOfFollowings(Resource):
 @api.route('/deactivate/<string:email>')
 @api.produces('application/json')
 class Users(Resource):
-    @api.doc('update_user')
+    @api.doc('deactivate users')
     @api.response(204, 'User deactivated.')
     def put(self, email):
-        '''Update a user by the given fields.'''
+        '''Deactivate a user account.'''
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': False}
@@ -197,10 +197,10 @@ class Users(Resource):
 @api.route('/activate/<string:email>')
 @api.produces('application/json')
 class Users(Resource):
-    @api.doc('update_user')
+    @api.doc('activate users')
     @api.response(204, 'User activated.')
     def put(self, email):
-        '''Update a user by the given fields.'''
+        '''Activate a user account if it has been deactivated.'''
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': True}

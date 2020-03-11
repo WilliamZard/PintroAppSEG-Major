@@ -70,7 +70,7 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "job_title: \'" + USER['job_title'] + "\' , "
     CREATE_TEST_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
     CREATE_TEST_DATA += "email: \'" + USER['email'] + "\' , "
-    CREATE_TEST_DATA += "state: \'" + str(USER['state']) + "\' , "
+    CREATE_TEST_DATA += "active: \'" + str(USER['active']) + "\' , "
     CREATE_TEST_DATA += "story: \'" + USER['story'] + "\'}) \n"
 
 CREATE_POSTS = f"""
