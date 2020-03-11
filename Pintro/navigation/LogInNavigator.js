@@ -9,6 +9,7 @@ import StartScreen from '../Screens/StartScreen';
 import LetsGetStarted from '../Screens/LetsGetStarted';
 import ShowUsYourFace from '../Screens/ShowUsYourFace';
 import React from 'react';
+import {Image} from 'react-native' ; 
 import Colors from '../Constants/Colors';
 import WhatAreYourPassions from '../Screens/WhatAreYourPassions';
 import HowCanYouHelpOthers from '../Screens/HowCanYouHelpOthers';
@@ -19,6 +20,9 @@ import MainMenubutton from '../Components/MainMenubutton';
 import FirstScreen from '../Screens/MainScreens/FirstScreen';
 import TimelinePage from '../Screens/MainScreens/TimelinePage';
 import HomeScreen from '../Screens/MainScreens/HomeScreen';
+import SearchScreen from '../Screens/MainScreens/SearchScreen';
+import MessageScreen from '../Screens/MainScreens/MessageScreen';
+
 
 import MapScreen from '../Screens/MainScreens/MapScreen';
 
@@ -45,42 +49,82 @@ const mapOrFeed = createSwitchNavigator({
 const MainNav = createBottomTabNavigator({
 
     firstScreen:{
-        screen:FirstScreen,navigationOptions:{
-            tabBarLabel:'Screen 1',
+        screen:mapOrFeed, navigationOptions:{
+            //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
-                return <Ionicons name = 'ios-star' size ={22} color={'white'}/>
+               return  <Image 
+                        style={{height: 25, width: 30}}
+                        source= {require('../images/homeIcon.png')} />
             },
             tabBarOptions:{
                activeTintColor:'white',
                style: {
-                 backgroundColor: '#1a1a1a',//color you want to change
-               }
+                 backgroundColor: 'white',
+               },tabBarLabel:''
+           }
+        }
+    },
+    searchScreen:{
+        screen:SearchScreen,navigationOptions:{
+            //tabBarLabel:'Screen 1',
+            tabBarIcon: (tabInfo) => {
+               return  <Image 
+                        style={{height: 25, width: 25}}
+                        source= {require('../images/searchIcon.png')} />
+            },
+            tabBarOptions:{
+               activeTintColor:'white',
+               style: {
+                 backgroundColor: 'white',
+               }, tabBarLabel:''
            }
         }
     },
     secondScreen:{
-        screen:mapOrFeed,navigationOptions:{
-            tabBarIcon: <MainMenubutton/>,
+        screen:FirstScreen, navigationOptions:{
+            tabBarIcon: (tabInfo) => {
+                return  <Image 
+                         style={{height: 60, width: 60}}
+                         source= {require('../images/plusCircle.png')} />
+             },
             tabBarOptions:{
                 activeTintColor:'white',
                 style: {
-                  backgroundColor: '#1a1a1a',//color you want to change
-                }
+                  backgroundColor: 'white' 
+                }, tabBarLabel:''
             }
+        }
+    },
+    messageScreen:{
+        screen:MessageScreen,navigationOptions:{
+            //tabBarLabel:'Screen 1',
+            tabBarIcon: (tabInfo) => {
+               return  <Image 
+                        style={{height: 25, width: 25}}
+                        source= {require('../images/messageTab.png')} />
+            },
+            tabBarOptions:{
+               activeTintColor:'white',
+               style: {
+                 backgroundColor: 'white',
+               }, tabBarLabel:''
+           }
         }
     },
     thirdScreen:{
         screen:HomeScreen,navigationOptions:{
             tabBarLabel:'Screen 3',
         tabBarIcon: (tabInfo) => {
-            return <Ionicons name = 'ios-star' size ={22} color={'white'}/>
+            return   <Image 
+                    style={{height: 25, width: 30}}
+                    source= {require('../images/profileIcon.png')} />
         },
         tabBarOptions:{
             activeTintColor:'white',
             style: {
-              backgroundColor: '#1a1a1a',//color you want to change
+              backgroundColor: 'white',
              
-            }
+            }, tabBarLabel:''
         }
       
         }

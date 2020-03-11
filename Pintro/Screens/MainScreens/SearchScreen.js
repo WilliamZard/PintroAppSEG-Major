@@ -6,7 +6,7 @@ StyleSheet
 } from 'react-native';
 
 
-const FirstScreen = props => {
+const SearchScreen = props => {
 
 return (
     <View style={styles.main}>
@@ -23,4 +23,4 @@ main:{
 }
 });
 
-export default FirstScreen;
+export default SearchScreen;
