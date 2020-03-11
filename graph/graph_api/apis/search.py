@@ -28,6 +28,7 @@ class UserResultSchema(Schema):
     story = fields.String()
     education = fields.String()
     profile_type = fields.String()
+    active = fields.String()
     score = fields.String()
 
     
@@ -84,9 +85,6 @@ class SearchPost(Resource):
             space_response = session.write_transaction(get_nodes_for_space_search, api.payload['query'])
             space_records = space_response.records()
 
-            limits = {'business' : 10,
-                      'person' : 10,
-                      'space' : 10}
             data = []
             for record in user_records:
                 extracted_user = dict(record.data().get('node').items())
