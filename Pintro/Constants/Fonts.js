@@ -49,7 +49,7 @@ const fonts = StyleSheet.create({
     },
     more_white: {
         color: 'grey',
-        fontFamily: 'Poppins-light',
+        fontFamily: 'Poppins-Light',
         fontSize: 8,
         textAlign: 'right'
     },
