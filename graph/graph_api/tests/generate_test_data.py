@@ -5,6 +5,8 @@ from neo4j import GraphDatabase
 
 
 from .test_data.users import *
+from .test_data.businesses import *
+from .test_data.spaces import *
 from .test_data.posts import *
 from .test_data.tags import *
 from .test_data.businesses import *
@@ -52,6 +54,9 @@ def clear_db():
     with driver.session() as session:
         print("about to delete")
         session.write_transaction(_run_query, DELETE_ALL_NODES)
+        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
 
 
 def _run_query(tx, query):
@@ -192,7 +197,6 @@ CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS
 
 DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
 
-
 TAGS = [KING_SLAYER_TAG, COLES_TAG]
 TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
 
@@ -209,7 +213,6 @@ MATCH (tag_b:Tag {{uuid: '{KING_SLAYER_TAG['uuid']}'}})
 CREATE (valid_user)-[:TAGGED]->(tag_a)
 CREATE (valid_user)-[:TAGGED]->(tag_b)
 """
-
 
 BUSINESSES_TO_TEST = [
     VALID_BUSINESS,
@@ -275,10 +278,23 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\'}) \n"
 
 
+
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
 
 
+CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
+DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
+
+CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
+DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\")"
+
+CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
+DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
+
 queries = [
+    CREATE_SEARCH_USER_INDEX,
+    CREATE_SEARCH_BUSINESS_INDEX,
+    CREATE_SEARCH_SPACE_INDEX,
     CONSTRAINT_POST_CONTENT_EXISTS,
     CONSTRAINT_USER_EMAIL_EXISTS,
     CONSTRAINT_USER_EMAIL_UNIQUE,
