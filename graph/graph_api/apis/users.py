@@ -51,7 +51,7 @@ users = api.model('Users', {
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
     'education': restx_fields.String(title='Highest level obtained.'),
-    'tags_as_uuids': restx_fields.List(restx_fields.String())
+    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the user is related to.')
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
@@ -73,7 +73,7 @@ class Users(Resource):
                 tags = response.data()['tags']
                 labels = response.data()['tag_labels']
                 user['tags'] = dict(zip(tags, labels))
-                return jsonify(user_schema.dump(user))
+                return jsonify(user)
             return make_response('', 404)
 
     @api.doc('delete_user')
@@ -118,7 +118,7 @@ class UsersPost(Resource):
     def post(self):
         '''Create a user.'''
         try:
-            deserialised_payload = user_schema.load(api.payload) 
+            deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:
             if 'email' in e.messages:
                 return make_response(e.messages['email'][0], 422)
@@ -185,6 +185,7 @@ class UsersGETPostsOfFollowings(Resource):
                 return jsonify(data)
             return make_response('', 404)
 
+
 @api.route('/deactivate/<string:email>')
 @api.produces('application/json')
 class Users(Resource):
@@ -202,6 +203,7 @@ class Users(Resource):
             if response.summary().counters.properties_set == 1:
                 return make_response('', 204)
             return make_response('', 404)
+
 
 @api.route('/activate/<string:email>')
 @api.produces('application/json')

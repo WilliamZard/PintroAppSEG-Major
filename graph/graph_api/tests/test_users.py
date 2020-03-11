@@ -160,9 +160,14 @@ class TestUsersGETFollowings:
         response = app.get(
             f"/users/{USER_WITH_TWO_FOLLOWINGS['email']}/followings")
         assert response.status == '200 OK'
-        results = [{'full_name': user['full_name'], 'email': user['email']}
-                   for user in [USER_WITH_ONE_FOLLOWING, USER_WITH_NO_FOLLOWINGS]]
-        assert response.data == jsonify(results).data
+        json = response.json
+        user_with_one_following_reduced = {
+            'full_name': USER_WITH_ONE_FOLLOWING['full_name'], 'email': USER_WITH_ONE_FOLLOWING['email']}
+        user_with_no_followings_reduced = {
+            'full_name': USER_WITH_NO_FOLLOWINGS['full_name'], 'email': USER_WITH_NO_FOLLOWINGS['email']}
+        assert len(json) == 2
+        assert user_with_one_following_reduced in json
+        assert user_with_no_followings_reduced in json
 
     def test_GET_followings_of_non_existing_user(self, app):
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followings")
@@ -193,17 +198,15 @@ class TestUsersGETFollowingsPosts:
 
     # TODO: consider tests at different cardinalities
 
+
 @pytest.mark.PUT_user_activation
 class TestUserPUTActivation:
-    def test_PUT_deactivated_users(self,app):
+    def test_PUT_deactivated_users(self, app):
         response = app.put(
             f"/users/deactivate/{DEACTIVATED_USER['email']}")
         assert response.status == '204 NO CONTENT'
 
-    def test_PUT_activated_users(self,app):
+    def test_PUT_activated_users(self, app):
         response = app.put(
             f"/users/activate/{ACTIVATED_USER['email']}")
         assert response.status == '204 NO CONTENT'
-        
-
-
