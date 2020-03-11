@@ -33,7 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
-    active = fields.Boolean()
+    active = fields.String()
     tags = fields.List(fields.String())
 
 
@@ -118,7 +118,7 @@ class UsersPost(Resource):
     def post(self):
         '''Create a user.'''
         try:
-            deserialised_payload = user_schema.load(api.payload)
+            deserialised_payload = user_schema.load(api.payload) 
         except ValidationError as e:
             if 'email' in e.messages:
                 return make_response(e.messages['email'][0], 422)

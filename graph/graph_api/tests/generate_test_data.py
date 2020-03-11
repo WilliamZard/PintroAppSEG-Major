@@ -78,9 +78,11 @@ for USER in USERS_TO_TEST:
     CREATE_TEST_DATA += "location: \'" + USER['location'] + "\' , "
     CREATE_TEST_DATA += "job_title: \'" + USER['job_title'] + "\' , "
     CREATE_TEST_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
-    CREATE_TEST_DATA += "email: \'" + USER['email'] + "\' , "
-    CREATE_TEST_DATA += "active: \'" + str(USER['active']) + "\' , "
+    CREATE_TEST_DATA += "email: \'" + str(USER['email']) + "\' , "
+    CREATE_TEST_DATA += "education: \'" + USER['education'] + "\' , "
+    CREATE_TEST_DATA += "active: \'" + USER['active'] + "\' , "
     CREATE_TEST_DATA += "story: \'" + USER['story'] + "\'}) \n"
+
 
 CREATE_POSTS = f"""
     MATCH (user_a:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
