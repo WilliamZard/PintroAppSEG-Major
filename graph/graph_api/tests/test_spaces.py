@@ -106,7 +106,6 @@ class TestPost:
     def test_post_space_with_valid_payload_that_exists(self, app):
         response = app.post(
             "/spaces/", json=VALID_SPACE)
-        print(VALID_SPACE)   
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 

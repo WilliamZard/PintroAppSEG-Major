@@ -33,6 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
+    active = fields.Boolean()
     tags = fields.List(fields.String())
 
 
@@ -116,7 +117,6 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
-        print(api.payload)
         try:
             deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:
@@ -183,4 +183,40 @@ class UsersGETPostsOfFollowings(Resource):
                         post[key] = str(post[key]).replace('+00:00', 'Z')
             if data:
                 return jsonify(data)
+            return make_response('', 404)
+
+@api.route('/deactivate/<string:email>')
+@api.produces('application/json')
+class Users(Resource):
+    @api.doc('deactivate users')
+    @api.response(204, 'User deactivated.')
+    def put(self, email):
+        '''Deactivate a user account.'''
+        if not valid_email(email):
+            return make_response('', 422)
+        fields = {'active': False}
+        # TODO: validate payload
+        with create_session() as session:
+            response = session.write_transaction(
+                set_user_fields, email, fields)
+            if response.summary().counters.properties_set == 1:
+                return make_response('', 204)
+            return make_response('', 404)
+
+@api.route('/activate/<string:email>')
+@api.produces('application/json')
+class Users(Resource):
+    @api.doc('activate users')
+    @api.response(204, 'User activated.')
+    def put(self, email):
+        '''Activate a user account if it has been deactivated.'''
+        if not valid_email(email):
+            return make_response('', 422)
+        fields = {'active': True}
+        # TODO: validate payload
+        with create_session() as session:
+            response = session.write_transaction(
+                set_user_fields, email, fields)
+            if response.summary().counters.properties_set == 1:
+                return make_response('', 204)
             return make_response('', 404)
