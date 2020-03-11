@@ -24,7 +24,7 @@ class TestGET:
         response = app.get(f"/users/{VALID_USER['email']}")
         assert response.status == '200 OK'
         json = dict(response.get_json())
-        assert len(json) == 13
+        assert len(json) == 14
         for key, value in VALID_USER.items():
             assert key in json
             assert value == json[key]
@@ -112,7 +112,7 @@ class TestPost:
         response = app.get(f"/users/{VALID_USER_TO_BE_CREATED['email']}")
         assert response.status == '200 OK'
         json = dict(response.get_json())
-        assert len(json) == 13
+        assert len(json) == 14
         for key, value in VALID_USER_TO_BE_CREATED.items():
             assert key in json
             # TODO: remove need for below if statement
