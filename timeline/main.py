@@ -21,6 +21,7 @@ def generate_timeline(request):
 
         # Sort by date modified
         data.sort(key=itemgetter('modified'), reverse=True)
+        data = {'results': data}
 
         return data
     else:
