@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { fonts } from '../Constants/Fonts.js';
@@ -6,6 +6,7 @@ import Colors  from '../Constants/Colors.js';
 import WorkingSpace from '../Components/WorkingSpace.js';
 
 const SearchPage = () => {
+    const [searchKeyword,setSearchKeyword] = useState();
 
     return(
         <View style={styles.blackContainer}>
@@ -15,12 +16,15 @@ const SearchPage = () => {
                 <SearchBar
                     platform="default"
                     placeholder="Type keyword,tag or location"
-                    placeholderTextColor='black'
+                    placeholderTextColor='grey'
                     round={true}
                     searchIcon={false}
                     lightTheme={true}
+                    inputStyle={styles.searchText}
                     containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
-                    inputContainerStyle={{backgroundColor: 'white',width: 330}}/>
+                    inputContainerStyle={{backgroundColor: 'white',width: 330}}
+                    onChangeText={searchWord => setSearchKeyword(searchWord)}
+                    value={searchKeyword}/>
                 <Text style={styles.category}>or Choose a Category</Text>
             </View>
             <View style={styles.rowContainer}>
@@ -140,6 +144,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         fontSize: 10,
         marginLeft: 250,
+    },
+    searchText: {
+        color: 'grey',
+        fontFamily: 'Poppins-Light',
+        fontSize: 12,
     }
 });
 
