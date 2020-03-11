@@ -36,6 +36,10 @@ class TestPOST:
         for element in json_response: 
             del element['score']
             del element['profile_type']
+
+        for element in VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result']:
+            if 'tags' in element:
+                del element['tags']
         
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
@@ -49,6 +53,9 @@ class TestPOST:
         for element in json_response: 
             del element['score']
             del element['profile_type']
+        for element in MATCHING_STORY_OR_EVENTS_SEARCH['result']:
+            if 'tags' in element:
+                del element['tags']
 
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_STORY_OR_EVENTS_SEARCH['result'])
@@ -62,6 +69,9 @@ class TestPOST:
         for element in json_response: 
             del element['score']
             del element['profile_type']
+        for element in VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result']:
+            if 'tags' in element:
+                del element['tags']
         
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_SHORT_BIO_SEARCH['result'])
