@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'rea
 import { SearchBar } from 'react-native-elements';
 import { fonts } from '../Constants/Fonts.js';
 import Colors  from '../Constants/Colors.js';
+import WorkingSpace from '../Components/WorkingSpace.js';
 
 const SearchPage = () => {
 
@@ -24,23 +25,23 @@ const SearchPage = () => {
             </View>
             <View style={styles.rowContainer}>
                 <TouchableOpacity style={styles.imageContainer}>
-                    <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                    <Image source={require('../assets/peopleImage.png')} style={styles.circleImage}/>
                     <Text style={fonts.tag_button_white}>PEOPLE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.imageContainer}>
-                    <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                    <Image source={require('../assets/companiesImage.png')} style={styles.circleImage}/>
                     <Text style={fonts.tag_button_white}>COMPANIES</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.imageContainer}>
-                    <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                    <Image source={require('../assets/contentImage.png')} style={styles.circleImage}/>
                     <Text style={fonts.tag_button_white}>CONTENT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.imageContainer}>
-                    <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                    <Image source={require('../assets/groupsImage.png')} style={styles.circleImage}/>
                     <Text style={fonts.tag_button_white}>COMMUNITIES</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.imageContainer}>
-                    <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                    <Image source={require('../assets/spacesImage.png')} style={styles.circleImage}/>
                     <Text style={fonts.tag_button_white}>SPACES</Text>
                 </TouchableOpacity>
             </View>
@@ -52,6 +53,12 @@ const SearchPage = () => {
                     <Text style={styles.closest}>Closest to you</Text>
                     <Text style={styles.seeAll}>See all</Text>
                 </View>
+                <WorkingSpace 
+                    name={"The Hub"}
+                    spaces={"4 spaces available"} 
+                    cost={"£25 per day"}
+                    story={"Lorem ipsum dolor sit amet, consecteteur elit, sed \n do eiusmod tempor incididunt ut labore dolore."}
+                />
             </ScrollView>
         </View>
     );
@@ -65,6 +72,7 @@ const styles = StyleSheet.create({
     whiteContainer: {
         flex: 1,
         backgroundColor: 'white',
+        borderRadius: 15,
     },
     circleImage: {
         width: 50,
@@ -76,7 +84,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 40,
+        marginBottom: 60,
     },
     imageContainer: {
         paddingRight: 5,
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
         color: Colors.pintroBlack,
         fontFamily: 'Poppins-Bold',
         fontSize: 12,
-        marginLeft: 10,
+        marginLeft: 20,
     },
     seeAll: {
         color: 'grey',
