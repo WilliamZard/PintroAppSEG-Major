@@ -41,7 +41,7 @@ async () => {
 
 const [isLoading,setIsLoading] = useState(false);
 const timelinePosts = useSelector(state => state.timelinePosts.availablePosts);
-const filted = timelinePosts.filter((post)=>post.content.includes(currentSearch));
+
 
 const getFiltered = () => {
 if(currentSearch===null){
@@ -108,7 +108,7 @@ return(<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
    renderItem={
        itemData => (
         
-<TimelinePostComponent uuid={itemData.item.uuid}  content={itemData.item.content}  modified={itemData.item.modified}/>
+<TimelinePostComponent uuid={itemData.item.uuid}  content={itemData.item.content}  modified={itemData.item.modified} email={itemData.item.user_email}/>
 
        )
    }
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     },
     pintroText: {
         color: 'black',
-        fontFamily: 'Poppins-Bold',
+        //fontFamily: 'Poppins-Bold',
         fontSize: 40
     },
     yellowAccent: {

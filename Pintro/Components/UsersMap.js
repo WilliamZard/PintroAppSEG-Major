@@ -125,7 +125,7 @@ const usersMap = props => {
         customMapStyle={mapStyle}
         showsCompass={false}
         onPress={e => onPressMap(e)}
-      >
+      > 
         {mapMarkers}
         {userMarker}
       </MapView>

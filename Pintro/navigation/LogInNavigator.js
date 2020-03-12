@@ -34,9 +34,9 @@ const defaultStackNavOptions = {
 };
 const mapOrFeed = createSwitchNavigator({
     
-    Map:MapScreen,
-    Feed:TimelinePage
- 
+    
+    Feed:TimelinePage,
+    Map:MapScreen
 });
 const MainNav = createBottomTabNavigator({
     firstScreen:{
@@ -76,11 +76,7 @@ const MainNav = createBottomTabNavigator({
     },
     secondScreen:{
         screen:FirstScreen, navigationOptions:{
-            tabBarIcon: (tabInfo) => {
-                return  <Image 
-                         style={{height: 60, width: 60}}
-                         source= {require('../images/plusCircle.png')} />
-             },
+            tabBarIcon: <MainMenubutton/>,
             tabBarOptions:{
                 showLabel: false,
                 activeTintColor:'white',
@@ -109,7 +105,7 @@ const MainNav = createBottomTabNavigator({
     },
     thirdScreen:{
         screen:HomeScreen,navigationOptions:{
-            tabBarLabel:'Screen 3',
+            tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 
                     style={{height: 25, width: 30}}
