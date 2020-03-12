@@ -33,8 +33,10 @@ const defaultStackNavOptions = {
     title:' '
 };
 const mapOrFeed = createSwitchNavigator({
+    
     Map:MapScreen,
     Feed:TimelinePage
+ 
 });
 const MainNav = createBottomTabNavigator({
     firstScreen:{
