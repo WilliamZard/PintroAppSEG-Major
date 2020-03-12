@@ -116,7 +116,6 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
-        print(api.payload)
         try:
             deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:

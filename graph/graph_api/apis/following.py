@@ -32,7 +32,9 @@ class FollowRequest(Resource):
         with create_session() as session:
             response = session.write_transaction(
                 delete_follow_relationship, follow_requester, follow_request_recipient)
+            print(response)
             if response.summary().counters.relationships_deleted == 1:
+                print('reached')
                 return make_response('', 204)
             return make_response('', 400)
 

@@ -271,7 +271,6 @@ def approve_follow_request(tx, follow_requester, follow_request_recipient):
 
 
 def delete_follow_relationship(tx, follow_requester, follow_request_recipient):
-    print(query)
     query = f"""
         MATCH (follower {{email: '{follow_requester}' }})-[f:REQUESTED_FOLLOW]->(following {{email: '{follow_request_recipient}'}})
         DELETE f

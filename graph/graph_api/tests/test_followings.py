@@ -34,6 +34,17 @@ class TestPOSTFollow_request:
         raise NotImplementedError
 
 
+@pytest.mark.POST_follow_approve
+class TestPOSTFollow_request_approve:
+    def test_POST_follow_approve_on_existing_users(self, app):
+        response = app.post(
+            f"/follow/approve/{FOLLOW_REQUESTER_A['email']}/{FOLLOW_REQUEST_RECIPIENT['email']}")
+        assert response.status == '201 CREATED'
+        assert response.data == b''
+
+        # TODO: get request to assert follow relationship was created.
+        # use endpoint to get all followings of user_following and check exists a follow to user being followed
+
 @pytest.mark.DELETE_follow_request
 class TestDELETEFollow_request:
     def test_DELETE_existing_follow_request(self, app):
@@ -49,16 +60,7 @@ class TestDELETEFollow_request:
         raise NotImplementedError
 
 
-@pytest.mark.POST_follow_approve
-class TestPOSTFollow_request_approve:
-    def test_POST_follow_approve_on_existing_users(self, app):
-        response = app.post(
-            f"/follow/approve/{FOLLOW_REQUESTER_B['email']}/{FOLLOW_REQUEST_RECIPIENT['email']}")
-        assert response.status == '201 CREATED'
-        assert response.data == b''
 
-        # TODO: get request to assert follow relationship was created.
-        # use endpoint to get all followings of user_following and check exists a follow to user being followed
 """
     @pytest.mark.xfail
     # TODO: finish this test. Put on hold for now as niche usecase

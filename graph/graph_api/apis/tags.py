@@ -56,7 +56,6 @@ class Tags(Resource):
         label_pattern = r"^[a-zA-Z]*"
         for label in api.payload['labels']:
             if not re.fullmatch(label_pattern, label):
-                print('abort')
                 abort(400)
 
         with create_session() as session:
