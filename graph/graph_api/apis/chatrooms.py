@@ -29,11 +29,11 @@ class ChatroomSchema(Schema):
 
 
 # Schema used for doc generation
-users = api.model('Users', {
+chatrooms = api.model('Chatrooms', {
     'chat_id': restx_fields.String(required=True, title='The chatroom ID.'),
-})  # title for accounts that needs to be created.
+})
 
-user_schema = ChatroomSchema()
+chatroom_schema = ChatroomSchema()
 
 @api.route('/<string:email>')
 @api.produces('application/json')
