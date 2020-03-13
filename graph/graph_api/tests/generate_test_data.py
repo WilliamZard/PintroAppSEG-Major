@@ -11,6 +11,7 @@ from .test_data.posts import *
 from .test_data.tags import *
 from .test_data.businesses import *
 from .test_data.spaces import *
+from .test_data.chatrooms import *
 # TODO: organise test data. Different script? 
 
 USERS_TO_TEST = [
@@ -283,9 +284,81 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\'}) \n"
 
 
+CREATE_EXISTING_CHATROOM_DATA = ""
+for CHAT in CHATROOMS:
+    print(CHAT)
+    CREATE_EXISTING_CHATROOM_DATA += "CREATE (:Chatroom { "
+    CREATE_EXISTING_CHATROOM_DATA += "chat_id: \'" + CHAT + "\'}) \n"
+for USER in CHATROOM_USERS:
+    CREATE_EXISTING_CHATROOM_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
+    CREATE_EXISTING_CHATROOM_DATA += "password: \'" + USER['password'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "profile_image: \'" + USER['profile_image'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "full_name: \'" + USER['full_name'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "gender: \'" + USER['gender'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "phone: \'" + USER['phone'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "short_bio: \'" + USER['short_bio'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "location: \'" + USER['location'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "job_title: \'" + USER['job_title'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "email: \'" + USER['email'] + "\' , "
+    CREATE_EXISTING_CHATROOM_DATA += "story: \'" + USER['story'] + "\'}) \n"
+
+CREATE_CHATROOM_RELATIONSHIPS_A = (
+   f"MATCH (user_a:Person {{email: '{CHATROOM_USERS[0]['email']}'}})\n"
+   f"MATCH (user_b:Person {{email: '{CHATROOM_USERS[1]['email']}'}})\n"
+   f"MATCH (chat:Chatroom {{chat_id: '{CHATROOMS[0]}'}})\n"
+    "CREATE (user_a)-[:CHATS_IN]->(chat)\n"
+    "CREATE (user_b)-[:CHATS_IN]->(chat)"
+)
+CREATE_CHATROOM_RELATIONSHIPS_B = (
+   f"MATCH (user_a:Person {{email: '{CHATROOM_USERS[0]['email']}'}})\n"
+   f"MATCH (user_b:Person {{email: '{CHATROOM_USERS[2]['email']}'}})\n"
+   f"MATCH (chat:Chatroom {{chat_id: '{CHATROOMS[1]}'}})\n"
+    "CREATE (user_a)-[:CHATS_IN]->(chat)\n"
+    "CREATE (user_b)-[:CHATS_IN]->(chat)"
+)
+
+CREATE_TO_BE_DELETED_CHATROOM_DATA = "CREATE (:Chatroom { "
+CREATE_TO_BE_DELETED_CHATROOM_DATA += "chat_id: \'" + VALID_CHATROOM_TO_BE_DELETED + "\'}) \n"
+for USER in VALID_CHATROOM_TO_BE_DELETED_USERS:
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "password: \'" + USER['password'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "profile_image: \'" + USER['profile_image'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "full_name: \'" + USER['full_name'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "gender: \'" + USER['gender'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "phone: \'" + USER['phone'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "short_bio: \'" + USER['short_bio'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "location: \'" + USER['location'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "job_title: \'" + USER['job_title'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "email: \'" + USER['email'] + "\' , "
+    CREATE_TO_BE_DELETED_CHATROOM_DATA += "story: \'" + USER['story'] + "\'}) \n"
+
+CREATE_CHATROOM_RELATIONSHIPS_C = (
+   f"MATCH (user_a:Person {{email: '{VALID_CHATROOM_TO_BE_DELETED_USERS[0]['email']}'}})\n"
+   f"MATCH (user_b:Person {{email: '{VALID_CHATROOM_TO_BE_DELETED_USERS[1]['email']}'}})\n"
+   f"MATCH (chat:Chatroom {{chat_id: '{VALID_CHATROOM_TO_BE_DELETED}'}})\n"
+    "CREATE (user_a)-[:CHATS_IN]->(chat)\n"
+    "CREATE (user_b)-[:CHATS_IN]->(chat)"
+)
+
+CREATE_TO_BE_CREATED_CHATROOM_DATA = ""
+for USER in CHATROOM_TO_BE_CREATED_USERS:
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "password: \'" + USER['password'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "profile_image: \'" + USER['profile_image'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "full_name: \'" + USER['full_name'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "gender: \'" + USER['gender'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "phone: \'" + USER['phone'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "short_bio: \'" + USER['short_bio'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "location: \'" + USER['location'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "job_title: \'" + USER['job_title'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "email: \'" + USER['email'] + "\' , "
+    CREATE_TO_BE_CREATED_CHATROOM_DATA += "story: \'" + USER['story'] + "\'}) \n"
+
 
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
-
 
 CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
 DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
@@ -295,6 +368,8 @@ DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\
 
 CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
 DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
+
+CONSTRAINT_CHATROOM_ID_UNIQUE = "CREATE CONSTRAINT ON(chat: Chatroom) ASSERT chat.chat_id IS UNIQUE"
 
 queries = [
     CREATE_SEARCH_USER_INDEX,
@@ -315,5 +390,12 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_B,
     RELATIONSHIPS_FOLLOWS_USER_C,
     *create_tag_queries,
-    ASSOCIATE_VALID_USER_TO_THEIR_TAGS
+    ASSOCIATE_VALID_USER_TO_THEIR_TAGS,
+    CONSTRAINT_CHATROOM_ID_UNIQUE,
+    CREATE_EXISTING_CHATROOM_DATA,
+    CREATE_CHATROOM_RELATIONSHIPS_A,
+    CREATE_CHATROOM_RELATIONSHIPS_B,
+    CREATE_TO_BE_DELETED_CHATROOM_DATA,
+    CREATE_CHATROOM_RELATIONSHIPS_C,
+    CREATE_TO_BE_CREATED_CHATROOM_DATA,
 ]
