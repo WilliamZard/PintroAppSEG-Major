@@ -13,7 +13,7 @@ from .neo4j_ops import (create_session,
                         create_chatroom,
                         delete_chatroom)
 
-import random
+import uuid
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -77,10 +77,7 @@ class ChatroomsPOST(Resource):
             check_not_exists = session.read_transaction(check_users_in_chatroom, email1, email2)
             if check_not_exists.value('result'):
                 return make_response('', 409)
-            new_id = "".join(
-                random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/")
-                for _ in range(32)
-            )
+            new_id = uuid.uuid4()
             session.read_transaction(create_chatroom, email1, email2, new_id)
             print(new_id)
             return jsonify({'chat_id': new_id})
