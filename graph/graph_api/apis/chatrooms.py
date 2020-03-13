@@ -79,5 +79,4 @@ class ChatroomsPOST(Resource):
                 return make_response('', 409)
             new_id = uuid.uuid4()
             session.read_transaction(create_chatroom, email1, email2, new_id)
-            print(new_id)
             return jsonify({'chat_id': new_id})
