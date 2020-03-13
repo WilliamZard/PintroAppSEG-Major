@@ -48,18 +48,6 @@ class Chatrooms(Resource):
             response = response.data()
             return jsonify(response)
 
-    def delete(self, email):
-        '''Deletes the chatroom with the given ID.'''
-        # email is actually chat id but i cant change it
-
-        with create_session() as session:
-            check_not_exists = session.read_transaction(check_chatroom_exists, email)
-            if not check_not_exists.value('result'):
-                return make_response('', 404)
-            session.read_transaction(delete_chatroom, email)
-            return make_response('', 204)
-
-
 
 @api.route("/<string:email1>/<string:email2>")
 @api.produces("application/json")
@@ -80,3 +68,16 @@ class ChatroomsPOST(Resource):
             new_id = uuid.uuid4()
             session.read_transaction(create_chatroom, email1, email2, new_id)
             return jsonify({'chat_id': new_id})
+
+
+@api.route('/<string:chat_id>')
+@api.produces('application/json')
+class ChatroomsDELETE(Resource):
+    def delete(self, chat_id):
+        '''Deletes the chatroom with the given ID.'''
+        with create_session() as session:
+            check_not_exists = session.read_transaction(check_chatroom_exists, chat_id)
+            if not check_not_exists.value('result'):
+                return make_response('', 404)
+            session.read_transaction(delete_chatroom, chat_id)
+            return make_response('', 204)
