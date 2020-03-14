@@ -8,8 +8,8 @@ const Groups = props => {
         <View style={styles.rowContainer}>
             <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
             <View style={styles.textContainer}>
-                <Text style={styles.title}>Piin App Limited</Text>
-                <Text style={styles.subtitle}>Connect in Real life with Piin App</Text> 
+                <Text style={styles.title}>{props.name}</Text>
+                <Text style={styles.subtitle}>{props.members}</Text> 
             </View>
             <Image source={require('../assets/thumbnail.png')} style={styles.thumbnail}/>
         </View>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         height: 30,
         resizeMode: 'contain',
         marginTop: 20,
-        marginLeft: 40,
+        marginLeft: 110,
     }
 });
 
