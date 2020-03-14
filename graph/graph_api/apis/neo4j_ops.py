@@ -43,7 +43,7 @@ def get_user_by_email(tx, user_email):
         user_email = the email of the user whose data needs to be retrieved.
     '''
     query = f"""
-    MATCH (user:Person {{email: '{user_email}'}})˙
+    MATCH (user:Person {{email: '{user_email}'}})
     OPTIONAL MATCH (user)-->(tag:Tag)
     RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
     return tx.run(query)
