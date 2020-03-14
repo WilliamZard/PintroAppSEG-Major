@@ -10,6 +10,7 @@ def app():
     app = create_app()
     app.testing = True
 
+    #clear_db()
     # TODO: right now this populates and clears the database for all tests, as opposed to every test
     # Not sure which if this should happen per test or per module.
     # Figure this out.
