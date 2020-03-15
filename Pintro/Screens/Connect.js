@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 30,
     paddingTop: 10,
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-Regular',
   },
   subHeaderRow: {
     flex: 1,
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   subHeaderText: {
     textAlign: 'center',
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-Regular',
     fontSize: 15,
     color: 'black',
   },
