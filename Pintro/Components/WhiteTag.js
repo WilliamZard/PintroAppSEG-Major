@@ -1,14 +1,13 @@
 import React from 'react';
-import { View,Text,StyleSheet,TouchableOpacity } from 'react-native';
-import Colors from '../Constants/Colors';
+import {View,Text,StyleSheet,TouchableOpacity} from 'react-native';
 
 const WhiteTag = props => {
     return(
-
-        <TouchableOpacity style={styles.tag} onPress={props.onPress} activeOpacity={0.6}>
-                <Text style={styles.tag_text}>{props.children}</Text>
+        <TouchableOpacity onPress={props.onPress} activeOpacity={0.6}>
+            <View style={styles.tag}>
+                <Text style={stlyes.tag_text}>{props.children}</Text>
+            </View>
         </TouchableOpacity> 
-
     );
 };
 
@@ -16,14 +15,10 @@ const styles = StyleSheet.create({
     tag: {
         borderColor: Colors.pintroBlack,
         color: Colors.pintroWhite,
-        borderWidth:0.5,
-        width:'10%',
+        borderWidth: 0.5,
         paddingVertical:12,
         paddingHorizontal:30,
-        borderRadius:20,
-        marginRight:10,
-        marginTop:15,
-        marginBottom:10
+        borderRadius:13
     },
     tag_text: {
         color: Colors.pintroBlack,

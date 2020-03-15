@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
+import { Provider } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import LogInOverView from './Screens/LogInOverView';
-
+import ReduxThunk from 'redux-thunk';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import auth from './store/reducers/auth';
+import Navigator from './navigation/LogInNavigator';
+import timeLineReducer from './store/reducers/timeline';
+import EditPhoto from './Screens/EditScreens/EditPhoto';
 
 /**
  * Loading all fonts. The requite methods imply that the app will
  *  not start before every font has been loaded
  */
+const rootReducer = combineReducers({
+  auth: auth,
+  timelinePosts:timeLineReducer
+});
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+
+
 const fetchFonts = () => {
   return Font.loadAsync({
     'Poppins-Bold': require('./assets/Fonts/Poppins-Bold.otf'),
@@ -26,6 +38,7 @@ const fetchFonts = () => {
 
 export default function App() {
 
+  
   //State to make sure font is loaded.
   const [fontLoaded, setFontLoaded] = useState(false);
 /**
@@ -41,7 +54,9 @@ export default function App() {
   }
 
   return (
-    <LogInOverView />
+    <Provider store={store}>
+    <Navigator/>
+     </Provider>
   );
 }
 

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Animated, Text, View, Button } from 'react-native';
+import { StyleSheet, Animated, Text, View, Button,TouchableHighlight } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import SignInUpButton from '../Components/SignInUpButton';
+import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import Colors from '../Constants/Colors';
+
 
 /**
  * Start Screen which allows the user to decide whether he wants to sign in
@@ -21,8 +23,32 @@ const StartScreen = props => {
                 </Animatable.View>
                 <View style={styles.buttonContainer}>
                     <Animatable.View animation="fadeInUpBig">
-                    <SignInUpButton onPress={props.onLogIn}>Sign In</SignInUpButton>
-                    <SignInUpButton onPress={props.onSignUp}>Sign Up</SignInUpButton>
+                        <View style = {styles.additionalText}>
+                        <Text style={styles.helloThereText}>Hello there!</Text>
+                        </View>
+                       
+                    <InvertedSignInUpButton >Sign up with LinkedIn</InvertedSignInUpButton>
+                    <SignInUpButton onPress={
+                        () =>
+                        props.navigation.navigate({routeName:'LetsGetStarted'})
+
+                    }>Sign up with email or phone</SignInUpButton>
+                    <SignInUpButton onPress={
+                        () =>
+                     props.navigation.navigate({routeName:'routeTwo'})
+
+                    }>Dummy Login</SignInUpButton>
+                    <View style = {styles.additionalText}>
+                        <View style={styles.footerText}>
+                        <Text style={styles.LoginText}>Already have an account? </Text>
+
+                     
+                        <TouchableHighlight onPress={
+                                 () =>
+                                 props.navigation.navigate({routeName:'SignIn'}) 
+                        }><Text style={{ fontSize:18, color:Colors.pintroYellow}}>Login</Text></TouchableHighlight>
+                        </View>
+                        </View>
                     </Animatable.View>
                     
                 </View>
@@ -45,21 +71,51 @@ const styles = StyleSheet.create({
     }, pintroText: {
         color: 'white',
         fontFamily: 'Poppins-Bold',
-        fontSize: 30
+        fontSize: 50
     },
     yellowAccent: {
         color: Colors.pintroYellow,
-        fontSize: 30
+        fontSize: 50
     },
     buttonContainer: {
         //backgroundColor:'green',
-        paddingTop: 20,
-        width: '70%',
+        paddingTop: 150,
+        width: '80%',
         fontFamily:'Poppins-Regular'
     },
     textContainer: {
-        flexDirection: 'row'
-    }
+        flexDirection: 'row',
+        //backgroundColor:'blue',
+        marginTop:0
+    },additionalText:{
+        alignItems:'center',
+        justifyContent:'center',
+        padding:20,
+        //backgroundColor:'green'
+    },
+    helloThereText:{
+        color:'white',
+        fontSize:30,
+        fontFamily:'Poppins-Regular'
+    },LoginText:{
+        color:'white',
+        fontFamily:'Poppins-Regular',
+        fontSize:15
+    },
+    footerText:{
+        flexDirection:'row'
+    },LogInColored:{
+        color:Colors.pintroYellow,
+        fontFamily:'Poppins-Regular',
+        fontSize:15,
+        textDecorationLine:'underline'
+    },
+      lineStyle:{
+        borderWidth: 0.5,
+        borderColor:'white',
+        margin:10,
+   }
+
 });
 
 export default StartScreen;

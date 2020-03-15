@@ -1,11 +1,10 @@
-import { StyleSheet } from 'react-native';
-import Colors from '../Constants/Colors.js';
+import { Stylesheet } from 'react-native';
 
-const fonts = StyleSheet.create({
+const fonts = Stylesheet.create({
     name_black: {
         color: Colors.pintroBlack,
         fontFamily: 'Poppins-Bold',
-        fontSize: 16
+        fontSize: 14
     },
     title_black: {
         color: Colors.pintroBlack,
@@ -18,9 +17,9 @@ const fonts = StyleSheet.create({
         fontSize: 12
     },
     bio: {
-        color: 'grey',
+        color: grey,
         fontFamily: 'Poppins-Light',
-        fontSize: 10
+        fontSize: 8
     },
     location: {
         color: Colors.pintroBlack,
@@ -38,9 +37,9 @@ const fonts = StyleSheet.create({
         fontSize: 10 
     },
     story: {
-        color: 'grey',
+        color: grey,
         fontFamily: 'Poppins-Bold',
-        fontSize: 10
+        fontSize:12
     },
     more_yellow: {
         color: Colors.pintroYellow,
@@ -48,15 +47,10 @@ const fonts = StyleSheet.create({
         fontSize:8
     },
     more_white: {
-        color: 'grey',
-        fontFamily: 'Poppins-Light',
+        color: grey,
+        fontFamily: 'Poppins-light',
         fontSize: 8,
         textAlign: 'right'
-    },
-    name_white: {
-        color: Colors.pintroWhite,
-        fontFamily: 'Poppins-Bold',
-        fontSize: 16
     }
 });
 

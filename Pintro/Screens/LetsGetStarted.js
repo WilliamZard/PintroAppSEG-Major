@@ -1,21 +1,23 @@
 import React, {useReducer, useCallback,useState,useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput,ActivityIndicator,Alert } from 'react-native';
+import { StyleSheet, Text, View, Button,ActivityIndicator, TextInput } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
-import * as Animatable from 'react-native-animatable';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Colors from '../Constants/Colors';
-import Input from '../Components/Input';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
-
+import * as Animatable from 'react-native-animatable';
 import { useDispatch } from 'react-redux';
 import * as authActions from '../store/actions/auth';
+import Input from '../Components/Input';
+
 /**
- * The Sign in screen consisting of the Logo, a header (Text),
- * 2 input fields and 2 buttons. One button takes you to the Main screen after Logging
- * in sucessfully and the other one takes you back to the start screen.
- * @param {*} props 
+ * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
+ * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
+ * 
+ * @param {} props 
  */
 
+
+
+//SIGN UP STUFF
 
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
@@ -46,65 +48,67 @@ const formReducer = (state, action) => {
 //
 
 
+const LetsGetStarted = props => {
+
+//
+ 
 
 
-const SignInScreen = props => {
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState();
+const [isSignup, setIsSignup] = useState(false);
+const dispatch = useDispatch();
 
+const [formState, dispatchFormState] = useReducer(formReducer, {
+  inputValues: {
+    email: '',
+    password: ''
+  },
+  inputValidities: {
+    email: false,
+    password: false
+  },
+  formIsValid: false
+});
+useEffect(() => {
+if (error) {
+  Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
+}
+}, [error]);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState();
-    const [isSignup, setIsSignup] = useState(false);
-    const dispatch = useDispatch();
-    
-    const [formState, dispatchFormState] = useReducer(formReducer, {
-      inputValues: {
-        email: '',
-        password: ''
-      },
-      inputValidities: {
-        email: false,
-        password: false
-      },
-      formIsValid: false
+const signupHandler = async () => {
+let action;
+   action =  authActions.signup(
+      formState.inputValues.email,
+      formState.inputValues.password
+
+  );
+
+setError(null);
+setIsLoading(true);
+try {
+  await dispatch(action);
+  props.navigation.navigate({routeName:'Camera'});
+} catch (err) {
+  setError(err.message);
+  setIsLoading(false);
+}
+
+};  
+
+const inputChangeHandler = useCallback(
+  (inputIdentifier, inputValue, inputValidity) => {
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE,
+      value: inputValue,
+      isValid: inputValidity,
+      input: inputIdentifier
     });
-    useEffect(() => {
-    if (error) {
-      Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
-    }
-    }, [error]);
-    
-    const signupHandler = async () => {
-    let action;
-       action =  authActions.login(
-          formState.inputValues.email,
-          formState.inputValues.password
-    
-      );
-    
-    setError(null);
-    setIsLoading(true);
-    try {
-      await dispatch(action);
-      console.log("Worked");
-      props.navigation.navigate({routeName:'MainScreen'});
-    } catch (err) {
-      setError(err.message);
-      setIsLoading(false);
-    }
-    
-    };  
-    
-    const inputChangeHandler = useCallback(
-      (inputIdentifier, inputValue, inputValidity) => {
-        dispatchFormState({
-          type: FORM_INPUT_UPDATE,
-          value: inputValue,
-          isValid: inputValidity,
-          input: inputIdentifier
-        });
-      },
-      [dispatchFormState]
-    );
+  },
+  [dispatchFormState]
+);
+
+//
 
     return (
         <KeyboardAwareScrollView
@@ -118,15 +122,14 @@ const SignInScreen = props => {
                     <View style={styles.inputController}>
                         <Animatable.View animation="fadeIn">
 
-                        <Text style={styles.signInText}>Welcome back!</Text>
+                        <Text style={styles.signInText}>Let's get started</Text>
                         <View style={styles.BottomMargin}>
-                        <Text style={styles.aboveInputText}>Login to your account</Text>
+                        <Text style={styles.aboveInputText}>Create your account</Text>
                         </View>
                             <Text style={styles.aboveInputText}>Email address</Text>
                             <Input
               id="email"
               label=""
-              placeholder=""
               keyboardType="email-address"
               required
               email
@@ -136,8 +139,9 @@ const SignInScreen = props => {
               initialValue=""
             />
  <View style={styles.horizintalLineStyle}></View>
-                          
- 
+                            <Text style={styles.aboveInputText}>Phone number</Text>
+                            <TextInput style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white'/>
+ <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Password</Text>
                             <Input
               id="password"
@@ -153,16 +157,18 @@ const SignInScreen = props => {
               style={styles.inputBox}
             />
                             <View style={styles.horizintalLineStyle}></View>
-                           
+                            <Text style={styles.aboveInputText}>Confirm password</Text>
+                            <TextInput style={styles.inputBox} placeholder="********" placeholderTextColor='white' secureTextEntry={true} />
+                            <View style={styles.horizintalLineStyle}></View>
 
                             {isLoading?  ( <ActivityIndicator size="small" color={'white'} />
                             ):(
                                 <InvertedSignInUpButton onPress={signupHandler
                                     //()=>   props.navigation.navigate({routeName:'Camera'}) 
-                                }>Login</InvertedSignInUpButton>
+                                }>STEP 1 OF 6</InvertedSignInUpButton>
                              )}
                             
-                            <SignInUpButton>Login with LinkedIn</SignInUpButton>
+                            
                         </Animatable.View>
                     </View>
                 </View>
@@ -231,4 +237,5 @@ const styles = StyleSheet.create({
         marginBottom:60
     }
 });
-export default SignInScreen;
+
+export default LetsGetStarted;
