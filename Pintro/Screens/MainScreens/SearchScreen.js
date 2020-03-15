@@ -5,36 +5,27 @@ import { SearchBar, ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
-import * as tagsActions from '../../store/actions/tags';
 
 const SearchScreen = props => {
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
-    const dispatch = useDispatch();
+
     const loadedTags = useSelector(state => state.tags.tagsArray);
 
     const tagList = [
         'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
-    ]
+    ];
 
-    const loadTags = useCallback(
-        async () => {
-            try {
-                await dispatch(tagsActions.getTags());
-            } catch (e) {
-                console.log("ERROR tags failed to load")
-            }
-        },[dispatch]
-    );
+  
     
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
-            //console.log("You got here");
+            console.log("You got here");
             const regex = new RegExp(`^${searchWord}`,'i');
             //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(tagList.sort().filter(v => regex.test(v))); 
+            setSuggestions(loadedTags.sort().filter(v => regex.test(v))); 
         }
         renderSuggestions();
     }
@@ -62,7 +53,7 @@ const SearchScreen = props => {
         }
     }
 
-    loadTags();
+    
 
     return(
         <View style={styles.blackContainer}>

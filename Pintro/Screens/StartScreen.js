@@ -4,14 +4,21 @@ import * as Animatable from 'react-native-animatable';
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import Colors from '../Constants/Colors';
-
-
+import * as tagsActions from '../store/actions/tags';
+import {useSelector, useDispatch} from 'react-redux';
 /**
  * Start Screen which allows the user to decide whether he wants to sign in
  * or sign up. The screen consists of two custom buttons and the logo.
  * @param {} props 
  */
 const StartScreen = props => {
+const dispatch = useDispatch();
+
+useEffect(()=> {
+    dispatch(tagsActions.getTags("Tag"));
+},[dispatch]);
+   
+
     return (
         <View style={styles.backGround}>
             <View style={styles.main}>
