@@ -11,7 +11,7 @@ const SearchPage = () => {
     const [suggestedItems,setItems] = useState([])
 
     const tagList = [
-        'Abicus', 'Business', 'Comics'
+        'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
     ]
 
     
@@ -27,7 +27,7 @@ const SearchPage = () => {
     }
 
     function onListItemPress(item) {
-        console.log(item);
+        //console.log(item);
         setSearchKeyword(item);
         setItems(null);
     }
