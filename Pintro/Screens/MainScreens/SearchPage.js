@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React,{useEffect,useState,useCallback} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SearchBar, ListItem } from 'react-native-elements';
 import { fonts } from '../Constants/Fonts.js';
 import Colors from '../Constants/Colors.js';
 import WorkingSpace from '../Components/WorkingSpace.js';
+import * as tagsActions from '../../store/actions/tags';
 
-const SearchPage = () => {
+const SearchPage = props => {
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
@@ -14,6 +16,17 @@ const SearchPage = () => {
         'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
     ]
 
+    const loadTags = useCallback(
+        async () => {
+            try {
+                await dispatch(tagsActions.getTags());
+            } catch (e) {
+                console.log("ERROR tags failed to load")
+            }
+        },[dispatch]
+    );
+
+    const loadedTags = useSelector(state => state.tagsActions.tagsArray);
     
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -48,6 +61,8 @@ const SearchPage = () => {
             );
         }
     }
+
+    loadTags();
 
     return(
         <View style={styles.blackContainer}>
