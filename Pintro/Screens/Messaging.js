@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
-    marginLeft: 18,
   },
   profileContainer: {
     flexDirection: 'row',
@@ -140,6 +139,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderBottomColor: '#F1F1F2',
     borderBottomWidth: 2,
+    paddingLeft: 18,
   },
   profileImage: {
     width: 60,
@@ -149,16 +149,17 @@ const styles = StyleSheet.create({
   profileName: {
     marginLeft: 6,
     fontSize: 16,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Poppins-SemiBold',
     color: 'black',
     marginTop: 6,
   },
   emailView: {
     marginTop: 6,
     marginBottom: 6,
+    marginLeft: 18,
   },
   subHeaderText: {
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Poppins-SemiBold',
     fontSize: 18,
   },
 });

@@ -47,8 +47,11 @@ export default class Chat extends Component {
   static navigationOptions = ({navigation}) => ({
     title: `${navigation.state.params.recipient}`,
     headerTitleStyle: {
-      fontFamily: 'Poppins-Regular',
+      fontFamily: 'Poppins-SemiBold',
     },
+    headerStyle: {
+
+    }
   });
 
   componentDidMount() {
