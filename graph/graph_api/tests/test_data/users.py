@@ -65,5 +65,8 @@ USER_THAT_POSTED_POST_A = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Wint
 USER_THAT_POSTED_POST_B = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'M', 'female', '121',
                                                       'Siberia', 'Unknown', 'Up and coming', 'Queen_of_numbers', 'm@m.co.uk', 'shut it 007', {}]))
 
+AFFILIATION_REQUESTER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'meow', 'female', '121',
+                                                      'Siberia', 'Unknown', 'Up and coming', 'Queen_of_meow', 'meow@meow.co.uk', 'shut it 007', {}]))
+
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'

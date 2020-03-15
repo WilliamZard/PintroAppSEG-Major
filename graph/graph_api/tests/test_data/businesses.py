@@ -65,5 +65,8 @@ BUSINESS_THAT_POSTED_POST_A = dict(zip(BUSINESS_PROPERTIES, ['password', 'image'
 BUSINESS_THAT_POSTED_POST_B = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'M', '121',
                                                       'Siberia', 'Unknown','m@m.co.uk', 'shut it 007']))
 
+AFFILIATION_REQUEST_RECIPIENT = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'evilcorp', '121',
+                                                      'Siberia', 'Unknown','evil@corp.co.uk', 'shut it 007']))
+
 NONEXISTANT_BUSINESS_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'

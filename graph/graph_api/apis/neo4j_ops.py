@@ -266,7 +266,6 @@ def approve_follow_request(tx, follow_requester, follow_request_recipient):
         WHERE follow_requester.email = '{follow_requester}' AND follow_request_recipient.email = '{follow_request_recipient}'
         CALL apoc.refactor.setType(req, 'FOLLOWS') YIELD input, output RETURN follow_requester, follow_request_recipient
     """
-    print(query)
     return tx.run(query)
 
 
@@ -309,4 +308,15 @@ def get_tags(tx, labels):
         RETURN tag
     """
     print(query)
+    return tx.run(query)
+
+""" functions for AFFILIATIONS """
+
+def create_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+    query = f"""
+        MATCH (affiliation_requester:Person),(affiliation_request_recipient:Business)
+        WHERE affiliation_requester.email = '{affiliation_requester}' AND affiliation_request_recipient.email = '{affiliation_request_recipient}'
+        CREATE (affiliation_requester)-[f:REQUESTED_AFFILIATION]->(affiliation_request_recipient)
+        RETURN f
+    """
     return tx.run(query)
