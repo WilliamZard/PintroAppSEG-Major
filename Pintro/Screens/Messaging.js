@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   profileName: {
     marginLeft: 6,
     fontSize: 16,
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-Regular',
     color: 'black',
     marginTop: 6,
   },
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   subHeaderText: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-Regular',
     fontSize: 18,
   },
 });
