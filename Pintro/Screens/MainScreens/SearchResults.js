@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import { fonts } from '../Constants/Fonts.js';
-import Colors from '../Constants/Colors.js';
-import Company from '../Components/Company.js';
-import Group from '../Components/Groups.js';
+import { fonts } from '../../Constants/Fonts.js';
+import Colors from '../../Constants/Colors.js';
+import Company from '../../Components/Company.js';
+import Group from '../../Components/Groups.js';
 
 const SearchResults = props => {
     const [searchKeyword,setSearchKeyword] = useState();
