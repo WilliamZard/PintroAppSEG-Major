@@ -8,6 +8,7 @@ import WorkingSpace from '../Components/WorkingSpace.js';
 const SearchPage = () => {
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
+    const [suggestedItems,setItems] = useState([])
 
     const tagList = [
         'Abicus', 'Business', 'Comics'
@@ -17,29 +18,36 @@ const SearchPage = () => {
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
-            console.log("You got here");
+            //console.log("You got here");
             const regex = new RegExp(`^${searchWord}`,'i');
             //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(tagList.sort().filter(v => regex.test(v)));
-            renderSuggestions();
+            setSuggestions(tagList.sort().filter(v => regex.test(v))); 
         }
+        renderSuggestions();
     }
 
+    function onListItemPress(item) {
+        console.log(item);
+        setSearchKeyword(item);
+        setItems(null);
+    }
+    
     function renderSuggestions() {
         if(suggestions.length === 0 || searchKeyword.length < 3) {
-            return null;
+            setItems(null);
         } else {
-            return (
-                suggestions.map((item) => 
+            setItems(suggestions.map((item) => 
                 <ListItem 
+                    key={item}
                     containerStyle={{width: 300, height: 50}} 
                     titleStyle={{color: 'black'}} 
-                    title={item} 
+                    title={item}
+                    button
+                    onPress={() => onListItemPress(item)}
                 />)
             );
         }
     }
-
 
     return(
         <View style={styles.blackContainer}>
@@ -57,8 +65,9 @@ const SearchPage = () => {
                     containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
                     inputContainerStyle={{backgroundColor: 'white',width: 330}}
                     onChangeText={searchWord => onTextChanged(searchWord)}
-                    value={searchKeyword}/>
-                {renderSuggestions()}
+                    value={searchKeyword}
+                    clearIcon={null}/>
+                {suggestedItems}
                 <Text style={styles.category}>or Choose a Category</Text>
             </View>
             <View style={styles.rowContainer}>
