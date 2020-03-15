@@ -9,6 +9,7 @@ import auth from './store/reducers/auth';
 import Navigator from './navigation/LogInNavigator';
 import timeLineReducer from './store/reducers/timeline';
 import EditPhoto from './Screens/EditScreens/EditPhoto';
+import tagsReducer from './store/reducers/tags';
 
 /**
  * Loading all fonts. The requite methods imply that the app will
@@ -16,7 +17,8 @@ import EditPhoto from './Screens/EditScreens/EditPhoto';
  */
 const rootReducer = combineReducers({
   auth: auth,
-  timelinePosts:timeLineReducer
+  timelinePosts:timeLineReducer,
+  tags:tagsReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
