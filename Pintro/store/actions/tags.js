@@ -28,9 +28,10 @@ export const getTags = () => {
     const loadedTags = [];
    
     for(const element in tags){
-      console.log(tags[element].name);
+      console.log(tags[element]);
       loadedTags.push(new Tag(tags[element].created,tags[element].name,tags[element].uuid));
     }
+    
     dispatch({type: GETTAGS,tagsArray:loadedTags});
   };
 };

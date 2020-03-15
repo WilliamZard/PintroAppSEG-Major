@@ -12,7 +12,10 @@ const SearchScreen = props => {
     const [suggestedItems,setItems] = useState([])
 
     const loadedTags = useSelector(state => state.tags.tagsArray);
-
+    var tagNames = loadedTags.map(function(item) {
+        return item['name'];
+      });
+      console.log(tagNames);
     const tagList = [
         'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
     ];
@@ -22,10 +25,10 @@ const SearchScreen = props => {
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
-            console.log("You got here");
+            
             const regex = new RegExp(`^${searchWord}`,'i');
             //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(loadedTags.sort().filter(v => regex.test(v))); 
+            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
         }
         renderSuggestions();
     }
