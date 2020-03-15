@@ -15,7 +15,7 @@ const SearchScreen = props => {
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
-      console.log(tagNames);
+      
     const tagList = [
         'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
     ];
