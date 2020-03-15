@@ -20,7 +20,7 @@ const rootReducer = combineReducers({
   auth: auth,
   timelinePosts:timeLineReducer,
   tags:tagsReducer,
-  search:searchReducer 
+  search:searchReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
@@ -42,7 +42,7 @@ const fetchFonts = () => {
 
 export default function App() {
 
-  
+
   //State to make sure font is loaded.
   const [fontLoaded, setFontLoaded] = useState(false);
 /**
@@ -65,3 +65,21 @@ export default function App() {
 
 const styles = StyleSheet.create({
 });
+
+// FROM NEW App.js
+import Connect from './Screens/Connect.js';
+import Chat from './Screens/Chat.js';
+
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+
+const Stack = createStackNavigator({
+  Connect: {
+    screen: Connect,
+  },
+  Chat: {
+    screen: Chat,
+  },
+});
+
+export default createAppContainer(Stack);
