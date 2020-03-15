@@ -1,12 +1,45 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { SearchBar, ListItem } from 'react-native-elements';
 import { fonts } from '../Constants/Fonts.js';
-import Colors  from '../Constants/Colors.js';
+import Colors from '../Constants/Colors.js';
 import WorkingSpace from '../Components/WorkingSpace.js';
 
 const SearchPage = () => {
     const [searchKeyword,setSearchKeyword] = useState();
+    const [suggestions,setSuggestions] = useState([]);
+
+    const tagList = [
+        'Abicus', 'Business', 'Comics'
+    ]
+
+    
+    function onTextChanged(searchWord) {
+        setSearchKeyword(searchWord);
+        if (searchWord.length > 2) {
+            console.log("You got here");
+            const regex = new RegExp(`^${searchWord}`,'i');
+            //console.log(tagList.sort().filter(v => regex.test(v)));
+            setSuggestions(tagList.sort().filter(v => regex.test(v)));
+            renderSuggestions();
+        }
+    }
+
+    function renderSuggestions() {
+        if(suggestions.length === 0 || searchKeyword.length < 3) {
+            return null;
+        } else {
+            return (
+                suggestions.map((item) => 
+                <ListItem 
+                    containerStyle={{width: 300, height: 50}} 
+                    titleStyle={{color: 'black'}} 
+                    title={item} 
+                />)
+            );
+        }
+    }
+
 
     return(
         <View style={styles.blackContainer}>
@@ -23,8 +56,9 @@ const SearchPage = () => {
                     inputStyle={styles.searchText}
                     containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
                     inputContainerStyle={{backgroundColor: 'white',width: 330}}
-                    onChangeText={searchWord => setSearchKeyword(searchWord)}
+                    onChangeText={searchWord => onTextChanged(searchWord)}
                     value={searchKeyword}/>
+                {renderSuggestions()}
                 <Text style={styles.category}>or Choose a Category</Text>
             </View>
             <View style={styles.rowContainer}>
