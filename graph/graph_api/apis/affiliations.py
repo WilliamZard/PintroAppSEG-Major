@@ -8,7 +8,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (
-    create_session, create_affiliation_relationship)
+    create_session, create_affiliation_relationship, delete_affiliation_relationship)
 
 
 api = Namespace(
@@ -21,13 +21,20 @@ class AffiliationRequest(Resource):
     def post(self, affiliation_requester, affiliation_request_recipient):
         '''Create an AFFILIATION_REQUEST relationship, where affiliation_requester has requested to follow affiliation_request_recipient.'''
         with create_session() as session:
-            print('here')
             response = session.write_transaction(
                 create_affiliation_relationship, affiliation_requester, affiliation_request_recipient)
-            print(response)
             if response.summary().counters.relationships_created == 1:
-                print('reached if statement')
                 return make_response('', 201)
-            print('reached after if statement')
-            return 400
+            return make_response ('', 400)
+
+    def delete(self, affiliation_requester, affiliation_request_recipient):
+        '''Delete the AFFILIATION relationship, where affiliation_requester wants to be affiliated with affiliation_request_recipient'''
+        with create_session() as session:
+            response = session.write_transaction(
+                delete_affiliation_relationship, affiliation_requester, affiliation_request_recipient)
+            print(response)
+            if response.summary().counters.relationships_deleted == 1:
+                print('reached')
+                return make_response('', 204)
+            return make_response('', 400)
 

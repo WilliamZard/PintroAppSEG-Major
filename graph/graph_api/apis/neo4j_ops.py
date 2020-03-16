@@ -320,3 +320,10 @@ def create_affiliation_relationship(tx, affiliation_requester, affiliation_reque
         RETURN f
     """
     return tx.run(query)
+
+def delete_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+    query = f"""
+        MATCH (affiliate {{email: '{affiliation_requester}'}})-[f:REQUESTED_AFFILIATION]->(affiliate_recipient {{email: '{affiliation_request_recipient}'}})
+        DELETE f
+    """
+    return tx.run(query)
