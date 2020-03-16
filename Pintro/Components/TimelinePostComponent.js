@@ -16,7 +16,7 @@ return(
 <Image  resizeMode="contain" source={require('../assets/placeholderFace.png')}/>
 </View>
 <View style={{width:'70%',alignItems:'center',justifyContent:'center',height:40}}>
-<Text style={{color:'white'}}>Danielle</Text>
+<Text style={{color:'white'}}>{props.name}</Text>
 </View>
         </View>
         <View style={{marginTop:5}}>

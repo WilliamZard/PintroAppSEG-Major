@@ -1,12 +1,12 @@
 import React, { useState, Component } from 'react';
-import { StyleSheet, View, Dimensions,Text } from 'react-native';
+import { StyleSheet, View, Dimensions,Text,Modal } from 'react-native';
 import MapView, { Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import mapStyle from '../assets/mapStyle';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { Overlay } from 'react-native-elements';
-
 const usersMap = props => {
+
   const [selectedMarkerIndex,setSelectedMarkerIndex] = useState(0);
   const [userLocation,setUserLocation] = useState();
   const [errorMsg,setErrorMsg] = useState('');
@@ -30,7 +30,6 @@ const usersMap = props => {
       setUserLocation(await Location.getCurrentPositionAsync());
 
       if(typeof userLocation === 'object'){
-        //console.log(userLocation);
         setUserMarker(<Marker coordinate={{latitude: userLocation.coords.latitude,longitude: userLocation.coords.longitude}} image={profileMarker} />);
       }
     }
@@ -41,7 +40,7 @@ const usersMap = props => {
     {
       key:'Bush House',
       title: 'Bush House',
-      description: 'Where this dumb app was made',
+      description: 'Where this app was made',
       latlong: {
         latitude: 51.51263,
         longitude: -0.11721,
@@ -52,7 +51,7 @@ const usersMap = props => {
     {
       key:'Waterloo Campus',
       title: 'Waterloo Campus',
-      description: 'Where we decided to make this dumb app',
+      description: 'Where we decided to make this  app',
       latlong: {
         latitude: 51.50574,
         longitude: -0.11232,
@@ -70,7 +69,7 @@ const usersMap = props => {
       },
       user: 1,
       story: '',
-      help: 'Memes',
+      help: 'IOS UI',
     }
   ];
 
@@ -105,10 +104,13 @@ const usersMap = props => {
   }  
 
   function onPressMap(e) {
-    setSelectedMarkerIndex(-1);
-    getLocation();
-    setVisible(false);
-    //console.log(mapMarkers);
+    if(e.nativeEvent.action === 'marker-press') {
+      setVisible(true);
+    } else {
+      setSelectedMarkerIndex(-1);
+      getLocation();
+      setVisible(false);
+    }
   }
 
   return (
@@ -116,30 +118,28 @@ const usersMap = props => {
       <MapView
         provider={PROVIDER_GOOGLE} 
         style={styles.mapStyle} 
-        initialRegion={{
-            latitude: 51.50853,
-            longitude: -0.12574,
+        region={{
+          latitude: 51.50574,
+          longitude: -0.11232,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
         }} 
         customMapStyle={mapStyle}
         showsCompass={false}
         onPress={e => onPressMap(e)}
-      > 
+      >
         {mapMarkers}
         {userMarker}
       </MapView>
-      <View>
       <Overlay 
         isVisible={overlayVisible}
         onBackdropPress={e => onPressMap(e)}
         width={370}
         height={150}
         borderRadius={20}
-        overlayStyle={{position: 'absolute',bottom: 25}}
+        overlayStyle={{position: 'absolute',bottom: 100,borderWidth: 0.5,borderColor: 'black'}}
         windowBackgroundColor={"0"}
       >
-         
         <View> 
           <Text>{selectedMarkerIndex === -1 ? null : Markers[selectedMarkerIndex].title}</Text>
           <Text>{selectedMarkerIndex === -1 ? null : Markers[selectedMarkerIndex].description}</Text>
@@ -151,7 +151,6 @@ const usersMap = props => {
             </View>}           
         </View>
       </Overlay>
-       </View>
     </View>
   );
 };

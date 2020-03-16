@@ -21,6 +21,7 @@ import HomeScreen from '../Screens/MainScreens/HomeScreen';
 import SearchScreen from '../Screens/MainScreens/SearchScreen';
 import MessageScreen from '../Screens/MainScreens/MessageScreen';
 import MapScreen from '../Screens/MainScreens/MapScreen';
+import OnBoarding from '../Screens/OnBoarding';
 
 
 const defaultStackNavOptions = {
@@ -123,6 +124,8 @@ const MainNav = createBottomTabNavigator({
         }
     },
 });
+
+
 const LogInNavigator = createStackNavigator({
     Start:{
         screen:StartScreen
@@ -138,9 +141,15 @@ const LogInNavigator = createStackNavigator({
     SignIn:{screen:SignInScreen}
 },{
 defaultNavigationOptions:defaultStackNavOptions});
+
+const Onboarder = createSwitchNavigator({
+    Boarding:OnBoarding,
+    Login:LogInNavigator
+});
+
 const MySwitchNavigator = createSwitchNavigator(
     {
-    routeOne: LogInNavigator, 
+    routeOne: Onboarder, 
     routeTwo: MainNav  
     },
   );

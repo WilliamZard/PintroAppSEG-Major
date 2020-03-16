@@ -19,7 +19,7 @@ const dispatch = useDispatch();
             <View style={styles.titleContainer}>
                 <View style={styles.BackContainer}><TouchableHighlight onPress={()=>props.onBack()}><Text>Back</Text></TouchableHighlight></View>
             <Text style={styles.title}>
-               Danielle Dodoo
+               Ben
             </Text>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',marginTop:50}}>

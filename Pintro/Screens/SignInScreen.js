@@ -157,8 +157,9 @@ const SignInScreen = props => {
 
                             {isLoading?  ( <ActivityIndicator size="small" color={'white'} />
                             ):(
-                                <InvertedSignInUpButton onPress={signupHandler
-                                    //()=>   props.navigation.navigate({routeName:'Camera'}) 
+                                <InvertedSignInUpButton onPress={()=>{
+                                  signupHandler();
+                                  props.navigation.navigate({routeName:'routeTwo'})} 
                                 }>Login</InvertedSignInUpButton>
                              )}
                             

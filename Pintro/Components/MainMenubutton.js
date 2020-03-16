@@ -80,7 +80,7 @@ justifyContent:'center'}}>
 <WriteAPost onBack={backButton}/>
                    </Modal>
                 
-               <Image style={{height: 25, width: 25, resizeMode:'contain'}} source= {require('../images/searchIcon.png')}/>
+               <Image style={{height: 40, width: 40, resizeMode:'contain'}} source= {require('../images/middleLOGO.png')}/>
               
                </View>
 
