@@ -15,7 +15,7 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
                                  USER_WITH_TWO_FOLLOWINGS,
                                  USER_WITH_ONE_FOLLOWING,
                                  USER_WITH_NO_FOLLOWINGS, USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
-                                 USER_POST_A, USER_POST_B, DEACTIVATED_USER, ACTIVATED_USER)
+                                 USER_POST_A, USER_POST_B, DEACTIVATED_USER, ACTIVATED_USER, USER_THAT_POSTED_POST_A, USER_THAT_POSTED_POST_B)
 
 
 @pytest.mark.GET_user
@@ -185,9 +185,9 @@ class TestUsersGETFollowingsPosts:
         response = app.get(
             f"/users/{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}/followings/posts")
         assert response.status == '200 OK'
-        USER_POST_A.pop('created')
-        USER_POST_B.pop('created')
         json = response.get_json()
+        USER_POST_A['email'] = USER_THAT_POSTED_POST_A['email']
+        USER_POST_B['email'] = USER_THAT_POSTED_POST_B['email']
         assert len(json) == 2
         assert USER_POST_A in json
         assert USER_POST_B in json

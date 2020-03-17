@@ -235,15 +235,6 @@ def get_list_of_user_post_dates(tx, user_email):
 # TODO: delete ORDER BY
 
 
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
-    return tx.run(query)
-
-
 def get_posts_for_timeline(tx, user_email):
     query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:FOLLOWS]->()-[posted:POSTED]->(post:Post)
                 WITH posted, post
@@ -258,7 +249,7 @@ def get_posts_of_followings_of_a_user(tx, email):
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
         -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as email"""
     return tx.run(query)
 
 
@@ -312,15 +303,6 @@ def get_nodes_for_business_search(tx, search_string):
 def get_nodes_for_space_search(tx, search_string):
     query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score 
                 RETURN node, score LIMIT 10"""
-    return tx.run(query)
-
-
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
     return tx.run(query)
 
 
