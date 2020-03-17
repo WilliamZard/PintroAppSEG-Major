@@ -27,7 +27,7 @@ class TestPOST:
 
 
 @pytest.mark.DELETE_request
-class testDELETE:
+class TestDELETE:
     def test_DELETE_follow_request_with_valid_users(self, app):
         response = app.delete(
             f"/request/follow/{FOLLOW_REQUESTER_A['email']}/{FOLLOW_REQUESTER_B['email']}")
