@@ -250,20 +250,21 @@ def get_posts_of_followings_of_a_user(tx, email):
 """functions for FOLLOW RELATIONSHIPS"""
 
 
-def create_request_relationship(tx, relationship_type, follow_requester_email, follow_request_recipient_email):
+def create_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
     query = f"""
-        MATCH (follow_requester:Person),(follow_request_recipient:Person)
-        WHERE follow_requester.email = '{follow_requester_email}' AND follow_request_recipient.email = '{follow_request_recipient_email}'
-        CREATE (follow_requester)-[f:{relationship_type}]->(follow_request_recipient)
+        MATCH (requester:Person),(request_recipient:Person)
+        WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
+        CREATE (requester)-[f:{relationship_type}]->(request_recipient)
     """
     return tx.run(query)
 
 
-def approve_follow_request(tx, follow_requester, follow_request_recipient):
+def approve_request(tx, request_relationship_type, approved_relationship_type, requester_email, request_recipient_email):
+    # TODO: see if this query has the right approach. Why not just use DELETE and CREATE clauses?
     query = f"""
-        MATCH (follow_requester:Person)-[req:REQUESTED_FOLLOW]->(follow_request_recipient:Person)
-        WHERE follow_requester.email = '{follow_requester}' AND follow_request_recipient.email = '{follow_request_recipient}'
-        CALL apoc.refactor.setType(req, 'FOLLOWS') YIELD input, output RETURN follow_requester, follow_request_recipient
+        MATCH (requester:Person)-[req:{request_relationship_type}]->(request_recipient:Person)
+        WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
+        CALL apoc.refactor.setType(req, '{approved_relationship_type}') YIELD input, output RETURN requester, request_recipient
     """
     return tx.run(query)
 

@@ -1,7 +1,7 @@
 
 from flask_restx import Namespace, Resource
 from flask import make_response
-from .neo4j_ops import create_session, create_request_relationship
+from .neo4j_ops import create_session, create_request_relationship, delete_request_relationship
 
 api = Namespace(
     'request', title='For requesting user relationships(eg FOLLOW or AFFILIATED_WITH')
@@ -26,13 +26,11 @@ class Request(Resource):
                 return make_response('', 201)
             return make_response('USER NOT FOUND', 404)
 
-    def delete(self, requester_email, request_recipient_email):
-        '''Delete the FOLLOW relationship, where follow_requester follows follow_request_recipient'''
+    def delete(self, relationship_type, requester_email, request_recipient_email):
+        #TODO: docstrings
         with create_session() as session:
             response = session.write_transaction(
-                delete_follow_relationship, requester_email, request_recipient_email)
-            print(response)
+                delete_request_relationship, REQUEST_RELATIONSHIPS[relationship_type], requester_email, request_recipient_email)
             if response.summary().counters.relationships_deleted == 1:
-                print('reached')
                 return make_response('', 204)
             return make_response('', 400)

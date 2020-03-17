@@ -5,6 +5,7 @@ from .spaces import api as spaces
 from .posts import api as posts
 from .tags import api as tags
 from .request import api as request
+from .approve import api as approve
 
 api = Api(
     title='Pintro Graph Api',
@@ -18,3 +19,4 @@ api.add_namespace(spaces)
 api.add_namespace(posts)
 api.add_namespace(tags)
 api.add_namespace(request)
+api.add_namespace(approve)
