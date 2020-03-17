@@ -15,12 +15,10 @@ const SearchScreen = props => {
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
-      
+
     const tagList = [
         'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
     ];
-
-  
     
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -47,7 +45,7 @@ const SearchScreen = props => {
                 <ListItem 
                     key={item}
                     containerStyle={{width: 300, height: 50}} 
-                    titleStyle={{color: 'black'}} 
+                    titleStyle={fonts.story} 
                     title={item}
                     button
                     onPress={() => onListItemPress(item)}
@@ -128,7 +126,8 @@ const styles = StyleSheet.create({
     whiteContainer: {
         flex: 1,
         backgroundColor: 'white',
-        borderRadius: 15,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
     },
     circleImage: {
         width: 50,
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 60,
+        marginBottom: 50,
     },
     imageContainer: {
         paddingRight: 5,

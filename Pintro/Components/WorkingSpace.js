@@ -25,12 +25,12 @@ const styles = StyleSheet.create({
     rowContainer:{
         flexDirection: 'row',
         marginLeft: 20,
-        marginTop: 20,
+        marginTop: 10,
     },
     spaceImage: {
         borderRadius: 20,
-        height: 115,
-        width: 115,
+        height: 110,
+        width: 110,
     },
     textView: {
         marginLeft: 10,
