@@ -17,7 +17,7 @@ class TestPOST:
 
     def test_POST_affiliation_request_with_valid_users(self, app):
         response = app.post(
-            f"/request/affiliation/{FOLLOW_REQUESTER_A['email']}/{FOLLOW_REQUESTER_B['email']}")
+            f"/request/affiliation/{AFFILIATION_REQUESTER['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
         assert response.status == '201 CREATED'
         assert response.data == b''
 
