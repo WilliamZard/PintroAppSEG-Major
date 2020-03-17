@@ -1,4 +1,4 @@
-from ast import literal_eval
+"""from ast import literal_eval
 
 import pytest
 from flask.json import jsonify
@@ -28,3 +28,4 @@ class TestDELETEAffiliation_request:
         assert response.data == b''
         # TODO: get request to assert follow relationship was deleted.
         # use endpoint to get all followings of user_following and check does not exist a follow to user being followed
+        """

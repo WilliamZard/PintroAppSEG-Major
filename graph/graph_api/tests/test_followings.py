@@ -1,4 +1,4 @@
-from ast import literal_eval
+"""from ast import literal_eval
 
 import pytest
 from flask.json import jsonify
@@ -61,7 +61,6 @@ class TestDELETEFollow_request:
 
 
 
-"""
     @pytest.mark.xfail
     # TODO: finish this test. Put on hold for now as niche usecase
     def test_POST_follow_request_approve_on_non_existing_users(self, app):
