@@ -3,9 +3,8 @@ from .users import api as users
 from .businesses import api as businesses
 from .spaces import api as spaces
 from .posts import api as posts
-from .following import api as following
 from .tags import api as tags
-from .affiliations import api as affiliations
+from .request import api as request
 
 api = Api(
     title='Pintro Graph Api',
@@ -17,6 +16,5 @@ api.add_namespace(users)
 api.add_namespace(businesses)
 api.add_namespace(spaces)
 api.add_namespace(posts)
-api.add_namespace(following)
 api.add_namespace(tags)
-api.add_namespace(affiliations)
+api.add_namespace(request)
