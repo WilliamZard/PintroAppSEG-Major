@@ -10,10 +10,10 @@ REQUEST_RELATIONSHIPS = {'follow': 'FOLLOW_REQUEST',
                          'affiliation': 'AFFILIATION_REQUEST'}
 
 
-@api.route('/<string:relationship_type>/<string:follow_requester_email>/<string:follow_request_recipient_email>')
+@api.route('/<string:relationship_type>/<string:requester_email>/<string:request_recipient_email>')
 @api.produces('application/json')
-class FollowRequest(Resource):
-    def post(self, relationship_type, follow_requester_email, follow_request_recipient_email):
+class Request(Resource):
+    def post(self, relationship_type, requester_email, request_recipient_email):
         # TODO: docstrings
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
@@ -21,16 +21,16 @@ class FollowRequest(Resource):
         # TODO: validate emails
         with create_session() as session:
             response = session.write_transaction(
-                create_request_relationship, REQUEST_RELATIONSHIPS[relationship_type], follow_requester_email, follow_request_recipient_email)
+                create_request_relationship, REQUEST_RELATIONSHIPS[relationship_type], requester_email, request_recipient_email)
             if response.summary().counters.relationships_created == 1:
                 return make_response('', 201)
-            return 400
+            return make_response('USER NOT FOUND', 404)
 
-    def delete(self, follow_requester, follow_request_recipient):
+    def delete(self, requester_email, request_recipient_email):
         '''Delete the FOLLOW relationship, where follow_requester follows follow_request_recipient'''
         with create_session() as session:
             response = session.write_transaction(
-                delete_follow_relationship, follow_requester, follow_request_recipient)
+                delete_follow_relationship, requester_email, request_recipient_email)
             print(response)
             if response.summary().counters.relationships_deleted == 1:
                 print('reached')
