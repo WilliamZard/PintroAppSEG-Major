@@ -250,12 +250,11 @@ def get_posts_of_followings_of_a_user(tx, email):
 """functions for FOLLOW RELATIONSHIPS"""
 
 
-def create_follow_relationship(tx, follow_requester, follow_request_recipient):
+def create_request_relationship(tx, relationship_type, follow_requester_email, follow_request_recipient_email):
     query = f"""
         MATCH (follow_requester:Person),(follow_request_recipient:Person)
-        WHERE follow_requester.email = '{follow_requester}' AND follow_request_recipient.email = '{follow_request_recipient}'
-        CREATE (follow_requester)-[f:REQUESTED_FOLLOW]->(follow_request_recipient)
-        RETURN f
+        WHERE follow_requester.email = '{follow_requester_email}' AND follow_request_recipient.email = '{follow_request_recipient_email}'
+        CREATE (follow_requester)-[f:{relationship_type}]->(follow_request_recipient)
     """
     return tx.run(query)
 
@@ -310,7 +309,9 @@ def get_tags(tx, labels):
     print(query)
     return tx.run(query)
 
+
 """ functions for AFFILIATIONS """
+
 
 def create_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
     query = f"""
@@ -320,6 +321,7 @@ def create_affiliation_relationship(tx, affiliation_requester, affiliation_reque
         RETURN f
     """
     return tx.run(query)
+
 
 def delete_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
     query = f"""
