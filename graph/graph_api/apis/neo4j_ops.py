@@ -269,9 +269,9 @@ def approve_request(tx, request_relationship_type, approved_relationship_type, r
     return tx.run(query)
 
 
-def delete_request_relationship(tx, relationship_type, follow_requester_email, follow_request_recipient_email):
+def delete_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
     query = f"""
-        MATCH (follower {{email: '{follow_requester_email}' }})-[f:{relationship_type}]->(following {{email: '{follow_request_recipient_email}'}})
+        MATCH (requester {{email: '{requester_email}' }})-[f:{relationship_type}]->(request_recipient {{email: '{request_recipient_email}'}})
         DELETE f
     """
     return tx.run(query)
