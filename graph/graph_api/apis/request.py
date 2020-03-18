@@ -6,8 +6,8 @@ from .neo4j_ops import create_session, create_request_relationship, delete_reque
 api = Namespace(
     'request', title='For requesting user relationships(eg FOLLOW or AFFILIATED_WITH')
 
-REQUEST_RELATIONSHIPS = {'follow': 'FOLLOW_REQUEST',
-                         'affiliation': 'AFFILIATION_REQUEST'}
+REQUEST_RELATIONSHIPS = {'follow': 'REQUESTED_FOLLOW',
+                         'affiliation': 'REQUESTED_AFFILIATION'}
 
 
 @api.route('/<string:relationship_type>/<string:requester_email>/<string:request_recipient_email>')
