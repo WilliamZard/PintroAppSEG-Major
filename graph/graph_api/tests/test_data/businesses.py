@@ -71,4 +71,6 @@ AFFILIATION_REQUESTER_A = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'e
 AFFILIATION_REQUESTER_B = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'umbrellacorp', '121',
                                                          'Siberia', 'Unknown', 'umbrella@corp.co.uk', 'shut it 007']))
 NONEXISTANT_BUSINESS_EMAIL = 'does@exist.not'
+
 INVALID_EMAIL = 'invalidateme.now'
+

@@ -42,7 +42,10 @@ def get_user_by_email(tx, user_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    query = f"""MATCH (user:Person {{email: '{user_email}'}})-->(tag:Tag) RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
+    query = f"""
+    MATCH (user:Person {{email: '{user_email}'}})
+    OPTIONAL MATCH (user)-->(tag:Tag)
+    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
     return tx.run(query)
 
 
@@ -61,20 +64,23 @@ def set_user_fields(tx, user_email, fields):
     The query is dynamic. It only operates on fields that are given in the fields paramater.
     This query will also update relationships with tags.
     '''
+    create_tag_query = None
     if 'tags' in fields:
         tags = fields['tags']
         fields.pop('tags')
+        create_tag_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH (tag:Tag {{uuid: tag_uuid}})
+        MATCH (user:Person {{email: '{user_email}'}})
+        MERGE (user)-[:TAGGED]->(tag)"""
 
     # NOTE: this could error when assigning string values that need quotations
-    match_query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
+    query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
-    create_tag_query = f"""
-    WITH {tags} AS tag_uuids
-    UNWIND tag_uuids AS tag_uuid
-    MATCH (tag:Tag {{uuid: tag_uuid}})
-    MATCH (user:Person {{email: '{user_email}'}})
-    MERGE (user)-[:TAGGED]->(tag)"""
-    query = match_query + create_tag_query
+
+    if create_tag_query:
+        query = query + create_tag_query
     return tx.run(query)
 
 
@@ -243,7 +249,7 @@ def get_posts_of_followings_of_a_user(tx, email):
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
         -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as email"""
     return tx.run(query)
 
 
@@ -299,6 +305,22 @@ def get_posts_of_followings_of_a_user(tx, email):
         -[:POSTED]->(post:Post)
         RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
     return tx.run(query)
+def get_nodes_for_user_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
+    return tx.run(query)
+
+
+def get_nodes_for_business_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchBusinessIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
+    return tx.run(query)
+
+
+def get_nodes_for_space_search(tx, search_string):
+    query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score 
+                RETURN node, score LIMIT 10"""
+    return tx.run(query)
 
 
 def get_tags(tx, labels):
@@ -308,7 +330,52 @@ def get_tags(tx, labels):
         WHERE {labels}
         RETURN tag
     """
-    print(query)
+    return tx.run(query)
+
+
+def get_chatrooms_of_user(tx, email):
+    query = f"""
+        MATCH (u:Person {{email: \'{email}\'}})-[:CHATS_IN]->(c:Chatroom)
+        MATCH (r:Person)-[:CHATS_IN]->(c)
+        WHERE r.email <> \'{email}\'
+        RETURN c.chat_id AS chat_id, r.email AS recipient
+    """
+    return tx.run(query)
+
+
+def check_users_in_chatroom(tx, email1, email2):
+    query = f"""
+        MATCH (u1:Person {{email: \'{email1}\'}})-[:CHATS_IN]->(c:Chatroom)
+        MATCH (u2:Person {{email: \'{email2}\'}})-[:CHATS_IN]->(c)
+        RETURN CASE WHEN u1 IS NOT NULL AND u2 IS NOT NULL THEN true ELSE false END AS result
+    """
+    return tx.run(query)
+
+
+def create_chatroom(tx, email1, email2, chat_id):
+    query = f"""
+        MATCH (u1:Person {{email: \'{email1}\'}})
+        MATCH (u2:Person {{email: \'{email2}\'}})
+        CREATE (c:Chatroom {{chat_id: \'{chat_id}\'}})
+        CREATE (u1)-[:CHATS_IN]->(c)
+        CREATE (u2)-[:CHATS_IN]->(c)
+    """
+    return tx.run(query)
+
+
+def check_chatroom_exists(tx, chat_id):
+    query = f"""
+        MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
+        RETURN CASE WHEN c IS NULL THEN false ELSE true END AS result
+    """
+    return tx.run(query)
+
+
+def delete_chatroom(tx, chat_id):
+    query = f"""
+        MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
+        DETACH DELETE c
+    """
     return tx.run(query)
 
 

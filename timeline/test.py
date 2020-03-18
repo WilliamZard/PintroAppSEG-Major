@@ -19,7 +19,9 @@ class TestFunction(unittest.TestCase):
         post_a = {"content": "Post A Content", "modified": "2020-03-10T15:23:33.020296000Z",
                   "uuid": "791a95b0-77f9-4ccb-940f-04cec294b05e"}
 
-        results = generate_timeline(req)
+        response = generate_timeline(req)
+        self.assertEqual(len(response), 1)
+        results = response['results']
         self.assertEqual(len(results), 2)
         self.assertIn(post_b, results)
         self.assertIn(post_a, results)

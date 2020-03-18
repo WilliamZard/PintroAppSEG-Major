@@ -64,4 +64,5 @@ SPACE_THAT_POSTED_POST_B = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Mgf
                                                       'Siberia', 'Unknown','m@mdfr.co.uk', 'shut it 007']))
 
 NONEXISTANT_SPACE_EMAIL = 'does@exist.not'
+
 INVALID_EMAIL = 'invalidateme.now'

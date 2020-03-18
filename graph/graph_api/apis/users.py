@@ -33,6 +33,7 @@ class UserSchema(Schema):
     short_bio = fields.String()
     story = fields.String()
     education = fields.String()
+    active = fields.String()
     tags = fields.List(fields.String())
 
 
@@ -50,7 +51,7 @@ users = api.model('Users', {
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
     'education': restx_fields.String(title='Highest level obtained.'),
-    'tags_as_uuids': restx_fields.List(restx_fields.String())
+    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the user is related to.')
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
@@ -72,7 +73,7 @@ class Users(Resource):
                 tags = response.data()['tags']
                 labels = response.data()['tag_labels']
                 user['tags'] = dict(zip(tags, labels))
-                return jsonify(user_schema.dump(user))
+                return jsonify(user)
             return make_response('', 404)
 
     @api.doc('delete_user')
@@ -182,4 +183,42 @@ class UsersGETPostsOfFollowings(Resource):
                         post[key] = str(post[key]).replace('+00:00', 'Z')
             if data:
                 return jsonify(data)
+            return make_response('', 404)
+
+
+@api.route('/deactivate/<string:email>')
+@api.produces('application/json')
+class Users(Resource):
+    @api.doc('deactivate users')
+    @api.response(204, 'User deactivated.')
+    def put(self, email):
+        '''Deactivate a user account.'''
+        if not valid_email(email):
+            return make_response('', 422)
+        fields = {'active': False}
+        # TODO: validate payload
+        with create_session() as session:
+            response = session.write_transaction(
+                set_user_fields, email, fields)
+            if response.summary().counters.properties_set == 1:
+                return make_response('', 204)
+            return make_response('', 404)
+
+
+@api.route('/activate/<string:email>')
+@api.produces('application/json')
+class Users(Resource):
+    @api.doc('activate users')
+    @api.response(204, 'User activated.')
+    def put(self, email):
+        '''Activate a user account if it has been deactivated.'''
+        if not valid_email(email):
+            return make_response('', 422)
+        fields = {'active': True}
+        # TODO: validate payload
+        with create_session() as session:
+            response = session.write_transaction(
+                set_user_fields, email, fields)
+            if response.summary().counters.properties_set == 1:
+                return make_response('', 204)
             return make_response('', 404)

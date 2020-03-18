@@ -14,9 +14,8 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
                                  USER_WITH_THREE_FOLLOWINGS,
                                  USER_WITH_TWO_FOLLOWINGS,
                                  USER_WITH_ONE_FOLLOWING,
-                                 USER_WITH_NO_FOLLOWINGS,
-                                 USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS, USER_POST_A, USER_POST_B,
-                                 AFFILIATION_REQUESTER_A)
+                                 USER_WITH_NO_FOLLOWINGS, USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
+                                 USER_POST_A, USER_POST_B, AFFILIATION_REQUESTER_A, DEACTIVATED_USER, ACTIVATED_USER, USER_THAT_POSTED_POST_A, USER_THAT_POSTED_POST_B)
 
 
 @pytest.mark.GET_user
@@ -25,7 +24,7 @@ class TestGET:
         response = app.get(f"/users/{VALID_USER['email']}")
         assert response.status == '200 OK'
         json = dict(response.get_json())
-        assert len(json) == 13
+        assert len(json) == 14
         for key, value in VALID_USER.items():
             assert key in json
             assert value == json[key]
@@ -113,7 +112,7 @@ class TestPost:
         response = app.get(f"/users/{VALID_USER_TO_BE_CREATED['email']}")
         assert response.status == '200 OK'
         json = dict(response.get_json())
-        assert len(json) == 13
+        assert len(json) == 14
         for key, value in VALID_USER_TO_BE_CREATED.items():
             assert key in json
             # TODO: remove need for below if statement
@@ -161,9 +160,14 @@ class TestUsersGETFollowings:
         response = app.get(
             f"/users/{USER_WITH_TWO_FOLLOWINGS['email']}/followings")
         assert response.status == '200 OK'
-        results = [{'full_name': user['full_name'], 'email': user['email']}
-                   for user in [USER_WITH_ONE_FOLLOWING, USER_WITH_NO_FOLLOWINGS]]
-        assert response.data == jsonify(results).data
+        json = response.json
+        user_with_one_following_reduced = {
+            'full_name': USER_WITH_ONE_FOLLOWING['full_name'], 'email': USER_WITH_ONE_FOLLOWING['email']}
+        user_with_no_followings_reduced = {
+            'full_name': USER_WITH_NO_FOLLOWINGS['full_name'], 'email': USER_WITH_NO_FOLLOWINGS['email']}
+        assert len(json) == 2
+        assert user_with_one_following_reduced in json
+        assert user_with_no_followings_reduced in json
 
     def test_GET_followings_of_non_existing_user(self, app):
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followings")
@@ -181,9 +185,9 @@ class TestUsersGETFollowingsPosts:
         response = app.get(
             f"/users/{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}/followings/posts")
         assert response.status == '200 OK'
-        USER_POST_A.pop('created')
-        USER_POST_B.pop('created')
         json = response.get_json()
+        USER_POST_A['email'] = USER_THAT_POSTED_POST_A['email']
+        USER_POST_B['email'] = USER_THAT_POSTED_POST_B['email']
         assert len(json) == 2
         assert USER_POST_A in json
         assert USER_POST_B in json
@@ -193,3 +197,16 @@ class TestUsersGETFollowingsPosts:
         raise NotImplementedError
 
     # TODO: consider tests at different cardinalities
+
+
+@pytest.mark.PUT_user_activation
+class TestUserPUTActivation:
+    def test_PUT_deactivated_users(self, app):
+        response = app.put(
+            f"/users/deactivate/{DEACTIVATED_USER['email']}")
+        assert response.status == '204 NO CONTENT'
+
+    def test_PUT_activated_users(self, app):
+        response = app.put(
+            f"/users/activate/{ACTIVATED_USER['email']}")
+        assert response.status == '204 NO CONTENT'
