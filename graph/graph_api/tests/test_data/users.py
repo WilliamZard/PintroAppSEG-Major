@@ -85,5 +85,9 @@ USER_WITH_NOTIFICATIONS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High
 
 USER_REQUESTING_USER_WITH_NOTIFICATIONS_A = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'quarantine_partner', 'male',
                                                                         '911', 'not godless', 'strand', 'quarantine_partner', 'quarantine_partner', 'quarantine_partner@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
+
+USER_WITH_NO_NOTIFICATIONS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'covid', 'male',
+                                                         '911', 'not godless', 'strand', 'covid', 'covid_partner', 'covid@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
+
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
