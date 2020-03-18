@@ -12,6 +12,7 @@ from .test_data.tags import *
 from .test_data.businesses import *
 from .test_data.spaces import *
 from .test_data.chatrooms import *
+from .test_data.notifications import *
 
 USERS_TO_TEST = [
     DEACTIVATED_USER,
@@ -34,8 +35,7 @@ USERS_TO_TEST = [
     USER_THAT_POSTED_POST_B,
     AFFILIATION_REQUEST_RECIPIENT,
     USER_WITH_NOTIFICATIONS,
-    USER_REQUESTING_USER_WITH_NOTIFICATIONS_A,
-    USER_REQUESTING_USER_WITH_NOTIFICATIONS_B
+    USER_REQUESTING_USER_WITH_NOTIFICATIONS_A
 ]
 
 
