@@ -38,9 +38,10 @@ VALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gat
 INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
                                                          'best kiosk in town', 'Gatwickk', 'Precious', 'Preciousest', 'preciousgmail.com', 'Likeable and devout.', {}, str(active)]))
 
+AFFILIATION_REQUEST_RECIPIENT = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'meow', 'female', '121',
+                                                            'Siberia', 'Unknown', 'Up and coming', 'Queen_of_meow', 'meow@meow.co.uk', 'shut it 007', {},  str(active)]))
 USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                        'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.', {}, str(active)]))
-
 USER_THAT_CREATES_POST = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                      'I was a student', 'London', 'unemployed', 'Jonny', 'user_creates_post@gmail.com', 'eat, sleep, repeat.', {}, str(active)]))
 USER_ABOUT_TO_FOLLOW = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'King Wellington', 'male', '911',
@@ -72,7 +73,6 @@ DEACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School
 
 ACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Sule Wule', 'male', '911',
                                          'not godless', 'strand', 'Sule', 'Sule', 'Sule_wule@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
-
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'

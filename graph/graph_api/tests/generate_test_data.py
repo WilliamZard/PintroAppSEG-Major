@@ -12,7 +12,6 @@ from .test_data.tags import *
 from .test_data.businesses import *
 from .test_data.spaces import *
 from .test_data.chatrooms import *
-# TODO: organise test data. Different script? 
 
 USERS_TO_TEST = [
     DEACTIVATED_USER,
@@ -25,13 +24,15 @@ USERS_TO_TEST = [
     USER_WITH_TWO_FOLLOWINGS,
     USER_WITH_ONE_FOLLOWING,
     USER_WITH_NO_FOLLOWINGS,
-    USER_ABOUT_TO_FOLLOW,
-    USER_ABOUT_TO_BE_FOLLOWED,
+    FOLLOW_REQUESTER_A,
+    FOLLOW_REQUESTER_B,
+    FOLLOW_REQUEST_RECIPIENT,
     USER_FOLLOWING,
     USER_BEING_FOLLOWED,
     USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
     USER_THAT_POSTED_POST_A,
-    USER_THAT_POSTED_POST_B
+    USER_THAT_POSTED_POST_B,
+    AFFILIATION_REQUEST_RECIPIENT
 ]
 
 
@@ -135,44 +136,20 @@ CREATE_FOLLOWS_FOR_POSTS_USERS = f"""
     CREATE (user_a)-[:FOLLOWS]->(user_c)
 """
 
-"""
-# TODO: decompose this string
-CREATE_POSTS = fMATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
-                MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
-                MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
-                MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
-                MATCH(user_e: Person {{email: '{USER_WITH_MULTIPLE_POSTS['email']}'}})
-
-                CREATE(post_a: Post {{id: apoc.create.uuid(), content: '{USER_WITH_THREE_FOLLOWINGS_POST_A['content']}'}})
-                CREATE(post_b: Post {{id: apoc.create.uuid(), content: '{USER_WITH_THREE_FOLLOWINGS_POST_B['content']}'}})
-                CREATE(user_a)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,1)}'}}] -> (post_a)
-                CREATE(user_a)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,2)}'}}] -> (post_b)
-
-                CREATE(post_c: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_A['content']}'}})
-                CREATE(post_d: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_B['content']}'}})
-                CREATE(post_e: Post {{id: apoc.create.uuid(), content: '{USER_WITH_TWO_FOLLOWINGS_POST_C['content']}'}})
-                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,3)}'}}] -> (post_c)
-                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,4)}'}}] -> (post_d)
-                CREATE(user_b)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,5)}'}}] -> (post_e)
-
-                CREATE(post_f: Post {{id: apoc.create.uuid(), content: '{USER_WITH_ONE_FOLLOWING_POST_A['content']}'}})
-                CREATE(user_c)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,6)}'}}] -> (post_f)
-
-                CREATE(post_g: Post {{id: apoc.create.uuid(), content: '{USER_WITH_NO_FOLLOWINGS_POST_A['content']}'}})
-                CREATE(post_h: Post {{id: apoc.create.uuid(), content: '{USER_WITH_NO_FOLLOWINGS_POST_B['content']}'}})
-                CREATE(user_d)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,7)}'}}] -> (post_g)
-                CREATE(user_d)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,8)}'}}] -> (post_h)
-
-                CREATE(post_j: Post {{id: apoc.create.uuid(), content: '{USER_POST_A['content']}'}})
-                CREATE(post_k: Post {{id: apoc.create.uuid(), content: '{USER_POST_B['content']}'}})
-                CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,9)}'}}] -> (post_j)
-                CREATE(user_e)-[:POSTED {{date: '{datetime.datetime.now() + datetime.timedelta(0,10)}'}}] -> (post_k)
-             """
 FOLLOWS_AA = f"""
     MATCH (user_a:Person {{email:'{USER_FOLLOWING['email']}'}})
     MATCH (user_b:Person {{email:'{USER_BEING_FOLLOWED['email']}'}})
     CREATE (user_a)-[:FOLLOWS]->(user_b)
 """
+
+CREATE_FOLLOW_REQUESTS = f"""
+    MATCH (user_a:Person {{email:'{FOLLOW_REQUESTER_A['email']}'}})
+    MATCH (user_b:Person {{email:'{FOLLOW_REQUESTER_B['email']}'}})
+    MATCH (user_c:Person {{email:'{FOLLOW_REQUEST_RECIPIENT['email']}'}})
+    CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_c)
+    CREATE (user_b)-[:REQUESTED_FOLLOW]->(user_c)
+"""
+
 RELATIONSHIPS_FOLLOWS_USER_A = f"""
     MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
     MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
@@ -196,6 +173,14 @@ RELATIONSHIPS_FOLLOWS_USER_C = f"""
     MATCH (user_c:Person {{email:'{USER_WITH_ONE_FOLLOWING['email']}'}})
     MATCH (user_d:Person {{email:'{USER_WITH_NO_FOLLOWINGS['email']}'}})
     CREATE (user_c)-[:FOLLOWS]->(user_d)"""
+
+CREATE_AFFILIATION_REQUESTS = f"""
+    MATCH (user_a:Business {{email:'{AFFILIATION_REQUESTER_A['email']}'}})
+    MATCH (user_b:Business {{email:'{AFFILIATION_REQUESTER_B['email']}'}})
+    MATCH (user_c:Person {{email:'{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
+    CREATE (user_a)-[:REQUESTED_AFFILIATION]->(user_c)
+    CREATE (user_b)-[:REQUESTED_AFFILIATION]->(user_c)
+"""
 
 CONSTRAINT_USER_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
 CONSTRAINT_USER_EMAIL_EXISTS = "CREATE CONSTRAINT ON(user: Person) ASSERT EXISTS (user.email)"
@@ -233,21 +218,28 @@ BUSINESSES_TO_TEST = [
     BUSINESS_ABOUT_TO_BE_FOLLOWED,
     BUSINESS_FOLLOWING,
     BUSINESS_BEING_FOLLOWED,
-    BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS
+    BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
+    AFFILIATION_REQUESTER_A,
+    AFFILIATION_REQUESTER_B
 
-    
 ]
 
 # TODO: restructure this
 CREATE_TEST_BUSINESS_DATA = ""
 for BUSINESS in BUSINESSES_TO_TEST:
-    CREATE_TEST_BUSINESS_DATA += "CREATE (" + BUSINESS['full_name'] + ":Business { "
-    CREATE_TEST_BUSINESS_DATA += "full_name: \'" + BUSINESS['full_name'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "password: \'" + BUSINESS['password'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "profile_image: \'" + BUSINESS['profile_image'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "CREATE (" + \
+        BUSINESS['full_name'] + ":Business { "
+    CREATE_TEST_BUSINESS_DATA += "full_name: \'" + \
+        BUSINESS['full_name'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "password: \'" + \
+        BUSINESS['password'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "profile_image: \'" + \
+        BUSINESS['profile_image'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "phone: \'" + BUSINESS['phone'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "short_bio: \'" + BUSINESS['short_bio'] + "\' , "
-    CREATE_TEST_BUSINESS_DATA += "location: \'" + BUSINESS['location'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "short_bio: \'" + \
+        BUSINESS['short_bio'] + "\' , "
+    CREATE_TEST_BUSINESS_DATA += "location: \'" + \
+        BUSINESS['location'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "email: \'" + BUSINESS['email'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "story: \'" + BUSINESS['story'] + "\'}) \n"
 
@@ -277,7 +269,8 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "CREATE (" + SPACE['full_name'] + ":Space { "
     CREATE_TEST_SPACE_DATA += "full_name: \'" + SPACE['full_name'] + "\' , "
     CREATE_TEST_SPACE_DATA += "password: \'" + SPACE['password'] + "\' , "
-    CREATE_TEST_SPACE_DATA += "profile_image: \'" + SPACE['profile_image'] + "\' , "
+    CREATE_TEST_SPACE_DATA += "profile_image: \'" + \
+        SPACE['profile_image'] + "\' , "
     CREATE_TEST_SPACE_DATA += "phone: \'" + SPACE['phone'] + "\' , "
     CREATE_TEST_SPACE_DATA += "short_bio: \'" + SPACE['short_bio'] + "\' , "
     CREATE_TEST_SPACE_DATA += "location: \'" + SPACE['location'] + "\' , "
@@ -391,6 +384,8 @@ queries = [
     RELATIONSHIPS_FOLLOWS_USER_C,
     *create_tag_queries,
     ASSOCIATE_VALID_USER_TO_THEIR_TAGS,
+    CREATE_FOLLOW_REQUESTS,
+    CREATE_AFFILIATION_REQUESTS,
     CONSTRAINT_CHATROOM_ID_UNIQUE,
     CREATE_EXISTING_CHATROOM_DATA,
     CREATE_CHATROOM_RELATIONSHIPS_A,

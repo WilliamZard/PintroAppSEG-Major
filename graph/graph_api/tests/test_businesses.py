@@ -19,7 +19,8 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_BUSINESS_TO_BE_CREATED,
                                  BUSINESS_WITH_THREE_FOLLOWINGS,
                                  BUSINESS_WITH_TWO_FOLLOWINGS,
                                  BUSINESS_WITH_ONE_FOLLOWING,
-                                 BUSINESS_WITH_NO_FOLLOWINGS, BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS)
+                                 BUSINESS_WITH_NO_FOLLOWINGS, BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
+                                 AFFILIATION_REQUEST_RECIPIENT)
 
 
 

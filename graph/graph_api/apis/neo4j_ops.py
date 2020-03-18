@@ -256,19 +256,29 @@ def get_posts_of_followings_of_a_user(tx, email):
 """functions for FOLLOW RELATIONSHIPS"""
 
 
-def create_follow_relationship(tx, follower_email, following_email):
+def create_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
     query = f"""
-        MATCH (follower_user:Person),(following_user:Person)
-        WHERE follower_user.email = '{follower_email}' AND following_user.email = '{following_email}'
-        CREATE (follower_user)-[f:FOLLOWS]->(following_user)
-        RETURN f
+        MATCH (requester),(request_recipient)
+        WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
+        CREATE (requester)-[f:{relationship_type}]->(request_recipient)
     """
     return tx.run(query)
 
 
-def delete_follow_relationship(tx, follower_email, following_email):
+def approve_request(tx, request_relationship_type, approved_relationship_type, requester_email, request_recipient_email):
+    # TODO: see if this query has the right approach. Why not just use DELETE and CREATE clauses?
     query = f"""
-        MATCH (follower {{email: '{follower_email}' }})-[f:FOLLOWS]->(following {{email: '{following_email}'}})
+        MATCH (requester)-[req:{request_relationship_type}]->(request_recipient)
+        WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
+        CREATE (requester)-[:{approved_relationship_type}]->(request_recipient)
+        DELETE req
+    """
+    return tx.run(query)
+
+
+def delete_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
+    query = f"""
+        MATCH (requester {{email: '{requester_email}' }})-[f:{relationship_type}]->(request_recipient {{email: '{request_recipient_email}'}})
         DELETE f
     """
     return tx.run(query)
@@ -288,6 +298,13 @@ def get_followings_of_a_user(tx, email):
     return tx.run(query)
 
 
+def get_posts_of_followings_of_a_user(tx, email):
+    query = f"""
+        MATCH (:Person {{email: '{email}'}})
+        -[:FOLLOWS]->(user:Person)
+        -[:POSTED]->(post:Post)
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+    return tx.run(query)
 def get_nodes_for_user_search(tx, search_string):
     query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score 
                 RETURN node, score LIMIT 10"""
@@ -358,5 +375,26 @@ def delete_chatroom(tx, chat_id):
     query = f"""
         MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
         DETACH DELETE c
+    """
+    return tx.run(query)
+
+
+""" functions for AFFILIATIONS """
+
+
+def create_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+    query = f"""
+        MATCH (affiliation_requester:Person),(affiliation_request_recipient:Business)
+        WHERE affiliation_requester.email = '{affiliation_requester}' AND affiliation_request_recipient.email = '{affiliation_request_recipient}'
+        CREATE (affiliation_requester)-[f:REQUESTED_AFFILIATION]->(affiliation_request_recipient)
+        RETURN f
+    """
+    return tx.run(query)
+
+
+def delete_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+    query = f"""
+        MATCH (affiliate {{email: '{affiliation_requester}'}})-[f:REQUESTED_AFFILIATION]->(affiliate_recipient {{email: '{affiliation_request_recipient}'}})
+        DELETE f
     """
     return tx.run(query)
