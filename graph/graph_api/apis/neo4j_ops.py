@@ -121,7 +121,11 @@ def get_business_by_email(tx, business_email):
 
 
 def delete_business_by_email(tx, business_email):
-    return tx.run(f"MATCH (user:Business {{email: '{business_email}'}}) DELETE user")
+    query = f"""
+    MATCH(n: Business {{email: '{business_email}'}})
+    OPTIONAL MATCH(n)--(p: Post)
+    DETACH DELETE n, p"""
+    return tx.run(query)
 
 
 def set_business_fields(tx, business_email, fields):
