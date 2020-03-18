@@ -21,6 +21,7 @@
     "react-native-loading-spinner-overlay": "^1.1.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.3.0",
+    "react-native-timeago": "^0.5.0",
     "react-navigation": "^4.2.2",
     "react-navigation-stack": "^2.2.3"
   },
