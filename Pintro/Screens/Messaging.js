@@ -53,7 +53,6 @@ class ChatroomEntry extends Component {
   };
 
   render() {
-    console.log(JSON.stringify(this.state));
     let hasSeen = this.state.lastMessage == null || this.state.lastSeen === this.state.lastMessage._id;
     let lastMessageStyle = hasSeen ? styles.lastMessage : styles.lastMessageNew;
     return (
