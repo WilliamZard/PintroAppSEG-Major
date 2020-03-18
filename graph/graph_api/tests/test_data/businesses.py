@@ -39,7 +39,7 @@ BUSINESS_ABOUT_TO_BE_FOLLOWED = dict(zip(BUSINESS_PROPERTIES, ['password', 'imag
                                                                'not godless', 'strand', 'kclser@kcl.ac.uk', 'What is GKT?']))
 
 BUSINESS_FOLLOWING = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'KingWellingtonaa', '911',
-                                                    'not godless', 'strand', 'creative_email@kcl.ac.uk', 'What is GKT?']))
+                                                    'not godless', 'strand', 'business_creative_email@kcl.ac.uk', 'What is GKT?']))
 
 BUSINESS_BEING_FOLLOWED = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'KingWellingtonbbb', '911',
                                                          'not godless', 'strand', 'very_creative_email@kcl.ac.uk', 'What is GKT?']))
@@ -51,7 +51,7 @@ BUSINESS_WITH_TWO_FOLLOWINGS = dict(zip(BUSINESS_PROPERTIES, ['password', 'image
                                                               'I am the MVP', 'US', 'lello@gmail.com', 'I won a best movie award']))
 
 BUSINESS_WITH_ONE_FOLLOWING = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'JohnJonnyaaa', '111',
-                                                             'I am millionaire', 'London', 'jj@gmail.com', 'I started as a taxi driver.']))
+                                                             'I am millionaire', 'London', 'business_jj@gmail.com', 'I started as a taxi driver.']))
 
 BUSINESS_WITH_NO_FOLLOWINGS = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'JohnKennedygkdf', '121',
                                                              'The only one pres', 'Unknown', 'jfk@gmail.com', 'They thought they killed me.']))
