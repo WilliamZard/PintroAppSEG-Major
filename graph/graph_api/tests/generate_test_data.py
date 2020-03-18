@@ -165,8 +165,8 @@ RELATIONSHIPS_FOLLOWS_USER_C = f"""
     CREATE (user_c)-[:FOLLOWS]->(user_d)"""
 
 CREATE_AFFILIATION_REQUEST = f"""
-    MATCH (user_a:Person {{email:'{AFFILIATION_REQUESTER['email']}'}})
-    MATCH (user_b:Business {{email:'{AFFILIATION_REQUESTER['email']}'}})
+    MATCH (user_a:Business {{email:'{AFFILIATION_REQUESTER['email']}'}})
+    MATCH (user_b:Person {{email:'{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
     CREATE (user_a)-[:REQUESTED_AFFILIATION]->(user_b)
 """
 
