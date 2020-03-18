@@ -9,14 +9,17 @@ api = Namespace(
 
 # TODO: combine relationship mappings into a nested dict
 APPROVE_RELATIONSHIPS_MAPPING = {
-    'follow': 'FOLLOWS', 'affiliation': 'AFFILIATIED_WITH'}
+    'follow': 'FOLLOWS', 'affiliation': 'AFFILIATED_WITH'}
 
 
 @api.route('/<string:relationship_type>/<string:requester_email>/<string:request_recipient_email>')
 @api.produces('application/json')
 class Approve(Resource):
     def post(self, relationship_type, requester_email, request_recipient_email):
-        # TODO: docstrings
+        '''
+        Replace the existing request relationship with an approved relationship.
+        E.g. REQUESTED_FOLLOW => FOLLOWS
+        '''
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
 

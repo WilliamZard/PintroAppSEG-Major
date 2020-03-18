@@ -14,7 +14,7 @@ REQUEST_RELATIONSHIPS = {'follow': 'REQUESTED_FOLLOW',
 @api.produces('application/json')
 class Request(Resource):
     def post(self, relationship_type, requester_email, request_recipient_email):
-        # TODO: docstrings
+        '''Create a request relationship.'''
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
 
@@ -27,7 +27,7 @@ class Request(Resource):
             return make_response('USER NOT FOUND', 404)
 
     def delete(self, relationship_type, requester_email, request_recipient_email):
-        #TODO: docstrings
+        '''Delete request relationship, effectively denying the request.'''
         with create_session() as session:
             response = session.write_transaction(
                 delete_request_relationship, REQUEST_RELATIONSHIPS[relationship_type], requester_email, request_recipient_email)

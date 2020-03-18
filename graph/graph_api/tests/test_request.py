@@ -37,6 +37,7 @@ class TestDELETE:
         # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
 
     def test_DELETE_affiliation_request_with_valid_users(self, app):
+        # TODO: fix test not passing when all tests are run
         response = app.delete(
             f"/request/affiliation/{AFFILIATION_REQUESTER_A['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
         assert response.status == '204 NO CONTENT'
