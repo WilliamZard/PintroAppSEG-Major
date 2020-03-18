@@ -83,8 +83,7 @@ class ChatroomEntry extends Component {
                   </Text>
                   <Text style={{...lastMessageStyle, flexGrow: 1}}>• <TimeAgo
                     timestamp={this.state.lastMessage.createdAt}
-                    interval={20000}
-                    style={lastMessageStyle}/>
+                    interval={20000}/>
                   </Text>
                 </>
               }
