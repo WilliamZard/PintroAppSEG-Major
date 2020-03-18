@@ -1,6 +1,6 @@
 import pytest
 from .conftest import app
-from .generate_test_data import FOLLOW_REQUESTER_A, FOLLOW_REQUESTER_B, AFFILIATION_REQUESTER, AFFILIATION_REQUEST_RECIPIENT, FOLLOW_REQUEST_RECIPIENT
+from .generate_test_data import FOLLOW_REQUESTER_A, FOLLOW_REQUESTER_B, AFFILIATION_REQUESTER_A, AFFILIATION_REQUEST_RECIPIENT, FOLLOW_REQUEST_RECIPIENT
 
 
 @pytest.mark.POST_approve
@@ -19,8 +19,8 @@ class TestPOST:
 
     def test_POST_approve_affiliation_request_with_valid_users(self, app):
         response = app.post(
-            f"/approve/affiliation/{AFFILIATION_REQUESTER['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
-        assert response.status == '204 NO CONTENT'
+            f"/approve/affiliation/{AFFILIATION_REQUESTER_A['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
+        assert response.status == '201 CREATED'
         assert response.data == b''
 
         # TODO: add get request for checking if AFFILIATION relationship was actually created

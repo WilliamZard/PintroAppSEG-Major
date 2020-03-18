@@ -1,6 +1,6 @@
 import pytest
 from .conftest import app
-from .generate_test_data import FOLLOW_REQUESTER_A, FOLLOW_REQUESTER_B, AFFILIATION_REQUESTER, AFFILIATION_REQUEST_RECIPIENT, FOLLOW_REQUEST_RECIPIENT
+from .generate_test_data import FOLLOW_REQUESTER_A, FOLLOW_REQUESTER_B, AFFILIATION_REQUESTER_A, AFFILIATION_REQUEST_RECIPIENT, FOLLOW_REQUEST_RECIPIENT
 
 
 @pytest.mark.POST_request
@@ -19,7 +19,7 @@ class TestPOST:
 
     def test_POST_affiliation_request_with_valid_users(self, app):
         response = app.post(
-            f"/request/affiliation/{AFFILIATION_REQUESTER['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
+            f"/request/affiliation/{AFFILIATION_REQUESTER_A['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
         assert response.status == '201 CREATED'
         assert response.data == b''
 
@@ -38,6 +38,6 @@ class TestDELETE:
 
     def test_DELETE_affiliation_request_with_valid_users(self, app):
         response = app.delete(
-            f"/request/affiliation/{AFFILIATION_REQUESTER['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
+            f"/request/affiliation/{AFFILIATION_REQUESTER_A['email']}/{AFFILIATION_REQUEST_RECIPIENT['email']}")
         assert response.status == '204 NO CONTENT'
         assert response.data == b''

@@ -165,10 +165,12 @@ RELATIONSHIPS_FOLLOWS_USER_C = f"""
     MATCH (user_d:Person {{email:'{USER_WITH_NO_FOLLOWINGS['email']}'}})
     CREATE (user_c)-[:FOLLOWS]->(user_d)"""
 
-CREATE_AFFILIATION_REQUEST = f"""
-    MATCH (user_a:Business {{email:'{AFFILIATION_REQUESTER['email']}'}})
-    MATCH (user_b:Person {{email:'{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
-    CREATE (user_a)-[:REQUESTED_AFFILIATION]->(user_b)
+CREATE_AFFILIATION_REQUESTS = f"""
+    MATCH (user_a:Business {{email:'{AFFILIATION_REQUESTER_A['email']}'}})
+    MATCH (user_b:Business {{email:'{AFFILIATION_REQUESTER_B['email']}'}})
+    MATCH (user_c:Person {{email:'{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
+    CREATE (user_a)-[:REQUESTED_AFFILIATION]->(user_c)
+    CREATE (user_b)-[:REQUESTED_AFFILIATION]->(user_c)
 """
 
 CONSTRAINT_USER_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
@@ -210,7 +212,8 @@ BUSINESSES_TO_TEST = [
     BUSINESS_FOLLOWING,
     BUSINESS_BEING_FOLLOWED,
     BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
-    AFFILIATION_REQUESTER
+    AFFILIATION_REQUESTER_A,
+    AFFILIATION_REQUESTER_B
 
 ]
 
@@ -288,5 +291,5 @@ queries = [
     *create_tag_queries,
     ASSOCIATE_VALID_USER_TO_THEIR_TAGS,
     CREATE_FOLLOW_REQUESTS,
-    CREATE_AFFILIATION_REQUEST
+    CREATE_AFFILIATION_REQUESTS
 ]

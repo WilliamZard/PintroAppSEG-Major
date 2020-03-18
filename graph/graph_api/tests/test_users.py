@@ -14,9 +14,9 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
                                  USER_WITH_THREE_FOLLOWINGS,
                                  USER_WITH_TWO_FOLLOWINGS,
                                  USER_WITH_ONE_FOLLOWING,
-                                 USER_WITH_NO_FOLLOWINGS, 
+                                 USER_WITH_NO_FOLLOWINGS,
                                  USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS, USER_POST_A, USER_POST_B,
-                                 AFFILIATION_REQUESTER)
+                                 AFFILIATION_REQUESTER_A)
 
 
 @pytest.mark.GET_user
