@@ -252,7 +252,7 @@ def get_posts_of_followings_of_a_user(tx, email):
 
 def create_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
     query = f"""
-        MATCH (requester:Person),(request_recipient:Person)
+        MATCH (requester),(request_recipient)
         WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
         CREATE (requester)-[f:{relationship_type}]->(request_recipient)
     """

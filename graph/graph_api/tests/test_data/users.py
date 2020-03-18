@@ -26,16 +26,16 @@ VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS = [COLES_TAG['uuid']]
 VALID_USER_TO_BE_UPDATED_NEW_FIELDS = dict(zip(USERS_PROPERTIES, ['0000', 'new_image', 'Care Home', 'Donald Trump', 'masculine', '999',
                                                                   'retired genius', 'Mar O Lago', 'Former Best President', 'GOAT', 'genius@fakenews.cnn', 'revolutionary', VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS]))
 VALID_USER_TO_BE_DELETED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'Taaj', 'man', '123',
-                                                       'going places', 'Gatwick init', 'going places', 'Taaj', 'taaj@hotmail.co.uk', 'you get me?',{}]))
+                                                       'going places', 'Gatwick init', 'going places', 'Taaj', 'taaj@hotmail.co.uk', 'you get me?', {}]))
 VALID_USER_TO_BE_CREATED_TAGS = [COLES_TAG['uuid'], KING_SLAYER_TAG['uuid']]
 VALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
                                                        'best kiosk in town', 'Gatwickk', 'Precious', 'Precious', 'precious@gmail.com', 'Likeable and devout.', VALID_USER_TO_BE_CREATED_TAGS]))
 
 INVALID_USER_TO_BE_CREATED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Gatwick Airport', 'precious', 'man', '111',
-                                                         'best kiosk in town', 'Gatwickk', 'Precious', 'Preciousest', 'preciousgmail.com', 'Likeable and devout.',{}]))
+                                                         'best kiosk in town', 'Gatwickk', 'Precious', 'Preciousest', 'preciousgmail.com', 'Likeable and devout.', {}]))
 
 USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
-                                                       'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.',{}]))
+                                                       'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.', {}]))
 
 USER_THAT_CREATES_POST = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                      'I was a student', 'London', 'unemployed', 'Jonny', 'user_creates_post@gmail.com', 'eat, sleep, repeat.', {}]))
@@ -65,8 +65,8 @@ USER_THAT_POSTED_POST_A = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Wint
 USER_THAT_POSTED_POST_B = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'M', 'female', '121',
                                                       'Siberia', 'Unknown', 'Up and coming', 'Queen_of_numbers', 'm@m.co.uk', 'shut it 007', {}]))
 
-AFFILIATION_REQUESTER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'meow', 'female', '121',
-                                                      'Siberia', 'Unknown', 'Up and coming', 'Queen_of_meow', 'meow@meow.co.uk', 'shut it 007', {}]))
+AFFILIATION_REQUEST_RECIPIENT = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'meow', 'female', '121',
+                                                            'Siberia', 'Unknown', 'Up and coming', 'Queen_of_meow', 'meow@meow.co.uk', 'shut it 007', {}]))
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
