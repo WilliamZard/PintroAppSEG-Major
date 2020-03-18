@@ -28,7 +28,10 @@ class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app):
         response = app.get(f"/businesses/{VALID_BUSINESS['email']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_BUSINESS).data
+        json = response.get_json()
+        assert len(json) == len(VALID_BUSINESS)
+        for field in VALID_BUSINESS:
+            assert field in json
 
     def test_get_business_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}")
