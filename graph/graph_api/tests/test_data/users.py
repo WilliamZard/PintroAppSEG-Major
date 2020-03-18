@@ -44,13 +44,18 @@ USER_WITH_MULTIPLE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL
                                                        'I was a student', 'London', 'unemployed', 'Jonny', 'user_with_posts@gmail.com', 'eat, sleep, repeat.', {}, str(active)]))
 USER_THAT_CREATES_POST = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UCL', 'John', 'male', '111',
                                                      'I was a student', 'London', 'unemployed', 'Jonny', 'user_creates_post@gmail.com', 'eat, sleep, repeat.', {}, str(active)]))
+FOLLOW_REQUESTER_A = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'King Wellington', 'male', '911',
+                                                 'not godless', 'strand', 'no_ucl_King', 'no_ucl_King', 'no_ucl@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
+FOLLOW_REQUESTER_B = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'King Wellington', 'male', '911',
+                                                 'not godless', 'strand', 'poo_ucl_King', 'poo_ucl_King', 'poo_cl@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 USER_ABOUT_TO_FOLLOW = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'King Wellington', 'male', '911',
                                                    'not godless', 'strand', 'no_ucl_King', 'no_ucl_King', 'no_ucl@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 USER_ABOUT_TO_BE_FOLLOWED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'kcler', 'male', '911',
                                                         'not godless', 'strand', 'kclser_King', 'kclser_King', 'kclser@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 USER_FOLLOWING = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'King Wellington', 'male', '911',
                                              'not godless', 'strand', 'very_creative_King', 'very_createive_King', 'creative_email@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
-
+FOLLOW_REQUEST_RECIPIENT = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'kcler', 'male', '911',
+                                                       'not godless', 'strand', 'kclser_King', 'kclser_King', 'kclser@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 USER_BEING_FOLLOWED = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'King Wellington', 'male', '911',
                                                   'not godless', 'strand', 'creative_King', 'creative_King', 'very_creative_email@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 USER_WITH_THREE_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Duke Wellington', 'male', '911',
@@ -62,17 +67,17 @@ USER_WITH_ONE_FOLLOWING = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Seco
 USER_WITH_NO_FOLLOWINGS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Diploma', 'John Kennedy', 'male', '121',
                                                       'The only one pres', 'Unknown', 'Retired', 'JFK', 'jfk@gmail.com', 'They thought they killed me.', {}, str(active)]))
 USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Winter', 'John Snow', 'male', '121',
-                                                                   'King of the noorth', 'Unknown', 'Up and coming', 'Snowy', 'john.snow@winteriscoming.wes', 'ay',{}, str(active)]))
+                                                                   'King of the noorth', 'Unknown', 'Up and coming', 'Snowy', 'john.snow@winteriscoming.wes', 'ay', {}, str(active)]))
 USER_THAT_POSTED_POST_A = dict(zip(USERS_PROPERTIES, ['password', 'image', 'Winter', 'James Bond', 'male', '007',
-                                                      'James, James Bond', 'Unknown', 'Up and coming', 'Shaken', 'james.bond@mi5.co.uk', 'Yessir',{}, str(active)]))
+                                                      'James, James Bond', 'Unknown', 'Up and coming', 'Shaken', 'james.bond@mi5.co.uk', 'Yessir', {}, str(active)]))
 USER_THAT_POSTED_POST_B = dict(zip(USERS_PROPERTIES, ['password', 'image', 'UK', 'M', 'female', '121',
                                                       'Siberia', 'Unknown', 'Up and coming', 'Queen_of_numbers', 'm@m.co.uk', 'shut it 007', {}, str(active)]))
 
 DEACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Dule Weington', 'male', '911',
-                                         'not godless', 'strand', 'Dule', 'Dule', 'nothing_ucl@kcl.ac.uk', 'What is GKT?', {}, str(not active)]))
+                                               'not godless', 'strand', 'Dule', 'Dule', 'nothing_ucl@kcl.ac.uk', 'What is GKT?', {}, str(not active)]))
 
 ACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Sule Wule', 'male', '911',
-                                         'not godless', 'strand', 'Sule', 'Sule', 'Sule_wule@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
+                                             'not godless', 'strand', 'Sule', 'Sule', 'Sule_wule@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
