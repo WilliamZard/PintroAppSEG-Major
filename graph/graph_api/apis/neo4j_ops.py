@@ -138,9 +138,23 @@ def set_business_fields(tx, business_email, fields):
         user_email = the email of the user whose data needs to be edited.
         new_email = the new email to assign to that user.
     '''
+    create_tag_query = None
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+        create_tag_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH (tag:Tag {{uuid: tag_uuid}})
+        MATCH (user:Business {{email: '{business_email}'}})
+        MERGE (user)-[:TAGGED]->(tag)"""
+
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Business {{email: '{business_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
+
+    if create_tag_query:
+        query = query + create_tag_query
     return tx.run(query)
 
 
