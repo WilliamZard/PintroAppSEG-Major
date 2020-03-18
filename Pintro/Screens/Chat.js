@@ -1,18 +1,24 @@
 import React, {Component} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {GiftedChat, Bubble} from 'react-native-gifted-chat';
 import firebase from '@react-native-firebase/app';
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       messages: [],
     };
+    this.lastMessage = null;
 
-    const {chat_id} = this.props.navigation.state.params;
+    const {chat_id, email} = this.props.navigation.state.params;
 
     this.chatRef = this.getRef().child('chat/' + chat_id);
+    this.lastSeenRef = this.getRef()
+        .child('last_seen/' + chat_id)
+        .child(email.replace(/[.#$\[\]]/g, '?'));
     this.chatRefData = this.chatRef.orderByChild('order');
     this.onSend = this.onSend.bind(this);
   }
@@ -24,18 +30,24 @@ export default class Chat extends Component {
   listenForItems(chatRef) {
     chatRef.on('value', snap => {
       let items = [];
+      this.lastMessage = null;
       snap.forEach(child => {
+        if (this.lastMessage == null)
+          this.lastMessage = child.val();
+
         items.push({
           _id: child.val().createdAt,
           text: child.val().text,
           createdAt: new Date(child.val().createdAt),
           user: {
-            _id: child.val().email,
+            _id: child.val().user._id,
             avatar: 'https://www.gravatar.com/avatar/',
           },
-          email: child.val().email,
         });
       });
+
+      if (this.lastMessage != null)
+        this.lastSeenRef.set(this.lastMessage._id);
 
       this.setState({
         loading: false,
@@ -60,23 +72,25 @@ export default class Chat extends Component {
 
   componentWillUnmount() {
     this.chatRefData.off();
+    this.props.navigation.state.params.updateLastMessage(this.lastMessage);
   }
 
   onSend(messages = []) {
+    let id;
     messages.forEach(message => {
-      let now = new Date().getTime();
+      id = new Date().getTime();
       let msg = {
-        _id: now,
+        _id: id,
         text: message.text,
-        createdAt: now,
+        createdAt: id,
         user: {
           _id: this.props.navigation.state.params.email,
         },
-        email: this.props.navigation.state.params.email,
-        order: -1 * now,
+        order: -1 * id,
       };
       this.chatRef.push(msg);
     });
+    this.lastSeenRef.set(id);
   }
 
   renderMessage = props => {
@@ -97,15 +111,18 @@ export default class Chat extends Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={this.onSend.bind(this)}
-        user={{
-          _id: this.props.navigation.state.params.email,
-        }}
-        renderBubble={this.renderMessage}
-        renderTime={() => null}
-      />
+      <View style={{flex: 1}}>
+        <GiftedChat
+          messages={this.state.messages}
+          onSend={this.onSend.bind(this)}
+          user={{
+            _id: this.props.navigation.state.params.email,
+          }}
+          renderBubble={this.renderMessage}
+          renderTime={() => null}
+        />
+        <Spinner visible={this.state.loading} />
+      </View>
     );
   }
 }
