@@ -1,6 +1,6 @@
 import pytest
 from .conftest import app
-from .generate_test_data import FOLLOW_REQUESTER_A, FOLLOW_REQUESTER_B, AFFILIATION_REQUESTER, AFFILIATION_REQUEST_RECIPIENT
+from .generate_test_data import FOLLOW_REQUESTER_A, FOLLOW_REQUESTER_B, AFFILIATION_REQUESTER, AFFILIATION_REQUEST_RECIPIENT, FOLLOW_REQUEST_RECIPIENT
 
 
 @pytest.mark.POST_approve
@@ -11,8 +11,8 @@ class TestPOST:
     #       e.g. users cannot make affiliation requests to businesses.
     def test_POST_approve_follow_request_with_valid_users(self, app):
         response = app.post(
-            f"/approve/follow/{FOLLOW_REQUESTER_A['email']}/{FOLLOW_REQUESTER_B['email']}")
-        assert response.status == '204 NO CONTENT'
+            f"/approve/follow/{FOLLOW_REQUESTER_B['email']}/{FOLLOW_REQUEST_RECIPIENT['email']}")
+        assert response.status == '201 CREATED'
         assert response.data == b''
 
         # TODO: add get request for checking if FOLLOWrelationship was actually created

@@ -30,7 +30,7 @@ class TestPOST:
 class TestDELETE:
     def test_DELETE_follow_request_with_valid_users(self, app):
         response = app.delete(
-            f"/request/follow/{FOLLOW_REQUESTER_A['email']}/{FOLLOW_REQUEST_RECIPIENT['email']}")
+            f"/request/follow/{FOLLOW_REQUESTER_B['email']}/{FOLLOW_REQUEST_RECIPIENT['email']}")
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 

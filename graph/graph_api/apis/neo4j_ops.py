@@ -262,9 +262,10 @@ def create_request_relationship(tx, relationship_type, requester_email, request_
 def approve_request(tx, request_relationship_type, approved_relationship_type, requester_email, request_recipient_email):
     # TODO: see if this query has the right approach. Why not just use DELETE and CREATE clauses?
     query = f"""
-        MATCH (requester:Person)-[req:{request_relationship_type}]->(request_recipient:Person)
+        MATCH (requester)-[req:REQUESTED_FOLLOW]->(request_recipient)
         WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
-        CALL apoc.refactor.setType(req, '{approved_relationship_type}') YIELD input, output RETURN requester, request_recipient
+        CREATE (requester)-[:FOLLOWS]->(request_recipient)
+        DELETE req
     """
     return tx.run(query)
 
