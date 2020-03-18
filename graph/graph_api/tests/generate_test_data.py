@@ -138,7 +138,6 @@ CREATE_FOLLOW_REQUEST_A = f"""
     MATCH (user_c:Person {{email:'{FOLLOW_REQUESTER_B['email']}'}})
     MATCH (user_b:Person {{email:'{FOLLOW_REQUEST_RECIPIENT['email']}'}})
     CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_b)
-    CREATE (user_c)-[:REQUESTED_FOLLOW]->(user_b)
 """
 
 RELATIONSHIPS_FOLLOWS_USER_A = f"""
