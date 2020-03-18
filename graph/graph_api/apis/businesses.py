@@ -28,6 +28,7 @@ class BusinessSchema(Schema):
     location = fields.String()
     short_bio = fields.String()
     story = fields.String()
+    tags = fields.List(fields.String())
 
 
 # Schema used for doc generation
@@ -39,8 +40,9 @@ businesses = api.model('Businesses', {
     'phone': restx_fields.String(title="The business's phone number."),
     'location': restx_fields.String(title='current city of the business.'),
     'short_bio': restx_fields.String(title='short bio describing the business of maximum 250 characters.'),
-    'story': restx_fields.String(title='story describing the business of maximum 250 words.')
-})  # title for accounts that needs to be created.
+    'story': restx_fields.String(title='story describing the business of maximum 250 words.'),
+    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the business is related to.')
+})
 
 business_schema = BusinessSchema()
 
@@ -56,11 +58,14 @@ class Businesses(Resource):
 
         with create_session() as session:
             response = session.read_transaction(get_business_by_email, email)
-            business = response.single()
-            if business:
-                # TODO: a lot going on here. See if this can be improved.
-                data = dict(business.data()['user'].items())
-                return jsonify(business_schema.dump(data))
+            response = response.single()
+            if response:
+                business = dict(response.data()['user'].items())
+                if 'tags' in response.data():
+                    tags = response.data()['tags']
+                    labels = response.data()['tag_labels']
+                    business['tags'] = dict(zip(tags, labels))
+                return jsonify(business)
             return make_response('', 404)
 
     @api.doc('delete_business')
@@ -71,7 +76,8 @@ class Businesses(Resource):
             return make_response('', 422)
 
         with create_session() as session:
-            response = session.read_transaction(delete_business_by_email, email)
+            response = session.read_transaction(
+                delete_business_by_email, email)
             if response.summary().counters.nodes_deleted == 1:
                 return make_response('', 204)
             return make_response('', 404)
