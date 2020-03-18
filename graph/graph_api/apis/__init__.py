@@ -8,6 +8,7 @@ from .request import api as request
 from .approve import api as approve
 from .search import api as search
 from .chatrooms import api as chatrooms
+from .notifications import api as notifications
 
 api = Api(
     title='Pintro Graph Api',
@@ -24,3 +25,4 @@ api.add_namespace(request)
 api.add_namespace(approve)
 api.add_namespace(search)
 api.add_namespace(chatrooms)
+api.add_namespace(notifications)

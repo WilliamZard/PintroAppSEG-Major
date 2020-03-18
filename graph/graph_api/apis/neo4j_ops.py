@@ -305,6 +305,8 @@ def get_posts_of_followings_of_a_user(tx, email):
         -[:POSTED]->(post:Post)
         RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
     return tx.run(query)
+
+
 def get_nodes_for_user_search(tx, search_string):
     query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score 
                 RETURN node, score LIMIT 10"""
@@ -396,5 +398,14 @@ def delete_affiliation_relationship(tx, affiliation_requester, affiliation_reque
     query = f"""
         MATCH (affiliate {{email: '{affiliation_requester}'}})-[f:REQUESTED_AFFILIATION]->(affiliate_recipient {{email: '{affiliation_request_recipient}'}})
         DELETE f
+    """
+    return tx.run(query)
+
+
+def get_notifications(tx, user_email):
+    query = f"""
+        MATCH (recipient:Person {{email: '{user_email}'}})<-[r]-(requester)
+        WHERE type(r) = 'REQUESTED_FOLLOW' OR type(r) = 'REQUESTED_AFFILIATION'
+        RETURN type(r) AS relationship_type, recipient.email AS recipient_email, requester.email AS requester_email
     """
     return tx.run(query)

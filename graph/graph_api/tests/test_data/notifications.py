@@ -3,14 +3,14 @@ from .businesses import BUSINESS_REQUESTING_AFFILIATION_TO_USER
 
 # TODO: add created property to relationships
 NOTIFICATION_PROPERTIES = [
-    'requesting_user',
-    'recipient_user',
-    'type'
+    'requester_email',
+    'recipient_email',
+    'relationship_type'
 ]
 
 
 NOTIFICATION_A = dict(zip(NOTIFICATION_PROPERTIES, [
-                      USER_REQUESTING_USER_WITH_NOTIFICATIONS_A['email'], USER_WITH_NOTIFICATIONS['email'], 'follow']))
+                      USER_REQUESTING_USER_WITH_NOTIFICATIONS_A['email'], USER_WITH_NOTIFICATIONS['email'], 'REQUESTED_FOLLOW']))
 
 NOTIFICATION_B = dict(zip(NOTIFICATION_PROPERTIES, [
-                      BUSINESS_REQUESTING_AFFILIATION_TO_USER['email'], USER_WITH_NOTIFICATIONS['email'], 'follow']))
+                      BUSINESS_REQUESTING_AFFILIATION_TO_USER['email'], USER_WITH_NOTIFICATIONS['email'], 'REQUESTED_AFFILIATION']))
