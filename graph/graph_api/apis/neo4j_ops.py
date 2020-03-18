@@ -113,7 +113,10 @@ def get_business_by_email(tx, business_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    query = f"MATCH (user:Business {{email: '{business_email}'}}) RETURN user"
+    query = f"""
+    MATCH (user:Business {{email: '{business_email}'}})
+    OPTIONAL MATCH (user)-->(tag:Tag)
+    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
     return tx.run(query)
 
 
@@ -138,11 +141,23 @@ def set_business_fields(tx, business_email, fields):
 
 
 def create_business(tx, fields):
-    query = "CREATE (new_user: Business {" + ", ".join(
-        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
-    return tx.run(query)
 
-    """ Functions for Co-working spaces """
+    create_TAGGED_relationships_query = ""
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+        create_TAGGED_relationships_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH(tag: Tag {{uuid: tag_uuid}})
+        MATCH(user: Business {{email: '{fields['email']}'}})
+        CREATE(user)-[:TAGGED] -> (tag)"""
+
+    create_user_query = "CREATE (new_user: Business{" + ", ".join(
+        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+
+    query = create_user_query + create_TAGGED_relationships_query
+    return tx.run(query)
 
 
 def get_space_by_email(tx, space_email):

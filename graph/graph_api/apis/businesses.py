@@ -110,7 +110,10 @@ class BusinessPost(Resource):
         try:
             deserialised_payload = business_schema.load(api.payload)
         except ValidationError as e:
-            return make_response(e.messages['email'][0], 422)
+            if 'email' in e.messages:
+                return make_response(e.messages['email'][0], 422)
+            if 'tags' in e.messages:
+                return make_response(e.messages['tags'][0], 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(

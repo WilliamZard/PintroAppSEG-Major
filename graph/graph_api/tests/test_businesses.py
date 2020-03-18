@@ -23,7 +23,6 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_BUSINESS_TO_BE_CREATED,
                                  AFFILIATION_REQUEST_RECIPIENT)
 
 
-
 @pytest.mark.GET_business
 class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app):
@@ -31,7 +30,6 @@ class TestGet:
         assert response.status == '200 OK'
         assert response.data == jsonify(VALID_BUSINESS).data
 
-    
     def test_get_business_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}")
         assert response.status == '404 NOT FOUND'
@@ -100,13 +98,17 @@ class TestPost:
         assert response.data == b''
 
         # Assert business was actually created in the database
-        response = app.get(f"/businesses/{VALID_BUSINESS_TO_BE_CREATED['email']}")
+        response = app.get(
+            f"/businesses/{VALID_BUSINESS_TO_BE_CREATED['email']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_BUSINESS_TO_BE_CREATED).data
+        json = response.get_json()
+        assert len(json) == len(VALID_BUSINESS_TO_BE_CREATED)
+        for field in VALID_BUSINESS_TO_BE_CREATED:
+            assert field in json
 
     def test_post_business_with_valid_payload_that_exists(self, app):
         response = app.post(
-            "/businesses/", json=VALID_BUSINESS) 
+            "/businesses/", json=VALID_BUSINESS)
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
