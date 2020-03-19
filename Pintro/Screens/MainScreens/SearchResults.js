@@ -34,15 +34,15 @@ const SearchResults = props => {
                 </View>
                 <View style={styles.imageRow}>
                     <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                        <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
                         <Text style={fonts.title_black}>Danielle Dodoo</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                        <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
                         <Text style={fonts.title_black}>Callum Thompson</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
+                        <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
                         <Text style={fonts.title_black}>Jane Doe</Text>
                     </TouchableOpacity>
                 </View>
