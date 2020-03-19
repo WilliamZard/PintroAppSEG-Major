@@ -39,6 +39,7 @@ async () => {
 },[dispatch,setIsLoading,setError]
 );
 
+
 const [isLoading,setIsLoading] = useState(false);
 const timelinePosts = useSelector(state => state.timelinePosts.availablePosts);
 
@@ -108,8 +109,13 @@ return(<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
    renderItem={
        itemData => (
         
-<TimelinePostComponent uuid={itemData.item.uuid}  content={itemData.item.content}  modified={itemData.item.modified} email={itemData.item.user_email}/>
-
+<TimelinePostComponent uuid={itemData.item.uuid}  
+content={itemData.item.content} 
+ modified={itemData.item.modified}
+  email={itemData.item.email}
+  name={itemData.item.name}
+  />
+ 
        )
    }
   />

@@ -31,7 +31,7 @@ export const signup = (email, password) => {
         const resData = await response.json();
         console.log("ID="+resData.idToken);
         console.log("REFRESh"+resData.refreshToken);
-        dispatch({ type: SIGNUP });
+        dispatch({ type: SIGNUP, token: resData.idToken, userId: resData.localId, email:email });
       };
     };
 
@@ -40,7 +40,7 @@ export const signup = (email, password) => {
 export const login = (email, password) => {
     return async dispatch => {
       const response = await fetch(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC6obGUXW3jcyeKFJm-5iQ4hf-baqfIKsw',
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCZUeHC1zcLM__APOSB0dCXJkNPsOZuDKM',
         {
             method: 'POST',
             headers: {
@@ -68,7 +68,7 @@ export const login = (email, password) => {
     
         const resData = await response.json();
  
-        dispatch({ type: LOGIN });
+        dispatch({ type: LOGIN, token: resData.idToken, userId: resData.localId, email:email });
       };
     };
     

@@ -5,6 +5,20 @@ export const WRITE_POST = 'WRITE_POST';
 
 
 
+async function getNameFromMail(emailAddress) {
+    var response = await fetch('https://bluej-pintro-project.appspot.com/users/'+emailAddress,
+    {
+        method:'GET',
+        headers:{
+            "Content-Type":"application/json"
+        }
+    }
+    );
+    const data = await response.json();
+return data.full_name;
+ };
+
+
 async function apiGetAll () {
     
     var response = await fetch('http://www.uuidgenerator.net/api/version1');
@@ -13,8 +27,10 @@ return data;
  };
 
 export const fetchTimeline = () => {
-    
-    return async dispatch => {
+ 
+    return async (dispatch,getState) => {
+        const email = getState().auth.email;
+        
         const response = await fetch(
             "https://europe-west2-bluej-pintro-project.cloudfunctions.net/generate_timeline",
             {
@@ -22,22 +38,28 @@ export const fetchTimeline = () => {
                 headers:{
                     "Content-Type":"application/json"
                 },body:JSON.stringify({
-                email:"abc@kcl.com"
+                email:email
                 })
                 
             }
         );
-        
-       const resData = await response.json();
+    
+        const resData = await response.json();
        const posts = resData.results;
        const loadedProduct = [];
-       for(element in posts){
-           console.log(posts[element].content);
-           console.log(posts[element].modified);
-           console.log(posts[element].uuid);
-           console.log(posts[element].user_email);
-   loadedProduct.push(new TimelinePost(posts[element].content,posts[element].modified,posts[element].uuid,posts[element].user_email,posts[element].created));
+       
+       for(const element in posts){
+       const nameOfwriter = await getNameFromMail(posts[element].email);
+       loadedProduct.push(new TimelinePost(
+        posts[element].content,
+        posts[element].created,
+        posts[element].email,
+        posts[element].modified,
+        posts[element].uuid,
+        nameOfwriter)
+        );
        }
+
 
     dispatch({type: GET_TIMELINE,timelinePosts:loadedProduct});
 
@@ -72,10 +94,13 @@ export const fetchTimeline = () => {
 */
 export const uploadPost = (postContent) => {
   
-return async dispatch => {
+    return async (dispatch,getState) => {
+        const email = getState().auth.email;
     const uuidKey = await apiGetAll();
     const content = postContent.replace(/(\r\n|\n|\r)/gm, "");
     const uuid =  uuidKey.replace(/(\r\n|\n|\r)/gm, "");
+
+    console.log
     const response = await fetch('https://bluej-pintro-project.appspot.com/posts',{
     method: 'POST',
     headers:{
@@ -86,7 +111,7 @@ return async dispatch => {
             "uuid":uuid,
             "created": "2020-03-10T16:38:50.711Z",
             "modified": "2020-03-10T16:38:50.711Z",
-            "user_email": "abc2@kcl.com"
+            "user_email": email,
     })
 
     }

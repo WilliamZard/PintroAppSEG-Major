@@ -1,8 +1,11 @@
 class TimelinePost {
-    constructor(content, modified, uuid) {
-     this.content = content,
-     this.modified = modified,
-     this.uuid = uuid 
+    constructor(content, created, email,modified,uuid,name) {
+      this.content = content,
+      this.created = created,
+      this.email = email,
+      this.modified = modified,
+      this.uuid = uuid,
+      this.name = name
     }
   }
   
