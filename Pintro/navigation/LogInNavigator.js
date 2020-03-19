@@ -19,6 +19,7 @@ import FirstScreen from '../Screens/MainScreens/FirstScreen';
 import TimelinePage from '../Screens/MainScreens/TimelinePage';
 import HomeScreen from '../Screens/MainScreens/HomeScreen';
 import SearchScreen from '../Screens/MainScreens/SearchScreen';
+import SearchResults from '../Screens/MainScreens/SearchResults';
 import MessageScreen from '../Screens/MainScreens/MessageScreen';
 import MapScreen from '../Screens/MainScreens/MapScreen';
 
@@ -38,6 +39,12 @@ const mapOrFeed = createSwitchNavigator({
     Feed:TimelinePage,
     Map:MapScreen
 });
+
+const SearchNavigator = createStackNavigator({
+    Browse:{screen:SearchScreen},
+    Results:{screen:SearchResults}
+});
+
 const MainNav = createBottomTabNavigator({
     firstScreen:{
         screen:mapOrFeed, navigationOptions:{
