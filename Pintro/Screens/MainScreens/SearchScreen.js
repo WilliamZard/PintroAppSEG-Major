@@ -26,7 +26,7 @@ const SearchScreen = props => {
             
             const regex = new RegExp(`^${searchWord}`,'i');
             //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+            setSuggestions(tagList.sort().filter(v => regex.test(v))); 
         }
         renderSuggestions();
     }
@@ -35,6 +35,7 @@ const SearchScreen = props => {
         //console.log(item);
         setSearchKeyword(item);
         setItems(null);
+        props.navigation.navigate({routeName:'Results'});
     }
     
     function renderSuggestions() {

@@ -42,8 +42,12 @@ const mapOrFeed = createSwitchNavigator({
 });
 
 const SearchNavigator = createStackNavigator({
-    Browse:{screen:SearchScreen},
-    Results:{screen:SearchResults}
+    Browse:{screen:SearchScreen,navigationOptions:{
+        headerShown: false
+    }},
+    Results:{screen:SearchResults,navigationOptions:{
+        headerTitle: '',
+    }}
 });
 
 const MainNav = createBottomTabNavigator({
@@ -65,7 +69,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     searchScreen:{
-        screen:SearchScreen,navigationOptions:{
+        screen:SearchNavigator,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 
