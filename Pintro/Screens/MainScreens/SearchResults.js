@@ -7,7 +7,7 @@ import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
 
 const SearchResults = props => {
-    const [searchKeyword,setSearchKeyword] = useState();
+    const [searchKeyword,setSearchKeyword] = useState(props.navigation.state.params.searchParam);
     
     return (
         <ScrollView style={styles.scrollContainer}>
