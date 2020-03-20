@@ -294,14 +294,16 @@ class TestUsersGETFollowings:
 
         populate_db(nodes_to_create=user_nodes,
                     relationships_to_create=[follow_a, follow_b])
+
+        # Test
         response = app.get(
-            f"/users/{USER_WITH_TWO_FOLLOWINGS['email']}/followings")
+            f"/users/{user_with_followings['email']}/followings")
         assert response.status == '200 OK'
-        json = response.json
+        json = response.get_json()
         user_with_one_following_reduced = {
-            'full_name': USER_WITH_ONE_FOLLOWING['full_name'], 'email': USER_WITH_ONE_FOLLOWING['email']}
+            'full_name': user_being_followed_a['full_name'], 'email': user_being_followed_a['email']}
         user_with_no_followings_reduced = {
-            'full_name': USER_WITH_NO_FOLLOWINGS['full_name'], 'email': USER_WITH_NO_FOLLOWINGS['email']}
+            'full_name': user_being_followed_b['full_name'], 'email': user_being_followed_b['email']}
         assert len(json) == 2
         assert user_with_one_following_reduced in json
         assert user_with_no_followings_reduced in json
