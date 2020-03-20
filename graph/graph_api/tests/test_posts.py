@@ -12,6 +12,7 @@ from .test_data.posts import (EXISTING_POST, NON_EXISTING_POST_UUID,
                               POST_TO_BE_CREATED,
                               POST_TO_BE_UPDATED_THAT_EXISTS, UUID_OF_POST_TO_BE_DELETED)
 from .test_data.posts import Post
+from .test_data.users import User
 
 
 @pytest.mark.GET_post
@@ -71,9 +72,18 @@ class TestPOST:
     # TODO: assert modified was changed properly for all put tests
     # TODO: assert created was not changed for all put tests
     # TODO: get request and assertion to check correct update
-    def test_POST_post_with_valid_payload(self, app):
+    def test_POST_post_with_valid_payload(self, app, populate_db):
+        # Generate Test Data
+        post = Post(content='content_x')._asdict()
+        user = User(email='created_post@post.com')._asdict()
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+        payload = {'content': post['content'], 'user_email': user['email']}
+
+        populate_db(nodes_to_create=[user_node])
+
+        # Test
         response = app.post(
-            f"/posts/", json=POST_TO_BE_CREATED)
+            f"/posts/", json=payload)
         assert response.status == '201 CREATED'
         assert response.data == b''
 
