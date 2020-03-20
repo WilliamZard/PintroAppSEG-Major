@@ -55,7 +55,8 @@ for user in USERS_TO_TEST:
 
 def create_node(tx, labels, properties):
     # NOTE: this current code assumes all properties are a string.
-    query = f"CREATE (new_node: {labels} {{" + ", ".join(
+    labels = ':'.join(labels)
+    query = f"CREATE (new_node:{labels} {{" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
     return tx.run(query)
 
