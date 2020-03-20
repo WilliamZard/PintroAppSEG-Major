@@ -2,6 +2,8 @@ import uuid
 import datetime
 from .users import USER_WITH_MULTIPLE_POSTS
 
+from collections import namedtuple
+
 # cypher datetime object requires T between date and time components
 # and uses nanosecond precision
 # and uses Z as shorthand for UTC time
@@ -16,14 +18,15 @@ POST_PROPERTIES = [
     "modified",
     "uuid",
 ]
+POST_DEFAULTS = ['default_content', NOW, NOW, uuid.uuid4()]
+
+Post = namedtuple('Post', POST_PROPERTIES, defaults=POST_DEFAULTS)
 
 # TODO: adjust existing_user data to fit data model
-EXISTING_POST = dict(
-    zip(POST_PROPERTIES, ['content x', NOW, NOW, uuid.uuid4()]))
+EXISTING_POST = Post(content='content_x')
 NON_EXISTING_POST_UUID = 'uuid'
 
-POST_TO_BE_UPDATED_THAT_EXISTS = dict(
-    zip(POST_PROPERTIES, ['content y', NOW, NOW, uuid.uuid4()]))
+POST_TO_BE_UPDATED_THAT_EXISTS = Post(content='content_y')
 
 POST_TO_BE_CREATED = {'content': 'content z',
                       'user_email': USER_WITH_MULTIPLE_POSTS['email']}

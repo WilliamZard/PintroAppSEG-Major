@@ -74,7 +74,7 @@ def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties,
 
 
 # This does two things. It creates a post, and relates the post to a user.
-CREATE_POSTS = f"""
+"""CREATE_POSTS = f""
     MATCH (user_a:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
     MATCH (user_b:Person {{email:'{USER_THAT_POSTED_POST_A['email']}'}})
     MATCH (user_c:Person {{email:'{USER_THAT_POSTED_POST_B['email']}'}})
@@ -328,7 +328,6 @@ queries = [
     CREATE_TEST_BUSINESS_DATA,
     *CREATE_TEST_USERS,
     FOLLOWS_AA,
-    CREATE_POSTS,
     CREATE_FOLLOWS_FOR_POSTS_USERS,
     RELATIONSHIPS_FOLLOWS_USER_A,
     RELATIONSHIPS_FOLLOWS_USER_B,

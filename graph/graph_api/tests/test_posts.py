@@ -4,24 +4,33 @@ import uuid
 import pytest
 from flask.json import jsonify
 
-from .conftest import app
+from .conftest import app, populate_db
 from .generate_test_data import (POST_UPDATE_A, POST_UPDATE_B, USER_POST_A,
                                  USER_POST_B,
                                  USER_WITH_MULTIPLE_POSTS)
 from .test_data.posts import (EXISTING_POST, NON_EXISTING_POST_UUID,
                               POST_TO_BE_CREATED,
                               POST_TO_BE_UPDATED_THAT_EXISTS, UUID_OF_POST_TO_BE_DELETED)
+from .test_data.posts import Post
 
 
 @pytest.mark.GET_post
 class TestGET:
-    def test_GET_post_that_exists(self, app):
-        response = app.get(f"/posts/{EXISTING_POST['uuid']}")
+    def test_GET_post_that_exists(self, app, populate_db):
+        # Generate Test Data
+        post = Post(content='content_x')._asdict()
+        posts = [{'properties': dict(post), 'labels': 'Post'}]
+        populate_db(nodes_to_create=posts)
+
+        # Test
+        response = app.get(f"/posts/{post['uuid']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(EXISTING_POST).data
+        # TODO: change how this is done
+        assert response.data == jsonify(post).data
 
     def test_GET_post_that_does_not_exist(self, app):
-        response = app.get(f"/posts/{NON_EXISTING_POST_UUID}")
+        non_existing_uuid = uuid.uuid4()
+        response = app.get(f"/posts/{non_existing_uuid}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
