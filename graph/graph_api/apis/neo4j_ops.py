@@ -44,8 +44,9 @@ def get_user_by_email(tx, user_email):
     '''
     query = f"""
     MATCH (user:Person {{email: '{user_email}'}})
-    OPTIONAL MATCH (user)-->(tag:Tag)
-    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
+    OPTIONAL MATCH (user)-->(skill_tag:Tag:Skill)
+    OPTIONAL MATCH (user)-->(passion_tag:Tag:Passion)
+    RETURN user, COLLECT(skill_tag.name) AS help_others, COLLECT(passion_tag.name) AS passions"""
     return tx.run(query)
 
 
@@ -85,12 +86,16 @@ def set_user_fields(tx, user_email, fields):
 
 
 def create_user(tx, fields):
-    if 'tags' in fields:
-        tags = fields['tags']
-        fields.pop('tags')
+    if 'passions' in fields:
+        passions = fields['passions']
+        fields.pop('passions')
+    if 'help others' in fields:
+        help_others = fields['help_others']
+        fields.pop('help_others')
     create_user_query = "CREATE (new_user: Person {" + ", ".join(
-        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+        f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
 
+    tags = help_others.extend(passions)
     create_TAGGED_relationships_query = f"""
     WITH {tags} AS tag_uuids
     UNWIND tag_uuids AS tag_uuid
@@ -192,10 +197,10 @@ def get_post_by_uuid(tx, uuid):
 
 
 def create_post(tx, post_content, user_email, created, modified, uuid):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})   
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})
                 CREATE (post:Post {{uuid: '{uuid}', content: '{post_content}', created: datetime('{created}'), modified: datetime('{modified}')}})
                 CREATE (user)-[:POSTED]->(post)
-                RETURN post 
+                RETURN post
             """
     return tx.run(query)
 
@@ -308,19 +313,19 @@ def get_posts_of_followings_of_a_user(tx, email):
 
 
 def get_nodes_for_user_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score 
+    query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
     return tx.run(query)
 
 
 def get_nodes_for_business_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchBusinessIndex', '"{search_string}"~0.2') YIELD node, score 
+    query = f"""CALL db.index.fulltext.queryNodes('SearchBusinessIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
     return tx.run(query)
 
 
 def get_nodes_for_space_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score 
+    query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
     return tx.run(query)
 

@@ -76,10 +76,11 @@ def _run_query(tx, query):
 
 CREATE_TEST_USERS = []
 for user in USERS_TO_TEST:
-    query = "CREATE (user:Person {" + \
-        f", ".join(f"{k}:'{v}'" for (k, v) in user.items()) + '})'
-    print(query)
-    CREATE_TEST_USERS.append(query)
+    user.pop('passions')
+    user.pop('help_others')
+    create_user_query = "CREATE (new_user: Person {" + ", ".join(
+        f"""{k}: \"{v}\"""" for (k, v) in user.items()) + "})"
+    CREATE_TEST_USERS.append(create_user_query)
 
 
 CREATE_POSTS = f"""

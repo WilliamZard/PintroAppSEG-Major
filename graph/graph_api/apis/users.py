@@ -21,22 +21,31 @@ api = Namespace('users', title='User related operations')
 
 
 class UserSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
     full_name = fields.Str(required=True)
     preferred_name = fields.String()
     profile_image = fields.String()
-    phone = fields.String()
-    gender = fields.String()
-    job_title = fields.String()
-    location = fields.String()
     short_bio = fields.String()
+    gender = fields.String()
     story = fields.String()
-    education = fields.String()
+    email = fields.Email(required=True)
+    phone_number = fields.String()
+    job_title = fields.String()
+    current_company = fields.String()
+    years_in_industry = fields.Int()
+    industry = fields.String()
+    previous_company = fields.String()
+    previous_company_year_finished = fields.String()
+    university = fields.String()
+    university_year_finished = fields.Int()
+    academic_level = fields.String()
+    date_of_birth = fields.String()
+    location = fields.String()
+    passions = fields.List(fields.String())
+    help_others = fields.List(fields.String())
     active = fields.String()
-    tags = fields.List(fields.String())
 
 
+# TODO: update model with new schema
 # Schema used for doc generation
 users = api.model('Users', {
     'email': restx_fields.String(required=True, title='The user email.'),
@@ -70,10 +79,8 @@ class Users(Resource):
             response = response.single()
             if response:
                 user = dict(response.data()['user'].items())
-                tags = response.data()['tags']
-                labels = response.data()['tag_labels']
-                user['tags'] = dict(zip(tags, labels))
-                return jsonify(user)
+                user = user_schema.dumps(user)
+                return user
             return make_response('', 404)
 
     @api.doc('delete_user')
