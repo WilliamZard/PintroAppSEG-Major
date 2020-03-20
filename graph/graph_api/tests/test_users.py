@@ -264,7 +264,36 @@ class TestUsersGETFollowers:
 
 @pytest.mark.GET_user_followings
 class TestUsersGETFollowings:
-    def test_GET_followings_of_existing_user(self, app):
+    def test_GET_followings_of_existing_user(self, app, populate_db):
+        # Generate Test Data
+        # Define users
+        user_with_followings = User(email='jj@gmail.com')._asdict()
+        user_with_followings.pop('passions')
+        user_with_followings.pop('help_others')
+
+        user_being_followed_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
+        user_being_followed_a.pop('passions')
+        user_being_followed_a.pop('help_others')
+
+        user_being_followed_b = User(email='lello@gmail.com')._asdict()
+        user_being_followed_b.pop('passions')
+        user_being_followed_b.pop('help_others')
+        user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
+            user_with_followings, user_being_followed_a, user_being_followed_b]]
+
+        # Definge follow relationships
+        follow_a = {
+            's_node_properties': {'email': user_with_followings['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_being_followed_a['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        follow_b = {
+            's_node_properties': {'email': user_with_followings['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_being_followed_b['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        populate_db(nodes_to_create=user_nodes,
+                    relationships_to_create=[follow_a, follow_b])
         response = app.get(
             f"/users/{USER_WITH_TWO_FOLLOWINGS['email']}/followings")
         assert response.status == '200 OK'
