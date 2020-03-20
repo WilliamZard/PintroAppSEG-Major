@@ -78,11 +78,10 @@ class ChatroomEntry extends Component {
               {this.state.lastMessage == null ? null :
                 <>
                   <Text style={lastMessageStyle} numberOfLines={1}>
-                    {this.state.lastMessage == null ? '' : this.state.lastMessage.text}
+                    {this.state.lastMessage.text}
                   </Text>
-                  <Text style={{...lastMessageStyle, flexGrow: 1}}>• <TimeAgo
-                    timestamp={this.state.lastMessage.createdAt}
-                    interval={20000}/>
+                  <Text style={{...lastMessageStyle, flexGrow: 1}}>
+                    • <TimeAgo time={this.state.lastMessage.createdAt}/>
                   </Text>
                 </>
               }
@@ -188,7 +187,7 @@ export default class Messaging extends Component {
           data={this.state.chats}
           renderItem={this.renderRow}
           enableEmptySections={true}
-          keyExtractor={item => item.chat_id}
+          keyExtractor={item => `${item.chat_id} ${item.recipient}`}
         />
         <Spinner visible={this.state.loading} />
       </View>
