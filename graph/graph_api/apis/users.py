@@ -48,19 +48,28 @@ class UserSchema(Schema):
 # TODO: update model with new schema
 # Schema used for doc generation
 users = api.model('Users', {
-    'email': restx_fields.String(required=True, title='The user email.'),
-    'password': restx_fields.String(required=True, title='The user password.'),
     'full_name': restx_fields.String(required=True, title='The user full name.'),
     'preferred_name': restx_fields.String(title='The user preferred name.'),
     'profile_image': restx_fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
-    'phone': restx_fields.String(title="The user's phone number."),
-    'gender': restx_fields.String(title="The User's geneder"),
-    'job_title': restx_fields.String(title='current job title of the user.'),
-    'location': restx_fields.String(title='current city of the user.'),
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
+    'gender': restx_fields.String(title="The User's geneder"),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
-    'education': restx_fields.String(title='Highest level obtained.'),
-    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the user is related to.')
+    'email': restx_fields.String(required=True, title='The user email.'),
+    'phone_number': restx_fields.String(title="The user's phone number."),
+    'job_title': restx_fields.String(title='current job title of the user.'),
+    'current_company': restx_fields.String(),
+    'years_in_industry': restx_fields.String(),
+    'industry': restx_fields.String(),
+    'previous_company': restx_fields.String(),
+    'previous_company_year_finished': restx_fields.String(),
+    'university': restx_fields.String(),
+    'university_year_finished': restx_fields.String(),
+    'academic_level': restx_fields.String(),
+    'date_of_birth': restx_fields.String(),
+    'location': restx_fields.String(title='current city of the user.'),
+    'passions': restx_fields.List(restx_fields.String(), description='List of Passion Tag UUIDs'),
+    'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
+    'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
