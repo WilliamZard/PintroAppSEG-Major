@@ -309,6 +309,7 @@ class TestUsersGETFollowings:
         assert user_with_no_followings_reduced in json
 
     def test_GET_followings_of_non_existing_user(self, app):
+        NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followings")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
