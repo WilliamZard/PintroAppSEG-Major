@@ -145,28 +145,37 @@ class TestPut:
 
 @pytest.mark.POST_user
 class TestPost:
+    # TODO: test creating a user with tag creation
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app):
+        user = User(
+            full_name='precious', email='precious@gmail.com')._asdict()
+        user.pop('passions')
+        user.pop('help_others')
+
         response = app.post(
-            "/users/", json=VALID_USER_TO_BE_CREATED)
+            "/users/", json=dict(user))
         assert response.status == '201 CREATED'
         assert response.data == b''
 
         # Assert user was actually created in the database
-        response = app.get(f"/users/{VALID_USER_TO_BE_CREATED['email']}")
+        response = app.get(f"/users/{user['email']}")
         assert response.status == '200 OK'
-        json = dict(response.get_json())
-        assert len(json) == 14
-        for key, value in VALID_USER_TO_BE_CREATED.items():
-            assert key in json
-            # TODO: remove need for below if statement
-            # This is in place as the GET function for users needs work to return the correct tags data
-            # Should be a dictionary like {tag1: tag1_labels, tag2: tag2_labels}
-            if key != 'tags':
-                assert value == json[key]
+        response = json.loads(response.get_json())
+        assert len(response) == len(user)
+        for key, value in user.items():
+            assert key in response
+            assert value == response[key]
 
-    def test_POST_user_with_valid_payload_that_exists(self, app):
+    def test_POST_user_with_valid_payload_that_exists(self, app, populate_db):
+        user = User(
+            full_name='precious', email='precious@gmail.com')._asdict()
+        user.pop('passions')
+        user.pop('help_others')
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+        populate_db(nodes_to_create=[user_node])
+
         response = app.post(
-            "/users/", json=VALID_USER_TO_BE_CREATED)
+            "/users/", json=dict(user))
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
