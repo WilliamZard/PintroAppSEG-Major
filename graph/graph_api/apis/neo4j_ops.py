@@ -113,12 +113,19 @@ def get_business_by_email(tx, business_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    query = f"MATCH (user:Business {{email: '{business_email}'}}) RETURN user"
+    query = f"""
+    MATCH (user:Business {{email: '{business_email}'}})
+    OPTIONAL MATCH (user)-->(tag:Tag)
+    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
     return tx.run(query)
 
 
 def delete_business_by_email(tx, business_email):
-    return tx.run(f"MATCH (user:Business {{email: '{business_email}'}}) DELETE user")
+    query = f"""
+    MATCH(n: Business {{email: '{business_email}'}})
+    OPTIONAL MATCH(n)--(p: Post)
+    DETACH DELETE n, p"""
+    return tx.run(query)
 
 
 def set_business_fields(tx, business_email, fields):
@@ -131,18 +138,44 @@ def set_business_fields(tx, business_email, fields):
         user_email = the email of the user whose data needs to be edited.
         new_email = the new email to assign to that user.
     '''
+    create_tag_query = None
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+        create_tag_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH (tag:Tag {{uuid: tag_uuid}})
+        MATCH (user:Business {{email: '{business_email}'}})
+        MERGE (user)-[:TAGGED]->(tag)"""
+
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Business {{email: '{business_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
+
+    if create_tag_query:
+        query = query + create_tag_query
     return tx.run(query)
 
 
 def create_business(tx, fields):
-    query = "CREATE (new_user: Business {" + ", ".join(
-        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
-    return tx.run(query)
 
-    """ Functions for Co-working spaces """
+    create_TAGGED_relationships_query = ""
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+        create_TAGGED_relationships_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH(tag: Tag {{uuid: tag_uuid}})
+        MATCH(user: Business {{email: '{fields['email']}'}})
+        CREATE(user)-[:TAGGED] -> (tag)"""
+
+    create_user_query = "CREATE (new_user: Business{" + ", ".join(
+        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+
+    query = create_user_query + create_TAGGED_relationships_query
+    return tx.run(query)
 
 
 def get_space_by_email(tx, space_email):
