@@ -87,10 +87,24 @@ class TestDelete:
 
 @pytest.mark.PUT_user
 class TestPut:
-    def test_PUT_user_with_valid_email_that_exists(self, app):
-        email = VALID_USER_TO_BE_UPDATED['email']
+    def test_PUT_user_with_valid_email_that_exists(self, app, populate_db):
+        user = User(
+            full_name='Donald Trump', email='genius@fakenews.cnn')._asdict()
+        # TODO: review how to handle tags at some point.
+        user.pop('passions')
+        user.pop('help_others')
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+        populate_db(nodes_to_create=[user_node])
+
+        new_user_fields = dict(
+            profile_image='new_image', full_name='Donald Trump', gender='masculine',
+            phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
+            preferred_name='GOAT'
+        )
+
+        email = user['email']
         response = app.put(
-            f"/users/{email}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+            f"/users/{email}", json=new_user_fields)
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
@@ -106,14 +120,23 @@ class TestPut:
             assert value == json[key]"""
 
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app):
+        NONEXISTANT_USER_EMAIL = 'does@exist.not'
+        new_user_fields = dict(
+            phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
+        )
         response = app.put(
-            f"/users/{NONEXISTANT_USER_EMAIL}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+            f"/users/{NONEXISTANT_USER_EMAIL}", json=new_user_fields)
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_PUT_user_with_invalid_email(self, app):
+        INVALID_EMAIL = 'invalidateme.now'
+        new_user_fields = dict(
+            phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
+        )
+
         response = app.put(
-            f"/users/{INVALID_EMAIL}", json=VALID_USER_TO_BE_UPDATED_NEW_FIELDS)
+            f"/users/{INVALID_EMAIL}", json=new_user_fields)
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
