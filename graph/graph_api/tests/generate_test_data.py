@@ -43,39 +43,9 @@ USERS_TO_TEST = [
 ]
 
 
-def connect():
-    uri = os.getenv('NEO4J_URI')
-    db_user = 'neo4j'
-    password = os.getenv("NEO4J_PASSWORD")
-    driver = GraphDatabase.driver(uri, auth=(db_user, password))
-    return driver
-
-
-def populate_db(rewrite_test_data=False):
-    driver = connect()
-    with driver.session() as session:
-        for query in queries:
-            session.write_transaction(_run_query, query)
-    # TODO: do this properly. Move all db stuff connect() function. Use yield.
-    driver.close()
-
-
-def clear_db():
-    driver = connect()
-    with driver.session() as session:
-        print("about to delete")
-        session.write_transaction(_run_query, DELETE_ALL_NODES)
-        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
-
-
-def _run_query(tx, query):
-    return tx.run(query)
-
-
 CREATE_TEST_USERS = []
 for user in USERS_TO_TEST:
+    # TODO: figure out situation with tags here.
     user.pop('passions')
     user.pop('help_others')
     create_user_query = "CREATE (new_user: Person {" + ", ".join(
@@ -83,6 +53,27 @@ for user in USERS_TO_TEST:
     CREATE_TEST_USERS.append(create_user_query)
 
 
+def create_node(tx, labels, properties):
+    # NOTE: this current code assumes all properties are a string.
+    query = f"CREATE (new_node: {labels} {{" + ", ".join(
+        f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
+    return tx.run(query)
+
+
+def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
+    s_node_properties = ", ".join(
+        f"""{{{k}: \"{v}\"}}""" for (k, v) in s_node_properties.items())
+    e_node_properties = ", ".join(
+        f"""{{{k}: \"{v}\"}}""" for (k, v) in e_node_properties.items())
+    query = f"""
+    MATCH (starting_node:{s_node_labels} {s_node_properties})
+    MATCH (ending_node:{e_node_labels} {e_node_properties})
+    CREATE (starting_node)-[:{relationship_type}]->(ending_node)
+    """
+    return tx.run(query)
+
+
+# This does two things. It creates a post, and relates the post to a user.
 CREATE_POSTS = f"""
     MATCH (user_a:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
     MATCH (user_b:Person {{email:'{USER_THAT_POSTED_POST_A['email']}'}})
@@ -191,7 +182,6 @@ CONSTRAINT_USER_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Person) ASSERT user.e
 CONSTRAINT_USER_EMAIL_EXISTS = "CREATE CONSTRAINT ON(user: Person) ASSERT EXISTS (user.email)"
 CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS (post.content)"
 
-DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
 
 TAGS = [KING_SLAYER_TAG, COLES_TAG]
 TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
@@ -318,13 +308,10 @@ CREATE_CHATROOM_RELATIONSHIPS_C = (
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
 
 CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
-DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
 
 CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
-DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\")"
 
 CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
-DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
 
 CONSTRAINT_CHATROOM_ID_UNIQUE = "CREATE CONSTRAINT ON(chat: Chatroom) ASSERT chat.chat_id IS UNIQUE"
 
