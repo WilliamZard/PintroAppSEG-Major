@@ -6,12 +6,17 @@ import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
+import UserButton from '../../Components/UserButton.js';
 
 
 const SearchResults = props => {
-
+    const [scroll,setScroll] = useState(false);
     const searchResults = useSelector(state => state.search.usersArray);
-    console.log("Results = " + searchResults);
+    //console.log("Results = " + searchResults);
+
+    function seeAllUsers() {
+        setScroll(true);
+    }
 
     return (
         <ScrollView style={styles.scrollContainer}>
@@ -30,26 +35,19 @@ const SearchResults = props => {
                         containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
                         inputContainerStyle={{backgroundColor: 'white',width: 330}}
                         onChangeText={()=>{}}
-                        value={""}/>
+                        value={props.navigation.state.params.searchParam}/>
                 </View>  
                 <View style={styles.peopleRow}>
                     <Text style={styles.sectionTitle}>People</Text>
-                    <Text style={styles.seeAll1}>See all</Text>
+                    <Text style={styles.seeAll1} onPress={() => seeAllUsers()} color={scroll? 'grey' : Colors.pintroYellow}>See all</Text>
                 </View>
-                <View style={styles.imageRow}>
-                    <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>{searchResults[0].full_name}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>Callum Thompson</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>Jane Doe</Text>
-                    </TouchableOpacity>
-                </View>
+                <ScrollView contentContainerstyle={styles.imageRow} horizontal={true} scrollEnabled={scroll} indicatorStyle={'white'}>
+                    <UserButton name={"Danielle Dodoo"}/>
+                    <UserButton name={"Callum Thompson"}/>
+                    <UserButton name={"Jane Doe"}/>
+                    <UserButton name={"Jane Doe"}/>
+                    <UserButton name={"Jane Doe"}/>
+                </ScrollView>
                 <View>
                     <View style={styles.rowContainer}>
                         <Text style={styles.sectionTitle}>Companies</Text>
