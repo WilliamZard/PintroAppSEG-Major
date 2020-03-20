@@ -37,7 +37,7 @@ const SearchScreen = props => {
         setSearchKeyword(item);
         setItems(null);
         dispatch(SearchActions.getResults(item));
-        props.navigation.navigate('Results');
+        props.navigation.navigate('Results', {searchParam: item});
     }
     
     function renderSuggestions() {
