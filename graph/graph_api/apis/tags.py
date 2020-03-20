@@ -27,13 +27,13 @@ api = Namespace('tags', description='Tag related operations.')
 
 class TagSchema(Schema):
     uuid = fields.UUID()
-    created = fields.DateTime()
+    created = fields.Str()
     name = fields.Str()
 
 
 tags = api.model('Tag', {
     'uuid': restx_fields.String(required=True),
-    'created': restx_fields.DateTime(),
+    'created': restx_fields.String(),
     'name': restx_fields.String()
 })
 
