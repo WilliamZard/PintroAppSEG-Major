@@ -3,10 +3,11 @@ from ast import literal_eval
 import json
 import pytest
 from flask.json import jsonify
+from .generate_test_data import User
 
-from .conftest import app
-from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
-                                 NONEXISTANT_USER_EMAIL, VALID_USER,
+from .conftest import app, populate_db
+from .generate_test_data import (INVALID_USER_TO_BE_CREATED,
+                                 VALID_USER,
                                  VALID_USER_TO_BE_CREATED,
                                  VALID_USER_TO_BE_DELETED,
                                  VALID_USER_TO_BE_UPDATED,
@@ -20,7 +21,15 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_USER_TO_BE_CREATED,
 
 @pytest.mark.GET_user
 class TestGET:
-    def test_GET_user_with_valid_email_that_exists(self, app):
+    def test_GET_user_with_valid_email_that_exists(self, app, populate_db):
+        valid_user = User(full_name='Duke Wellington',
+                          email='duke@wellington.com')._asdict()
+        # TODO: review how to handle tags at some point.
+        valid_user.pop('passions')
+        valid_user.pop('help_others')
+        valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
+        populate_db(nodes_to_create=[valid_user_node])
+
         response = app.get(f"/users/{VALID_USER['email']}")
         assert response.status == '200 OK'
         json_response = json.loads(response.get_json())
@@ -30,11 +39,13 @@ class TestGET:
             assert value == json_response[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app):
+        NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_GET_user_with_invalid_email(self, app):
+        INVALID_EMAIL = 'invalidateme.now'
         response = app.get(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
@@ -44,22 +55,31 @@ class TestGET:
 class TestDelete:
     # TODO: add tests for ensuring post nodes were deleted
     # TODO: add tests for ensuring all relationships were deleted
-    def test_DELETE_user_with_valid_email_that_exists(self, app):
-        email = VALID_USER_TO_BE_DELETED['email']
-        response = app.delete(f"/users/{email}")
+    def test_DELETE_user_with_valid_email_that_exists(self, app, populate_db):
+        user = User(
+            university='Gatwick Airpot', full_name='taaj', email='taaj@hotmail.co.uk')._asdict()
+        # TODO: review how to handle tags at some point.
+        user.pop('passions')
+        user.pop('help_others')
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+        populate_db(nodes_to_create=[user_node])
+
+        response = app.delete(f"/users/{user['email']}")
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
         # Assert user was actually deleted in the database
-        response = app.get(f"/users/{email}")
+        response = app.get(f"/users/{user['email']}")
         assert response.status == '404 NOT FOUND'
 
     def test_DELETE_user_with_valid_email_that_does_not_exist(self, app):
+        NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.delete(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_DELETE_user_with_invalid_email(self, app):
+        INVALID_EMAIL = 'invalidateme.now'
         response = app.delete(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
