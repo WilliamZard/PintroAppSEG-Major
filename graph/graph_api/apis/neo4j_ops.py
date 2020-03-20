@@ -77,7 +77,7 @@ def set_user_fields(tx, user_email, fields):
 
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
-        ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
+        ", ".join(f"""user.{k}=\"{v}\"""" for (k, v) in fields.items())
 
     if create_tag_query:
         query = query + create_tag_query
