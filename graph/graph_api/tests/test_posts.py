@@ -37,18 +37,27 @@ class TestGET:
 
 @pytest.mark.PUT_post
 class TestPUT:
-    # TODO: assert modified was changed properly for all put tests
-    # TODO: assert created was not changed for all put tests
-    # TODO: get request and assertion to check correct update
-    def test_PUT_existing_post(self, app):
+    def test_PUT_existing_post(self, app, populate_db):
+        # Generate Test Data
+        post = Post(content='content_x')._asdict()
+        new_post = Post(content='content_y')._asdict()
+        posts = [{'properties': dict(post), 'labels': 'Post'}]
+        populate_db(nodes_to_create=posts)
+
+        # Test
         response = app.put(
-            f"/posts/{POST_TO_BE_UPDATED_THAT_EXISTS['uuid']}", json=POST_TO_BE_UPDATED_THAT_EXISTS['content'])
+            f"/posts/{post['uuid']}", json=post['content'])
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
+        # TODO: assert modified was changed properly for all put tests
+        # TODO: assert created was not changed for all put tests
+        # TODO: get request and assertion to check correct update
 
     def test_PUT_non_existent_post(self, app):
+        post = Post(content='content_x')._asdict()
+
         response = app.put(
-            f"/posts/{NON_EXISTING_POST_UUID}", json=POST_TO_BE_UPDATED_THAT_EXISTS['content'])
+            f"/posts/{uuid.uuid4()}", json=post['content'])
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
