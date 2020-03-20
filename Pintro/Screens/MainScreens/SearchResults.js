@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
+import { useSelector,useDispatch } from 'react-redux';
 import { StyleSheet, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
+import { getResults } from '../../store/actions/search.js';
 
 const SearchResults = props => {
     const [searchKeyword,setSearchKeyword] = useState(props.navigation.state.params.searchParam);
-    
+    console.log(1);
+    getResults(searchKeyword);
+    console.log(2);
+    const loadedUsers = useSelector(state => state.search.usersArray);
+    console.log(loadedUsers);
+
     return (
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.pageContainer}>

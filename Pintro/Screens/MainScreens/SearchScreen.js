@@ -17,7 +17,7 @@ const SearchScreen = props => {
       });
 
     const tagList = [
-        'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
+        'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus', 'Post Man2'
     ];
     
     function onTextChanged(searchWord) {
