@@ -1,6 +1,6 @@
 # TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
 from ast import literal_eval
-
+import json
 import pytest
 from flask.json import jsonify
 
@@ -23,11 +23,11 @@ class TestGET:
     def test_GET_user_with_valid_email_that_exists(self, app):
         response = app.get(f"/users/{VALID_USER['email']}")
         assert response.status == '200 OK'
-        json = dict(response.get_json())
-        assert len(json) == 14
+        json_response = json.loads(response.get_json())
+        assert len(json_response) == len(VALID_USER)
         for key, value in VALID_USER.items():
-            assert key in json
-            assert value == json[key]
+            assert key in json_response
+            assert value == json_response[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app):
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")

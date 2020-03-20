@@ -36,7 +36,10 @@ USERS_TO_TEST = [
     AFFILIATION_REQUEST_RECIPIENT,
     USER_WITH_NOTIFICATIONS,
     USER_REQUESTING_USER_WITH_NOTIFICATIONS_A,
-    USER_WITH_NO_NOTIFICATIONS
+    USER_WITH_NO_NOTIFICATIONS,
+    *CHATROOM_USERS,
+    *VALID_CHATROOM_TO_BE_DELETED_USERS,
+    *CHATROOM_TO_BE_CREATED_USERS
 ]
 
 
@@ -71,23 +74,13 @@ def _run_query(tx, query):
     return tx.run(query)
 
 
-# TODO: restructure this
-CREATE_TEST_DATA = ""
-for USER in USERS_TO_TEST:
-    CREATE_TEST_DATA += "CREATE (" + USER['preferred_name'] + ":Person { "
-    CREATE_TEST_DATA += "password: \'" + USER['password'] + "\' , "
-    CREATE_TEST_DATA += "profile_image: \'" + USER['profile_image'] + "\' , "
-    CREATE_TEST_DATA += "full_name: \'" + USER['full_name'] + "\' , "
-    CREATE_TEST_DATA += "gender: \'" + USER['gender'] + "\' , "
-    CREATE_TEST_DATA += "phone: \'" + USER['phone'] + "\' , "
-    CREATE_TEST_DATA += "short_bio: \'" + USER['short_bio'] + "\' , "
-    CREATE_TEST_DATA += "location: \'" + USER['location'] + "\' , "
-    CREATE_TEST_DATA += "job_title: \'" + USER['job_title'] + "\' , "
-    CREATE_TEST_DATA += "preferred_name: \'" + USER['preferred_name'] + "\' , "
-    CREATE_TEST_DATA += "email: \'" + str(USER['email']) + "\' , "
-    CREATE_TEST_DATA += "education: \'" + USER['education'] + "\' , "
-    CREATE_TEST_DATA += "active: \'" + USER['active'] + "\' , "
-    CREATE_TEST_DATA += "story: \'" + USER['story'] + "\'}) \n"
+CREATE_TEST_USERS = []
+for user in USERS_TO_TEST:
+    user.pop('passions')
+    user.pop('help_others')
+    create_user_query = "CREATE (new_user: Person {" + ", ".join(
+        f"""{k}: \"{v}\"""" for (k, v) in user.items()) + "})"
+    CREATE_TEST_USERS.append(create_user_query)
 
 
 CREATE_POSTS = f"""
@@ -291,30 +284,8 @@ for SPACE in SPACES_TO_TEST:
 
 CREATE_EXISTING_CHATROOM_DATA = ""
 for CHAT in CHATROOMS:
-    print(CHAT)
     CREATE_EXISTING_CHATROOM_DATA += "CREATE (:Chatroom { "
     CREATE_EXISTING_CHATROOM_DATA += "chat_id: \'" + CHAT + "\'}) \n"
-for USER in CHATROOM_USERS:
-    CREATE_EXISTING_CHATROOM_DATA += "CREATE (" + \
-        USER['preferred_name'] + ":Person { "
-    CREATE_EXISTING_CHATROOM_DATA += "password: \'" + \
-        USER['password'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "profile_image: \'" + \
-        USER['profile_image'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "full_name: \'" + \
-        USER['full_name'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "gender: \'" + USER['gender'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "phone: \'" + USER['phone'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "short_bio: \'" + \
-        USER['short_bio'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "location: \'" + \
-        USER['location'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "job_title: \'" + \
-        USER['job_title'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "preferred_name: \'" + \
-        USER['preferred_name'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "email: \'" + USER['email'] + "\' , "
-    CREATE_EXISTING_CHATROOM_DATA += "story: \'" + USER['story'] + "\'}) \n"
 
 CREATE_CHATROOM_RELATIONSHIPS_A = (
     f"MATCH (user_a:Person {{email: '{CHATROOM_USERS[0]['email']}'}})\n"
@@ -334,29 +305,6 @@ CREATE_CHATROOM_RELATIONSHIPS_B = (
 CREATE_TO_BE_DELETED_CHATROOM_DATA = "CREATE (:Chatroom { "
 CREATE_TO_BE_DELETED_CHATROOM_DATA += "chat_id: \'" + \
     VALID_CHATROOM_TO_BE_DELETED + "\'}) \n"
-for USER in VALID_CHATROOM_TO_BE_DELETED_USERS:
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "CREATE (" + \
-        USER['preferred_name'] + ":Person { "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "password: \'" + \
-        USER['password'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "profile_image: \'" + \
-        USER['profile_image'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "full_name: \'" + \
-        USER['full_name'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "gender: \'" + \
-        USER['gender'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "phone: \'" + USER['phone'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "short_bio: \'" + \
-        USER['short_bio'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "location: \'" + \
-        USER['location'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "job_title: \'" + \
-        USER['job_title'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "preferred_name: \'" + \
-        USER['preferred_name'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "email: \'" + USER['email'] + "\' , "
-    CREATE_TO_BE_DELETED_CHATROOM_DATA += "story: \'" + \
-        USER['story'] + "\'}) \n"
 
 CREATE_CHATROOM_RELATIONSHIPS_C = (
     f"MATCH (user_a:Person {{email: '{VALID_CHATROOM_TO_BE_DELETED_USERS[0]['email']}'}})\n"
@@ -365,31 +313,6 @@ CREATE_CHATROOM_RELATIONSHIPS_C = (
     "CREATE (user_a)-[:CHATS_IN]->(chat)\n"
     "CREATE (user_b)-[:CHATS_IN]->(chat)"
 )
-
-CREATE_TO_BE_CREATED_CHATROOM_DATA = ""
-for USER in CHATROOM_TO_BE_CREATED_USERS:
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "CREATE (" + \
-        USER['preferred_name'] + ":Person { "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "password: \'" + \
-        USER['password'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "profile_image: \'" + \
-        USER['profile_image'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "full_name: \'" + \
-        USER['full_name'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "gender: \'" + \
-        USER['gender'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "phone: \'" + USER['phone'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "short_bio: \'" + \
-        USER['short_bio'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "location: \'" + \
-        USER['location'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "job_title: \'" + \
-        USER['job_title'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "preferred_name: \'" + \
-        USER['preferred_name'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "email: \'" + USER['email'] + "\' , "
-    CREATE_TO_BE_CREATED_CHATROOM_DATA += "story: \'" + \
-        USER['story'] + "\'}) \n"
 
 
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
@@ -416,7 +339,7 @@ queries = [
     CREATE_TEST_SPACE_DATA,
     CONSTRAINT_BUSINESS_EMAIL_UNIQUE,
     CREATE_TEST_BUSINESS_DATA,
-    CREATE_TEST_DATA,
+    *CREATE_TEST_USERS,
     FOLLOWS_AA,
     CREATE_POSTS,
     CREATE_FOLLOWS_FOR_POSTS_USERS,
@@ -433,6 +356,5 @@ queries = [
     CREATE_CHATROOM_RELATIONSHIPS_B,
     CREATE_TO_BE_DELETED_CHATROOM_DATA,
     CREATE_CHATROOM_RELATIONSHIPS_C,
-    CREATE_TO_BE_CREATED_CHATROOM_DATA,
     CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST
 ]

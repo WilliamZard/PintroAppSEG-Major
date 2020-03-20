@@ -21,37 +21,55 @@ api = Namespace('users', title='User related operations')
 
 
 class UserSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
     full_name = fields.Str(required=True)
     preferred_name = fields.String()
     profile_image = fields.String()
-    phone = fields.String()
-    gender = fields.String()
-    job_title = fields.String()
-    location = fields.String()
     short_bio = fields.String()
+    gender = fields.String()
     story = fields.String()
-    education = fields.String()
+    email = fields.Email(required=True)
+    phone_number = fields.String()
+    job_title = fields.String()
+    current_company = fields.String()
+    years_in_industry = fields.Int()
+    industry = fields.String()
+    previous_company = fields.String()
+    previous_company_year_finished = fields.String()
+    university = fields.String()
+    university_year_finished = fields.Int()
+    academic_level = fields.String()
+    date_of_birth = fields.String()
+    location = fields.String()
+    passions = fields.List(fields.String())
+    help_others = fields.List(fields.String())
     active = fields.String()
-    tags = fields.List(fields.String())
 
 
+# TODO: update model with new schema
 # Schema used for doc generation
 users = api.model('Users', {
-    'email': restx_fields.String(required=True, title='The user email.'),
-    'password': restx_fields.String(required=True, title='The user password.'),
     'full_name': restx_fields.String(required=True, title='The user full name.'),
     'preferred_name': restx_fields.String(title='The user preferred name.'),
     'profile_image': restx_fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
-    'phone': restx_fields.String(title="The user's phone number."),
-    'gender': restx_fields.String(title="The User's geneder"),
-    'job_title': restx_fields.String(title='current job title of the user.'),
-    'location': restx_fields.String(title='current city of the user.'),
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
+    'gender': restx_fields.String(title="The User's geneder"),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
-    'education': restx_fields.String(title='Highest level obtained.'),
-    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the user is related to.')
+    'email': restx_fields.String(required=True, title='The user email.'),
+    'phone_number': restx_fields.String(title="The user's phone number."),
+    'job_title': restx_fields.String(title='current job title of the user.'),
+    'current_company': restx_fields.String(),
+    'years_in_industry': restx_fields.String(),
+    'industry': restx_fields.String(),
+    'previous_company': restx_fields.String(),
+    'previous_company_year_finished': restx_fields.String(),
+    'university': restx_fields.String(),
+    'university_year_finished': restx_fields.String(),
+    'academic_level': restx_fields.String(),
+    'date_of_birth': restx_fields.String(),
+    'location': restx_fields.String(title='current city of the user.'),
+    'passions': restx_fields.List(restx_fields.String(), description='List of Passion Tag UUIDs'),
+    'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
+    'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
@@ -70,10 +88,8 @@ class Users(Resource):
             response = response.single()
             if response:
                 user = dict(response.data()['user'].items())
-                tags = response.data()['tags']
-                labels = response.data()['tag_labels']
-                user['tags'] = dict(zip(tags, labels))
-                return jsonify(user)
+                user = user_schema.dumps(user)
+                return user
             return make_response('', 404)
 
     @api.doc('delete_user')
