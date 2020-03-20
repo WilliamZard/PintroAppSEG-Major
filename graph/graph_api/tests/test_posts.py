@@ -100,16 +100,32 @@ class TestPOST:
 
 @pytest.mark.DELETE_post
 class TestDELETE:
-    def test_DELETE_existing_post(self, app):
+    def test_DELETE_existing_post(self, app, populate_db):
+        # Generate Test Data
+        # Nodes
+        post = Post(content='content_x')._asdict()
+        post_node = {'properties': dict(post), 'labels': 'Post'}
+        user = User(email='created_post@post.com')._asdict()
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+
+        # Relationships
+        posted = {
+            's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'uuid': post['uuid']}, 'e_node_labels': 'Post',
+            'relationship_type': 'POSTED'}
+
+        populate_db(nodes_to_create=[
+                    user_node, post_node], relationships_to_create=[posted])
+
+        # Test
         response = app.delete(
-            f"/posts/{UUID_OF_POST_TO_BE_DELETED}")
+            f"/posts/{post['uuid']}")
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
     def test_DELETE_non_existing_post(self, app):
-        uuid_that_does_not_exist = uuid.uuid4()
         response = app.delete(
-            f"/posts/{uuid_that_does_not_exist}")
+            f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
