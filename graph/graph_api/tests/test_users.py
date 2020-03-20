@@ -240,11 +240,16 @@ class TestUsersGETFollowers:
 
         # Test
         response = app.get(
-            f"/users/{USER_WITH_ONE_FOLLOWING['email']}/followers")
+            f"/users/{user_with_followers['email']}/followers")
         assert response.status == '200 OK'
         results = [{'full_name': user['full_name'], 'email': user['email']}
-                   for user in [USER_WITH_TWO_FOLLOWINGS, USER_WITH_THREE_FOLLOWINGS]]
-        assert response.data == jsonify(results).data
+                   for user in [user_following_a, user_following_b]]
+        response = response.get_json()
+        assert len(response) == len(results)
+        for user in response:
+            for key, value in user.items():
+                assert key in user
+                assert value in user[key]
 
     def test_GET_followers_of_non_existing_user(self, app):
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
