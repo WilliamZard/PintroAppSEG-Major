@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
-import { StyleSheet, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
@@ -13,6 +13,7 @@ const SearchResults = props => {
     const [scroll,setScroll] = useState(false);
     const searchResults = useSelector(state => state.search.usersArray);
     //console.log("Results = " + searchResults);
+
 
     function seeAllUsers() {
         setScroll(true);
@@ -41,13 +42,13 @@ const SearchResults = props => {
                     <Text style={styles.sectionTitle}>People</Text>
                     <Text style={styles.seeAll1} onPress={() => seeAllUsers()} color={scroll? 'grey' : Colors.pintroYellow}>See all</Text>
                 </View>
-                <ScrollView contentContainerstyle={styles.imageRow} horizontal={true} scrollEnabled={scroll} indicatorStyle={'white'}>
-                    <UserButton name={"Danielle Dodoo"}/>
-                    <UserButton name={"Callum Thompson"}/>
-                    <UserButton name={"Jane Doe"}/>
-                    <UserButton name={"Jane Doe"}/>
-                    <UserButton name={"Jane Doe"}/>
-                </ScrollView>
+                <FlatList 
+                    data={usersArray}
+                    renderItem={({ item }) => <UserButton name={item.full_name}/>}
+                    keyExtractor={item => item.full_name + item.index}
+                    horizontal={true}
+                    scrollEnabled={scroll}
+                />
                 <View>
                     <View style={styles.rowContainer}>
                         <Text style={styles.sectionTitle}>Companies</Text>
