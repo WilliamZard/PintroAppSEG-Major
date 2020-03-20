@@ -52,7 +52,7 @@ def populate_db():
     return populate
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def app():
     app = create_app()
     app.testing = True
