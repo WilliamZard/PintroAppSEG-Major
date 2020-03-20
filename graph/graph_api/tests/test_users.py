@@ -194,6 +194,11 @@ class TestPost:
         assert response.data == b'Node with that email already exists.'
 
     def test_POST_user_with_invalid_payload(self, app):
+        # Generate Test Data
+        INVALID_USER_TO_BE_CREATED = User(
+            full_name='precious', email='praciousgmail.com')._asdict()
+
+        # Test
         response = app.post(
             "/users/", json=INVALID_USER_TO_BE_CREATED)
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -202,7 +207,38 @@ class TestPost:
 
 @pytest.mark.GET_user_followers
 class TestUsersGETFollowers:
-    def test_GET_followers_of_existing_user(self, app):
+    def test_GET_followers_of_existing_user(self, app, populate_db):
+        # Generate Test Data
+        # Define users
+        user_with_followers = User(email='jj@gmail.com')._asdict()
+        user_with_followers.pop('passions')
+        user_with_followers.pop('help_others')
+
+        user_following_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
+        user_following_a.pop('passions')
+        user_following_a.pop('help_others')
+
+        user_following_b = User(email='lello@gmail.com')._asdict()
+        user_following_b.pop('passions')
+        user_following_b.pop('help_others')
+        user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
+            user_with_followers, user_following_a, user_following_b]]
+
+        # Definge follow relationships
+        follow_a = {
+            's_node_properties': {'email': user_following_a['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_followers['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        follow_b = {
+            's_node_properties': {'email': user_following_b['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_followers['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        populate_db(nodes_to_create=user_nodes,
+                    relationships_to_create=[follow_a, follow_b])
+
+        # Test
         response = app.get(
             f"/users/{USER_WITH_ONE_FOLLOWING['email']}/followers")
         assert response.status == '200 OK'
@@ -211,6 +247,7 @@ class TestUsersGETFollowers:
         assert response.data == jsonify(results).data
 
     def test_GET_followers_of_non_existing_user(self, app):
+        NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
