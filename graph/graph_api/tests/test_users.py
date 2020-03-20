@@ -22,6 +22,7 @@ from .generate_test_data import (INVALID_USER_TO_BE_CREATED,
 @pytest.mark.GET_user
 class TestGET:
     def test_GET_user_with_valid_email_that_exists(self, app, populate_db):
+        # Generate test data
         valid_user = User(full_name='Duke Wellington',
                           email='duke@wellington.com')._asdict()
         # TODO: review how to handle tags at some point.
@@ -30,6 +31,7 @@ class TestGET:
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
         populate_db(nodes_to_create=[valid_user_node])
 
+        # Test
         response = app.get(f"/users/{VALID_USER['email']}")
         assert response.status == '200 OK'
         json_response = json.loads(response.get_json())
@@ -56,6 +58,7 @@ class TestDelete:
     # TODO: add tests for ensuring post nodes were deleted
     # TODO: add tests for ensuring all relationships were deleted
     def test_DELETE_user_with_valid_email_that_exists(self, app, populate_db):
+        # Generate test data
         user = User(
             university='Gatwick Airpot', full_name='taaj', email='taaj@hotmail.co.uk')._asdict()
         # TODO: review how to handle tags at some point.
@@ -64,6 +67,7 @@ class TestDelete:
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
+        # Test
         response = app.delete(f"/users/{user['email']}")
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
@@ -88,6 +92,7 @@ class TestDelete:
 @pytest.mark.PUT_user
 class TestPut:
     def test_PUT_user_with_valid_email_that_exists(self, app, populate_db):
+        # Generate Test Data
         user = User(
             full_name='Donald Trump', email='genius@fakenews.cnn')._asdict()
         # TODO: review how to handle tags at some point.
@@ -96,12 +101,12 @@ class TestPut:
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
+        # Test
         new_user_fields = dict(
             profile_image='new_image', full_name='Donald Trump', gender='masculine',
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
             preferred_name='GOAT'
         )
-
         email = user['email']
         response = app.put(
             f"/users/{email}", json=new_user_fields)
@@ -120,38 +125,45 @@ class TestPut:
             assert value == json[key]"""
 
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app):
+        # Generate test data
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         new_user_fields = dict(
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
         )
+
+        # Test
         response = app.put(
             f"/users/{NONEXISTANT_USER_EMAIL}", json=new_user_fields)
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_PUT_user_with_invalid_email(self, app):
+        # Generate test data
         INVALID_EMAIL = 'invalidateme.now'
         new_user_fields = dict(
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
         )
 
+        # Test
         response = app.put(
             f"/users/{INVALID_EMAIL}", json=new_user_fields)
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-    # TODO: add test for validating payload
+       # TODO: add test for validating payload
 
 
 @pytest.mark.POST_user
 class TestPost:
     # TODO: test creating a user with tag creation
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app):
+        # Generate Test Data
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
         user.pop('passions')
         user.pop('help_others')
 
+        # Test
         response = app.post(
             "/users/", json=dict(user))
         assert response.status == '201 CREATED'
@@ -167,6 +179,7 @@ class TestPost:
             assert value == response[key]
 
     def test_POST_user_with_valid_payload_that_exists(self, app, populate_db):
+        # Generate Test Data
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
         user.pop('passions')
@@ -174,6 +187,7 @@ class TestPost:
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
+        # Test
         response = app.post(
             "/users/", json=dict(user))
         assert response.status == '409 CONFLICT'
