@@ -1,17 +1,16 @@
 import User from '../../Model/User';
 export const GETRESULTS = 'GETRESULTS';
-export const getResults = searchWord => {
+export const getResults =  () => {
     return async dispatch => {
-        console.log("Search word: " + searchWord);
-        console.log(3);
+        console.log("Search word:");
         const response = await fetch('https://bluej-pintro-project.appspot.com/search',
             {
-              method: 'Post',
+              method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                query: searchWord
+                query: "Post Man2"
               })
             }   
         );
@@ -23,16 +22,33 @@ export const getResults = searchWord => {
             let message = 'Something went wrong';
             throw new Error(message);
         }
-        console.log(6);
+
         const resData = await response.json();
 
-        const users = resData;
-        const loadedUsers = [];
 
-        for(const element in users) {
-            loadedUsers.push(new User(users[element].email,users[element].full_name))
+        const searchResultsArray = [];
+       
+        for(const searchResult in resData){
+          searchResultsArray.push(new User(
+          resData[searchResult].education,
+          resData[searchResult].email,
+          resData[searchResult].full_name,
+          resData[searchResult].gender,
+          resData[searchResult].job_title,
+          resData[searchResult].location,
+          resData[searchResult].password,
+          resData[searchResult].phone,
+          resData[searchResult].preferred_name,
+          resData[searchResult].profile_image,
+          resData[searchResult].profile_type,
+          resData[searchResult].score,
+          resData[searchResult].short_bio,
+          resData[searchResult].story
+          )
+
+         );
+
         }
-    
-        dispatch({type: GETRESULTS,usersarray: loadedUsers});
+        dispatch({type: GETRESULTS,usersArray:searchResultsArray});
     };
 };

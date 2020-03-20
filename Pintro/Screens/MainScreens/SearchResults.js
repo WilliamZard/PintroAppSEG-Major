@@ -6,15 +6,12 @@ import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
-import { getResults } from '../../store/actions/search.js';
+
 
 const SearchResults = props => {
-    const [searchKeyword,setSearchKeyword] = useState(props.navigation.state.params.searchParam);
-    console.log(1);
-    getResults(searchKeyword);
-    console.log(2);
-    const loadedUsers = useSelector(state => state.search.usersArray);
-    console.log(loadedUsers);
+
+    const searchResults = useSelector(state => state.search.usersArray);
+    console.log("Results = " + searchResults);
 
     return (
         <ScrollView style={styles.scrollContainer}>
@@ -32,8 +29,8 @@ const SearchResults = props => {
                         inputStyle={styles.searchText}
                         containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
                         inputContainerStyle={{backgroundColor: 'white',width: 330}}
-                        onChangeText={searchWord => setSearchKeyword(searchWord)}
-                        value={searchKeyword}/>
+                        onChangeText={()=>{}}
+                        value={""}/>
                 </View>  
                 <View style={styles.peopleRow}>
                     <Text style={styles.sectionTitle}>People</Text>
@@ -42,7 +39,7 @@ const SearchResults = props => {
                 <View style={styles.imageRow}>
                     <TouchableOpacity style={styles.imageContainer}>
                         <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>Danielle Dodoo</Text>
+                        <Text style={fonts.title_black}>{searchResults[0].full_name}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.imageContainer}>
                         <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>

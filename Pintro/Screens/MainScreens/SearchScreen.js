@@ -5,8 +5,9 @@ import { SearchBar, ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
-
+import * as SearchActions from "../../store/actions/search";
 const SearchScreen = props => {
+    const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
@@ -35,7 +36,8 @@ const SearchScreen = props => {
         //console.log(item);
         setSearchKeyword(item);
         setItems(null);
-        props.navigation.navigate('Results', {searchParam: item});
+        dispatch(SearchActions.getResults(item));
+        props.navigation.navigate('Results');
     }
     
     function renderSuggestions() {
