@@ -21,29 +21,28 @@ const FinalSignUp = props => {
             <View style={styles.backGround}>
                 <View style={styles.main}>
 
-                    <View style={styles.inputController}>
-                     
-                        <Text style={styles.signInText}>Thank you</Text>
-                        <View style={styles.BottomMargin}>
-                        <Text style={styles.aboveInputText}>You're now ready to use Pintro</Text>
-                        </View>
-                     
-                    </View>
+                
                    
                 </View>
                 <View style={styles.bottomButton}>
+                      <View style={{justifyContent:'center',alignItems:'center',marginTop:100}}>
+                <Text style={styles.signInText}>Thank you</Text>
+                       
+                       <Text style={styles.aboveInputText}>You're now ready to use Pintro</Text>
+                       </View>
+                       <View style={{marginHorizontal:30}}>
                 <InvertedSignInUpButton onPress={
   () =>
-  props.navigation.navigate({routeName:'WhatsYourStory'})
+  props.navigation.navigate({routeName:'routeTwo'})
 
 
                             }>GO TO YOUR PROFIL</InvertedSignInUpButton>
                                             <SignInUpButton onPress={
   () =>
-  props.navigation.navigate({routeName:'WhatsYourStory'})
+  props.navigation.navigate({routeName:'routeTwo'})
 
 
-                            }>GO TO YOUR PROFIL</SignInUpButton>
+                            }>Invite Connections</SignInUpButton></View>
  <TouchableOpacity
  style={{marginTop:100,height:'100%',width:'100%',backgroundColor:'white' ,borderRadius:20}}
  onPress={()=>props.navigation.navigate({routeName:'LetsStartBusimess'})}><Text style={{fontSize:30,textAlign:'center',marginTop:30}}>Do you have a business?</Text><Text style={{fontSize:10,textAlign:'center',marginTop:30}}>Swipe up to build a business profile</Text></TouchableOpacity>
@@ -105,13 +104,9 @@ const styles = StyleSheet.create({
 
     },
     bottomButton:{
-        marginTop:200
+        
     //    backgroundColor:'yellow'
-    },camera:{
-flex:1,
-marginTop:70,
-marginBottom:100
-    },
+    }
     
 });
 

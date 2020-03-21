@@ -161,12 +161,43 @@ const LogInNavigator = createStackNavigator({
     HelpOthers:{screen:HowCanYouHelpOthers},
     SignIn:{screen:SignInScreen},
     BusinessYesNo:{screen:FinalSignUp},
-    BusinessTags:{screen:BusinessTags},
-    LetsStartBusimess:{screen:LetsGetIntoIt},
-    DetailsBusiness:{screen:GiveUsDetails},
-    BrandLogo:{screen:WhatsYourBrand},
-    BTeam:{screen:BusinessTeam},
-    B2M:{screen:BusinessToMain}
+
+    BusinessTags:{screen:BusinessTags, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    LetsStartBusimess:{screen:LetsGetIntoIt, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        }, headerTintColor: 'black'
+    }},
+    DetailsBusiness:{screen:GiveUsDetails, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    BrandLogo:{screen:WhatsYourBrand, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    BTeam:{screen:BusinessTeam, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    B2M:{screen:BusinessToMain, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
 },{
 defaultNavigationOptions:defaultStackNavOptions});
 
