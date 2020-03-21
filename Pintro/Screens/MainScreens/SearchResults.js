@@ -14,6 +14,89 @@ const SearchResults = props => {
     const searchResults = useSelector(state => state.search.usersArray);
     //console.log("Results = " + searchResults);
 
+    const DATA = [
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Rick Sanchez",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Morty Smith",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Bob Parr",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Billiam Bobbert",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Lucius Best",
+            "email": "test@kcl.ac.uk"
+        }
+    ]
+        
 
     function seeAllUsers() {
         setScroll(true);
@@ -43,7 +126,7 @@ const SearchResults = props => {
                     <Text style={styles.seeAll1} onPress={() => seeAllUsers()} color={scroll? 'grey' : Colors.pintroYellow}>See all</Text>
                 </View>
                 <FlatList 
-                    data={usersArray}
+                    data={DATA}
                     renderItem={({ item }) => <UserButton name={item.full_name}/>}
                     keyExtractor={item => item.full_name + item.index}
                     horizontal={true}
