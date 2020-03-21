@@ -1,4 +1,4 @@
-import React,{useEffect,useState,useCallback} from 'react';
+/*import React,{useEffect,useState,useCallback} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
     View,
@@ -82,5 +82,37 @@ screen:{
 }
 
 });
+
+export default HomeScreen;
+
+*/
+
+import React from 'react';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button
+} from 'react-native';
+
+const HomeScreen = props => {
+
+    return(
+        <View style={styles.screen}>
+            <Text>HEY</Text>
+            <Button title="SETTINGS" onPress={
+             ()=> {props.navigation.navigate({routeName:'SettingsScreen'})}
+            }/>
+        </View>
+    )
+};
+
+const styles = StyleSheet.create({
+    screen:{
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center'
+    }
+})
 
 export default HomeScreen;

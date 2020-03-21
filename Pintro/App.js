@@ -8,7 +8,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import auth from './store/reducers/auth';
 import Navigator from './navigation/LogInNavigator';
 import timeLineReducer from './store/reducers/timeline';
-import EditPhoto from './Screens/EditScreens/EditPhoto';
+import FinalSignUp from './Screens/FinalSignUp';
 import tagsReducer from './store/reducers/tags';
 import searchReducer from './store/reducers/search';
 
@@ -58,11 +58,10 @@ export default function App() {
   }
 
   return (
-    <Provider store={store}>
-    <Navigator/>
-     </Provider>
-  );
-}
+   <Provider store={store}>
+     <Navigator/>
+   </Provider>
+  )}
 
 const styles = StyleSheet.create({
 });

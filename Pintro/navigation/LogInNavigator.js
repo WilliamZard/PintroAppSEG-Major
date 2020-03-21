@@ -23,7 +23,19 @@ import SearchResults from '../Screens/MainScreens/SearchResults';
 import MessageScreen from '../Screens/MainScreens/MessageScreen';
 import MapScreen from '../Screens/MainScreens/MapScreen';
 import OnBoarding from '../Screens/OnBoarding';
+import Settings from '../Screens/Settings';
+import FinalSignUp from '../Screens/FinalSignUp';
+import LetsGetIntoIt from '../Screens/BusinessScreens/LetsGetIntoIt';
+import BusinessTags from '../Screens/BusinessScreens/BusinessTags';
+import GiveUsDetails from '../Screens/BusinessScreens/GiveUsDetails';
+import WhatsYourBrand from '../Screens/BusinessScreens/WhatsYourBrand';
+import BusinessTeam from '../Screens/BusinessScreens/BusinessTeam';
+import BusinessToMain from '../Screens/BusinessScreens/BusinessToMain';
+const businessSignUp = createStackNavigator({
 
+    LetGetStartet:LetsGetIntoIt
+
+})
 
 const defaultStackNavOptions = {
     headerStyle: {
@@ -37,9 +49,18 @@ const defaultStackNavOptions = {
 const mapOrFeed = createSwitchNavigator({
     
     
-    Feed:TimelinePage,
+    Feed:TimelinePage, 
     Map:MapScreen
 });
+
+
+const AccountNavigator = createStackNavigator({
+    Account:{screen:HomeScreen},
+    SettingsScreen:{screen:Settings,navigationOptions:{
+        headerTitle:'Settings'
+    }}
+    });
+
 
 const SearchNavigator = createStackNavigator({
     Browse:{screen:SearchScreen,navigationOptions:{
@@ -49,6 +70,7 @@ const SearchNavigator = createStackNavigator({
         headerTitle: '',
     }}
 });
+
 
 const MainNav = createBottomTabNavigator({
     firstScreen:{
@@ -116,7 +138,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     thirdScreen:{
-        screen:HomeScreen,navigationOptions:{
+        screen:AccountNavigator,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 
@@ -137,6 +159,7 @@ const MainNav = createBottomTabNavigator({
 });
 
 
+
 const LogInNavigator = createStackNavigator({
     Start:{
         screen:StartScreen
@@ -149,7 +172,45 @@ const LogInNavigator = createStackNavigator({
     TellUsHistory:{screen:HistoryScreen},
     Passions:{screen:WhatAreYourPassions},
     HelpOthers:{screen:HowCanYouHelpOthers},
-    SignIn:{screen:SignInScreen}
+    SignIn:{screen:SignInScreen},
+    BusinessYesNo:{screen:FinalSignUp},
+
+    BusinessTags:{screen:BusinessTags, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    LetsStartBusimess:{screen:LetsGetIntoIt, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        }, headerTintColor: 'black'
+    }},
+    DetailsBusiness:{screen:GiveUsDetails, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    BrandLogo:{screen:WhatsYourBrand, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    BTeam:{screen:BusinessTeam, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
+    B2M:{screen:BusinessToMain, navigationOptions:{
+        headerStyle: {
+            backgroundColor:'white',
+             shadowColor: 'transparent'
+        },headerTintColor: 'black'
+    }},
 },{
 defaultNavigationOptions:defaultStackNavOptions});
 
