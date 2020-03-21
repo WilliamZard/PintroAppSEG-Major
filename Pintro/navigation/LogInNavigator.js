@@ -22,7 +22,19 @@ import SearchScreen from '../Screens/MainScreens/SearchScreen';
 import MessageScreen from '../Screens/MainScreens/MessageScreen';
 import MapScreen from '../Screens/MainScreens/MapScreen';
 import OnBoarding from '../Screens/OnBoarding';
+import Settings from '../Screens/Settings';
+import FinalSignUp from '../Screens/FinalSignUp';
+import LetsGetIntoIt from '../Screens/BusinessScreens/LetsGetIntoIt';
+import BusinessTags from '../Screens/BusinessScreens/BusinessTags';
+import GiveUsDetails from '../Screens/BusinessScreens/GiveUsDetails';
+import WhatsYourBrand from '../Screens/BusinessScreens/WhatsYourBrand';
+import BusinessTeam from '../Screens/BusinessScreens/BusinessTeam';
+import BusinessToMain from '../Screens/BusinessScreens/BusinessToMain';
+const businessSignUp = createStackNavigator({
 
+    LetGetStartet:LetsGetIntoIt
+
+})
 
 const defaultStackNavOptions = {
     headerStyle: {
@@ -39,6 +51,14 @@ const mapOrFeed = createSwitchNavigator({
     Feed:TimelinePage,
     Map:MapScreen
 });
+
+const AccountNavigator = createStackNavigator({
+    Account:{screen:HomeScreen},
+    SettingsScreen:{screen:Settings,navigationOptions:{
+        headerTitle:'Settings'
+    }}
+    });
+
 const MainNav = createBottomTabNavigator({
     firstScreen:{
         screen:mapOrFeed, navigationOptions:{
@@ -105,7 +125,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     thirdScreen:{
-        screen:HomeScreen,navigationOptions:{
+        screen:AccountNavigator,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 
@@ -126,6 +146,7 @@ const MainNav = createBottomTabNavigator({
 });
 
 
+
 const LogInNavigator = createStackNavigator({
     Start:{
         screen:StartScreen
@@ -138,7 +159,14 @@ const LogInNavigator = createStackNavigator({
     TellUsHistory:{screen:HistoryScreen},
     Passions:{screen:WhatAreYourPassions},
     HelpOthers:{screen:HowCanYouHelpOthers},
-    SignIn:{screen:SignInScreen}
+    SignIn:{screen:SignInScreen},
+    BusinessYesNo:{screen:FinalSignUp},
+    BusinessTags:{screen:BusinessTags},
+    LetsStartBusimess:{screen:LetsGetIntoIt},
+    DetailsBusiness:{screen:GiveUsDetails},
+    BrandLogo:{screen:WhatsYourBrand},
+    BTeam:{screen:BusinessTeam},
+    B2M:{screen:BusinessToMain}
 },{
 defaultNavigationOptions:defaultStackNavOptions});
 

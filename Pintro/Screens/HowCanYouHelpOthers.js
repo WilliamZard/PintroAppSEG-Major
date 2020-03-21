@@ -73,7 +73,7 @@ const WhatAreYourPassions = props => {
    <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
  </ScrollView>
                             <InvertedSignInUpButton style={{width:'80%'}} 
-                         onPress={()=>   props.navigation.navigate({routeName:'routeTwo'}) }>Finish</InvertedSignInUpButton>
+                         onPress={()=>   props.navigation.navigate({routeName:'BusinessYesNo'}) }>Finish</InvertedSignInUpButton>
                             
                        
                     </View>
