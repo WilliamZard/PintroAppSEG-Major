@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView,TouchableOpacity, ColorPropType } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
@@ -18,6 +19,49 @@ import Color from '../Constants/Colors';
 
 
 const WhatAreYourPassions = props => {
+    const [suggestions,setSuggestions] = useState([]);
+    const [selectedTags,addTag] = useState([]);
+
+    const loadedTags = useSelector(state => state.tags.tagsArray);
+    var tagNames = loadedTags.map(function(item) {
+        return item['name'];
+    });
+
+    function onTextChanged(searchWord) {
+        setSearchKeyword(searchWord);
+        if (searchWord.length > 2) {
+            
+            const regex = new RegExp(`^${searchWord}`,'i');
+            //console.log(tagList.sort().filter(v => regex.test(v)));
+            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+        }
+        renderSuggestions();
+    }
+
+    function onListItemPress(item) {
+        //console.log(item);
+        setSearchKeyword(item);
+        setItems(null);
+        addTag(selectedTags => [selectedTags,item]);
+        console.log(selectedTags);
+    }
+
+    function renderSuggestions() {
+        if(suggestions.length === 0 || searchKeyword.length < 3) {
+            setItems(null);
+        } else {
+            setItems(suggestions.map((item) => 
+                <ListItem 
+                    key={item}
+                    containerStyle={{width: 300, height: 50}} 
+                    titleStyle={fonts.story} 
+                    title={item}
+                    button
+                    onPress={() => onListItemPress(item)}
+                />)
+            );
+        }
+    }
 
     return (
         <KeyboardAwareScrollView
@@ -36,7 +80,12 @@ const WhatAreYourPassions = props => {
                         </View>
          
                         <Text style={styles.aboveInputText}>Choose from the full list</Text>
-                        <Text style={{color:'white'}}>Start Typing</Text>
+                        <TextInput 
+                            style={{color:'white'}} 
+                            placeholder={"Start Typing"} 
+                            onChangeText={searchWord => onTextChanged(searchWord)}
+                            value={searchKeyword}
+                        />
                         <View style={styles.horizintalLineStyle}></View>
                         </Animatable.View>
                         </View>
