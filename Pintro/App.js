@@ -10,6 +10,7 @@ import Navigator from './navigation/LogInNavigator';
 import timeLineReducer from './store/reducers/timeline';
 import FinalSignUp from './Screens/FinalSignUp';
 import tagsReducer from './store/reducers/tags';
+import searchReducer from './store/reducers/search';
 
 /**
  * Loading all fonts. The requite methods imply that the app will
@@ -18,7 +19,8 @@ import tagsReducer from './store/reducers/tags';
 const rootReducer = combineReducers({
   auth: auth,
   timelinePosts:timeLineReducer,
-  tags:tagsReducer
+  tags:tagsReducer,
+  search:searchReducer 
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

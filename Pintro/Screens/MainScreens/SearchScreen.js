@@ -5,8 +5,9 @@ import { SearchBar, ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
-
+import * as SearchActions from "../../store/actions/search";
 const SearchScreen = props => {
+    const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
@@ -15,12 +16,10 @@ const SearchScreen = props => {
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
-      
-    const tagList = [
-        'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus'
-    ];
 
-  
+    const tagList = [
+        'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus', 'Post Man2'
+    ];
     
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -37,6 +36,8 @@ const SearchScreen = props => {
         //console.log(item);
         setSearchKeyword(item);
         setItems(null);
+        dispatch(SearchActions.getResults(item));
+        props.navigation.navigate('Results', {searchParam: item});
     }
     
     function renderSuggestions() {
@@ -47,7 +48,7 @@ const SearchScreen = props => {
                 <ListItem 
                     key={item}
                     containerStyle={{width: 300, height: 50}} 
-                    titleStyle={{color: 'black'}} 
+                    titleStyle={fonts.story} 
                     title={item}
                     button
                     onPress={() => onListItemPress(item)}
@@ -128,7 +129,8 @@ const styles = StyleSheet.create({
     whiteContainer: {
         flex: 1,
         backgroundColor: 'white',
-        borderRadius: 15,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
     },
     circleImage: {
         width: 50,
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 60,
+        marginBottom: 50,
     },
     imageContainer: {
         paddingRight: 5,

@@ -19,6 +19,7 @@ import FirstScreen from '../Screens/MainScreens/FirstScreen';
 import TimelinePage from '../Screens/MainScreens/TimelinePage';
 import HomeScreen from '../Screens/MainScreens/HomeScreen';
 import SearchScreen from '../Screens/MainScreens/SearchScreen';
+import SearchResults from '../Screens/MainScreens/SearchResults';
 import MessageScreen from '../Screens/MainScreens/MessageScreen';
 import MapScreen from '../Screens/MainScreens/MapScreen';
 import OnBoarding from '../Screens/OnBoarding';
@@ -48,9 +49,10 @@ const defaultStackNavOptions = {
 const mapOrFeed = createSwitchNavigator({
     
     
-    Feed:TimelinePage,
+    Feed:TimelinePage, 
     Map:MapScreen
 });
+
 
 const AccountNavigator = createStackNavigator({
     Account:{screen:HomeScreen},
@@ -58,6 +60,17 @@ const AccountNavigator = createStackNavigator({
         headerTitle:'Settings'
     }}
     });
+
+
+const SearchNavigator = createStackNavigator({
+    Browse:{screen:SearchScreen,navigationOptions:{
+        headerShown: false
+    }},
+    Results:{screen:SearchResults,navigationOptions:{
+        headerTitle: '',
+    }}
+});
+
 
 const MainNav = createBottomTabNavigator({
     firstScreen:{
@@ -78,7 +91,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     searchScreen:{
-        screen:SearchScreen,navigationOptions:{
+        screen:SearchNavigator,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 
