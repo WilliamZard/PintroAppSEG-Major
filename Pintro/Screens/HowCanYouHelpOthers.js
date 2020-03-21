@@ -5,9 +5,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import * as Animatable from 'react-native-animatable';
+import {ListItem,SearchBar } from 'react-native-elements';
 import GoBack from '../Components/GoBack';
 import RNPickerSelect from 'react-native-picker-select';
 import Color from '../Constants/Colors';
+import { fonts } from '../Constants/Fonts.js';
+import Colors from '../Constants/Colors';
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
  * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
@@ -19,15 +22,16 @@ import Color from '../Constants/Colors';
 
 
 const WhatAreYourPassions = props => {
+    const dispatch = useDispatch();
+    const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
-    const [selectedTags,addTag] = useState([]);
-
+    const [suggestedItems,setItems] = useState([])
+    const [chosenTags,setChosenTags] = useState([])
     const loadedTags = useSelector(state => state.tags.tagsArray);
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
-    });
-
-    function onTextChanged(searchWord) {
+      });
+      function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
             
@@ -35,33 +39,56 @@ const WhatAreYourPassions = props => {
             //console.log(tagList.sort().filter(v => regex.test(v)));
             setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
         }
+        if(suggestions!==null){
         renderSuggestions();
+        }
     }
 
     function onListItemPress(item) {
         //console.log(item);
-        setSearchKeyword(item);
+       
         setItems(null);
-        addTag(selectedTags => [selectedTags,item]);
-        console.log(selectedTags);
+        setSuggestions(null);
+        setSearchKeyword(null);
+        if(!chosenTags.includes(item)){
+            chosenTags.push(item);
+            setChosenTags(chosenTags);
+        }else{
+            setChosenTags(chosenTags.filter((arrayElement)=>arrayElement!==item));
+        }
+       console.log(chosenTags)
     }
-
+    
     function renderSuggestions() {
-        if(suggestions.length === 0 || searchKeyword.length < 3) {
+        if(suggestions.length === 0 || searchKeyword.length < 3 || suggestions===null) {
             setItems(null);
         } else {
-            setItems(suggestions.map((item) => 
-                <ListItem 
+            setItems(suggestions.map((item) =>{
+                
+               if(chosenTags.includes(item)){
+                return( <ListItem 
                     key={item}
-                    containerStyle={{width: 300, height: 50}} 
-                    titleStyle={fonts.story} 
+                    containerStyle={{width: 300, height: 50,backgroundColor:'green'}} 
                     title={item}
                     button
                     onPress={() => onListItemPress(item)}
-                />)
+                />);
+               }else{
+                return( <ListItem 
+                    key={item}
+                    containerStyle={{width: 300, height: 50}} 
+                    title={item}
+                    button
+                    onPress={() => onListItemPress(item)}
+                />);
+               }
+               
+                
+            })
             );
         }
     }
+
 
     return (
         <KeyboardAwareScrollView
@@ -76,17 +103,23 @@ const WhatAreYourPassions = props => {
 
                         <Text style={styles.signInText}>How can you help others?</Text>
                         <View style={styles.BottomMargin}>
-                        <Text style={styles.aboveInputText}>Choose your superpowers(6 minimum)</Text>
+                        <Text style={styles.aboveInputText}>Choose your superpowers(6 minimum). Current Selection:</Text>
+                        <ScrollView horizontal={true}>
+    {chosenTags.map((tag)=>  <TouchableOpacity key={tag} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{tag}</Text></TouchableOpacity> )}
+                        </ScrollView>
+                           
                         </View>
          
                         <Text style={styles.aboveInputText}>Choose from the full list</Text>
-                        <TextInput 
-                            style={{color:'white'}} 
-                            placeholder={"Start Typing"} 
-                            onChangeText={searchWord => onTextChanged(searchWord)}
-                            value={searchKeyword}
-                        />
-                        <View style={styles.horizintalLineStyle}></View>
+                        <SearchBar
+
+                    containerStyle={{width: 300,backgroundColor:Colors.pintroBlack}}
+                    inputContainerStyle={{backgroundColor:Colors.pintroBlack ,width: 280,}}
+                    onChangeText={searchWord => onTextChanged(searchWord)}
+                    value={searchKeyword}
+                    clearIcon={null}/>
+                {suggestedItems}
+                       
                         </Animatable.View>
                         </View>
  <View style={styles.horizintalLineStyle}></View>
