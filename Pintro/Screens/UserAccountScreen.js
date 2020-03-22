@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Image, ScrollView, Group } from 'react-
 import { fonts } from '../Constants/Fonts.js';
 import BlackTag from '../Components/BlackTag.js';
 import WhiteTag from '../Components/WhiteTag.js';
-import Colors from '../Constants/Colors';
+import Colors from '../Constants/Colors.js';
 import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
 import Edit from '../Components/Edit.js';

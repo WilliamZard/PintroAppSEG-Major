@@ -1,16 +1,18 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
 import BlackTag from '../Components/BlackTag.js';
 import HelpMeWith from '../Components/HelpMeWith.js';
 import Edit from '../Components/Edit.js';
 import { fonts } from '../Constants/Fonts.js';
+import PencilBlack from '../Components/PencilBlack.js';
+import PencilWhite from '../Components/PencilWhite.js';
 import Colors from '../Constants/Colors.js';
 
 const BusinessAccountScreen = props => {
     return(
-        <View>
+        <ScrollView>
             <View>
                 <TouchableOpacity>
                     <Image/>
@@ -20,7 +22,8 @@ const BusinessAccountScreen = props => {
                 </TouchableOpacity>
             </View>
             <View>
-                <Image />
+                <PencilWhite />
+                <Image source={require('../assets/blankImage.png')}/>
             </View>
             <View>
                 <View>
@@ -28,20 +31,29 @@ const BusinessAccountScreen = props => {
                         <Text>Connect in Real Life</Text>
                         <Text>Piin App Limited</Text>
                     </View>
-                    <TouchableOpacity>
-                        <Image/>
-                    </TouchableOpacity>
+                    <PencilBlack />
                 </View>
                 <View>
-                    <FollowMe props={props.FollowMe}>+ FOLLOW ME</FollowMe>
-                    <MsgMe props={props.MsgMe}>MESSAGE US</MsgMe>
+                    <FollowMe props={props.FollowMe}>NEW POST</FollowMe>
+                    <MsgMe props={props.MsgMe}>EDIT PROFILE</MsgMe>
                     <Edit props={props.Edit}>. . .</Edit>
+                </View>
+                <View>
+                    <TouchableOpacity>
+                        <Image source={require('../assets/yellowThumbsUp.png')}/>
+                        <Text>SEEKING INVESTMENT</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../assets/blackThumbsDown.png')}/>
+                        <Text>CURRENTLY HIRING</Text>
+                    </TouchableOpacity>
                 </View>
                 <Text>Our Story</Text>
                 <Text style={fonts.story}>
                     Lorem ipsum dolor sit amet, consecteteur adipiscing elit...
                 </Text>
                 <Text>More</Text>
+                <PencilBlack />
                 <View>
                     <BlackTag props={props.BlackTag}>START-UP</BlackTag>
                     <BlackTag props={props.BlackTag}>PRE-SEED</BlackTag>
@@ -55,13 +67,42 @@ const BusinessAccountScreen = props => {
                     <HelpMeWith props={props.HelpMeWith}>Crepe Investments</HelpMeWith>
                     <HelpMeWith props={props.HelpMeWith}>Home Workouts</HelpMeWith>
                 </ScrollView>
+                <View>
+                    <Text>Our journey</Text>
+                    <PencilBlack />
+                    <Image source={require('../assets/yellowCircle.png')}/><Text>Founded:</Text><Text></Text>
+                    <Image source={require('../assets/yellowCircle.png')}/><Text>Location:</Text><Text></Text>
+                    <Image source={require('../assets/yellowCircle.png')}/><Text>Company Size:</Text><Text></Text>
+                    <Image source={require('../assets/yellowCircle.png')}/><Text>Funding:</Text><Text></Text>
+                </View>
+                <View>
+                    <Text>Team</Text>
+                    <PencilBlack />
+                    <View>
+                        <Image source={require('../assets/blankImage.png')}/>
+                        <Image source={require('../assets/blankImage.png')}/>
+                        <Image source={require('../assets/blankImage.png')}/>
+                        <Image source={require('../assets/blankImage.png')}/>
+                        <Image source={require('../assets/blankImage.png')}/>
+                    </View>
+                </View>
+                <View>
+                    <Text>Posts</Text>
+                    <Text>See all</Text>
+                </View>
+                <View>
+                    <Text>Followers</Text>
+                    <Text>See all(45)</Text>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
-};
+}
 
 const styles = StyleSheet.create({
-
+    whiteContainer: {
+        backgroundColor: Colors.pintroWhite
+    }
 });
 
 export default BusinessAccountScreen;
