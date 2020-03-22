@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import { StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView,TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
@@ -6,7 +7,9 @@ import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import * as Animatable from 'react-native-animatable';
 import GoBack from '../Components/GoBack';
 import RNPickerSelect from 'react-native-picker-select';
+import Colors from '../Constants/Colors';
 import Color from '../Constants/Colors';
+import {ListItem,SearchBar } from 'react-native-elements';
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
  * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
@@ -18,6 +21,72 @@ import Color from '../Constants/Colors';
 
 
 const WhatAreYourPassions = props => {
+    const dispatch = useDispatch();
+    const [searchKeyword,setSearchKeyword] = useState();
+    const [suggestions,setSuggestions] = useState([]);
+    const [suggestedItems,setItems] = useState([])
+    const [chosenTags,setChosenTags] = useState([])
+    const loadedTags = useSelector(state => state.tags.tagsArray);
+    var tagNames = loadedTags.map(function(item) {
+        return item['name'];
+      });
+      function onTextChanged(searchWord) {
+        setSearchKeyword(searchWord);
+        if (searchWord.length > 2) {
+            
+            const regex = new RegExp(`^${searchWord}`,'i');
+            //console.log(tagList.sort().filter(v => regex.test(v)));
+            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+        }
+        if(suggestions!==null){
+        renderSuggestions();
+        }
+    }
+
+    function onListItemPress(item) {
+        //console.log(item);
+       
+        setItems(null);
+        setSuggestions(null);
+        setSearchKeyword(null);
+        if(!chosenTags.includes(item)){
+            chosenTags.push(item);
+            setChosenTags(chosenTags);
+        }else{
+            setChosenTags(chosenTags.filter((arrayElement)=>arrayElement!==item));
+        }
+       console.log(chosenTags);
+    }
+    
+    function renderSuggestions() {
+        if(suggestions.length === 0 || searchKeyword.length < 3 || suggestions===null) {
+            setItems(null);
+        } else {
+            setItems(suggestions.map((item) =>{
+                
+               if(chosenTags.includes(item)){
+                return( <ListItem 
+                    key={item}
+                    containerStyle={{width: 300, height: 50,backgroundColor:'green'}} 
+                    title={item}
+                    button
+                    onPress={() => onListItemPress(item)}
+                />);
+               }else{
+                return( <ListItem 
+                    key={item}
+                    containerStyle={{width: 300, height: 50}} 
+                    title={item}
+                    button
+                    onPress={() => onListItemPress(item)}
+                />);
+               }
+               
+                
+            })
+            );
+        }
+    }
 
     return (
         <KeyboardAwareScrollView
@@ -32,12 +101,21 @@ const WhatAreYourPassions = props => {
 
                         <Text style={styles.signInText}>What are your passions?</Text>
                         <View style={styles.BottomMargin}>
-                        <Text style={styles.aboveInputText}>Choose your passion tags (6 minimum)</Text>
+
+                        <Text style={styles.aboveInputText}>Choose your superpowers(6 minimum). Current Selection:</Text>
+                        <ScrollView horizontal={true}>
+    {chosenTags.map((tag)=>  <TouchableOpacity key={tag} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{tag}</Text></TouchableOpacity> )}
+                        </ScrollView>
                         </View>
-         
-                        <Text style={styles.aboveInputText}>Choose from the full list</Text>
-                        </Animatable.View>
-                        <Text style={{color:'white'}}>Start Typing</Text>
+                            </Animatable.View>
+                        <SearchBar
+
+containerStyle={{width: 300,backgroundColor:Colors.pintroBlack}}
+inputContainerStyle={{backgroundColor:Colors.pintroBlack ,width: 280,}}
+onChangeText={searchWord => onTextChanged(searchWord)}
+value={searchKeyword}
+clearIcon={null}/>
+{suggestedItems}
                         <View style={styles.horizintalLineStyle}></View>
                         </View>
  <View style={styles.horizintalLineStyle}></View>

@@ -1,14 +1,107 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
+import { useSelector,useDispatch } from 'react-redux';
+import { StyleSheet, View, Text, ScrollView, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
+import UserButton from '../../Components/UserButton.js';
+
 
 const SearchResults = props => {
-    const [searchKeyword,setSearchKeyword] = useState();
-    
+    const [scroll,setScroll] = useState(false);
+    const searchResults = useSelector(state => state.search.usersArray);
+    //console.log("Results = " + searchResults);
+
+    const DATA = [
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Rick Sanchez",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Morty Smith",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Bob Parr",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Billiam Bobbert",
+            "email": "test@kcl.ac.uk"
+        },
+        {
+            "job_title": "Chief Postman",
+            "preferred_name": "Postit",
+            "location": "Landan",
+            "story": "posting...",
+            "password": "password",
+            "short_bio": "posting",
+            "score": "1.0966600179672241",
+            "phone": "999",
+            "education": "Amazon",
+            "gender": "male",
+            "profile_type": "person",
+            "profile_image": "image",
+            "full_name": "Lucius Best",
+            "email": "test@kcl.ac.uk"
+        }
+    ]
+        
+
+    function seeAllUsers() {
+        setScroll(true);
+    }
+
     return (
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.pageContainer}>
@@ -25,27 +118,20 @@ const SearchResults = props => {
                         inputStyle={styles.searchText}
                         containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
                         inputContainerStyle={{backgroundColor: 'white',width: 330}}
-                        onChangeText={searchWord => setSearchKeyword(searchWord)}
-                        value={searchKeyword}/>
+                        onChangeText={()=>{}}
+                        value={props.navigation.state.params.searchParam}/>
                 </View>  
                 <View style={styles.peopleRow}>
                     <Text style={styles.sectionTitle}>People</Text>
-                    <Text style={styles.seeAll1}>See all</Text>
+                    <Text style={styles.seeAll1} onPress={() => seeAllUsers()} color={scroll? 'grey' : Colors.pintroYellow}>See all</Text>
                 </View>
-                <View style={styles.imageRow}>
-                    <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>Danielle Dodoo</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>Callum Thompson</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
-                        <Text style={fonts.title_black}>Jane Doe</Text>
-                    </TouchableOpacity>
-                </View>
+                <FlatList 
+                    data={DATA}
+                    renderItem={({ item }) => <UserButton name={item.full_name}/>}
+                    keyExtractor={item => item.full_name + item.index}
+                    horizontal={true}
+                    scrollEnabled={scroll}
+                />
                 <View>
                     <View style={styles.rowContainer}>
                         <Text style={styles.sectionTitle}>Companies</Text>

@@ -140,7 +140,7 @@ const inputChangeHandler = useCallback(
             />
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Phone number</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white'/>
+                            <TextInput style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white' keyboardType='numeric'/>
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Password</Text>
                             <Input
