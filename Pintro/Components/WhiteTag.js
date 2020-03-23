@@ -17,15 +17,16 @@ const styles = StyleSheet.create({
         borderColor: Colors.pintroBlack,
         color: Colors.pintroWhite,
         borderWidth: 0.5,
-        paddingVertical:12,
-        paddingHorizontal:30,
-        borderRadius:13
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 24,
+        marginHorizontal: 5,
     },
     tag_text: {
         color: Colors.pintroBlack,
         textAlign: 'center',
         fontFamily:'Poppins-Light',
-        fontSize: 10
+        fontSize: 12
     }
 });
 
