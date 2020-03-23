@@ -5,14 +5,19 @@ const PencilBlack = props => {
 
     return(
         <TouchableOpacity>
-            <Image source={require('../assets/blackPencil.png')}/>
+            <Image source={require('../assets/blackPencil.png')} style={styles.image}/>
         </TouchableOpacity> 
     );
     
 };
 
 const styles = StyleSheet.create({
-
+    image: {
+        height: 20, 
+        width: 20,
+        alignSelf: 'flex-end', 
+        marginRight: 10
+    }
 });
 
 export default PencilBlack;
