@@ -88,20 +88,20 @@ const UserAccountScreen = props => {
             <View>
                 <Text style={fonts.title_black}>Community</Text><Text style={fonts.more_white}>See all</Text>
                 <View>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
+                    <Button title="Community" ><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
+                    <Button title="Community"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
+                    <Button title="Community"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
+                    <Button title="Community"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
+                    <Button title="Community"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
+                    <Button title="Community"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 30, width: 30}}/></Button>
                 </View>
             </View>
             <View>
                 <Text style={fonts.name_title}>Recommendations</Text>
                 <View>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
-                    <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
+                    <Button title="Recommendation"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
+                    <Button title="Recommendation"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
+                    <Button title="Recommendation"><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
                 </View>
             </View>
         </ScrollView>
