@@ -10,6 +10,7 @@ import PencilBlack from '../Components/PencilBlack.js';
 import PencilWhite from '../Components/PencilWhite.js';
 import Colors from '../Constants/Colors.js';
 import JourneyPoint from '../Components/JourneyPoint.js';
+import TimelinePostComponent from '../Components/TimelinePostComponent.js';
 
 const BusinessAccountScreen = props => {
     return(
@@ -89,6 +90,22 @@ const BusinessAccountScreen = props => {
                     <View style={styles.rowContainer}>
                         <Text style={styles.title}>Posts</Text>
                         <Text style={styles.seeAll}>See all</Text>
+                    </View>
+                    <View style={styles.postContainer}>
+                        <TimelinePostComponent 
+                            uuid={"id1"}
+                            content={"Looking forward to our next \n UX design conference, it's \n going to be awesome!"}
+                            modified={""}
+                            email={""}
+                            name={"Piin App Limited"}
+                        />
+                        <TimelinePostComponent 
+                            uuid={"id2"}
+                            content={"Piin App is undergoing some \n maintenance at the moment, \n it will be back soon online soon!"}
+                            modified={""}
+                            email={""}
+                            name={"Piin App Limited"}
+                        />
                     </View>
                 </View>
                 <View>
@@ -172,11 +189,13 @@ const styles = StyleSheet.create({
     },
     tagContainer: {
         flexDirection: 'row',
-        marginTop: 10
+        marginTop: 10,
+        marginLeft: 10
     },
     helpContainer: {
         flexDirection: 'row',
-        marginLeft: 30,
+        paddingLeft: 30,
+        marginRight: 20
     },
     journey: {
         marginLeft: 30,
@@ -226,6 +245,10 @@ const styles = StyleSheet.create({
     topRow: {
         flexDirection: 'row',
         marginTop: 30
+    },
+    postContainer: {
+        flexDirection: 'row',
+        marginVertical: 10
     }
 });
 
