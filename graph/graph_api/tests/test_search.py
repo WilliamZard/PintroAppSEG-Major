@@ -76,6 +76,26 @@ class TestPOST:
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_SHORT_BIO_SEARCH['result'])
 
+    def test_query_that_partially_matches_tag_returns_correct_user(self, app):
+        ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
+            return all the nodes in the database which doesn't make sense in any situation
+        '''
+        response = app.post("/search/", json=MATCHING_TAG_SEARCH['request'])
+        json_response = response.get_json()
+        print(json_response)
+        for element in json_response: 
+            del element['score']
+            del element['profile_type']
+        for element in MATCHING_TAG_SEARCH['result']:
+            if 'tags' in element:
+                del element['tags']
+
+        assert response.status == '200 OK'
+        assert ordered(json_response) == ordered(MATCHING_TAG_SEARCH['result'])
+
+        
+
+
 
 
 def ordered(obj):

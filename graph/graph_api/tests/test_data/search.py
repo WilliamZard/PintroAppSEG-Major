@@ -87,3 +87,12 @@ MATCHING_SHORT_BIO_SEARCH = {
         ACTIVATED_USER 
     ]
 }
+
+MATCHING_TAG_SEARCH = {
+    'request':{
+        "query" : "Space"
+    },
+    'result' : [
+        VALID_USER
+    ]
+}
