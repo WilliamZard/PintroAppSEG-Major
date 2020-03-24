@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector,useDispatch } from 'react-redux';
 import { Dimensions, StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
@@ -13,6 +14,8 @@ import JourneyPoint from '../Components/JourneyPoint.js';
 import TimelinePostComponent from '../Components/TimelinePostComponent.js';
 
 const BusinessAccountScreen = props => {
+    const searchResults = useSelector(state => state.business.businessArray);
+    console.log(searchResults);
     const item = {
             "email": "postman_business@post.man",
             "full_name": "postman business",
