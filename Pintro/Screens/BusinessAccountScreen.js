@@ -13,6 +13,18 @@ import JourneyPoint from '../Components/JourneyPoint.js';
 import TimelinePostComponent from '../Components/TimelinePostComponent.js';
 
 const BusinessAccountScreen = props => {
+    const item = {
+            "email": "postman_business@post.man",
+            "full_name": "postman business",
+            "location": "landanting",
+            "password": "pw",
+            "phone": "999",
+            "profile_image": "profile",
+            "short_bio": "bioing",
+            "story": "storying"
+        }
+
+
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
@@ -24,13 +36,13 @@ const BusinessAccountScreen = props => {
             </View>
             <View style={styles.whiteContainer}>
                 <View style={styles.topRow}>
-                    <Text style={styles.slogan}>Connect in Real Life</Text>
+                    <Text style={styles.slogan}>{item.short_bio}</Text>
                     <PencilBlack style={{marginTop: 10}}/>    
                 </View>
-                <Text style={styles.businessName}>Piin App Limited</Text>
+                <Text style={styles.businessName}>{item.full_name}</Text>
                 <View style={styles.rowContainer}>
-                    <FollowMe props={props.FollowMe}>NEW POST</FollowMe>
-                    <MsgMe props={props.MsgMe}>EDIT PROFILE</MsgMe>
+                    <FollowMe props={props.FollowMe}>+ FOLLOW US</FollowMe>
+                    <MsgMe props={props.MsgMe}>MESSAGE US</MsgMe>
                     <Edit props={props.Edit}>. . .</Edit>
                 </View>
                 <View style={styles.rowContainer}>
@@ -45,7 +57,7 @@ const BusinessAccountScreen = props => {
                 </View>
                 <Text style={styles.title}>Our Story</Text>
                 <Text style={styles.storyContent}>
-                    Lorem ipsum dolor sit amet, consecteteur adipiscing elit...
+                    {item.story}
                 </Text>
                 <Text style={styles.more}>More</Text>
                 <PencilBlack />
@@ -215,7 +227,7 @@ const styles = StyleSheet.create({
     pillowContainer: {
         marginLeft: 30,
         flexDirection: 'row',
-        marginBottom: 20
+        marginBottom: 20,
     },
     title:  {
         marginLeft: 30,
