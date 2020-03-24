@@ -81,21 +81,37 @@ class TestDelete:
 
 @pytest.mark.PUT_business
 class TestPut:
-    def test_put_business_with_valid_email_that_exists(self, app):
+    def test_put_business_with_valid_email_that_exists(self, app, populate_db):
+        # Define Nodes
+        business = Business(email='business_to_update@rona.com')._asdict()
+        business.pop('tags')  # TODO: handle tests later
+        business_node = basic_business_node(business)
+
+        new_business_fields = dict(
+            full_name='new full name', phone='phone', location='new location')
+        # Populate
+        populate_db(nodes_to_create=[business_node])
+
         response = app.put(
-            f"/businesses/{VALID_BUSINESS_TO_BE_UPDATED['email']}", json=VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS)
+            f"/businesses/{business['email']}", json=new_business_fields)
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
     def test_put_business_with_valid_email_that_does_not_exist(self, app):
+        nonexistant_business_email = 'does_not_exist@void.com'
+        new_business_fields = dict(
+            full_name='new full name', phone='phone', location='new location')
         response = app.put(
-            f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}", json=VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS)
+            f"/businesses/{nonexistant_business_email}", json=new_business_fields)
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_put_business_with_invalid_email(self, app):
+        invalid_email = 'invalidemail.com'
+        new_business_fields = dict(
+            full_name='new full name', phone='phone', location='new location')
         response = app.put(
-            f"/businesses/{INVALID_EMAIL}", json=VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS)
+            f"/businesses/{invalid_email}", json=new_business_fields)
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
