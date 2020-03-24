@@ -21,7 +21,7 @@ BUSINESS_DEFAULTS = [
     "Default Location",
     "Default Email",
     "Default Story",
-    "Default Tags"
+    []
 ]
 
 Business = namedtuple('Business', BUSINESS_PROPERTIES,

@@ -5,41 +5,42 @@
 from ast import literal_eval
 
 import pytest
+import json
 from flask.json import jsonify
 
 #from graph_api import create_app
-from .conftest import app
-
-from .generate_test_data import (INVALID_EMAIL, INVALID_BUSINESS_TO_BE_CREATED,
-                                 NONEXISTANT_BUSINESS_EMAIL, VALID_BUSINESS,
-                                 VALID_BUSINESS_TO_BE_CREATED,
-                                 VALID_BUSINESS_TO_BE_DELETED,
-                                 VALID_BUSINESS_TO_BE_UPDATED,
-                                 VALID_BUSINESS_TO_BE_UPDATED_NEW_FIELDS,
-                                 BUSINESS_WITH_THREE_FOLLOWINGS,
-                                 BUSINESS_WITH_TWO_FOLLOWINGS,
-                                 BUSINESS_WITH_ONE_FOLLOWING,
-                                 BUSINESS_WITH_NO_FOLLOWINGS, BUSINESS_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
-                                 AFFILIATION_REQUEST_RECIPIENT)
+from .conftest import app, populate_db
+from .generate_test_data import Business, basic_business_node
 
 
 @pytest.mark.GET_business
 class TestGet:
-    def test_get_business_with_valid_email_that_exists(self, app):
-        response = app.get(f"/businesses/{VALID_BUSINESS['email']}")
+    def test_get_business_with_valid_email_that_exists(self, app, populate_db):
+        # Define Nodes
+        business = Business(email='new_business@rona.com')._asdict()
+        business.pop('tags')  # TODO: handle tests later
+        business_node = basic_business_node(business)
+        # Populate
+        populate_db(nodes_to_create=[business_node])
+
+        # Test
+        response = app.get(f"/businesses/{business['email']}")
         assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == len(VALID_BUSINESS)
-        for field in VALID_BUSINESS:
-            assert field in json
+        response = response.get_json()
+        assert len(response) == len(business)
+        for key, value in business.items():
+            assert key in response
+            assert value == response[key]
 
     def test_get_business_with_valid_email_that_does_not_exist(self, app):
-        response = app.get(f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}")
+        nonexistant_business_email = 'does_not_exist@void.com'
+        response = app.get(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_get_business_with_invalid_email(self, app):
-        response = app.get(f"/businesses/{INVALID_EMAIL}")
+        invalid_email = 'invalidemail.com'
+        response = app.get(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
