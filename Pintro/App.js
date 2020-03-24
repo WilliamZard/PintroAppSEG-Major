@@ -11,6 +11,7 @@ import timeLineReducer from './store/reducers/timeline';
 import FinalSignUp from './Screens/FinalSignUp';
 import tagsReducer from './store/reducers/tags';
 import searchReducer from './store/reducers/search';
+import businessReducer from './store/reducers/business';
 
 /**
  * Loading all fonts. The requite methods imply that the app will
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   auth: auth,
   timelinePosts:timeLineReducer,
   tags:tagsReducer,
-  search:searchReducer 
+  search:searchReducer,
+  business:businessReducer, 
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
