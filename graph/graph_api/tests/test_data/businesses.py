@@ -1,5 +1,6 @@
 # BUSINESSES
 from .tags import COLES_TAG, KING_SLAYER_TAG
+from collections import namedtuple
 # TODO: what about using a dictionary to describe data needed for each test? Could give it some structure.
 BUSINESS_PROPERTIES = [
     "password",
@@ -11,6 +12,20 @@ BUSINESS_PROPERTIES = [
     "email",
     "story",
     "tags"]
+BUSINESS_DEFAULTS = [
+    "Default Password",
+    "Default Image",
+    "Default Full Name",
+    "Default Phone",
+    "Default Short Bio",
+    "Default Location",
+    "Default Email",
+    "Default Story",
+    "Default Tags"
+]
+
+Business = namedtuple('Business', BUSINESS_PROPERTIES,
+                      defaults=BUSINESS_DEFAULTS)
 
 VALID_BUSINESS = dict(zip(BUSINESS_PROPERTIES, ['password', 'image', 'SaraLovelace', '911',
                                                 'not godless', 'strand', 'not_ucl@kcl.ac.uk', 'What is GKT?', []]))
