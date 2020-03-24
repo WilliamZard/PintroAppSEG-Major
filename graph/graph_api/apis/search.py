@@ -99,27 +99,24 @@ class SearchPost(Resource):
                 tag = dict(tag_record.data().get('node').items())
                 #Check for normal users with such tag.
                 tag_user_records = session.write_transaction(get_users_with_tag, tag['name']).records()
-                if len(list(tag_user_records)) > 0:
-                    for tag_user_record in tag_user_records:
-                        print(tag_user_record.data().get('user'))
+                for tag_user_record in tag_user_records:
+                    if tag_user_record.data().get('user') is not None:
                         extracted_user = dict(tag_user_record.data().get('user').items())
                         extracted_user['score'] = tag_record.data()['score']
                         extracted_user['profile_type'] = "person"
                         profiles_with_tags.append(extracted_user)
                 #Check for business accounts with such tag.
                 tag_business_records = session.write_transaction(get_businesses_with_tag, tag['name']).records()
-                if len(list(tag_business_records)) > 0:
-                    for tag_business_record in tag_business_records:
-                        print(tag_business_record.data().get('business'))
+                for tag_business_record in tag_business_records:
+                    if tag_business_record.data().get('business') is not None:
                         extracted_business = dict(tag_business_record.data().get('business').items())
                         extracted_business['score'] = tag_record.data()['score']
                         extracted_business['profile_type'] = "business"
                         profiles_with_tags.append(extracted_business)
                 #Check for coworking spaces with such tag.
                 tag_space_records = session.write_transaction(get_spaces_with_tag, tag['name']).records()
-                if len(list(tag_space_records)) > 0:
-                    for tag_space_record in tag_space_records:
-                        print(tag_space_record.data().get('space'))
+                for tag_space_record in tag_space_records:
+                    if tag_space_record.data().get('space') is not None:
                         extracted_space = dict(tag_space_record.data().get('space').items())
                         extracted_space['score'] = tag_record.data()['score']
                         extracted_space['profile_type'] = "space"
