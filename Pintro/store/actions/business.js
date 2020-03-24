@@ -8,12 +8,11 @@ export const getBusiness = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                redirect: 'follow'
+                }
             }
         );
         console.log(2);
-        console.log(response.ok);
+        
         if(!response.ok) {
             console.log(3);
             const errorResData = await response.json();

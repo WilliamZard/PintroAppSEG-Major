@@ -5,6 +5,7 @@ import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import Colors from '../Constants/Colors';
 import * as tagsActions from '../store/actions/tags';
+import * as businessActions from '../store/actions/business';
 import {useSelector, useDispatch} from 'react-redux';
 /**
  * Start Screen which allows the user to decide whether he wants to sign in
@@ -16,6 +17,7 @@ const dispatch = useDispatch();
 
 useEffect(()=> {
     dispatch(tagsActions.getTags("Tag"));
+    dispatch(businessActions.getBusiness());
 },[dispatch]);
    
 
