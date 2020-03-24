@@ -120,29 +120,45 @@ class TestPut:
 
 @pytest.mark.POST_business
 class TestPost:
-    def test_post_business_with_valid_payload_that_does_not_exist(self, app):
+    def test_post_business_with_valid_payload_that_does_not_exist(self, app, populate_db):
+        # Define Nodes
+        business = Business(email='business_to_create@rona.com')._asdict()
+        business.pop('tags')  # TODO: handle tests later
+
+        # Populate
         response = app.post(
-            "/businesses/", json=VALID_BUSINESS_TO_BE_CREATED)
+            "/businesses/", json=dict(business))
         assert response.status == '201 CREATED'
         assert response.data == b''
 
         # Assert business was actually created in the database
         response = app.get(
-            f"/businesses/{VALID_BUSINESS_TO_BE_CREATED['email']}")
+            f"/businesses/{business['email']}")
         assert response.status == '200 OK'
         json = response.get_json()
-        assert len(json) == len(VALID_BUSINESS_TO_BE_CREATED)
-        for field in VALID_BUSINESS_TO_BE_CREATED:
-            assert field in json
+        assert len(json) == len(business)
+        for key, value in business.items():
+            assert key in json
+            assert value in json[key]
 
-    def test_post_business_with_valid_payload_that_exists(self, app):
+    def test_post_business_with_valid_payload_that_exists(self, app, populate_db):
+        # Define Nodes
+        business = Business(email='business_to_create@rona.com')._asdict()
+        business.pop('tags')  # TODO: handle tests later
+        business_node = basic_business_node(business)
+
+        # Populate
+        populate_db(nodes_to_create=[business_node])
+
+        # Test
         response = app.post(
-            "/businesses/", json=VALID_BUSINESS)
+            "/businesses/", json=dict(business))
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
     def test_post_business_with_invalid_payload(self, app):
+        invalid_business = Business(email='bademail.com')._asdict()
         response = app.post(
-            "/businesses/", json=INVALID_BUSINESS_TO_BE_CREATED)
+            "/businesses/", json=dict(invalid_business))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
