@@ -12,10 +12,12 @@ import PencilWhite from '../Components/PencilWhite.js';
 import Colors from '../Constants/Colors.js';
 import JourneyPoint from '../Components/JourneyPoint.js';
 import TimelinePostComponent from '../Components/TimelinePostComponent.js';
+import * as businessActions from '../store/actions/business';
+
 
 const BusinessAccountScreen = props => {
-    const searchResults = useSelector(state => state.business.businessArray);
-    console.log(searchResults);
+    const businessObj = useSelector(state => state.business.businessObj);
+    console.log(businessObj.email);
     const item = {
             "email": "postman_business@post.man",
             "full_name": "postman business",

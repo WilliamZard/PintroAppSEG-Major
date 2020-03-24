@@ -2,14 +2,14 @@ import {
     GETBUSINESS 
     } from '../actions/business';
     const initialState = {
-        businessArray: []
+        businessObj: null
     };
 
     export default (state = initialState, action) => {
         switch(action.type) {
             case GETBUSINESS:
                 return {
-                    businessArray: action.businessArray
+                    businessObj: action.businessObj
                 };
         }
         return state;
