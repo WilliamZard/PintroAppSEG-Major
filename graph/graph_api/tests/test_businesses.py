@@ -48,8 +48,15 @@ class TestGet:
 @pytest.mark.DELETE_business
 class TestDelete:
     # TODO: some duplicate code here for each endpoint test. Refactor.
-    def test_delete_business_with_valid_email_that_exists(self, app):
-        email = VALID_BUSINESS_TO_BE_DELETED['email']
+    def test_delete_business_with_valid_email_that_exists(self, app, populate_db):
+        # Define Nodes
+        business = Business(email='business_to_delete@rona.com')._asdict()
+        business.pop('tags')  # TODO: handle tests later
+        business_node = basic_business_node(business)
+        # Populate
+        populate_db(nodes_to_create=[business_node])
+
+        email = business['email']
         response = app.delete(f"/businesses/{email}")
         assert response.status == '204 NO CONTENT'
         # TODO: consider using standard json.dumps instead of jsonify
@@ -60,12 +67,14 @@ class TestDelete:
         assert response.status == '404 NOT FOUND'
 
     def test_delete_business_with_valid_email_that_does_not_exist(self, app):
-        response = app.delete(f"/businesses/{NONEXISTANT_BUSINESS_EMAIL}")
+        nonexistant_business_email = 'does_not_exist@void.com'
+        response = app.delete(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_delete_business_with_invalid_email(self, app):
-        response = app.delete(f"/businesses/{INVALID_EMAIL}")
+        invalid_email = "invalidemaill.com"
+        response = app.delete(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
