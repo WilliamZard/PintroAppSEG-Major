@@ -7,7 +7,7 @@ from marshmallow.exceptions import ValidationError
 
 from .neo4j_ops import (create_session, get_nodes_for_user_search, get_nodes_for_business_search, get_nodes_for_space_search, 
                         get_users_with_tag, get_businesses_with_tag, get_spaces_with_tag, get_nodes_for_tag_search)
-
+from .helper_functions import *
 
 
 api = Namespace('search', title='Operations for full text search')
@@ -92,40 +92,10 @@ class SearchPost(Resource):
             #Collect record of tags that matched the full text search query
             tag_response = session.write_transaction(get_nodes_for_tag_search, api.payload['query'])
             tag_records = tag_response.records()
-
-            profiles_with_tags = []
-            #For every tag, look for normal users, business accounts, or spaces that used that tag, and append them to profile_with_tags.
-            for tag_record in tag_records:
-                tag = dict(tag_record.data().get('node').items())
-                #Check for normal users with such tag.
-                tag_user_records = session.write_transaction(get_users_with_tag, tag['name']).records()
-                for tag_user_record in tag_user_records:
-                    if tag_user_record.data().get('user') is not None:
-                        extracted_user = dict(tag_user_record.data().get('user').items())
-                        extracted_user['score'] = tag_record.data()['score']
-                        extracted_user['profile_type'] = "person"
-                        profiles_with_tags.append(extracted_user)
-                #Check for business accounts with such tag.
-                tag_business_records = session.write_transaction(get_businesses_with_tag, tag['name']).records()
-                for tag_business_record in tag_business_records:
-                    if tag_business_record.data().get('business') is not None:
-                        extracted_business = dict(tag_business_record.data().get('business').items())
-                        extracted_business['score'] = tag_record.data()['score']
-                        extracted_business['profile_type'] = "business"
-                        profiles_with_tags.append(extracted_business)
-                #Check for coworking spaces with such tag.
-                tag_space_records = session.write_transaction(get_spaces_with_tag, tag['name']).records()
-                for tag_space_record in tag_space_records:
-                    if tag_space_record.data().get('space') is not None:
-                        extracted_space = dict(tag_space_record.data().get('space').items())
-                        extracted_space['score'] = tag_record.data()['score']
-                        extracted_space['profile_type'] = "space"
-                        profiles_with_tags.append(extracted_space)
                 
-            
             data = []
-            #Append all the profiles that used a tag which matched the previously tag search to data.
-            for val in profiles_with_tags:
+            #Append all the profiles that used a tag in tag records.
+            for val in get_accouts_with_tags(tag_records, session):
                 data.append(val)
             
             #Append all the normal users that matched the full text search to data.
@@ -157,3 +127,4 @@ class SearchPost(Resource):
             return data
 
 
+#TODO move subfunctionalities to helper file.
