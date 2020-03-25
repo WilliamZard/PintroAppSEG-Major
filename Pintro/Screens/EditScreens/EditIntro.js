@@ -34,15 +34,30 @@ const EditIntro = props => {
     function onPressInvest() {
         setInvest(true);
         setHiring(false);
-        setInvestPic(tick);
-        setHiringPic(circle);
+        if(!seekingInvest) {
+            setInvestPic(tick);
+            setHiringPic(circle); 
+        }
     }
 
     function onPressHiring() {
         setHiring(true);
         setInvest(false);
-        setHiringPic(tick);
-        setInvestPic(circle);
+        if(!hiring) {
+            setHiringPic(tick);
+            setInvestPic(circle);
+        }
+    }
+
+    const item = {
+        "email": "piing@pong.com",
+        "password": "piin",
+        "full_name": "Piin App Limited",
+        "profile_image": "profile",
+        "phone": "69",
+        "location": "Central London",
+        "short_bio": "Connect in Real Life",
+        "story": "Lorem ipsum dolor sit amet, consecteteur adipiscing elit, sed do eiusmod tempor incididunt utt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut  aliquip ex ea commod consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum."
     }
 
     return(
@@ -51,10 +66,10 @@ const EditIntro = props => {
                 <Text style={styles.title}>Edit your intro</Text>
                 <Text style={styles.build}>Build your company profile</Text>
                 <Text style={styles.subtitle}>Company Name</Text>
-                <TextInput></TextInput>
+                <TextInput style={styles.inputText}>{item.full_name}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Tagline</Text>
-                <TextInput></TextInput>
+                <TextInput style={styles.inputText}>{item.short_bio}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Are you..?</Text>
                 <View style={styles.buttonContainer}>
@@ -72,14 +87,15 @@ const EditIntro = props => {
                     </TouchableOpacity>
                 </View>                
                 <Text style={styles.subtitle}>Company Story</Text>
-                <TextInput />
+                <TextInput style={styles.inputText} multiline={true}>{item.story}</TextInput>
                 <View style={styles.horizintalLineStyle}></View>
                 <Text style={styles.subtitle}>Social Media</Text>
                 <View style={styles.rowContainer}>
                     <View style={{flex: 1}}>
                         <Picker 
                         selectedValue={selectedValue1} 
-                        onValueChange={(value) => onItemPress1(value)}>
+                        onValueChange={(value) => onItemPress1(value)}
+                        style={styles.inputText}>
                             <Picker.Item label="" value=""/>
                             <Picker.Item label="Instagram" value="ig" />
                             <Picker.Item label="Facebook" value="fb" />
@@ -98,7 +114,8 @@ const EditIntro = props => {
                     <View style={{flex: 1}}>
                         <Picker
                         selectedValue={selectedValue2} 
-                        onValueChange={(value) => onItemPress2(value)}>
+                        onValueChange={(value) => onItemPress2(value)}
+                        style={styles.inputText}>
                             <Picker.Item label="" value=""/>
                             <Picker.Item label="Instagram" value="ig" />
                             <Picker.Item label="Facebook" value="fb" />
@@ -117,7 +134,8 @@ const EditIntro = props => {
                     <View style={{flex: 1}}>
                         <Picker
                         selectedValue={selectedValue3} 
-                        onValueChange={(value) => onItemPress3(value)}>
+                        onValueChange={(value) => onItemPress3(value)}
+                        style={styles.inputText}>
                             <Picker.Item label="" value=""/>
                             <Picker.Item label="Instagram" value="ig" />
                             <Picker.Item label="Facebook" value="fb" />
@@ -136,7 +154,8 @@ const EditIntro = props => {
                     <View style={{flex: 1}}>
                         <Picker
                         selectedValue={selectedValue4} 
-                        onValueChange={(value) => onItemPress4(value)}>
+                        onValueChange={(value) => onItemPress4(value)}
+                        style={styles.inputText}>
                             <Picker.Item label="" value=""/>
                             <Picker.Item label="Instagram" value="ig" />
                             <Picker.Item label="Facebook" value="fb" />
@@ -204,6 +223,11 @@ const styles = StyleSheet.create({
     rowContainer: {
         flexDirection: 'row',
         flex: 1
+    },
+    inputText: {
+        color: 'grey',
+        fontFamily: 'Poppins-Regular',
+        fontSize: 12,
     }
 })
 export default EditIntro;
