@@ -27,8 +27,7 @@ class TestPOST:
         assert response.get_json() == EMPTY_STRING_SEARCH['result']
 
     def test_query_that_partially_matches_full_names_or_emails_should_return_correct_nodes(self,app):
-        ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
-            return all the nodes in the database which doesn't make sense in any situation
+        ''' A query that partially matches some full names or emails should return all the appropriate accounts.
         '''
 
         response = app.post("/search/", json=VALID_MATCHING_NAME_OR_EMAIL_SEARCH['request'])
@@ -45,8 +44,8 @@ class TestPOST:
         assert ordered(json_response) == ordered(VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
 
     def test_query_that_partially_matches_stories_should_return_correct_nodes(self,app):
-        ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
-            return all the nodes in the database which doesn't make sense in any situation
+        ''' A query that partially matches some stories in any business account, normal user account, 
+            or space should return all the appropriated accounts.
         '''
         response = app.post("/search/", json=MATCHING_STORY_OR_EVENTS_SEARCH['request'])
         json_response = response.get_json()
@@ -61,8 +60,8 @@ class TestPOST:
         assert ordered(json_response) == ordered(MATCHING_STORY_OR_EVENTS_SEARCH['result'])
     
     def test_query_that_partially_matches_short_bios_should_return_correct_nodes(self,app):
-        ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
-            return all the nodes in the database which doesn't make sense in any situation
+        ''' A query that partially matches some short bios in any business account, normal user account, 
+            or space should return all the appropriated accounts.
         '''
         response = app.post("/search/", json=MATCHING_SHORT_BIO_SEARCH['request'])
         json_response = response.get_json()
@@ -77,8 +76,8 @@ class TestPOST:
         assert ordered(json_response) == ordered(MATCHING_SHORT_BIO_SEARCH['result'])
 
     def test_query_that_partially_matches_tag_returns_correct_user(self, app):
-        ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
-            return all the nodes in the database which doesn't make sense in any situation
+        ''' A query that partially matches a tag used in any business account, normal user account, 
+            or space should return all the appropriated accounts.
         '''
         response = app.post("/search/", json=MATCHING_TAG_SEARCH['request'])
         json_response = response.get_json()
