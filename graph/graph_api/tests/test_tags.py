@@ -3,7 +3,7 @@ import json
 
 from .conftest import app
 from flask.json import jsonify
-from .generate_test_data import LABEL_TAG, LABEL_GOT, LABEL_KCL, KING_SLAYER_TAG, COLES_TAG, KING_SLAYER_LABELS, COLES_LABELS, TAG_PROPERTIES
+from .generate_test_data import LABEL_TAG, LABEL_PASSION, LABEL_SKILL, KING_SLAYER_TAG, COLES_TAG, KING_SLAYER_LABELS, COLES_LABELS, TAG_PROPERTIES
 
 
 @pytest.mark.POST_tags

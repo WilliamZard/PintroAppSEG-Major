@@ -42,7 +42,11 @@ def get_user_by_email(tx, user_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    query = f"""MATCH (user:Person {{email: '{user_email}'}})-->(tag:Tag) RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
+    query = f"""
+    MATCH (user:Person {{email: '{user_email}'}})
+    OPTIONAL MATCH (user)-->(skill_tag:Tag:Skill)
+    OPTIONAL MATCH (user)-->(passion_tag:Tag:Passion)
+    RETURN user, COLLECT(skill_tag.name) AS help_others, COLLECT(passion_tag.name) AS passions"""
     return tx.run(query)
 
 
@@ -74,30 +78,38 @@ def set_user_fields(tx, user_email, fields):
 
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
-        ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
-    
+        ", ".join(f"""user.{k}=\"{v}\"""" for (k, v) in fields.items())
+
     if create_tag_query:
         query = query + create_tag_query
     return tx.run(query)
 
 
 def create_user(tx, fields):
-    if 'tags' in fields:
-        tags = fields['tags']
-        fields.pop('tags')
-    create_user_query = "CREATE (new_user: Person {" + ", ".join(
-        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+    passions = help_others = []
+    if 'passions' in fields:
+        passions = fields['passions']
+        fields.pop('passions')
+    if 'help others' in fields:
+        help_others = fields['help_others']
+        fields.pop('help_others')
+    query = "CREATE (new_user: Person {" + ", ".join(
+        f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
 
-    create_TAGGED_relationships_query = f"""
-    WITH {tags} AS tag_uuids
-    UNWIND tag_uuids AS tag_uuid
-    MATCH(tag: Tag {{uuid: tag_uuid}})
-    MATCH(user: Person {{email: '{fields['email']}'}})
-    CREATE(user)-[:TAGGED] -> (tag)"""
-    query = create_user_query + create_TAGGED_relationships_query
+    if not passions or not help_others:
+        tags = help_others + passions
+        create_TAGGED_relationships_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH(tag: Tag {{uuid: tag_uuid}})
+        MATCH(user: Person {{email: '{fields['email']}'}})
+        CREATE(user)-[:TAGGED] -> (tag)"""
+        query += create_TAGGED_relationships_query
     return tx.run(query)
 
+
 """ Functions for Businesses """
+
 
 def get_business_by_email(tx, business_email):
     '''
@@ -108,12 +120,19 @@ def get_business_by_email(tx, business_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
-    query = f"MATCH (user:Business {{email: '{business_email}'}}) RETURN user"
+    query = f"""
+    MATCH (user:Business {{email: '{business_email}'}})
+    OPTIONAL MATCH (user)-->(tag:Tag)
+    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
     return tx.run(query)
 
 
 def delete_business_by_email(tx, business_email):
-    return tx.run(f"MATCH (user:Business {{email: '{business_email}'}}) DELETE user")
+    query = f"""
+    MATCH(n: Business {{email: '{business_email}'}})
+    OPTIONAL MATCH(n)--(p: Post)
+    DETACH DELETE n, p"""
+    return tx.run(query)
 
 
 def set_business_fields(tx, business_email, fields):
@@ -126,18 +145,45 @@ def set_business_fields(tx, business_email, fields):
         user_email = the email of the user whose data needs to be edited.
         new_email = the new email to assign to that user.
     '''
+    create_tag_query = None
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+        create_tag_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH (tag:Tag {{uuid: tag_uuid}})
+        MATCH (user:Business {{email: '{business_email}'}})
+        MERGE (user)-[:TAGGED]->(tag)"""
+
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Business {{email: '{business_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
+
+    if create_tag_query:
+        query = query + create_tag_query
     return tx.run(query)
+
 
 def create_business(tx, fields):
-    query = "CREATE (new_user: Business {" + ", ".join(
+
+    create_TAGGED_relationships_query = ""
+    if 'tags' in fields:
+        tags = fields['tags']
+        fields.pop('tags')
+        create_TAGGED_relationships_query = f"""
+        WITH {tags} AS tag_uuids
+        UNWIND tag_uuids AS tag_uuid
+        MATCH(tag: Tag {{uuid: tag_uuid}})
+        MATCH(user: Business {{email: '{fields['email']}'}})
+        CREATE(user)-[:TAGGED] -> (tag)"""
+
+    create_user_query = "CREATE (new_user: Business{" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
+
+    query = create_user_query + create_TAGGED_relationships_query
     return tx.run(query)
 
-
-    """ Functions for Co-working spaces """
 
 def get_space_by_email(tx, space_email):
     '''
@@ -175,10 +221,10 @@ def create_space(tx, fields):
     query = "CREATE (user: Space {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
     return tx.run(query)
-    
 
 
 """functions for POSTS"""
+
 
 def get_post_by_uuid(tx, uuid):
     query = f"MATCH (post:Post {{uuid:'{uuid}'}}) RETURN post"
@@ -186,10 +232,10 @@ def get_post_by_uuid(tx, uuid):
 
 
 def create_post(tx, post_content, user_email, created, modified, uuid):
-    query = f"""MATCH (user:Person {{email:'{user_email}'}})   
+    query = f"""MATCH (user:Person {{email:'{user_email}'}})
                 CREATE (post:Post {{uuid: '{uuid}', content: '{post_content}', created: datetime('{created}'), modified: datetime('{modified}')}})
                 CREATE (user)-[:POSTED]->(post)
-                RETURN post 
+                RETURN post
             """
     return tx.run(query)
 
@@ -228,13 +274,6 @@ def get_list_of_user_post_dates(tx, user_email):
 
 # TODO: delete ORDER BY
 
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
-    return tx.run(query)
 
 def get_posts_for_timeline(tx, user_email):
     query = f"""MATCH (user:Person {{email:'{user_email}'}})-[:FOLLOWS]->()-[posted:POSTED]->(post:Post)
@@ -250,25 +289,36 @@ def get_posts_of_followings_of_a_user(tx, email):
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
         -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as email"""
     return tx.run(query)
 
 
 """functions for FOLLOW RELATIONSHIPS"""
 
-def create_follow_relationship(tx, follower_email, following_email):
+
+def create_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
     query = f"""
-        MATCH (follower_user:Person),(following_user:Person)
-        WHERE follower_user.email = '{follower_email}' AND following_user.email = '{following_email}'
-        CREATE (follower_user)-[f:FOLLOWS]->(following_user)
-        RETURN f
+        MATCH (requester),(request_recipient)
+        WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
+        CREATE (requester)-[f:{relationship_type}]->(request_recipient)
     """
     return tx.run(query)
 
 
-def delete_follow_relationship(tx, follower_email, following_email):
+def approve_request(tx, request_relationship_type, approved_relationship_type, requester_email, request_recipient_email):
+    # TODO: see if this query has the right approach. Why not just use DELETE and CREATE clauses?
     query = f"""
-        MATCH (follower {{email: '{follower_email}' }})-[f:FOLLOWS]->(following {{email: '{following_email}'}})
+        MATCH (requester)-[req:{request_relationship_type}]->(request_recipient)
+        WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
+        CREATE (requester)-[:{approved_relationship_type}]->(request_recipient)
+        DELETE req
+    """
+    return tx.run(query)
+
+
+def delete_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
+    query = f"""
+        MATCH (requester {{email: '{requester_email}' }})-[f:{relationship_type}]->(request_recipient {{email: '{request_recipient_email}'}})
         DELETE f
     """
     return tx.run(query)
@@ -287,19 +337,32 @@ def get_followings_of_a_user(tx, email):
     """
     return tx.run(query)
 
+
+def get_posts_of_followings_of_a_user(tx, email):
+    query = f"""
+        MATCH (:Person {{email: '{email}'}})
+        -[:FOLLOWS]->(user:Person)
+        -[:POSTED]->(post:Post)
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
+    return tx.run(query)
+
+
 def get_nodes_for_user_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score 
+    query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
     return tx.run(query)
+
 
 def get_nodes_for_business_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchBusinessIndex', '"{search_string}"~0.2') YIELD node, score 
+    query = f"""CALL db.index.fulltext.queryNodes('SearchBusinessIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
     return tx.run(query)
 
+
 def get_nodes_for_space_search(tx, search_string):
-    query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score 
+    query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
+
     return tx.run(query)    
 
 def get_nodes_for_tag_search(tx, search_string):
@@ -343,3 +406,78 @@ def get_tags(tx, labels):
     """
     return tx.run(query)
 
+
+def get_chatrooms_of_user(tx, email):
+    query = f"""
+        MATCH (u:Person {{email: \'{email}\'}})-[:CHATS_IN]->(c:Chatroom)
+        MATCH (r:Person)-[:CHATS_IN]->(c)
+        WHERE r.email <> \'{email}\'
+        RETURN c.chat_id AS chat_id, r.email AS recipient
+    """
+    return tx.run(query)
+
+
+def check_users_in_chatroom(tx, email1, email2):
+    query = f"""
+        MATCH (u1:Person {{email: \'{email1}\'}})-[:CHATS_IN]->(c:Chatroom)
+        MATCH (u2:Person {{email: \'{email2}\'}})-[:CHATS_IN]->(c)
+        RETURN CASE WHEN u1 IS NOT NULL AND u2 IS NOT NULL THEN true ELSE false END AS result
+    """
+    return tx.run(query)
+
+
+def create_chatroom(tx, email1, email2, chat_id):
+    query = f"""
+        MATCH (u1:Person {{email: \'{email1}\'}})
+        MATCH (u2:Person {{email: \'{email2}\'}})
+        CREATE (c:Chatroom {{chat_id: \'{chat_id}\'}})
+        CREATE (u1)-[:CHATS_IN]->(c)
+        CREATE (u2)-[:CHATS_IN]->(c)
+    """
+    return tx.run(query)
+
+
+def check_chatroom_exists(tx, chat_id):
+    query = f"""
+        MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
+        RETURN CASE WHEN c IS NULL THEN false ELSE true END AS result
+    """
+    return tx.run(query)
+
+
+def delete_chatroom(tx, chat_id):
+    query = f"""
+        MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
+        DETACH DELETE c
+    """
+    return tx.run(query)
+
+
+""" functions for AFFILIATIONS """
+
+
+def create_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+    query = f"""
+        MATCH (affiliation_requester:Person),(affiliation_request_recipient:Business)
+        WHERE affiliation_requester.email = '{affiliation_requester}' AND affiliation_request_recipient.email = '{affiliation_request_recipient}'
+        CREATE (affiliation_requester)-[f:REQUESTED_AFFILIATION]->(affiliation_request_recipient)
+        RETURN f
+    """
+    return tx.run(query)
+
+
+def delete_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+    query = f"""
+        MATCH (affiliate {{email: '{affiliation_requester}'}})-[f:REQUESTED_AFFILIATION]->(affiliate_recipient {{email: '{affiliation_request_recipient}'}})
+        DELETE f
+    """
+    return tx.run(query)
+
+
+def get_notifications(tx, user_email):
+    query = f"""
+        MATCH (recipient:Person {{email: '{user_email}'}})<-[r]-(requester)
+        WHERE type(r) = 'REQUESTED_FOLLOW' OR type(r) = 'REQUESTED_AFFILIATION'
+        RETURN type(r) AS relationship_type, recipient.email AS recipient_email, requester.email AS requester_email
+    """
+    return tx.run(query)
