@@ -296,21 +296,21 @@ def get_posts_of_followings_of_a_user(tx, email):
 """functions for FOLLOW RELATIONSHIPS"""
 
 
-def create_request_relationship(tx, relationship_type, requester_email, request_recipient_email):
+def create_request_relationship(tx, relationship_type, requester_email, request_recipient_email, created_at):
     query = f"""
         MATCH (requester),(request_recipient)
         WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
-        CREATE (requester)-[f:{relationship_type}]->(request_recipient)
+        CREATE (requester)-[f:{relationship_type}{{created_at: '{created_at}'}}]->(request_recipient)
     """
     return tx.run(query)
 
 
-def approve_request(tx, request_relationship_type, approved_relationship_type, requester_email, request_recipient_email):
+def approve_request(tx, request_relationship_type, approved_relationship_type, requester_email, request_recipient_email, created_at):
     # TODO: see if this query has the right approach. Why not just use DELETE and CREATE clauses?
     query = f"""
         MATCH (requester)-[req:{request_relationship_type}]->(request_recipient)
         WHERE requester.email = '{requester_email}' AND request_recipient.email = '{request_recipient_email}'
-        CREATE (requester)-[:{approved_relationship_type}]->(request_recipient)
+        CREATE (requester)-[:{approved_relationship_type}{{created_at: '{created_at}'}}]->(request_recipient)
         DELETE req
     """
     return tx.run(query)
@@ -424,11 +424,11 @@ def delete_chatroom(tx, chat_id):
 """ functions for AFFILIATIONS """
 
 
-def create_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient):
+def create_affiliation_relationship(tx, affiliation_requester, affiliation_request_recipient, created_at):
     query = f"""
         MATCH (affiliation_requester:Person),(affiliation_request_recipient:Business)
         WHERE affiliation_requester.email = '{affiliation_requester}' AND affiliation_request_recipient.email = '{affiliation_request_recipient}'
-        CREATE (affiliation_requester)-[f:REQUESTED_AFFILIATION]->(affiliation_request_recipient)
+        CREATE (affiliation_requester)-[f:REQUESTED_AFFILIATION{{created_at: '{created_at}'}}]->(affiliation_request_recipient)
         RETURN f
     """
     return tx.run(query)
@@ -446,6 +446,9 @@ def get_notifications(tx, user_email):
     query = f"""
         MATCH (recipient:Person {{email: '{user_email}'}})<-[r]-(requester)
         WHERE type(r) = 'REQUESTED_FOLLOW' OR type(r) = 'REQUESTED_AFFILIATION'
-        RETURN type(r) AS relationship_type, recipient.email AS recipient_email, requester.email AS requester_email
+        RETURN type(r) AS relationship_type,
+               r.created_at as created_at,
+               recipient.email AS recipient_email,
+               requester.email AS requester_email
     """
     return tx.run(query)
