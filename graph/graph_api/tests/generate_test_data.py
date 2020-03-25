@@ -143,16 +143,16 @@ CREATE_FOLLOW_REQUESTS = f"""
     MATCH (user_a:Person {{email:'{FOLLOW_REQUESTER_A['email']}'}})
     MATCH (user_b:Person {{email:'{FOLLOW_REQUESTER_B['email']}'}})
     MATCH (user_c:Person {{email:'{FOLLOW_REQUEST_RECIPIENT['email']}'}})
-    CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_c)
-    CREATE (user_b)-[:REQUESTED_FOLLOW]->(user_c)
+    CREATE (user_a)-[:REQUESTED_FOLLOW{{created_at: 300.0}}]->(user_c)
+    CREATE (user_b)-[:REQUESTED_FOLLOW{{created_at: 400.0}}]->(user_c)
 """
 
 CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST = f"""
     MATCH (user_a:Person {{email:'{USER_REQUESTING_USER_WITH_NOTIFICATIONS_A['email']}'}})
     MATCH (user_b:Business {{email:'{BUSINESS_REQUESTING_AFFILIATION_TO_USER['email']}'}})
     MATCH (user_c:Person {{email:'{USER_WITH_NOTIFICATIONS['email']}'}})
-    CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_c)
-    CREATE (user_b)-[:REQUESTED_AFFILIATION]->(user_c)
+    CREATE (user_a)-[:REQUESTED_FOLLOW{{created_at: 200.0}}]->(user_c)
+    CREATE (user_b)-[:REQUESTED_AFFILIATION{{created_at: 100.0}}]->(user_c)
 """
 
 RELATIONSHIPS_FOLLOWS_USER_A = f"""
@@ -183,8 +183,8 @@ CREATE_AFFILIATION_REQUESTS = f"""
     MATCH (user_a:Business {{email:'{AFFILIATION_REQUESTER_A['email']}'}})
     MATCH (user_b:Business {{email:'{AFFILIATION_REQUESTER_B['email']}'}})
     MATCH (user_c:Person {{email:'{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
-    CREATE (user_a)-[:REQUESTED_AFFILIATION]->(user_c)
-    CREATE (user_b)-[:REQUESTED_AFFILIATION]->(user_c)
+    CREATE (user_a)-[:REQUESTED_AFFILIATION{{created_at: 500.0}}]->(user_c)
+    CREATE (user_b)-[:REQUESTED_AFFILIATION{{created_at: 600.0}}]->(user_c)
 """
 
 CONSTRAINT_USER_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
