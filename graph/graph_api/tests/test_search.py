@@ -4,6 +4,7 @@ from flask.json import jsonify
 
 from .conftest import app
 from .test_data.search import *
+from .helper_functions import *
 
 
 @pytest.mark.POST_search
@@ -31,14 +32,7 @@ class TestPOST:
         '''
 
         response = app.post("/search/", json=VALID_MATCHING_NAME_OR_EMAIL_SEARCH['request'])
-        json_response = response.get_json()
-        for element in json_response: 
-            del element['score']
-            del element['profile_type']
-
-        for element in VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result']:
-            if 'tags' in element:
-                del element['tags']
+        json_response = prepere_search_responses_for_account_assertion(response, VALID_MATCHING_NAME_OR_EMAIL_SEARCH)
         
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
@@ -48,13 +42,7 @@ class TestPOST:
             or space should return all the appropriated accounts.
         '''
         response = app.post("/search/", json=MATCHING_STORY_OR_EVENTS_SEARCH['request'])
-        json_response = response.get_json()
-        for element in json_response: 
-            del element['score']
-            del element['profile_type']
-        for element in MATCHING_STORY_OR_EVENTS_SEARCH['result']:
-            if 'tags' in element:
-                del element['tags']
+        json_response = prepere_search_responses_for_account_assertion(response, MATCHING_STORY_OR_EVENTS_SEARCH)
 
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_STORY_OR_EVENTS_SEARCH['result'])
@@ -64,13 +52,7 @@ class TestPOST:
             or space should return all the appropriated accounts.
         '''
         response = app.post("/search/", json=MATCHING_SHORT_BIO_SEARCH['request'])
-        json_response = response.get_json()
-        for element in json_response: 
-            del element['score']
-            del element['profile_type']
-        for element in VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result']:
-            if 'tags' in element:
-                del element['tags']
+        json_response = prepere_search_responses_for_account_assertion(response, MATCHING_SHORT_BIO_SEARCH)
         
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_SHORT_BIO_SEARCH['result'])
@@ -80,14 +62,7 @@ class TestPOST:
             or space should return all the appropriated accounts.
         '''
         response = app.post("/search/", json=MATCHING_TAG_SEARCH['request'])
-        json_response = response.get_json()
-        print(json_response)
-        for element in json_response: 
-            del element['score']
-            del element['profile_type']
-        for element in MATCHING_TAG_SEARCH['result']:
-            if 'tags' in element:
-                del element['tags']
+        json_response = prepere_search_responses_for_account_assertion(response, MATCHING_TAG_SEARCH)
 
         assert response.status == '200 OK'
         assert ordered(json_response) == ordered(MATCHING_TAG_SEARCH['result'])
@@ -97,13 +72,3 @@ class TestPOST:
 
 
 
-def ordered(obj):
-    '''Small helper function that sorts by alphabetical order all the elements in arrays 
-       of dictionaries.
-    '''
-    if isinstance(obj, dict):
-        return sorted((ordered(k), v) for k, v in obj.items())
-    if isinstance(obj, list):
-        return sorted(ordered(x) for x in obj)
-    else:
-        return obj
