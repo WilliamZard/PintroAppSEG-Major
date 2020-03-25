@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { Dimensions, StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import FollowMe from '../Components/FollowMe.js';
@@ -17,17 +17,33 @@ import * as businessActions from '../store/actions/business';
 
 const BusinessAccountScreen = props => {
     const businessObj = useSelector(state => state.business.businessObj);
-    console.log(businessObj.email);
+    const [lines,setLineNumber] = useState(4);
+    const [see,setSee] = useState("More");
+    const [more,setMore] = useState(true);
+    //console.log(businessObj.email);
     const item = {
-            "email": "postman_business@post.man",
-            "full_name": "postman business",
-            "location": "landanting",
-            "password": "pw",
-            "phone": "999",
+            "email": "piing@pong.com",
+            "password": "piin",
+            "full_name": "Piin App Limited",
             "profile_image": "profile",
-            "short_bio": "bioing",
-            "story": "storying"
+            "phone": "69",
+            "location": "Central London",
+            "short_bio": "Connect in Real Life",
+            "story": "Lorem ipsum dolor sit amet, consecteteur adipiscing elit, sed do eiusmod tempor incididunt utt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut  aliquip ex ea commod consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum."
+    }
+
+    function onPressMore() {
+        if(more) {
+            setLineNumber(10);
+            setSee("See less");
+            setMore(false);
+        } else {
+            setLineNumber(4);
+            setSee("More");
+            setMore(true);
         }
+        
+    }
 
 
     return(
@@ -41,10 +57,10 @@ const BusinessAccountScreen = props => {
             </View>
             <View style={styles.whiteContainer}>
                 <View style={styles.topRow}>
-                    <Text style={styles.slogan}>{item.short_bio}</Text>
+                    <Text style={styles.slogan}>{businessObj.short_bio}</Text>
                     <PencilBlack style={{marginTop: 10}}/>    
                 </View>
-                <Text style={styles.businessName}>{item.full_name}</Text>
+                <Text style={styles.businessName}>{businessObj.full_name}</Text>
                 <View style={styles.rowContainer}>
                     <FollowMe props={props.FollowMe}>+ FOLLOW US</FollowMe>
                     <MsgMe props={props.MsgMe}>MESSAGE US</MsgMe>
@@ -61,10 +77,10 @@ const BusinessAccountScreen = props => {
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.title}>Our Story</Text>
-                <Text style={styles.storyContent}>
-                    {item.story}
+                <Text style={styles.storyContent} numberOfLines={lines}>
+                    {businessObj.story}
                 </Text>
-                <Text style={styles.more}>More</Text>
+                <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
                 <PencilBlack />
                 <View style={styles.tagContainer}>
                     <BlackTag props={props.BlackTag}>START-UP</BlackTag>
@@ -196,7 +212,8 @@ const styles = StyleSheet.create({
         marginLeft: 30,
         color: 'grey',
         fontFamily: 'Poppins-Regular',
-        fontSize:12
+        fontSize:12,
+        marginRight: 20,
     },
     more: {
         marginLeft: 30,
