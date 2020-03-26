@@ -8,12 +8,27 @@ const EditIntro = props => {
     const [selectedValue2, setSelectedValue2] = useState();
     const [selectedValue3, setSelectedValue3] = useState();
     const [selectedValue4, setSelectedValue4] = useState();
-    const [seekingInvest, setInvest] = useState(true);
+    const [seekingInvest, setInvest] = useState(false);
     const [hiring, setHiring] = useState(false);
-    const [investPic, setInvestPic] = useState(tick);
-    const [hiringPic, setHiringPic] = useState(circle);
+    const [investPic, setInvestPic] = useState();
+    const [hiringPic, setHiringPic] = useState();
     const tick = require('../../assets/tickBlack.png');
     const circle = require('../../assets/blankCircle.png');
+
+    const item = {
+        "email": "piing@pong.com",
+        "password": "piin",
+        "full_name": "Piin App Limited",
+        "profile_image": "profile",
+        "phone": "69",
+        "location": "Central London",
+        "short_bio": "Connect in Real Life",
+        "story": "Lorem ipsum dolor sit amet, consecteteur adipiscing elit, sed do eiusmod tempor incididunt utt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut  aliquip ex ea commod consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum."
+    }
+
+    const [name,setName] = useState(item.full_name);
+    const [bio,setBio] = useState(item.short_bio);
+    const [story,setStory] = useState(item.story);
 
     function onItemPress1(value) {
         setSelectedValue1(value);
@@ -40,6 +55,23 @@ const EditIntro = props => {
         }
     }
 
+    function onPressDone() {
+        console.log(name);
+        console.log(bio);
+    }
+
+    function updateName(newName) {
+        setName(newName);
+    }
+
+    function updateBio(newBio) {
+        setBio(newBio);
+    }
+
+    function updateStory(newStory) {
+        setStory(newStory);
+    }
+
     function onPressHiring() {
         setHiring(true);
         setInvest(false);
@@ -49,27 +81,16 @@ const EditIntro = props => {
         }
     }
 
-    const item = {
-        "email": "piing@pong.com",
-        "password": "piin",
-        "full_name": "Piin App Limited",
-        "profile_image": "profile",
-        "phone": "69",
-        "location": "Central London",
-        "short_bio": "Connect in Real Life",
-        "story": "Lorem ipsum dolor sit amet, consecteteur adipiscing elit, sed do eiusmod tempor incididunt utt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut  aliquip ex ea commod consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum."
-    }
-
     return(
         <ScrollView>
             <View style={styles.primaryContainer}>
                 <Text style={styles.title}>Edit your intro</Text>
                 <Text style={styles.build}>Build your company profile</Text>
                 <Text style={styles.subtitle}>Company Name</Text>
-                <TextInput style={styles.inputText}>{item.full_name}</TextInput>
+                <TextInput style={styles.inputText} onChangeText={value => updateName(value)}>{item.full_name}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Tagline</Text>
-                <TextInput style={styles.inputText}>{item.short_bio}</TextInput>
+                <TextInput style={styles.inputText} onChangeText={value => updateBio(value)}>{item.short_bio}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Are you..?</Text>
                 <View style={styles.buttonContainer}>
@@ -87,7 +108,7 @@ const EditIntro = props => {
                     </TouchableOpacity>
                 </View>                
                 <Text style={styles.subtitle}>Company Story</Text>
-                <TextInput style={styles.inputText} multiline={true}>{item.story}</TextInput>
+                <TextInput style={styles.inputText} multiline={true} onChangeText={value => updateStory(value)}>{item.story}</TextInput>
                 <View style={styles.horizintalLineStyle}></View>
                 <Text style={styles.subtitle}>Social Media</Text>
                 <View style={styles.rowContainer}>
@@ -171,7 +192,7 @@ const EditIntro = props => {
                     </View> 
                 </View>
             </View> 
-            <BlackTag props={props.BlackTag}>Done</BlackTag>
+            <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
         </ScrollView>
     );
 }
