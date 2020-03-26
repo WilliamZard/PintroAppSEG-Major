@@ -131,24 +131,39 @@ class TestPut:
 @pytest.mark.POST_space
 class TestPost:
     def test_post_space_with_valid_payload_that_does_not_exist(self, app):
+        # Generate Data
+        space = Space(email='new_space@test.com')._asdict()
+
+        # Test
         response = app.post(
-            "/spaces/", json=VALID_SPACE_TO_BE_CREATED)
+            "/spaces/", json=dict(space))
         assert response.status == '201 CREATED'
         assert response.data == b''
 
         # Assert space was actually created in the database
-        response = app.get(f"/spaces/{VALID_SPACE_TO_BE_CREATED['email']}")
+        response = app.get(f"/spaces/{space['email']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_SPACE_TO_BE_CREATED).data
+        assert response.data == jsonify(space).data
 
-    def test_post_space_with_valid_payload_that_exists(self, app):
+    def test_post_space_with_valid_payload_that_exists(self, app, populate_db):
+        # Generate Data
+        space = Space(email='validspace@test.com')._asdict()
+        space_node = basic_space_node(space)
+
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
         response = app.post(
-            "/spaces/", json=VALID_SPACE)
+            "/spaces/", json=dict(space))
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
     def test_post_space_with_invalid_payload(self, app):
+        # Generate Data
+        space = Space(email='invalidspactest.com')._asdict()
+
+        # Test
         response = app.post(
-            "/spaces/", json=INVALID_SPACE_TO_BE_CREATED)
+            "/spaces/", json=dict(space))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
