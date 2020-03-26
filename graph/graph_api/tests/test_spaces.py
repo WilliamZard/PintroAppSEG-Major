@@ -86,21 +86,42 @@ class TestDelete:
 
 @pytest.mark.PUT_space
 class TestPut:
-    def test_put_space_with_valid_email_that_exists(self, app):
+    def test_put_space_with_valid_email_that_exists(self, app, populate_db):
+        # Generate data
+        space = Space(email='space@test.com')._asdict()
+        space_node = basic_space_node(space)
+
+        new_space = Space(email='space@test.com',
+                          short_bio='not default')._asdict()
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
         response = app.put(
-            f"/spaces/{VALID_SPACE_TO_BE_UPDATED['email']}", json=VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS)
+            f"/spaces/{space['email']}", json=dict(new_space))
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
     def test_put_space_with_valid_email_that_does_not_exist(self, app):
+        # Generate Data
+        nonexistant_email = 'does@notexist.com'
+        new_space = Space(email='space@test.com',
+                          short_bio='not default')._asdict()
+
+        # Test
         response = app.put(
-            f"/spaces/{NONEXISTANT_SPACE_EMAIL}", json=VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS)
+            f"/spaces/{nonexistant_email}", json=dict(new_space))
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_put_space_with_invalid_email(self, app):
+        # Generate Data
+        invalid_email = "invalidemail.com"
+        new_space = Space(email='space@test.com',
+                          short_bio='not default')._asdict()
+
+        # Test
         response = app.put(
-            f"/spaces/{INVALID_EMAIL}", json=VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS)
+            f"/spaces/{invalid_email}", json=dict(new_space))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
