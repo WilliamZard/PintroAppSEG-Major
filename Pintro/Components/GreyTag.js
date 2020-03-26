@@ -52,6 +52,7 @@ const GreyTag = props => {
             setTag(blackTag);
             setText(whiteText);
             select(true);
+            props.callback(props.val);
         }
     }
 

@@ -59,6 +59,20 @@ const EditBusinessTag = props => {
         }
     }
 
+    function onTagPress(tagName) {
+        console.log(tagName);
+        if(!chosenTags.includes(tagName)){
+            chosenTags.push(tagName);
+            setChosenTags(chosenTags);
+        }else{
+            setChosenTags(chosenTags.filter((arrayElement)=>arrayElement!==tagName));
+        }
+    }
+
+    function onPressDone() {
+        console.log(chosenTags);
+    }
+
     return(
         <ScrollView>
             <View style={styles.primaryContainer}>
@@ -77,27 +91,27 @@ const EditBusinessTag = props => {
                 {suggestedItems}
                 <Text style={styles.subtitle}>Or choose from the most popular</Text>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag}>FEMINISIM</GreyTag>
-                    <GreyTag props={props.GreyTag}>START-UP</GreyTag>
-                    <GreyTag props={props.GreyTag}>MINDFULNESS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Feminisim"}>FEMINISIM</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Start-up"}>START-UP</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindulness"}>MINDFULNESS</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag}>PERSONAL GROWTH</GreyTag>
-                    <GreyTag props={props.GreyTag}>APP</GreyTag>
-                    <GreyTag props={props.GreyTag}>NETWORKING</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Personal Growth"}>PERSONAL GROWTH</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"App"}>APP</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Networking"}>NETWORKING</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag}>NEUROSCIENCE</GreyTag>
-                    <GreyTag props={props.GreyTag}>NUTRITION</GreyTag>
-                    <GreyTag props={props.GreyTag}>INNOVATION</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Neuroscience"}>NEUROSCIENCE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Nutrition"}>NUTRITION</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Innovation"}>INNOVATION</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag}>PRE-SEED</GreyTag>
-                    <GreyTag props={props.GreyTag}>DIVERSITY</GreyTag>
-                    <GreyTag props={props.GreyTag}>CO-WORKING</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-seed"}>PRE-SEED</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"}>DIVERSITY</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Co-working"}>CO-WORKING</GreyTag>
                 </View>
                 <View style={{marginVertical: 20}}/>
-                <BlackTag props={props.BlackTag}>Done</BlackTag>
+                <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
             </View>
         </ScrollView>
         
