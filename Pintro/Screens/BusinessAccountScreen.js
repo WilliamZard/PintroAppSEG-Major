@@ -52,6 +52,10 @@ const BusinessAccountScreen = props => {
         props.navigation.navigate('Tags');
     }
 
+    function switchEditJourney() {
+        props.navigation.navigate('Journey');
+    }
+
 
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
@@ -107,7 +111,7 @@ const BusinessAccountScreen = props => {
                 <View>
                     <View style={styles.rowContainer}>
                         <Text style={styles.journey}>Our journey</Text>
-                        <PencilBlack />
+                        <PencilBlack onPress={() => switchEditJourney()}/>
                     </View>
                     <JourneyPoint default={"Founded:"} userData={"May 2017"}/>
                     <JourneyPoint default={"Location:"} userData={"Central London"}/>
