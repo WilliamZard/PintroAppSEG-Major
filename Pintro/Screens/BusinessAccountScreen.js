@@ -48,6 +48,10 @@ const BusinessAccountScreen = props => {
         props.navigation.navigate('Intro');
     }
 
+    function switchEditTags() {
+        props.navigation.navigate('Tags');
+    }
+
 
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
@@ -84,7 +88,7 @@ const BusinessAccountScreen = props => {
                     {businessObj.story}
                 </Text>
                 <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
-                <PencilBlack />
+                <PencilBlack onPress={() => switchEditTags()}/>
                 <View style={styles.tagContainer}>
                     <BlackTag props={props.BlackTag}>START-UP</BlackTag>
                     <BlackTag props={props.BlackTag}>PRE-SEED</BlackTag>
