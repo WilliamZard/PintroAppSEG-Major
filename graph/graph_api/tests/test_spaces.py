@@ -54,24 +54,32 @@ class TestGet:
 @pytest.mark.DELETE_space
 class TestDelete:
     # TODO: some duplicate code here for each endpoint test. Refactor.
-    def test_delete_space_with_valid_email_that_exists(self, app):
-        email = VALID_SPACE_TO_BE_DELETED['email']
-        response = app.delete(f"/spaces/{email}")
+    def test_delete_space_with_valid_email_that_exists(self, app, populate_db):
+        # Generate data
+        space = Space(email='space@test.com')._asdict()
+        space_node = basic_space_node(space)
+
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
+        response = app.delete(f"/spaces/{space['email']}")
         assert response.status == '204 NO CONTENT'
         # TODO: consider using standard json.dumps instead of jsonify
         assert response.data == b''
 
         # Assert space was actually deleted in the database
-        response = app.get(f"/spaces/{email}")
+        response = app.get(f"/spaces/{space['email']}")
         assert response.status == '404 NOT FOUND'
 
     def test_delete_space_with_valid_email_that_does_not_exist(self, app):
-        response = app.delete(f"/spaces/{NONEXISTANT_SPACE_EMAIL}")
+        nonexistant_space_email = 'does@notexist.com'
+        response = app.delete(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_delete_space_with_invalid_email(self, app):
-        response = app.delete(f"/spaces/{INVALID_EMAIL}")
+        invalid_email = "testemail.com"
+        response = app.delete(f"/spaces/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
