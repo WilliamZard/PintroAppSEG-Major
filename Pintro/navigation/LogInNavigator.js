@@ -32,7 +32,9 @@ import WhatsYourBrand from '../Screens/BusinessScreens/WhatsYourBrand';
 import BusinessTeam from '../Screens/BusinessScreens/BusinessTeam';
 import BusinessToMain from '../Screens/BusinessScreens/BusinessToMain';
 import BusinessAccountScreen from '../Screens/BusinessAccountScreen';
-import UserAccountScreen from '../Screens/UserAccountScreen';
+import EditIntro from '../Screens/EditScreens/EditIntro';
+import EditBusinessTags from '../Screens/EditScreens/EditBusinessTags';
+import EditJourney from '../Screens/EditScreens/EditJourney';
 const businessSignUp = createStackNavigator({
 
     LetGetStartet:LetsGetIntoIt
@@ -72,6 +74,21 @@ const SearchNavigator = createStackNavigator({
         headerTitle: '',
     }}
 });
+
+const BusinessNavigator = createStackNavigator({
+    Account:{screen:BusinessAccountScreen,navigationOptions:{
+        headerShown: false
+    }},
+    Intro:{screen:EditIntro,navigationOptions:{
+        headerTitle: '',
+    }},
+    Tags:{screen:EditBusinessTags,navigationOptions:{
+        headerTitle: '',
+    }},
+    Journey:{screen:EditJourney,navigationOptions:{
+        headerTitle: '',  
+    }}
+})
 
 
 const MainNav = createBottomTabNavigator({
@@ -140,7 +157,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     thirdScreen:{
-        screen:BusinessAccountScreen,navigationOptions:{
+        screen:BusinessNavigator,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 
