@@ -4,10 +4,61 @@ import Colors from '../../Constants/Colors.js';
 import BlackTag from '../../Components/BlackTag.js';
 import GreyTag from '../../Components/GreyTag.js';
 import { TextInput, ScrollView } from 'react-native-gesture-handler';
+import data2 from '../../Constants/data2.json';
+import { ListItem } from 'react-native-elements';
+import { fonts } from '../../Constants/Fonts.js';
 
 const EditBusinessTag = props => {
+    const [searchKeyword,setSearchKeyword] = useState();
     const [chosenTags,setChosenTags] = useState([]);
+    const [suggestions,setSuggestions] = useState([]);
+    const [suggestedItems,setItems] = useState([])
     
+    var tagNames = data2.map(function(item) {
+        return item['name'];
+    });
+
+    function onTextChanged(searchWord) {
+        setSearchKeyword(searchWord);
+        if (searchWord.length > 2) {
+            
+            const regex = new RegExp(`^${searchWord}`,'i');
+            //console.log(tagList.sort().filter(v => regex.test(v)));
+            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+        }
+        renderSuggestions();
+    }
+
+    function onListItemPress(item) {
+        //console.log(item);
+       
+        setItems(null);
+        if(!chosenTags.includes(item)){
+            chosenTags.push(item);
+            setChosenTags(chosenTags);
+        }else{
+            setChosenTags(chosenTags.filter((arrayElement)=>arrayElement!==item));
+        }
+       console.log(chosenTags)
+    }
+
+    function renderSuggestions() {
+        if(suggestions.length === 0 || searchKeyword.length < 3) {
+            setItems(null);
+        } else {
+            setItems(suggestions.map((item) => 
+                <ListItem 
+                    key={item}
+                    containerStyle={{width: 300, height: 50}} 
+                    titleStyle={fonts.story} 
+                    title={item}
+                    button
+                    onPress={() => onListItemPress(item)}
+                />)
+            );
+        }
+    }
+
     return(
         <ScrollView>
             <View style={styles.primaryContainer}>
@@ -15,10 +66,15 @@ const EditBusinessTag = props => {
                 <Text style={styles.categorise}>Categorise your business (3 minimum)</Text>
                 <Text style={styles.subtitle}>Choose from the full list</Text>
                 <View style={styles.rowContainer}>
-                    <TextInput style={styles.inputText} onChangeText={value => value}>Start typing...</TextInput>
+                    <TextInput 
+                    style={styles.inputText} 
+                    onChangeText={value => onTextChanged(value)}>
+                        Start typing...
+                    </TextInput>
                     <Picker style={{borderWidth: 1}}></Picker>
                 </View>
                 <View style={styles.horizintalLineStyle}/>
+                {suggestedItems}
                 <Text style={styles.subtitle}>Or choose from the most popular</Text>
                 <View style={styles.tagContainer}>
                     <GreyTag props={props.GreyTag}>FEMINISIM</GreyTag>
