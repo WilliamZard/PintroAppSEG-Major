@@ -11,17 +11,6 @@ from flask.json import jsonify
 from .conftest import app, populate_db
 from .generate_test_data import Space, basic_space_node
 
-from .generate_test_data import (INVALID_EMAIL, INVALID_SPACE_TO_BE_CREATED,
-                                 NONEXISTANT_SPACE_EMAIL, VALID_SPACE,
-                                 VALID_SPACE_TO_BE_CREATED,
-                                 VALID_SPACE_TO_BE_DELETED,
-                                 VALID_SPACE_TO_BE_UPDATED,
-                                 VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS,
-                                 SPACE_WITH_THREE_FOLLOWINGS,
-                                 SPACE_WITH_TWO_FOLLOWINGS,
-                                 SPACE_WITH_ONE_FOLLOWING,
-                                 SPACE_WITH_NO_FOLLOWINGS, SPACE_WITH_FOLLOWINGS_THAT_HAVE_POSTS)
-
 
 @pytest.mark.GET_space
 class TestGet:
