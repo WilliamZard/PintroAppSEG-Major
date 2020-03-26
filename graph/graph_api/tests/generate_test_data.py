@@ -81,6 +81,8 @@ def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties,
 def basic_user_node(user):
     return {'properties': dict(user), 'labels': 'Person'}
 
+def basic_chatroom_node(user):
+    return {'properties': dict(user), 'labels': 'Chatroom'}
 
 def basic_space_node(user):
     return {'properties': dict(user), 'labels': 'Space'}

@@ -1,4 +1,13 @@
+import uuid
+from collections import namedtuple
+
 from .users import User
+
+CHATROOM_PROPERTIES = ['chat_id']
+CHATROOM_DEFAULTS = [str(uuid.uuid4())]
+
+Chatroom = namedtuple('Chatroom', CHATROOM_PROPERTIES,
+                      defaults=CHATROOM_DEFAULTS)
 
 CHATROOM_USERS = [
     User(email='email@email.com')._asdict(),
