@@ -8,7 +8,8 @@ import pytest
 from flask.json import jsonify
 
 #from graph_api import create_app
-from .conftest import app
+from .conftest import app, populate_db
+from .generate_test_data import Space, basic_space_node
 
 from .generate_test_data import (INVALID_EMAIL, INVALID_SPACE_TO_BE_CREATED,
                                  NONEXISTANT_SPACE_EMAIL, VALID_SPACE,
@@ -22,22 +23,30 @@ from .generate_test_data import (INVALID_EMAIL, INVALID_SPACE_TO_BE_CREATED,
                                  SPACE_WITH_NO_FOLLOWINGS, SPACE_WITH_FOLLOWINGS_THAT_HAVE_POSTS)
 
 
-
 @pytest.mark.GET_space
 class TestGet:
-    def test_get_space_with_valid_email_that_exists(self, app):
-        response = app.get(f"/spaces/{VALID_SPACE['email']}")
-        assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_SPACE).data
+    def test_get_space_with_valid_email_that_exists(self, app, populate_db):
+        # Generate data
+        space = Space(email='space@test.com')._asdict()
+        space_node = basic_space_node(space)
 
-    
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
+        response = app.get(f"/spaces/{space['email']}")
+        assert response.status == '200 OK'
+        # TODO: change below assertion to check for length then each individual field.
+        assert response.data == jsonify(space).data
+
     def test_get_space_with_valid_email_that_does_not_exist(self, app):
-        response = app.get(f"/spaces/{NONEXISTANT_SPACE_EMAIL}")
+        nonexistant_space_email = "does@notexist.com"
+        response = app.get(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
     def test_get_space_with_invalid_email(self, app):
-        response = app.get(f"/spaces/{INVALID_EMAIL}")
+        invalid_email = "doesnotexist.com"
+        response = app.get(f"/spaces/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 

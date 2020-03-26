@@ -82,6 +82,10 @@ def basic_user_node(user):
     return {'properties': dict(user), 'labels': 'Person'}
 
 
+def basic_space_node(user):
+    return {'properties': dict(user), 'labels': 'Space'}
+
+
 def basic_business_node(business):
     return {'properties': dict(business), 'labels': 'Business'}
 
