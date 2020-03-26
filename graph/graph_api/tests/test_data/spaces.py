@@ -20,7 +20,7 @@ SPACE_DEFAULTS = [
     "Default Email"]
 
 Space = namedtuple('Space', SPACE_PROPERTIES, defaults=SPACE_DEFAULTS)
-
+"""
 VALID_SPACE = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Sara_A_Lovelace', '911',
                                           'not godless', 'strand', 'nothing_ucl@kcl.ac.uk', 'What is GKT?']))
 
@@ -78,3 +78,4 @@ SPACE_THAT_POSTED_POST_B = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Mgf
 NONEXISTANT_SPACE_EMAIL = 'does@exist.not'
 
 INVALID_EMAIL = 'invalidateme.now'
+"""

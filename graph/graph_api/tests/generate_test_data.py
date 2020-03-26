@@ -14,6 +14,7 @@ from .test_data.spaces import *
 from .test_data.chatrooms import *
 from .test_data.notifications import *
 
+"""
 USERS_TO_TEST = [
     DEACTIVATED_USER,
     ACTIVATED_USER,
@@ -49,8 +50,10 @@ for user in USERS_TO_TEST:
     user.pop('passions')
     user.pop('help_others')
     create_user_query = "CREATE (new_user: Person {" + ", ".join(
-        f"""{k}: \"{v}\"""" for (k, v) in user.items()) + "})"
+        f"{k}: \"{v}\" for (k, v) in user.items()) + "})"
     CREATE_TEST_USERS.append(create_user_query)
+
+"""
 
 
 def create_node(tx, labels, properties):
@@ -81,8 +84,10 @@ def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties,
 def basic_user_node(user):
     return {'properties': dict(user), 'labels': 'Person'}
 
+
 def basic_chatroom_node(user):
     return {'properties': dict(user), 'labels': 'Chatroom'}
+
 
 def basic_space_node(user):
     return {'properties': dict(user), 'labels': 'Space'}
@@ -120,82 +125,78 @@ def basic_business_node(business):
         created: datetime('{USER_POST_A['created']}'),
         modified: datetime('{USER_POST_A['modified']}')
         }})
-    
+
     CREATE (post_e:Post {{uuid: '{USER_POST_B['uuid']}',
         content:'{USER_POST_B['content']}',
         created: datetime('{USER_POST_B['created']}'),
         modified: datetime('{USER_POST_B['modified']}')
         }})
-    
+
     CREATE (user_a)-[:POSTED]->(post_a)
     CREATE (user_a)-[:POSTED]->(post_b)
     CREATE (user_a)-[:POSTED]->(post_c)
 
     CREATE (user_b)-[:POSTED]->(post_d)
     CREATE (user_c)-[:POSTED]->(post_e)
-"""
+CREATE_FOLLOWS_FOR_POSTS_USERS = f""
+MATCH(user_a: Person {{email: '{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}'}})
+MATCH(user_b: Person {{email: '{USER_THAT_POSTED_POST_A['email']}'}})
+MATCH(user_c: Person {{email: '{USER_THAT_POSTED_POST_B['email']}'}})
+CREATE(user_a)-[:FOLLOWS] -> (user_b)
+CREATE(user_a)-[:FOLLOWS] -> (user_c)
 
-CREATE_FOLLOWS_FOR_POSTS_USERS = f"""
-    MATCH (user_a:Person {{email:'{USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS['email']}'}})
-    MATCH (user_b:Person {{email:'{USER_THAT_POSTED_POST_A['email']}'}})
-    MATCH (user_c:Person {{email:'{USER_THAT_POSTED_POST_B['email']}'}})
-    CREATE (user_a)-[:FOLLOWS]->(user_b)
-    CREATE (user_a)-[:FOLLOWS]->(user_c)
-"""
+FOLLOWS_AA = f""
+MATCH(user_a: Person {{email: '{USER_FOLLOWING['email']}'}})
+MATCH(user_b: Person {{email: '{USER_BEING_FOLLOWED['email']}'}})
+CREATE(user_a)-[:FOLLOWS] -> (user_b)
 
-FOLLOWS_AA = f"""
-    MATCH (user_a:Person {{email:'{USER_FOLLOWING['email']}'}})
-    MATCH (user_b:Person {{email:'{USER_BEING_FOLLOWED['email']}'}})
-    CREATE (user_a)-[:FOLLOWS]->(user_b)
-"""
+CREATE_FOLLOW_REQUESTS = f""
+MATCH(user_a: Person {{email: '{FOLLOW_REQUESTER_A['email']}'}})
+MATCH(user_b: Person {{email: '{FOLLOW_REQUESTER_B['email']}'}})
+MATCH(user_c: Person {{email: '{FOLLOW_REQUEST_RECIPIENT['email']}'}})
+CREATE(user_a)-[:REQUESTED_FOLLOW] -> (user_c)
+CREATE(user_b)-[:REQUESTED_FOLLOW] -> (user_c)
+""
 
-CREATE_FOLLOW_REQUESTS = f"""
-    MATCH (user_a:Person {{email:'{FOLLOW_REQUESTER_A['email']}'}})
-    MATCH (user_b:Person {{email:'{FOLLOW_REQUESTER_B['email']}'}})
-    MATCH (user_c:Person {{email:'{FOLLOW_REQUEST_RECIPIENT['email']}'}})
-    CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_c)
-    CREATE (user_b)-[:REQUESTED_FOLLOW]->(user_c)
-"""
+CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST = f""
+MATCH(user_a: Person {{email: '{USER_REQUESTING_USER_WITH_NOTIFICATIONS_A['email']}'}})
+MATCH(user_b: Business {{email: '{BUSINESS_REQUESTING_AFFILIATION_TO_USER['email']}'}})
+MATCH(user_c: Person {{email: '{USER_WITH_NOTIFICATIONS['email']}'}})
+CREATE(user_a)-[:REQUESTED_FOLLOW] -> (user_c)
+CREATE(user_b)-[:REQUESTED_AFFILIATION] -> (user_c)
+""
 
-CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST = f"""
-    MATCH (user_a:Person {{email:'{USER_REQUESTING_USER_WITH_NOTIFICATIONS_A['email']}'}})
-    MATCH (user_b:Business {{email:'{BUSINESS_REQUESTING_AFFILIATION_TO_USER['email']}'}})
-    MATCH (user_c:Person {{email:'{USER_WITH_NOTIFICATIONS['email']}'}})
-    CREATE (user_a)-[:REQUESTED_FOLLOW]->(user_c)
-    CREATE (user_b)-[:REQUESTED_AFFILIATION]->(user_c)
-"""
+RELATIONSHIPS_FOLLOWS_USER_A = f""
+MATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
+MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
+MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
+MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
+CREATE(user_a)-[:FOLLOWS] -> (user_b)
+CREATE(user_a)-[:FOLLOWS] -> (user_c)
+CREATE(user_a)-[:FOLLOWS] -> (user_d)""
 
-RELATIONSHIPS_FOLLOWS_USER_A = f"""
-    MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
-    MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
-    MATCH (user_c:Person {{email:'{USER_WITH_ONE_FOLLOWING['email']}'}})
-    MATCH (user_d:Person {{email:'{USER_WITH_NO_FOLLOWINGS['email']}'}})
-    CREATE (user_a)-[:FOLLOWS]->(user_b)
-    CREATE (user_a)-[:FOLLOWS]->(user_c)
-    CREATE (user_a)-[:FOLLOWS]->(user_d)"""
+RELATIONSHIPS_FOLLOWS_USER_B = f""
+MATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
+MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
+MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
+MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
+CREATE(user_b)-[:FOLLOWS] -> (user_c)
+CREATE(user_b)-[:FOLLOWS] -> (user_d)""
 
-RELATIONSHIPS_FOLLOWS_USER_B = f"""
-    MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
-    MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
-    MATCH (user_c:Person {{email:'{USER_WITH_ONE_FOLLOWING['email']}'}})
-    MATCH (user_d:Person {{email:'{USER_WITH_NO_FOLLOWINGS['email']}'}})
-    CREATE (user_b)-[:FOLLOWS]->(user_c)
-    CREATE (user_b)-[:FOLLOWS]->(user_d)"""
+RELATIONSHIPS_FOLLOWS_USER_C = f""
+MATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
+MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
+MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
+MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
+CREATE(user_c)-[:FOLLOWS] -> (user_d)""
 
-RELATIONSHIPS_FOLLOWS_USER_C = f"""
-    MATCH (user_a:Person {{email:'{USER_WITH_THREE_FOLLOWINGS['email']}'}})
-    MATCH (user_b:Person {{email:'{USER_WITH_TWO_FOLLOWINGS['email']}'}})
-    MATCH (user_c:Person {{email:'{USER_WITH_ONE_FOLLOWING['email']}'}})
-    MATCH (user_d:Person {{email:'{USER_WITH_NO_FOLLOWINGS['email']}'}})
-    CREATE (user_c)-[:FOLLOWS]->(user_d)"""
+CREATE_AFFILIATION_REQUESTS = f""
+MATCH(user_a: Business {{email: '{AFFILIATION_REQUESTER_A['email']}'}})
+MATCH(user_b: Business {{email: '{AFFILIATION_REQUESTER_B['email']}'}})
+MATCH(user_c: Person {{email: '{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
+CREATE(user_a)-[:REQUESTED_AFFILIATION] -> (user_c)
+CREATE(user_b)-[:REQUESTED_AFFILIATION] -> (user_c)
 
-CREATE_AFFILIATION_REQUESTS = f"""
-    MATCH (user_a:Business {{email:'{AFFILIATION_REQUESTER_A['email']}'}})
-    MATCH (user_b:Business {{email:'{AFFILIATION_REQUESTER_B['email']}'}})
-    MATCH (user_c:Person {{email:'{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
-    CREATE (user_a)-[:REQUESTED_AFFILIATION]->(user_c)
-    CREATE (user_b)-[:REQUESTED_AFFILIATION]->(user_c)
-"""
 
 CONSTRAINT_USER_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
 CONSTRAINT_USER_EMAIL_EXISTS = "CREATE CONSTRAINT ON(user: Person) ASSERT EXISTS (user.email)"
@@ -208,16 +209,16 @@ TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
 create_tag_queries = []
 for tag, tag_labels in zip(TAGS, TAG_LABELS):
     labels = ':'.join(tag_labels)
-    query = f"""CREATE (new_tag:{labels} {{name: "{tag['name']}", created: datetime("{tag['created']}"), uuid: "{tag['uuid']}"}})"""
+    query = f""CREATE(new_tag: {labels} {{name: "{tag['name']}", created: datetime("{tag['created']}"), uuid: "{tag['uuid']}"}})""
     create_tag_queries.append(query)
 
-ASSOCIATE_VALID_USER_TO_THEIR_TAGS = f"""
-MATCH (valid_user:Person {{email: '{VALID_USER['email']}'}})
-MATCH (tag_a:Tag {{uuid: '{COLES_TAG['uuid']}'}})
-MATCH (tag_b:Tag {{uuid: '{KING_SLAYER_TAG['uuid']}'}})
-CREATE (valid_user)-[:TAGGED]->(tag_a)
-CREATE (valid_user)-[:TAGGED]->(tag_b)
-"""
+ASSOCIATE_VALID_USER_TO_THEIR_TAGS = f
+MATCH(valid_user: Person {{email: '{VALID_USER['email']}'}})
+MATCH(tag_a: Tag {{uuid: '{COLES_TAG['uuid']}'}})
+MATCH(tag_b: Tag {{uuid: '{KING_SLAYER_TAG['uuid']}'}})
+CREATE(valid_user)-[:TAGGED] -> (tag_a)
+CREATE(valid_user)-[:TAGGED] -> (tag_b)
+"
 
 BUSINESSES_TO_TEST = [
     VALID_BUSINESS,
@@ -363,3 +364,4 @@ queries = [
     CREATE_CHATROOM_RELATIONSHIPS_C,
     CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST
 ]
+"""

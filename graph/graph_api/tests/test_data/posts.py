@@ -1,6 +1,5 @@
 import uuid
 import datetime
-from .users import USER_WITH_MULTIPLE_POSTS
 
 from collections import namedtuple
 
@@ -22,6 +21,7 @@ POST_DEFAULTS = ['default_content', NOW, NOW, uuid.uuid4()]
 
 Post = namedtuple('Post', POST_PROPERTIES, defaults=POST_DEFAULTS)
 
+"""
 # TODO: adjust existing_user data to fit data model
 EXISTING_POST = Post(content='content_x')
 NON_EXISTING_POST_UUID = 'uuid'
@@ -45,7 +45,6 @@ USER_POST_A = dict(
 USER_POST_B = dict(
     zip(POST_PROPERTIES, ['Post B Content', NOW, NOW, str(uuid.uuid4())]))
 
-"""
 # The first 2 posts will be assigned to USER_WITH_MULTIPLE_POSTS
 USER_POST_A = dict(zip(POST_PROPERTIES, ['post2']))
 USER_POST_B = dict(zip(POST_PROPERTIES, ['post1']))
@@ -70,4 +69,5 @@ USER_WITH_ONE_FOLLOWING_POST_A = dict(
 USER_WITH_NO_FOLLOWINGS_POST_A = dict(
     zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS first post']))
 USER_WITH_NO_FOLLOWINGS_POST_B = dict(
-    zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS second post']))"""
+    zip(POST_PROPERTIES, ['USER_WITH_NO_FOLLOWINGS second post']))
+"""

@@ -3,7 +3,6 @@ import json
 
 from .conftest import app, populate_db
 from flask.json import jsonify
-from .generate_test_data import LABEL_TAG, LABEL_PASSION, LABEL_SKILL, KING_SLAYER_TAG, COLES_TAG, KING_SLAYER_LABELS, COLES_LABELS, TAG_PROPERTIES
 from .test_data.tags import Tag
 
 

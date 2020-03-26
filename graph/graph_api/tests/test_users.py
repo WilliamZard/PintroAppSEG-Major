@@ -6,17 +6,6 @@ from flask.json import jsonify
 from .generate_test_data import User
 
 from .conftest import app, populate_db
-from .generate_test_data import (INVALID_USER_TO_BE_CREATED,
-                                 VALID_USER,
-                                 VALID_USER_TO_BE_CREATED,
-                                 VALID_USER_TO_BE_DELETED,
-                                 VALID_USER_TO_BE_UPDATED,
-                                 VALID_USER_TO_BE_UPDATED_NEW_FIELDS,
-                                 USER_WITH_THREE_FOLLOWINGS,
-                                 USER_WITH_TWO_FOLLOWINGS,
-                                 USER_WITH_ONE_FOLLOWING,
-                                 USER_WITH_NO_FOLLOWINGS, USER_WITH_FOLLOWINGS_THAT_HAVE_POSTS,
-                                 USER_POST_A, USER_POST_B, AFFILIATION_REQUESTER_A, DEACTIVATED_USER, ACTIVATED_USER, USER_THAT_POSTED_POST_A, USER_THAT_POSTED_POST_B)
 
 
 @pytest.mark.GET_user

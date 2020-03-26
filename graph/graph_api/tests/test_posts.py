@@ -5,12 +5,6 @@ import pytest
 from flask.json import jsonify
 
 from .conftest import app, populate_db
-from .generate_test_data import (POST_UPDATE_A, POST_UPDATE_B, USER_POST_A,
-                                 USER_POST_B,
-                                 USER_WITH_MULTIPLE_POSTS)
-from .test_data.posts import (EXISTING_POST, NON_EXISTING_POST_UUID,
-                              POST_TO_BE_CREATED,
-                              POST_TO_BE_UPDATED_THAT_EXISTS, UUID_OF_POST_TO_BE_DELETED)
 from .test_data.posts import Post
 from .test_data.users import User
 

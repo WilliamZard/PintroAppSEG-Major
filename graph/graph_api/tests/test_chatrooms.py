@@ -2,9 +2,6 @@
 
 import pytest
 from .conftest import app, populate_db
-from .generate_test_data import (CHATROOMS, CHATROOM_USERS, NONEXISTANT_CHATROOM_ID,
-                                 VALID_CHATROOM_TO_BE_DELETED, VALID_CHATROOM_TO_BE_DELETED_USERS,
-                                 CHATROOM_TO_BE_CREATED_USERS, NONEXISTANT_USER_EMAIL)
 from .generate_test_data import User, basic_user_node, Chatroom, basic_chatroom_node
 
 

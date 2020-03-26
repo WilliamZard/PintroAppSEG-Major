@@ -3,7 +3,7 @@ from flask import json
 from flask.json import jsonify
 
 from .conftest import app
-from .test_data.search import *
+#from .test_data.search import *
 
 
 @pytest.mark.POST_search
@@ -22,35 +22,38 @@ class TestPOST:
             return all the nodes in the database which doesn't make sense in any situation
         '''
         response = app.post("/search/", json=EMPTY_STRING_SEARCH['request'])
-        
+
         assert response.status == '200 OK'
         assert response.get_json() == EMPTY_STRING_SEARCH['result']
 
-    def test_query_that_partially_matches_full_names_or_emails_should_return_correct_nodes(self,app):
+    def test_query_that_partially_matches_full_names_or_emails_should_return_correct_nodes(self, app):
         ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
             return all the nodes in the database which doesn't make sense in any situation
         '''
 
-        response = app.post("/search/", json=VALID_MATCHING_NAME_OR_EMAIL_SEARCH['request'])
+        response = app.post(
+            "/search/", json=VALID_MATCHING_NAME_OR_EMAIL_SEARCH['request'])
         json_response = response.get_json()
-        for element in json_response: 
+        for element in json_response:
             del element['score']
             del element['profile_type']
 
         for element in VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result']:
             if 'tags' in element:
                 del element['tags']
-        
-        assert response.status == '200 OK'
-        assert ordered(json_response) == ordered(VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
 
-    def test_query_that_partially_matches_stories_should_return_correct_nodes(self,app):
+        assert response.status == '200 OK'
+        assert ordered(json_response) == ordered(
+            VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result'])
+
+    def test_query_that_partially_matches_stories_should_return_correct_nodes(self, app):
         ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
             return all the nodes in the database which doesn't make sense in any situation
         '''
-        response = app.post("/search/", json=MATCHING_STORY_OR_EVENTS_SEARCH['request'])
+        response = app.post(
+            "/search/", json=MATCHING_STORY_OR_EVENTS_SEARCH['request'])
         json_response = response.get_json()
-        for element in json_response: 
+        for element in json_response:
             del element['score']
             del element['profile_type']
         for element in MATCHING_STORY_OR_EVENTS_SEARCH['result']:
@@ -58,24 +61,26 @@ class TestPOST:
                 del element['tags']
 
         assert response.status == '200 OK'
-        assert ordered(json_response) == ordered(MATCHING_STORY_OR_EVENTS_SEARCH['result'])
-    
-    def test_query_that_partially_matches_short_bios_should_return_correct_nodes(self,app):
+        assert ordered(json_response) == ordered(
+            MATCHING_STORY_OR_EVENTS_SEARCH['result'])
+
+    def test_query_that_partially_matches_short_bios_should_return_correct_nodes(self, app):
         ''' A query done with a string of length 0 shouldn't return any node because otherwise it would 
             return all the nodes in the database which doesn't make sense in any situation
         '''
-        response = app.post("/search/", json=MATCHING_SHORT_BIO_SEARCH['request'])
+        response = app.post(
+            "/search/", json=MATCHING_SHORT_BIO_SEARCH['request'])
         json_response = response.get_json()
-        for element in json_response: 
+        for element in json_response:
             del element['score']
             del element['profile_type']
         for element in VALID_MATCHING_NAME_OR_EMAIL_SEARCH['result']:
             if 'tags' in element:
                 del element['tags']
-        
-        assert response.status == '200 OK'
-        assert ordered(json_response) == ordered(MATCHING_SHORT_BIO_SEARCH['result'])
 
+        assert response.status == '200 OK'
+        assert ordered(json_response) == ordered(
+            MATCHING_SHORT_BIO_SEARCH['result'])
 
 
 def ordered(obj):

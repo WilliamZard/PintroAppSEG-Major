@@ -1,6 +1,5 @@
 # USERS
 from collections import namedtuple
-from .tags import COLES_TAG, KING_SLAYER_TAG
 # TODO: what about using a dictionary to describe data needed for each test? Could give it some structure.
 
 active = True
@@ -18,7 +17,7 @@ USER_DEFAULTS = [
     'Default Academic Level', 'Default Location', '01/01/1812', [], [], 'True']
 
 User = namedtuple('User', USERS_PROPERTIES, defaults=USER_DEFAULTS)
-
+"""
 # TODO: fill in tags
 VALID_USER_PASSIONS = []
 VALID_USER_SKILLS = []
@@ -71,3 +70,4 @@ USER_WITH_NO_NOTIFICATIONS = User(email='covid@kcl.ac.uk')._asdict()
 
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
+"""
