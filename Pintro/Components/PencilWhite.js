@@ -4,7 +4,7 @@ import { StyleSheet,TouchableOpacity,Image,Dimensions } from 'react-native';
 const PencilWhite = props => {
     
     return(
-        <TouchableOpacity style={styles.imageContainer}>
+        <TouchableOpacity style={styles.imageContainer} onPress={props.onPress}>
             <Image source={require('../assets/whitePencil.png')} style={{height: 20, width: 20}}/>
         </TouchableOpacity> 
     );

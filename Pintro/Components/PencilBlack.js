@@ -4,7 +4,7 @@ import { StyleSheet,TouchableOpacity,Image } from 'react-native';
 const PencilBlack = props => {
 
     return(
-        <TouchableOpacity>
+        <TouchableOpacity onPress={props.onPress}>
             <Image source={require('../assets/blackPencil.png')} style={styles.image}/>
         </TouchableOpacity> 
     );
