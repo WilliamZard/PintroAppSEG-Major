@@ -41,8 +41,11 @@ const BusinessAccountScreen = props => {
             setLineNumber(4);
             setSee("More");
             setMore(true);
-        }
-        
+        }   
+    }
+
+    function switchEditIntro() {
+        props.navigation.navigate('Intro');
     }
 
 
@@ -58,7 +61,7 @@ const BusinessAccountScreen = props => {
             <View style={styles.whiteContainer}>
                 <View style={styles.topRow}>
                     <Text style={styles.slogan}>{businessObj.short_bio}</Text>
-                    <PencilBlack style={{marginTop: 10}}/>    
+                    <PencilBlack style={{marginTop: 10}} onPress={() => switchEditIntro()}/>    
                 </View>
                 <Text style={styles.businessName}>{businessObj.full_name}</Text>
                 <View style={styles.rowContainer}>
