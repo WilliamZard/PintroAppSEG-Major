@@ -26,9 +26,9 @@ const EditIntro = props => {
         "story": "Lorem ipsum dolor sit amet, consecteteur adipiscing elit, sed do eiusmod tempor incididunt utt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut  aliquip ex ea commod consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum."
     }
 
-    const [name,setName] = useState(item.full_name);
-    const [bio,setBio] = useState(item.short_bio);
-    const [story,setStory] = useState(item.story);
+    const [name,setName] = useState(props.navigation.state.params.business.full_name);
+    const [bio,setBio] = useState(props.navigation.state.params.business.short_bio);
+    const [story,setStory] = useState(props.navigation.state.params.business.story);
 
     function onItemPress1(value) {
         setSelectedValue1(value);
@@ -55,21 +55,42 @@ const EditIntro = props => {
         }
     }
 
-    function onPressDone() {
-        console.log(name);
-        console.log(bio);
+    async function onPressDone() {
+        console.log("Name: " + name);
+        console.log("Bio: " + bio);
+        console.log("Story: " + story);
+        const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                redirect: 'follow',
+                body: JSON.stringify({
+                    email: props.navigation.state.params.business.email,
+                    password: props.navigation.state.params.business.password,
+                    full_name: name,
+                    profile_image: props.navigation.state.params.business.profile_image,
+                    phone: props.navigation.state.params.business.phone,
+                    location: props.navigation.state.params.business.location,
+                    short_bio: bio,
+                    story: story
+                })
+            }
+        );
+        console.log(response.status);
     }
 
     function updateName(newName) {
-        setName(newName);
+        setName(newName.replace(/'/g,"\\'"));
     }
 
     function updateBio(newBio) {
-        setBio(newBio);
+        setBio(newBio.replace(/'/g,"\\'"));
     }
 
     function updateStory(newStory) {
-        setStory(newStory);
+        setStory(newStory.replace(/'/g,"\\'"));
     }
 
     function onPressHiring() {
@@ -87,10 +108,10 @@ const EditIntro = props => {
                 <Text style={styles.title}>Edit your intro</Text>
                 <Text style={styles.build}>Build your company profile</Text>
                 <Text style={styles.subtitle}>Company Name</Text>
-                <TextInput style={styles.inputText} onChangeText={value => updateName(value)}>{item.full_name}</TextInput>
+                <TextInput style={styles.inputText} onChangeText={value => updateName(value)}>{props.navigation.state.params.business.full_name}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Tagline</Text>
-                <TextInput style={styles.inputText} onChangeText={value => updateBio(value)}>{item.short_bio}</TextInput>
+                <TextInput style={styles.inputText} onChangeText={value => updateBio(value)}>{props.navigation.state.params.business.short_bio}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Are you..?</Text>
                 <View style={styles.buttonContainer}>
@@ -108,7 +129,7 @@ const EditIntro = props => {
                     </TouchableOpacity>
                 </View>                
                 <Text style={styles.subtitle}>Company Story</Text>
-                <TextInput style={styles.inputText} multiline={true} onChangeText={value => updateStory(value)}>{item.story}</TextInput>
+                <TextInput style={styles.inputText} multiline={true} onChangeText={value => updateStory(value)}>{props.navigation.state.params.business.story}</TextInput>
                 <View style={styles.horizintalLineStyle}></View>
                 <Text style={styles.subtitle}>Social Media</Text>
                 <View style={styles.rowContainer}>
