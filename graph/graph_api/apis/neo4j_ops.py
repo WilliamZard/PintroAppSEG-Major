@@ -307,23 +307,27 @@ def get_nodes_for_tag_search(tx, search_string):
                 RETURN node, score"""
     return tx.run(query) 
 
-def get_users_with_tag(tx, tag):
-    query = f"""OPTIONAL MATCH (user:Person)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
-                RETURN user LIMIT 10
+# def get_users_with_tag(tx, tag):
+#     query = f"""OPTIONAL MATCH (node:Person)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
+#                 RETURN user LIMIT 10
+#             """
+#     return tx.run(query)
+
+def get_accounts_with_tag(tx, tag, label):
+    # query = f"""OPTIONAL MATCH (business:Business)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
+    #             RETURN business LIMIT 10
+    #          """
+    query = f"""MATCH (node:{label}) 
+                WHERE any(x IN node.tags WHERE x = '{tag}')
+                RETURN node LIMIT 10
             """
     return tx.run(query)
 
-def get_businesses_with_tag(tx, tag):
-    query = f"""OPTIONAL MATCH (business:Business)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
-                RETURN business LIMIT 10
-             """
-    return tx.run(query)
-
-def get_spaces_with_tag(tx, tag):
-    query = f"""OPTIONAL MATCH (space:Space)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
-                RETURN space LIMIT 10
-             """
-    return tx.run(query)
+# def get_spaces_with_tag(tx, tag):
+#     query = f"""OPTIONAL MATCH (node:Space)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
+#                 RETURN space LIMIT 10
+#              """
+#     return tx.run(query)
 
 def get_posts_of_followings_of_a_user(tx, email):
     query = f"""
