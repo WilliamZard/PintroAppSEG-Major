@@ -19,6 +19,7 @@ api = Namespace('businesses', title='Business related operations')
 # Schema used for serialisations
 
 
+
 class BusinessSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
@@ -28,6 +29,7 @@ class BusinessSchema(Schema):
     location = fields.String()
     short_bio = fields.String()
     story = fields.String()
+    tags = fields.List(fields.String())
 
 
 # Schema used for doc generation
