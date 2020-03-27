@@ -8,36 +8,37 @@ import pytest
 from flask.json import jsonify
 
 #from graph_api import create_app
-from .conftest import app
-
-from .generate_test_data import (INVALID_EMAIL, INVALID_SPACE_TO_BE_CREATED,
-                                 NONEXISTANT_SPACE_EMAIL, VALID_SPACE,
-                                 VALID_SPACE_TO_BE_CREATED,
-                                 VALID_SPACE_TO_BE_DELETED,
-                                 VALID_SPACE_TO_BE_UPDATED,
-                                 VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS,
-                                 SPACE_WITH_THREE_FOLLOWINGS,
-                                 SPACE_WITH_TWO_FOLLOWINGS,
-                                 SPACE_WITH_ONE_FOLLOWING,
-                                 SPACE_WITH_NO_FOLLOWINGS, SPACE_WITH_FOLLOWINGS_THAT_HAVE_POSTS)
-
+from .conftest import app, populate_db
+from .generate_test_data import Space, basic_space_node
 
 
 @pytest.mark.GET_space
 class TestGet:
-    def test_get_space_with_valid_email_that_exists(self, app):
-        response = app.get(f"/spaces/{VALID_SPACE['email']}")
-        assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_SPACE).data
+    def test_get_space_with_valid_email_that_exists(self, app, populate_db):
+        # Generate data
+        space = Space(email='space@test.com')._asdict()
+        space_node = basic_space_node(space)
 
-    
-    def test_get_space_with_valid_email_that_does_not_exist(self, app):
-        response = app.get(f"/spaces/{NONEXISTANT_SPACE_EMAIL}")
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
+        response = app.get(f"/spaces/{space['email']}")
+        assert response.status == '200 OK'
+        # TODO: change below assertion to check for length then each individual field.
+        assert response.data == jsonify(space).data
+
+    def test_get_space_with_valid_email_that_does_not_exist(self, app, populate_db):
+        populate_db()
+        nonexistant_space_email = "does@notexist.com"
+        response = app.get(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_get_space_with_invalid_email(self, app):
-        response = app.get(f"/spaces/{INVALID_EMAIL}")
+    def test_get_space_with_invalid_email(self, app, populate_db):
+        populate_db()
+
+        invalid_email = "doesnotexist.com"
+        response = app.get(f"/spaces/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
@@ -45,45 +46,81 @@ class TestGet:
 @pytest.mark.DELETE_space
 class TestDelete:
     # TODO: some duplicate code here for each endpoint test. Refactor.
-    def test_delete_space_with_valid_email_that_exists(self, app):
-        email = VALID_SPACE_TO_BE_DELETED['email']
-        response = app.delete(f"/spaces/{email}")
+    def test_delete_space_with_valid_email_that_exists(self, app, populate_db):
+        # Generate data
+        space = Space(email='space@test.com')._asdict()
+        space_node = basic_space_node(space)
+
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
+        response = app.delete(f"/spaces/{space['email']}")
         assert response.status == '204 NO CONTENT'
         # TODO: consider using standard json.dumps instead of jsonify
         assert response.data == b''
 
         # Assert space was actually deleted in the database
-        response = app.get(f"/spaces/{email}")
+        response = app.get(f"/spaces/{space['email']}")
         assert response.status == '404 NOT FOUND'
 
-    def test_delete_space_with_valid_email_that_does_not_exist(self, app):
-        response = app.delete(f"/spaces/{NONEXISTANT_SPACE_EMAIL}")
+    def test_delete_space_with_valid_email_that_does_not_exist(self, app, populate_db):
+        populate_db()
+
+        nonexistant_space_email = 'does@notexist.com'
+        response = app.delete(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_delete_space_with_invalid_email(self, app):
-        response = app.delete(f"/spaces/{INVALID_EMAIL}")
+    def test_delete_space_with_invalid_email(self, app, populate_db):
+        populate_db()
+
+        invalid_email = "testemail.com"
+        response = app.delete(f"/spaces/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
 
 @pytest.mark.PUT_space
 class TestPut:
-    def test_put_space_with_valid_email_that_exists(self, app):
+    def test_put_space_with_valid_email_that_exists(self, app, populate_db):
+        # Generate data
+        space = Space(email='space@test.com')._asdict()
+        space_node = basic_space_node(space)
+
+        new_space = Space(email='space@test.com',
+                          short_bio='not default')._asdict()
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
         response = app.put(
-            f"/spaces/{VALID_SPACE_TO_BE_UPDATED['email']}", json=VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS)
+            f"/spaces/{space['email']}", json=dict(new_space))
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    def test_put_space_with_valid_email_that_does_not_exist(self, app):
+    def test_put_space_with_valid_email_that_does_not_exist(self, app, populate_db):
+        # Generate Data
+        nonexistant_email = 'does@notexist.com'
+        new_space = Space(email='space@test.com',
+                          short_bio='not default')._asdict()
+        populate_db()
+
+        # Test
         response = app.put(
-            f"/spaces/{NONEXISTANT_SPACE_EMAIL}", json=VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS)
+            f"/spaces/{nonexistant_email}", json=dict(new_space))
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_put_space_with_invalid_email(self, app):
+    def test_put_space_with_invalid_email(self, app, populate_db):
+        # Generate Data
+        invalid_email = "invalidemail.com"
+        new_space = Space(email='space@test.com',
+                          short_bio='not default')._asdict()
+        
+        populate_db()
+
+        # Test
         response = app.put(
-            f"/spaces/{INVALID_EMAIL}", json=VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS)
+            f"/spaces/{invalid_email}", json=dict(new_space))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
@@ -92,25 +129,42 @@ class TestPut:
 
 @pytest.mark.POST_space
 class TestPost:
-    def test_post_space_with_valid_payload_that_does_not_exist(self, app):
+    def test_post_space_with_valid_payload_that_does_not_exist(self, app, populate_db):
+        # Generate Data
+        space = Space(email='new_space@test.com')._asdict()
+        populate_db()
+
+        # Test
         response = app.post(
-            "/spaces/", json=VALID_SPACE_TO_BE_CREATED)
+            "/spaces/", json=dict(space))
         assert response.status == '201 CREATED'
         assert response.data == b''
 
         # Assert space was actually created in the database
-        response = app.get(f"/spaces/{VALID_SPACE_TO_BE_CREATED['email']}")
+        response = app.get(f"/spaces/{space['email']}")
         assert response.status == '200 OK'
-        assert response.data == jsonify(VALID_SPACE_TO_BE_CREATED).data
+        assert response.data == jsonify(space).data
 
-    def test_post_space_with_valid_payload_that_exists(self, app):
+    def test_post_space_with_valid_payload_that_exists(self, app, populate_db):
+        # Generate Data
+        space = Space(email='validspace@test.com')._asdict()
+        space_node = basic_space_node(space)
+
+        populate_db(nodes_to_create=[space_node])
+
+        # Test
         response = app.post(
-            "/spaces/", json=VALID_SPACE)
+            "/spaces/", json=dict(space))
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
-    def test_post_space_with_invalid_payload(self, app):
+    def test_post_space_with_invalid_payload(self, app, populate_db):
+        # Generate Data
+        space = Space(email='invalidspactest.com')._asdict()
+        populate_db()
+
+        # Test
         response = app.post(
-            "/spaces/", json=INVALID_SPACE_TO_BE_CREATED)
+            "/spaces/", json=dict(space))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
