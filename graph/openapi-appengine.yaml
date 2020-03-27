@@ -9,14 +9,70 @@ consumes:
   - application/json
 tags:
   - name: users
+  - name: businesses
+  - name: spaces
   - name: posts
   - name: following
+  - name: search
+  - name: tags
 schemes:
 - "https"
 host: "bluej-pintro-project.appspot.com"
 # [END swagger]
 basePath: /
 paths:
+  /businesses:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Businesses'
+    post:
+      responses:
+        '204':
+          description: Business created
+        '409':
+          description: Business with that email already exists
+      summary: Create a business
+      operationId: create_business
+      tags:
+        - businesses
+  '/businesses/{email}':
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Businesses'
+      - name: email
+        in: path
+        required: true
+        type: string
+    put:
+      responses:
+        '204':
+          description: Business Fields Deleted
+      summary: Update a business by the given fields
+      operationId: update_business
+      tags:
+        - businesses
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a business given its email
+      operationId: get_businesses
+      tags:
+        - businesses
+    delete:
+      responses:
+        '204':
+          description: Business Deleted
+      summary: Delete a business given its email
+      operationId: delete_business
+      tags:
+        - businesses
   '/following/{follower_email}/{following_email}':
     parameters:
       - name: follower_email
@@ -68,22 +124,6 @@ paths:
         in: path
         required: true
         type: string
-    delete:
-      responses:
-        '204':
-          description: Post deleted
-      summary: Delete a post given its uuid
-      operationId: delete_post
-      tags:
-        - posts
-    get:
-      responses:
-        '200':
-          description: Success
-      summary: Fetch a post based on its UUID
-      operationId: get_posts
-      tags:
-        - posts
     put:
       responses:
         '204':
@@ -98,6 +138,111 @@ paths:
             $ref: '#/definitions/Post'
       tags:
         - posts
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a post based on its UUID
+      operationId: get_posts
+      tags:
+        - posts
+    delete:
+      responses:
+        '204':
+          description: Post deleted
+      summary: Delete a post given its uuid
+      operationId: delete_post
+      tags:
+        - posts
+  /search:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Query'
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: >-
+        Search users, business accounts, or co-working spaces given some
+        keywords
+      description: >-
+        It returns a record. It limits the result to only contain at most 10
+        spaces,
+
+        business profiles, or users.
+      operationId: search_query
+      tags:
+        - search
+  /spaces:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Spaces'
+    post:
+      responses:
+        '204':
+          description: Co-working space created
+        '409':
+          description: Co-working space with that email already exists
+      summary: Create a co-working space
+      operationId: create_space
+      tags:
+        - spaces
+  '/spaces/{email}':
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Spaces'
+      - name: email
+        in: path
+        required: true
+        type: string
+    put:
+      responses:
+        '204':
+          description: Co-working Space Fields Deleted
+      summary: Update a co-working space by the given fields
+      operationId: update_space
+      tags:
+        - spaces
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a co-working space given its email
+      operationId: get_spaces
+      tags:
+        - spaces
+    delete:
+      responses:
+        '204':
+          description: Co-working space Deleted
+      summary: Delete a co-working space given its email
+      operationId: delete_space
+      tags:
+        - spaces
+  /tags:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Label'
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Get all tags with the given labels
+      operationId: post_tags
+      tags:
+        - tags
   /users:
     parameters:
       - name: payload
@@ -107,12 +252,42 @@ paths:
           $ref: '#/definitions/Users'
     post:
       responses:
-        '204':
+        '201':
           description: User created
         '409':
           description: User with that email already exists
+        '422':
+          description: Invalid Email
       summary: Create a user
       operationId: create_user
+      tags:
+        - users
+  '/users/activate/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    put:
+      responses:
+        '204':
+          description: User activated.
+      summary: Activate a user account if it has been deactivated
+      operationId: activate users
+      tags:
+        - users
+  '/users/deactivate/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    put:
+      responses:
+        '204':
+          description: User deactivated.
+      summary: Deactivate a user account
+      operationId: deactivate users
       tags:
         - users
   '/users/{email}':
@@ -121,22 +296,6 @@ paths:
         in: path
         required: true
         type: string
-    delete:
-      responses:
-        '204':
-          description: User Deleted
-      summary: Delete a user given its email
-      operationId: delete_user
-      tags:
-        - users
-    get:
-      responses:
-        '200':
-          description: Success
-      summary: Fetch a user given its email
-      operationId: get_users
-      tags:
-        - users
     put:
       responses:
         '204':
@@ -149,6 +308,22 @@ paths:
           in: body
           schema:
             $ref: '#/definitions/Users'
+      tags:
+        - users
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a user given its email
+      operationId: get_users
+      tags:
+        - users
+    delete:
+      responses:
+        '204':
+          description: User deleted.
+      summary: Delete a user given its email
+      operationId: delete_user
       tags:
         - users
   '/users/{email}/followers':
@@ -236,6 +411,71 @@ definitions:
       education:
         type: string
         title: Highest level obtained.
+      tags_as_uuids:
+        type: array
+        items:
+          type: string
+    type: object
+  Businesses:
+    required:
+      - email
+      - full_name
+      - password
+    properties:
+      email:
+        type: string
+        title: The business email.
+      password:
+        type: string
+        title: The business password.
+      full_name:
+        type: string
+        title: The business full name.
+      profile_image:
+        type: string
+        title: image saved as array of Bytes representing the business's profile pic.
+      phone:
+        type: string
+        title: The business's phone number.
+      location:
+        type: string
+        title: current city of the business.
+      short_bio:
+        type: string
+        title: short bio describing the business of maximum 250 characters.
+      story:
+        type: string
+        title: story describing the business of maximum 250 words.
+    type: object
+  Spaces:
+    required:
+      - email
+      - full_name
+      - password
+    properties:
+      email:
+        type: string
+        title: The co-working space email.
+      password:
+        type: string
+        title: The co-working space password.
+      full_name:
+        type: string
+        title: The co-working space full name.
+      profile_image:
+        type: string
+        title: >-
+          image saved as array of Bytes representing the co-working space's
+          profile pic.
+      phone:
+        type: string
+        title: The co-working space's phone number.
+      location:
+        type: string
+        title: current city of the co-working space.
+      short_bio:
+        type: string
+        title: short bio describing the co-working space of maximum 250 characters.
     type: object
   Post:
     required:
@@ -254,6 +494,21 @@ definitions:
         format: date-time
       user_email:
         type: string
+    type: object
+  Query:
+    required:
+      - query
+    properties:
+      query:
+        type: string
+        title: String to look for relevant search.
+    type: object
+  Label:
+    properties:
+      labels:
+        type: array
+        items:
+          type: string
     type: object
 responses:
   ParseError:

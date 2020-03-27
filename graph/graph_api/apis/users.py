@@ -45,21 +45,31 @@ class UserSchema(Schema):
     active = fields.String()
 
 
+# TODO: update model with new schema
 # Schema used for doc generation
 users = api.model('Users', {
-    'email': restx_fields.String(required=True, title='The user email.'),
-    'password': restx_fields.String(required=True, title='The user password.'),
     'full_name': restx_fields.String(required=True, title='The user full name.'),
     'preferred_name': restx_fields.String(title='The user preferred name.'),
     'profile_image': restx_fields.String(title='image saved as array of Bytes representing the user\'s profile pic.'),
-    'phone': restx_fields.String(title="The user's phone number."),
-    'gender': restx_fields.String(title="The User's geneder"),
-    'job_title': restx_fields.String(title='current job title of the user.'),
-    'location': restx_fields.String(title='current city of the user.'),
     'short_bio': restx_fields.String(title='short bio describing the user of maximum 250 characters.'),
+    'gender': restx_fields.String(title="The User's geneder"),
     'story': restx_fields.String(title='story describing the user of maximum 250 words.'),
-    'education': restx_fields.String(title='Highest level obtained.'),
-    'tags_as_uuids': restx_fields.List(restx_fields.String())
+    'email': restx_fields.String(required=True, title='The user email.'),
+    'phone_number': restx_fields.String(title="The user's phone number."),
+    'job_title': restx_fields.String(title='current job title of the user.'),
+    'current_company': restx_fields.String(),
+    'years_in_industry': restx_fields.String(),
+    'industry': restx_fields.String(),
+    'previous_company': restx_fields.String(),
+    'previous_company_year_finished': restx_fields.String(),
+    'university': restx_fields.String(),
+    'university_year_finished': restx_fields.String(),
+    'academic_level': restx_fields.String(),
+    'date_of_birth': restx_fields.String(),
+    'location': restx_fields.String(title='current city of the user.'),
+    'passions': restx_fields.List(restx_fields.String(), description='List of Passion Tag UUIDs'),
+    'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
+    'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
 user_schema = UserSchema()
@@ -78,10 +88,8 @@ class Users(Resource):
             response = response.single()
             if response:
                 user = dict(response.data()['user'].items())
-                tags = response.data()['tags']
-                labels = response.data()['tag_labels']
-                user['tags'] = dict(zip(tags, labels))
-                return jsonify(user_schema.dump(user))
+                user = user_schema.dumps(user)
+                return user
             return make_response('', 404)
 
     @api.doc('delete_user')
@@ -126,7 +134,7 @@ class UsersPost(Resource):
     def post(self):
         '''Create a user.'''
         try:
-            deserialised_payload = user_schema.load(api.payload) 
+            deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:
             if 'email' in e.messages:
                 return make_response(e.messages['email'][0], 422)
@@ -193,6 +201,7 @@ class UsersGETPostsOfFollowings(Resource):
                 return jsonify(data)
             return make_response('', 404)
 
+
 @api.route('/deactivate/<string:email>')
 @api.produces('application/json')
 class Users(Resource):
@@ -210,6 +219,7 @@ class Users(Resource):
             if response.summary().counters.properties_set == 1:
                 return make_response('', 204)
             return make_response('', 404)
+
 
 @api.route('/activate/<string:email>')
 @api.produces('application/json')

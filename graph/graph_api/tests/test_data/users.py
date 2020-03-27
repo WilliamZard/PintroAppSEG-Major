@@ -73,6 +73,7 @@
 # ACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Sule Wule', 'male', '911',
 #                                          'not godless', 'strand', 'Sule', 'Sule', 'Sule_wule@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 
+USER_WITH_NO_NOTIFICATIONS = User(email='covid@kcl.ac.uk')._asdict()
 
 # NONEXISTANT_USER_EMAIL = 'does@exist.not'
 # INVALID_EMAIL = 'invalidateme.now'
