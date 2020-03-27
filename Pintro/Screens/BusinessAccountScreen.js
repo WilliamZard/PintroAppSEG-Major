@@ -45,15 +45,15 @@ const BusinessAccountScreen = props => {
     }
 
     function switchEditIntro() {
-        props.navigation.navigate('Intro');
+        props.navigation.navigate('Intro', {business: businessObj});
     }
 
     function switchEditTags() {
-        props.navigation.navigate('Tags');
+        props.navigation.navigate('Tags', {business: businessObj});
     }
 
     function switchEditJourney() {
-        props.navigation.navigate('Journey');
+        props.navigation.navigate('Journey', {business: businessObj});
     }
 
 
