@@ -73,7 +73,7 @@
 # ACTIVATED_USER = dict(zip(USERS_PROPERTIES, ['password', 'image', 'High School', 'Sule Wule', 'male', '911',
 #                                          'not godless', 'strand', 'Sule', 'Sule', 'Sule_wule@kcl.ac.uk', 'What is GKT?', {}, str(active)]))
 
-USER_WITH_NO_NOTIFICATIONS = User(email='covid@kcl.ac.uk')._asdict()
+
 
 # NONEXISTANT_USER_EMAIL = 'does@exist.not'
 # INVALID_EMAIL = 'invalidateme.now'
@@ -96,7 +96,10 @@ USER_DEFAULTS = [
     'Default Academic Level', 'Default Location', '01/01/1812', [], [], 'True']
 
 User = namedtuple('User', USERS_PROPERTIES, defaults=USER_DEFAULTS)
-"""
+
+
+FOLLOW_REQUESTER_A = User(email='no_ucl@kcl.ac.uk')._asdict()
+
 # TODO: fill in tags
 VALID_USER_PASSIONS = []
 VALID_USER_SKILLS = []
@@ -104,15 +107,15 @@ VALID_USER = User(full_name='Duke Wellington', email='duke@wellington.com',
                   passions=VALID_USER_PASSIONS, help_others=VALID_USER_SKILLS)._asdict()
 VALID_USER_TO_BE_UPDATED = User(
     full_name='Donald Trump', email='genius@fakenews.cnn')._asdict()
-VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS = [COLES_TAG['uuid']]
-VALID_USER_TO_BE_UPDATED_NEW_FIELDS = User(
-    profile_image='new_image', full_name='Donald Trump', gender='masculine',
-    phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
-    preferred_name='GOAT', help_others=VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS
-)._asdict()
+# VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS = [COLES_TAG['uuid']]
+# VALID_USER_TO_BE_UPDATED_NEW_FIELDS = User(
+#     profile_image='new_image', full_name='Donald Trump', gender='masculine',
+#     phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
+#     preferred_name='GOAT', help_others=VALID_USER_TO_BE_UPDATED_NEW_TAG_UUIDS
+# )._asdict()
 VALID_USER_TO_BE_DELETED = User(
     university='Gatwick Airpot', full_name='taaj', email='taaj@hotmail.co.uk')._asdict()
-VALID_USER_TO_BE_CREATED_TAGS = [COLES_TAG['uuid'], KING_SLAYER_TAG['uuid']]
+# VALID_USER_TO_BE_CREATED_TAGS = [COLES_TAG['uuid'], KING_SLAYER_TAG['uuid']]
 VALID_USER_TO_BE_CREATED = User(
     full_name='precious', email='precious@gmail.com')._asdict()
 INVALID_USER_TO_BE_CREATED = User(
@@ -143,4 +146,3 @@ USER_REQUESTING_USER_WITH_NOTIFICATIONS_A = User(
 USER_WITH_NO_NOTIFICATIONS = User(email='covid@kcl.ac.uk')._asdict()
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
-"""
