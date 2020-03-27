@@ -1,14 +1,12 @@
-def prepere_search_responses_for_account_assertion(response, account):
+def prepere_search_responses_for_account_assertion(response):
     '''Small helper function that formats responses from search POST endpoint to be like accounts stored in database.
+        It removes the score and profile type fields.
     '''
     json_response = response.get_json()
     for element in json_response: 
         del element['score']
         del element['profile_type']
 
-    for element in account['result']:
-        if 'tags' in element:
-            del element['tags']
     
     return json_response
 
