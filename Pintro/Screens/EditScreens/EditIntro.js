@@ -56,9 +56,6 @@ const EditIntro = props => {
     }
 
     async function onPressDone() {
-        console.log("Name: " + name);
-        console.log("Bio: " + bio);
-        console.log("Story: " + story);
         const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
             {
                 method: 'PUT',
@@ -72,7 +69,7 @@ const EditIntro = props => {
                     full_name: name,
                     profile_image: props.navigation.state.params.business.profile_image,
                     phone: props.navigation.state.params.business.phone,
-                    location: props.navigation.state.params.business.location,
+                    location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
                     short_bio: bio,
                     story: story
                 })

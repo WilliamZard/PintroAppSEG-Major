@@ -8,14 +8,14 @@ const EditJourney = props => {
     const [companySize, setSize] = useState();
     const [funding, setFunding] = useState();
     const [founded, setDate] = useState();
-    const [location, setLocation] = useState();
+    const [location, setLocation] = useState(props.navigation.state.params.business.location);
 
     function updateDate(newDate) {
         setDate(newDate);
     }
 
     function updateLocation(newLocation) {
-        setLocation(newLocation);
+        setLocation(newLocation.replace(/'/g,"\\'"));
     }
     
     function onSizePress(value) {
@@ -26,11 +26,27 @@ const EditJourney = props => {
         setFunding(value);
     }
 
-    function onPressDone() {
-        console.log("Company size: " + companySize);
-        console.log("Funding: " + funding);
-        console.log("Date: " + founded);
-        console.log("Location: " + location);
+    async function onPressDone() {
+        const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                redirect: 'follow',
+                body: JSON.stringify({
+                    email: props.navigation.state.params.business.email,
+                    password: props.navigation.state.params.business.password,
+                    full_name: props.navigation.state.params.business.full_name,
+                    profile_image: props.navigation.state.params.business.profile_image,
+                    phone: props.navigation.state.params.business.phone,
+                    location: location,
+                    short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                    story: props.navigation.state.params.business.story.replace(/'/g,"\\'")
+                })
+            }
+        );
+        console.log(response.status);
     }
 
     const item = {
@@ -47,7 +63,7 @@ const EditJourney = props => {
                 <TextInput style={styles.inputText} onChangeText={value => updateDate(value)}>{item.Date}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Location</Text>
-                <TextInput style={styles.inputText} onChangeText={value => updateLocation(value)}>{item.Location}</TextInput>
+                <TextInput style={styles.inputText} onChangeText={value => updateLocation(value)}>{props.navigation.state.params.business.location}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Company Size</Text>
                 <Picker
