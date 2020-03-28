@@ -155,11 +155,6 @@ const styles = {
         color: 'grey',
         fontFamily: 'Poppins-Regular',
         fontSize: 12,
-    },
-    inputText: {
-        color: 'grey',
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
         height: 50, 
         width: 370
     },
