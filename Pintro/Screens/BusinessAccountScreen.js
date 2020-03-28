@@ -114,7 +114,7 @@ const BusinessAccountScreen = props => {
                         <PencilBlack onPress={() => switchEditJourney()}/>
                     </View>
                     <JourneyPoint default={"Founded:"} userData={"May 2017"}/>
-                    <JourneyPoint default={"Location:"} userData={"Central London"}/>
+                    <JourneyPoint default={"Location:"} userData={businessObj.location}/>
                     <JourneyPoint default={"Company Size:"} userData={"5 Team Members"}/>
                     <JourneyPoint default={"Funding:"} userData={"Pre-Seed"}/>
                 </View>
