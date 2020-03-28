@@ -36,6 +36,7 @@ import EditIntro from '../Screens/EditScreens/EditIntro';
 import EditBusinessTags from '../Screens/EditScreens/EditBusinessTags';
 import EditJourney from '../Screens/EditScreens/EditJourney';
 import EditBusinessPhoto from '../Screens/EditScreens/EditBusinessPhoto';
+import EditYourTeam from '../Screens/EditScreens/EditYourTeam';
 const businessSignUp = createStackNavigator({
 
     LetGetStartet:LetsGetIntoIt
@@ -90,6 +91,9 @@ const BusinessNavigator = createStackNavigator({
         headerTitle: '',  
     }},
     Photo:{screen:EditBusinessPhoto,navigationOptions:{
+        headerTitle: '',
+    }},
+    Team:{screen:EditYourTeam,navigationOptions:{
         headerTitle: '',
     }}
 })

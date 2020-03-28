@@ -60,6 +60,9 @@ const BusinessAccountScreen = props => {
         props.navigation.navigate('Photo', {business: businessObj});
     }
 
+    function switchEditTeam() {
+        props.navigation.navigate('Team', {business: businessObj});
+    }
 
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
@@ -125,7 +128,7 @@ const BusinessAccountScreen = props => {
                 <View>
                     <View style={styles.rowContainer}>
                         <Text style={styles.title}>Team</Text>
-                        <PencilBlack />                    
+                        <PencilBlack onPress={() => switchEditTeam()}/>                    
                     </View>
                     <View style={styles.pillowContainer}>
                         <Image source={require('../assets/blankImage.png')} style={styles.pillows}/>
