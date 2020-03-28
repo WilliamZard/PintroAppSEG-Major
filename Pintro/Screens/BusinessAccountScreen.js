@@ -56,6 +56,10 @@ const BusinessAccountScreen = props => {
         props.navigation.navigate('Journey', {business: businessObj});
     }
 
+    function switchEditPhoto() {
+        props.navigation.navigate('Photo', {business: businessObj});
+    }
+
 
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
@@ -64,7 +68,7 @@ const BusinessAccountScreen = props => {
                     <Image source={require('../assets/shareWhite.png')} style={styles.shareImage}/>
                 </TouchableOpacity>
                 <Image source={require('../assets/blankImage.png')} style={styles.coverPhoto}/>
-                <PencilWhite />
+                <PencilWhite onPress={() => switchEditPhoto()}/>
             </View>
             <View style={styles.whiteContainer}>
                 <View style={styles.topRow}>
