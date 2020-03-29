@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { View,StyleSheet,Text,TextInput,ScrollView,TouchableOpacity,Image,Picker } from 'react-native';
 import BlackTag from '../../Components/BlackTag.js';
 import Colors from '../../Constants/Colors.js';
+import * as BusinessActions from '../../store/actions/business.js';
 
 const EditIntro = props => {
+    const dispatch = useDispatch();
     const [selectedValue1, setSelectedValue1] = useState();
     const [selectedValue2, setSelectedValue2] = useState();
     const [selectedValue3, setSelectedValue3] = useState();
@@ -47,11 +50,12 @@ const EditIntro = props => {
     }
 
     function onPressInvest() {
-        setInvest(true);
-        setHiring(false);
-        if(!seekingInvest) {
+        if(seekingInvest) {
+            setInvest(false);
+            setInvestPic(circle);
+        } else {
+            setInvest(true);
             setInvestPic(tick);
-            setHiringPic(circle); 
         }
     }
 
@@ -76,6 +80,7 @@ const EditIntro = props => {
             }
         );
         console.log(response.status);
+        dispatch(BusinessActions.getBusiness());
     }
 
     function updateName(newName) {
@@ -91,11 +96,12 @@ const EditIntro = props => {
     }
 
     function onPressHiring() {
-        setHiring(true);
-        setInvest(false);
-        if(!hiring) {
+        if(hiring) {
+            setHiring(false);
+            setHiringPic(circle);
+        } else {
+            setHiring(true);
             setHiringPic(tick);
-            setInvestPic(circle);
         }
     }
 
