@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { View,StyleSheet,Text,TextInput,Picker,ScrollView } from 'react-native';
 import Colors from '../../Constants/Colors';
 import { fonts } from '../../Constants/Fonts';
 import BlackTag from '../../Components/BlackTag.js';
+import * as BusinessActions from '../../store/actions/business.js';
 
 const EditJourney = props => {
+    const dispatch = useDispatch();
     const [companySize, setSize] = useState();
     const [funding, setFunding] = useState();
     const [founded, setDate] = useState();
@@ -47,6 +50,8 @@ const EditJourney = props => {
             }
         );
         console.log(response.status);
+        dispatch(BusinessActions.getBusiness());
+
     }
 
     const item = {
