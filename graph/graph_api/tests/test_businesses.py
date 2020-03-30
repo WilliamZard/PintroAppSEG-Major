@@ -1,14 +1,7 @@
-# TODO: note need for local neo4j db setup
-# TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
-# TODO: have a folder for database stuff? That could make it easier to separate
-# TODO: add logic for wether or not to populate db
-from ast import literal_eval
+import json
 
 import pytest
-import json
-from flask.json import jsonify
 
-#from graph_api import create_app
 from .conftest import app, populate_db
 from .generate_test_data import Business, basic_business_node
 
@@ -18,7 +11,7 @@ class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app, populate_db):
         # Define Nodes
         business = Business(email='new_business@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tests later
+        business.pop('tags')  # TODO: handle tags later
         business_node = basic_business_node(business)
         # Populate
         populate_db(nodes_to_create=[business_node])
@@ -63,7 +56,6 @@ class TestDelete:
         email = business['email']
         response = app.delete(f"/businesses/{email}")
         assert response.status == '204 NO CONTENT'
-        # TODO: consider using standard json.dumps instead of jsonify
         assert response.data == b''
 
         # Assert business was actually deleted in the database
@@ -125,7 +117,7 @@ class TestPut:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-    # TODO: add test for validating payload
+        # TODO: add test for validating payload
 
 
 @pytest.mark.POST_business
@@ -133,7 +125,7 @@ class TestPost:
     def test_post_business_with_valid_payload_that_does_not_exist(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_create@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tests later
+        business.pop('tags')  # TODO: handle tags later
         populate_db()
 
         # Populate
@@ -155,7 +147,7 @@ class TestPost:
     def test_post_business_with_valid_payload_that_exists(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_create@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tests later
+        business.pop('tags')  # TODO: handle tags later
         business_node = basic_business_node(business)
 
         # Populate
