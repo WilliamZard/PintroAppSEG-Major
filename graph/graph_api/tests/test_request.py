@@ -1,4 +1,5 @@
 import pytest
+
 from .conftest import app, populate_db
 from .generate_test_data import User, basic_user_node
 
