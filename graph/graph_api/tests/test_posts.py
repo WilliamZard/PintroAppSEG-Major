@@ -84,10 +84,12 @@ class TestPOST:
         assert response.data == b''
 
     def test_POST_post_with_invalid_payload(self, app, populate_db):
+        post = Post(content="")._asdict()
+        user_email = 'test@test.com'
         populate_db()
-        
+
         response = app.post(
-            f"/posts/", json={'content': '', 'user_email': POST_TO_BE_CREATED['user_email']})
+            f"/posts/", json={'content': '', 'user_email': user_email})
         assert response.status == '400 BAD REQUEST'
         assert response.data == b"{'content': ['Length must be between 1 and 200.']}"
 
@@ -121,7 +123,8 @@ class TestDELETE:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    def test_DELETE_non_existing_post(self, app):
+    def test_DELETE_non_existing_post(self, app, populate_db):
+        populate_db()
         response = app.delete(
             f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'
