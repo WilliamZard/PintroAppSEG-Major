@@ -11,8 +11,8 @@ from .test_data.posts import *
 from .test_data.tags import *
 from .test_data.businesses import *
 from .test_data.spaces import *
-# from .test_data.chatrooms import *
-# from .test_data.notifications import *
+from .test_data.chatrooms import *
+from .test_data.notifications import *
 
 """
 USERS_TO_TEST = [
@@ -57,11 +57,59 @@ def create_node(tx, labels, properties):
     # NOTE: this current code assumes all properties are a string.
     if isinstance(labels, list):
         labels = ':'.join(labels)
-
+# <<<<<<< HEAD
     query = f"CREATE (new_node:{labels} {{" + ", ".join(
-        f"""{k}: {v}""" if isinstance(v,list) else f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
+        f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
+    return tx.run(query)
+# =======
+# CREATE_TEST_USERS = []
+# for user in USERS_TO_TEST:
+#     # TODO: figure out situation with tags here.
+#     user.pop('passions')
+#     user.pop('help_others')
+#     create_user_query = "CREATE (new_user: Person {" + ", ".join(
+#         f"{k}: \"{v}\" for (k, v) in user.items()) + "})"
+#     CREATE_TEST_USERS.append(create_user_query)
+# >>>>>>> b-refactor-tests
+
+# """
+
+# <<<<<<< HEAD
+def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
+    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
+    # properties to match by, and relationshpi type. Labels already in node objects.
+    s_node_properties = ", ".join(
+        f"""{{{k}: \"{v}\"}}""" for (k, v) in s_node_properties.items())
+    e_node_properties = ", ".join(
+        f"""{{{k}: \"{v}\"}}""" for (k, v) in e_node_properties.items())
+    query = f"""
+    MATCH (starting_node:{s_node_labels} {s_node_properties})
+    MATCH (ending_node:{e_node_labels} {e_node_properties})
+    CREATE (starting_node)-[:{relationship_type}]->(ending_node)
+    """
+    return tx.run(query)
+# =======
+# >>>>>>> b-refactor-tests
+
+def create_node(tx, labels, properties):
+    # NOTE: this current code assumes all properties are a string.
+    if isinstance(labels, list):
+        labels = ':'.join(labels)
+    query = f"CREATE (new_node:{labels} {{" + ", ".join(
+        f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
     return tx.run(query)
 
+# <<<<<<< HEAD
+
+
+# =======
+
+# def basic_user_node(user):
+#     return {'properties': dict(user), 'labels': 'Person'}
+
+
+# def basic_chatroom_node(user):
+#     return {'properties': dict(user), 'labels': 'Chatroom'}
 
 def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
     # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
@@ -86,6 +134,7 @@ def basic_chatroom_node(user):
     return {'properties': dict(user), 'labels': 'Chatroom'}
 
 
+# >>>>>>> b-refactor-tests
 def basic_space_node(user):
     return {'properties': dict(user), 'labels': 'Space'}
 
@@ -301,8 +350,13 @@ CREATE_CHATROOM_RELATIONSHIPS_C = (
 )
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
 CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
+
 CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
 CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
+CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
+CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
+
+
 CONSTRAINT_CHATROOM_ID_UNIQUE = "CREATE CONSTRAINT ON(chat: Chatroom) ASSERT chat.chat_id IS UNIQUE"
 queries = [
     CREATE_SEARCH_USER_INDEX,
@@ -334,6 +388,3 @@ queries = [
     CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST
 ]
 """
-
-   
-

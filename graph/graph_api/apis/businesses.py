@@ -62,11 +62,7 @@ class Businesses(Resource):
             response = response.single()
             if response:
                 business = dict(response.data()['user'].items())
-                if 'tags' in response.data():
-                    tags = response.data()['tags']
-                    labels = response.data()['tag_labels']
-                    business['tags'] = dict(zip(tags, labels))
-                return jsonify(business)
+                return business
             return make_response('', 404)
 
     @api.doc('delete_business')

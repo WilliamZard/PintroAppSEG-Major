@@ -96,10 +96,14 @@ USER_DEFAULTS = [
     'Default Academic Level', 'Default Location', '01/01/1812', [], [], 'True']
 
 User = namedtuple('User', USERS_PROPERTIES, defaults=USER_DEFAULTS)
+# <<<<<<< HEAD
 
 
-FOLLOW_REQUESTER_A = User(email='no_ucl@kcl.ac.uk')._asdict()
+# FOLLOW_REQUESTER_A = User(email='no_ucl@kcl.ac.uk')._asdict()
 
+# =======
+"""
+# >>>>>>> b-refactor-tests
 # TODO: fill in tags
 VALID_USER_PASSIONS = []
 VALID_USER_SKILLS = []
@@ -146,3 +150,4 @@ USER_REQUESTING_USER_WITH_NOTIFICATIONS_A = User(
 USER_WITH_NO_NOTIFICATIONS = User(email='covid@kcl.ac.uk')._asdict()
 NONEXISTANT_USER_EMAIL = 'does@exist.not'
 INVALID_EMAIL = 'invalidateme.now'
+"""

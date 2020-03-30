@@ -1,26 +1,78 @@
-# import pytest
+import pytest
 
-# from .generate_test_data import USER_WITH_NOTIFICATIONS, NOTIFICATION_A, NOTIFICATION_B, USER_WITH_NO_NOTIFICATIONS
+from .conftest import app, populate_db
+from .generate_test_data import User, Business, Notification, basic_business_node, basic_user_node
 
 
-# @pytest.mark.GET_notifications
-# class TestGET:
-#     # TODO: test email validity
-#     # TODO: test only users can make this request
-#     # TODO: add time of notification to response
-#     def test_GET_notifications_for_existing_user(self, app):
-#         response = app.get(
-#             f"/notifications/{USER_WITH_NOTIFICATIONS['email']}")
-#         assert response.status == '200 OK'
-#         json = response.get_json()
-#         assert len(json) == 2
-#         assert NOTIFICATION_A in json
-#         assert NOTIFICATION_B in json
-#         # TODO: create user, create inbound request relationships, create requesting users
+@pytest.mark.GET_notifications
+class TestGET:
+    # TODO: test email validity
+    # TODO: test only users can make this request
+    # TODO: add time of notification to response
+    def test_GET_notifications_for_existing_user(self, app, populate_db):
+        # need to create a user, another user, and a business
+        # need to create requested follow and request affiliation relationship
 
-#     def test_GET_notifications_for_existing_user_with_no_notifications(self, app):
-#         response = app.get(
-#             f"/notifications/{USER_WITH_NO_NOTIFICATIONS['email']}")
-#         assert response.status == '200 OK'
-#         json = response.get_json()
-#         assert len(json) == 0
+        # Generate Data
+        # Define users
+        user_with_notifications = User(
+            email='hasnotificatiosn@test.com')._asdict()
+        user_with_notifications_node = basic_user_node(user_with_notifications)
+
+        user_requesting_follow = User(
+            email='requesting_follow@rona.com')._asdict()
+        user_requesting_follow_node = basic_user_node(user_requesting_follow)
+
+        business_requesting_affiliation = Business(
+            email='request_affiliation@rona.com')._asdict()
+        business_requesting_affiliation_node = basic_business_node(
+            business_requesting_affiliation)
+
+        notification_a = Notification(requester_email=user_requesting_follow['email'],
+                                      recipient_email=user_with_notifications['email'],
+                                      relationship_type='follow')._asdict()
+
+        notification_b = Notification(requester_email=business_requesting_affiliation['email'],
+                                      recipient_email=user_with_notifications['email'],
+                                      relationship_type='affiliation')._asdict()
+
+        # Define relationships
+        requested_follow = {
+            's_node_properties': {'email': user_requesting_follow['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_notifications['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'REQUESTED_FOLLOW'}
+        requested_affiliation = {
+            's_node_properties': {'email': business_requesting_affiliation['email']}, 's_node_labels': 'Business',
+            'e_node_properties': {'email': user_with_notifications['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'REQUESTED_AFFILIATION'}
+
+        populate_db(nodes_to_create=[
+                    user_with_notifications_node, user_requesting_follow_node, business_requesting_affiliation_node],
+                    relationships_to_create=[requested_follow, requested_affiliation])
+
+        # Test
+        response = app.get(
+            f"/notifications/{user_with_notifications['email']}")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        assert len(json) == 2
+        assert dict(notification_a) in json
+        assert dict(notification_b) in json
+        # TODO: create user, create inbound request relationships, create requesting users
+
+    def test_GET_notifications_for_existing_user_with_no_notifications(self, app, populate_db):
+        # Generate test data
+        valid_user = User(full_name='Duke Wellington',
+                          email='duke@wellington.com')._asdict()
+        # TODO: review how to handle tags at some point.
+        valid_user.pop('passions')
+        valid_user.pop('help_others')
+        valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
+        populate_db(nodes_to_create=[valid_user_node])
+
+        # Test
+        response = app.get(
+            f"/notifications/{valid_user['email']}")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        assert len(json) == 0

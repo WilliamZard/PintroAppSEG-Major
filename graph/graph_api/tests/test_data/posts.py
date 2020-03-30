@@ -25,7 +25,9 @@ Post = namedtuple('Post', POST_PROPERTIES, defaults=POST_DEFAULTS)
 # TODO: adjust existing_user data to fit data model
 EXISTING_POST = Post(content='content_x')
 NON_EXISTING_POST_UUID = 'uuid'
+
 POST_TO_BE_UPDATED_THAT_EXISTS = Post(content='content_y')
+
 POST_TO_BE_CREATED = {'content': 'content z',
                       'user_email': USER_WITH_MULTIPLE_POSTS['email']}
 UUID_OF_POST_TO_BE_DELETED = uuid.uuid4()

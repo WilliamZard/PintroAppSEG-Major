@@ -377,13 +377,13 @@ def get_nodes_for_tag_search(tx, search_string):
 #     return tx.run(query)
 
 def get_accounts_with_tag(tx, tag, label):
-    # query = f"""OPTIONAL MATCH (business:Business)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
-    #             RETURN business LIMIT 10
-    #          """
-    query = f"""MATCH (node:{label}) 
-                WHERE any(x IN node.tags WHERE x = '{tag}')
+    query = f"""OPTIONAL MATCH (node:{label})-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
                 RETURN node LIMIT 10
-            """
+             """
+    # query = f"""MATCH (node:{label}) 
+    #             WHERE any(x IN node.tags WHERE x = '{tag}')
+    #             RETURN node LIMIT 10
+    #         """
     return tx.run(query)
 
 # def get_spaces_with_tag(tx, tag):

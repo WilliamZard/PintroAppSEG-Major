@@ -113,6 +113,7 @@ class TestPOST:
         string_query = 'Lello'
         response = app.post("/search/", json=dict({'query': string_query}))
         json_response = prepere_search_responses_for_account_assertion(response)
+
         json_response = ordered(json_response)
         expected_accounts = ordered([matching_space, matching_business, matching_user])
         #Assertion
@@ -215,8 +216,8 @@ class TestPOST:
             nodes.append(basic_tag_node(tag))
 
         business_data=[]
-        matching_business_a = Business(email='matching_business_a@test.com', tags=[matching_tag['name'], 'Marvel'])._asdict()
-        matching_business_b = Business(email='matching_business_b@test.com', tags=[matching_tag['name']])._asdict()
+        matching_business_a = Business(email='matching_business_a@test.com')._asdict()
+        matching_business_b = Business(email='matching_business_b@test.com')._asdict()
         business_data.append(matching_business_a)
         business_data.append(matching_business_b)
         business_data.append(Business(email='business_b@test.com')._asdict())
@@ -238,7 +239,17 @@ class TestPOST:
             user.pop('help_others')
             nodes.append(basic_user_node(user))
 
-        populate_db(nodes_to_create=nodes)
+        # Define tag relationships
+        tag_a = {
+            's_node_properties': {'email': matching_business_a['email']}, 's_node_labels': 'Business',
+            'e_node_properties': {'name': matching_tag['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+        tag_b = {
+            's_node_properties': {'email': matching_business_b['email']}, 's_node_labels': 'Business',
+            'e_node_properties': {'name': matching_tag['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+
+        populate_db(nodes_to_create=nodes, relationships_to_create=[tag_a, tag_b])
         
         #Test
         string_query = 'Civil'
@@ -250,8 +261,3 @@ class TestPOST:
         #Assertion
         assert response.status == '200 OK'
         assert json_response == expected_accounts
-        
-
-
-
-

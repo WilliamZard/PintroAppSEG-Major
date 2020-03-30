@@ -46,6 +46,7 @@ def populate_db():
         print('populating')
         driver = connect()
         with driver.session() as session:
+            # Create indexes fot full text search.
             session.write_transaction(create_full_text_indexes)
             # Where nodes_to_create is list of dictionaries containing properties and labels
             for node in nodes_to_create:
@@ -63,11 +64,11 @@ def app():
     app = create_app()
     app.testing = True
 
-    #clear_db()
+    clear_db()
     # TODO: right now this populates and clears the database for all tests, as opposed to every test
     # Not sure which if this should happen per test or per module.
     # Figure this out.
     with app.test_client() as client:
         # NOTE commented out populate db
         yield client
-    clear_db()
+    #clear_db()
