@@ -1,7 +1,8 @@
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import User, Business, Notification, basic_business_node, basic_user_node
+from .generate_test_data import (Business, Notification, User,
+                                 basic_business_node, basic_user_node)
 
 
 @pytest.mark.GET_notifications
@@ -10,9 +11,6 @@ class TestGET:
     # TODO: test only users can make this request
     # TODO: add time of notification to response
     def test_GET_notifications_for_existing_user(self, app, populate_db):
-        # need to create a user, another user, and a business
-        # need to create requested follow and request affiliation relationship
-
         # Generate Data
         # Define users
         user_with_notifications = User(
