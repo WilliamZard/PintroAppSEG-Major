@@ -5,6 +5,10 @@ env: flex
 #    forwarded_ports:
 #        - 8080:5000
 
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 1
+
 # [START configuration]
 endpoints_api_service:
   # The following values are to be replaced by information from the output of
