@@ -1,13 +1,22 @@
 import uuid
-from collections import namedtuple
+from dataclasses import dataclass
 
 from .users import User
 
-CHATROOM_PROPERTIES = ['chat_id']
-CHATROOM_DEFAULTS = [str(uuid.uuid4())]
 
-Chatroom = namedtuple('Chatroom', CHATROOM_PROPERTIES,
-                      defaults=CHATROOM_DEFAULTS)
+@dataclass
+class Chatroom:
+    chat_id: uuid.UUID
+
+    def __init__(self, chat_id=None):
+        if chat_id is None:
+            chat_id = uuid.uuid4()
+        self.chat_id = chat_id
+
+    def _asdict(self):
+        return {'chat_id': self.chat_id}
+
+
 """
 CHATROOM_USERS = [
     User(email='email@email.com')._asdict(),
