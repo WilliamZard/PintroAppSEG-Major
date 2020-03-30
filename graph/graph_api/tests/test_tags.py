@@ -1,8 +1,8 @@
-import pytest
 import json
 
+import pytest
+
 from .conftest import app, populate_db
-from flask.json import jsonify
 from .test_data.tags import Tag
 
 
@@ -30,7 +30,6 @@ class TestPOST:
     def test_POST_tags_without_specifying_labels(self, app, populate_db):
         populate_db()
         response = app.post("/tags/")
-        # TODO: add more details in error message
         assert response.status == "400 BAD REQUEST"
 
     def test_POST_tags_with_invalid_labels(self, app, populate_db):
