@@ -1,8 +1,8 @@
-# TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
-
 import pytest
+
 from .conftest import app, populate_db
-from .generate_test_data import User, basic_user_node, Chatroom, basic_chatroom_node
+from .generate_test_data import (Chatroom, User, basic_chatroom_node,
+                                 basic_user_node)
 
 
 @pytest.mark.GET_chatroom
@@ -43,8 +43,10 @@ class TestGET:
         }
 
         populate_db(
-            nodes_to_create=list(map(basic_user_node, users)) + list(map(basic_chatroom_node, chatrooms)),
-            relationships_to_create=[userA_chatroomA, userB_chatroomA, userA_chatroomB, userC_chatroomB]
+            nodes_to_create=list(map(basic_user_node, users)) +
+            list(map(basic_chatroom_node, chatrooms)),
+            relationships_to_create=[
+                userA_chatroomA, userB_chatroomA, userA_chatroomB, userC_chatroomB]
         )
 
         response = app.get(f"/chatrooms/{users[0]['email']}")
@@ -53,8 +55,6 @@ class TestGET:
         # so turning it into a set allows orderless checking of the data inside
         json = response.get_json()
         assert len(json) == 2
-        # TODO: assert this for any json with these two keys, instead of assuming
-        #       the response will only have these keys
         assert {"chat_id": str(chatrooms[0]['chat_id']),
                 "recipient": users[1]['email']} in json
         assert {"chat_id": str(chatrooms[1]['chat_id']),
@@ -81,7 +81,7 @@ class TestGET:
 
     def test_GET_chatrooms_for_user_that_does_not_exists(self, app, populate_db):
         populate_db()
-        
+
         nonexistant_email = 'doesnotexist@test.com'
         response = app.get(f"/chatrooms/{nonexistant_email}")
         assert response.status == '200 OK'
@@ -140,7 +140,8 @@ class TestPost:
             'relationship_type': 'CHATS_IN'
         }
         populate_db(
-            nodes_to_create=list(map(basic_user_node, users)) + [basic_chatroom_node(chatroom)],
+            nodes_to_create=list(map(basic_user_node, users)) +
+            [basic_chatroom_node(chatroom)],
             relationships_to_create=[user1_chats, user2_chats]
         )
         response = app.post(
@@ -167,7 +168,8 @@ class TestDelete:
             'relationship_type': 'CHATS_IN'
         }
         populate_db(
-            nodes_to_create=list(map(basic_user_node, users)) + [basic_chatroom_node(chatroom)],
+            nodes_to_create=list(map(basic_user_node, users)) +
+            [basic_chatroom_node(chatroom)],
             relationships_to_create=[user1_chats, user2_chats]
         )
         response = app.delete(f"/chatrooms/{chatroom['chat_id']}")
@@ -188,7 +190,7 @@ class TestDelete:
 
     def test_DELETE_chatroom_with_id_that_does_not_exist(self, app, populate_db):
         populate_db()
-        
+
         import uuid
         nonexistent_chatroom_id = str(uuid.uuid4())
         response = app.delete(f"/chatrooms/{nonexistent_chatroom_id}")
