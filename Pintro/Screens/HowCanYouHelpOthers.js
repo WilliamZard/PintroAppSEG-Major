@@ -18,10 +18,23 @@ import Colors from '../Constants/Colors';
  * @param {} props 
  */
 
-
-
-
 const WhatAreYourPassions = props => {
+
+const phoneNumber = props.navigation.getParam('phoneToPass');
+const email = props.navigation.getParam('emailToPass');
+const name = props.navigation.getParam('nameToPass');
+const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
+const currentCompany = props.navigation.getParam('currentCompanyToPass');
+const story = props.navigation.getParam('storyToPass');
+const workExperience = props.navigation.getParam('workExperienceToPass');
+const industry = props.navigation.getParam('industryToPass');
+const previousCompany = props.navigation.getParam('previousCompanyToPass');
+const pastEducation = props.navigation.getParam('pastEducationToPass');
+const academicLevel = props.navigation.getParam('academicLevelToPass');
+const passions = props.navigation.getParam('passionsToPass');
+
+
+
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
@@ -155,7 +168,8 @@ const WhatAreYourPassions = props => {
    <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
  </ScrollView>
                             <InvertedSignInUpButton style={{width:'80%'}} 
-                         onPress={()=>   props.navigation.navigate({routeName:'BusinessYesNo'}) }>Finish</InvertedSignInUpButton>
+                         onPress={()=>{  //create user
+                             props.navigation.navigate({routeName:'BusinessYesNo'}) }}>Finish</InvertedSignInUpButton>
                             
                        
                     </View>

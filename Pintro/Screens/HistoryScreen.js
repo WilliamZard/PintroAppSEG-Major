@@ -15,14 +15,33 @@ import RNPickerSelect from 'react-native-picker-select';
  */
 
 
-
-
+/*
+phoneToPass:phoneNumber,
+emailToPass:email,
+nameToPass:name,
+currentJobTitleToPass:currentJobTitle,
+currentCompanyToPass:currentCompany,
+storyToPass:story
+*/
 const HistoryScreen = props => {
-    const [previousCompanies,addPreviousCompany] = useState([]);
-    const addSchool = (school) => {
-        addPreviousCompany('test');
-    }
     
+
+
+    const phoneNumber = props.navigation.getParam('phoneToPass');
+    const email = props.navigation.getParam('emailToPass');
+    const name = props.navigation.getParam('nameToPass');
+    const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
+    const currentCompany = props.navigation.getParam('currentCompanyToPass');
+    const story = props.navigation.getParam('storyToPass');
+    
+
+    const [workExperience,setWorkExperience] = useState();
+    const [industry,setIndustry] = useState();
+    const [previousCompany,setPreviousCompany] = useState();
+    const [pastEducation,setPastEducation] = useState();
+    const [academicLevel,setAcademicLevel] = useState();
+
+
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -39,18 +58,39 @@ const HistoryScreen = props => {
                         <Text style={styles.aboveInputText}>Your work experience timeline</Text>
                         </View>
                             <Text style={styles.aboveInputText}>Work experience</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter a number of years" placeholderTextColor='white'/>
+                            <TextInput 
+                            style={styles.inputBox}
+                             placeholder="Enter a number of years" 
+                             placeholderTextColor='white'
+                             onChangeText={setWorkExperience}
+                             />
+
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Industry</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter your current Industry" placeholderTextColor='white'/>
+                            <TextInput
+                             style={styles.inputBox} 
+                             placeholder="Enter your current Industry" 
+                             placeholderTextColor='white'
+                             onChangeText={setIndustry}
+                             />
  <View style={styles.horizintalLineStyle}></View>
- <Text style={styles.aboveInputText}>Current Companies</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter current company name" placeholderTextColor='white'/>
+ <Text style={styles.aboveInputText}>Previous Company</Text>
+                            <TextInput 
+                            style={styles.inputBox} 
+                            placeholder="Enter current company name"
+                             placeholderTextColor='white'
+                             onChangeText={setPreviousCompany}
+                             />
  <View style={styles.horizintalLineStyle}></View>
 
 
  <Text style={styles.aboveInputText}>Past Education</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter college name" placeholderTextColor='white'/>
+                            <TextInput 
+                            style={styles.inputBox}
+                             placeholder="Enter college name" 
+                             placeholderTextColor='white'
+                             onChangeText={setPastEducation}
+                             />
  <View style={styles.horizintalLineStyle}></View>
 
  <Text style={styles.aboveInputText}>Academic Level</Text>
@@ -61,7 +101,7 @@ const HistoryScreen = props => {
 		paddingHorizontal: 10,
 		paddingBottom: 12,
 	}}}
-            onValueChange={(value) => console.log(value)}
+            onValueChange={(value) => setAcademicLevel(value)}
             items={[
                 { label: 'PHD', value: 'PHD',},
                 { label: 'Master', value: 'Master' },
@@ -72,8 +112,19 @@ const HistoryScreen = props => {
        
  <View style={styles.horizintalLineStyle}></View>
                            
- <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'Passions'}) }>STEP 4 OF 6</InvertedSignInUpButton>
-                            
+ <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'Passions'},{
+phoneToPass:phoneNumber,
+emailToPass:email,
+nameToPass:name,
+currentJobTitleToPass:currentJobTitle,
+currentCompanyToPass:currentCompany,
+storyToPass:story,
+workExperienceToPass:workExperience,
+industryToPass:industry,
+previousCompanyToPass:previousCompany,
+pastEducationToPass:pastEducation,
+academicLevelToPass:academicLevel,
+ }) }>STEP 4 OF 6</InvertedSignInUpButton>       
                         </Animatable.View>
                     </View>
                 </View>

@@ -14,6 +14,9 @@ import GoBack from '../Components/GoBack';
  */
 
 const ShowUsYourFace = props => {
+
+    const phoneNumber = props.navigation.getParam('phoneToPass');
+    const email = props.navigation.getParam('emailToPass');
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -49,7 +52,10 @@ const ShowUsYourFace = props => {
                 <View style={styles.bottomButton}>
                 <InvertedSignInUpButton onPress={
   () =>
-  props.navigation.navigate({routeName:'WhatsYourStory'})
+  props.navigation.navigate({routeName:'WhatsYourStory'},{
+    phoneToPass:phoneNumber,
+    emailToPass:email,
+  })
 
 
                             }>STEP 2 OF 6</InvertedSignInUpButton>
