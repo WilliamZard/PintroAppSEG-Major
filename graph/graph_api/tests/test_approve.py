@@ -1,6 +1,8 @@
 import pytest
+
 from .conftest import app, populate_db
-from .generate_test_data import User, Business, basic_user_node, basic_business_node
+from .generate_test_data import (Business, User, basic_business_node,
+                                 basic_user_node)
 
 
 @pytest.mark.POST_approve
@@ -27,14 +29,12 @@ class TestPOST:
         populate_db(nodes_to_create=[user_requesting_follow_node,
                                      user_receiving_request_node],
                     relationships_to_create=[requested_follow])
-        # requires making two users
-        # requires creating request between them
         response = app.post(
             f"/approve/follow/{user_requesting_follow['email']}/{user_receiving_request['email']}")
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-#         # TODO: add get request for checking if FOLLOWrelationship was actually created
+        # TODO: add get request for checking if FOLLOWrelationship was actually created
 
     def test_POST_approve_affiliation_request_with_valid_users(self, app, populate_db):
         # Define users
@@ -61,4 +61,4 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-#         # TODO: add get request for checking if AFFILIATION relationship was actually created
+        # TODO: add get request for checking if AFFILIATION relationship was actually created
