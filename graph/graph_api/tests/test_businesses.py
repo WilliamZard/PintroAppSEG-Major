@@ -34,7 +34,7 @@ class TestGet:
 
     def test_get_business_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
-        
+
         nonexistant_business_email = 'does_not_exist@void.com'
         response = app.get(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
@@ -42,7 +42,7 @@ class TestGet:
 
     def test_get_business_with_invalid_email(self, app, populate_db):
         populate_db()
-        
+
         invalid_email = 'invalidemail.com'
         response = app.get(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -134,6 +134,7 @@ class TestPost:
         # Define Nodes
         business = Business(email='business_to_create@rona.com')._asdict()
         business.pop('tags')  # TODO: handle tests later
+        populate_db()
 
         # Populate
         response = app.post(
