@@ -70,6 +70,10 @@ def basic_chatroom_node(user):
     return {'properties': dict(user), 'labels': 'Chatroom'}
 
 
+def basic_post_node(post):
+    return {'properties': dict(post), 'labels': 'Post'}
+
+
 def basic_space_node(user):
     return {'properties': dict(user), 'labels': 'Space'}
 
