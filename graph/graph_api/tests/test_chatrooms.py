@@ -79,7 +79,9 @@ class TestGET:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_GET_chatrooms_for_user_that_does_not_exists(self, app):
+    def test_GET_chatrooms_for_user_that_does_not_exists(self, app, populate_db):
+        populate_db()
+        
         nonexistant_email = 'doesnotexist@test.com'
         response = app.get(f"/chatrooms/{nonexistant_email}")
         assert response.status == '200 OK'
@@ -184,7 +186,9 @@ class TestDelete:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app):
+    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app, populate_db):
+        populate_db()
+        
         import uuid
         nonexistent_chatroom_id = str(uuid.uuid4())
         response = app.delete(f"/chatrooms/{nonexistent_chatroom_id}")

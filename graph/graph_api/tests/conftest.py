@@ -2,7 +2,7 @@ import pytest
 
 from graph_api import create_app
 
-from .generate_test_data import create_node, create_relationship
+from .generate_test_data import create_node, create_relationship, create_full_text_indexes
 import os
 from neo4j import GraphDatabase
 
@@ -20,10 +20,15 @@ def clear_db():
     DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
     DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\")"
     DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
+    DROP_SEARCH_TAG_INDEX = "CALL db.index.fulltext.drop(\"SearchTagIndex\")"
     driver = connect()
     with driver.session() as session:
         print("about to delete")
         session.write_transaction(_run_query, DELETE_ALL_NODES)
+        session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
+        session.write_transaction(_run_query, DROP_SEARCH_TAG_INDEX)
 
 
 """        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
@@ -41,6 +46,8 @@ def populate_db():
         print('populating')
         driver = connect()
         with driver.session() as session:
+            # Create indexes fot full text search.
+            session.write_transaction(create_full_text_indexes)
             # Where nodes_to_create is list of dictionaries containing properties and labels
             for node in nodes_to_create:
                 session.write_transaction(create_node, **node)
@@ -57,11 +64,11 @@ def app():
     app = create_app()
     app.testing = True
 
-    # clear_db()
+    clear_db()
     # TODO: right now this populates and clears the database for all tests, as opposed to every test
     # Not sure which if this should happen per test or per module.
     # Figure this out.
     with app.test_client() as client:
         # NOTE commented out populate db
         yield client
-    clear_db()
+    #clear_db()

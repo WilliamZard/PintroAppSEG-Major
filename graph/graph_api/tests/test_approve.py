@@ -34,7 +34,7 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-        # TODO: add get request for checking if FOLLOWrelationship was actually created
+#         # TODO: add get request for checking if FOLLOWrelationship was actually created
 
     def test_POST_approve_affiliation_request_with_valid_users(self, app, populate_db):
         # Define users
@@ -61,4 +61,4 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-        # TODO: add get request for checking if AFFILIATION relationship was actually created
+#         # TODO: add get request for checking if AFFILIATION relationship was actually created

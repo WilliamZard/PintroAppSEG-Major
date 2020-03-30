@@ -42,8 +42,6 @@ USERS_TO_TEST = [
     *VALID_CHATROOM_TO_BE_DELETED_USERS,
     *CHATROOM_TO_BE_CREATED_USERS
 ]
-
-
 CREATE_TEST_USERS = []
 for user in USERS_TO_TEST:
     # TODO: figure out situation with tags here.
@@ -52,7 +50,6 @@ for user in USERS_TO_TEST:
     create_user_query = "CREATE (new_user: Person {" + ", ".join(
         f"{k}: \"{v}\" for (k, v) in user.items()) + "})"
     CREATE_TEST_USERS.append(create_user_query)
-
 """
 
 
@@ -60,11 +57,59 @@ def create_node(tx, labels, properties):
     # NOTE: this current code assumes all properties are a string.
     if isinstance(labels, list):
         labels = ':'.join(labels)
+# <<<<<<< HEAD
+    query = f"CREATE (new_node:{labels} {{" + ", ".join(
+        f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
+    return tx.run(query)
+# =======
+# CREATE_TEST_USERS = []
+# for user in USERS_TO_TEST:
+#     # TODO: figure out situation with tags here.
+#     user.pop('passions')
+#     user.pop('help_others')
+#     create_user_query = "CREATE (new_user: Person {" + ", ".join(
+#         f"{k}: \"{v}\" for (k, v) in user.items()) + "})"
+#     CREATE_TEST_USERS.append(create_user_query)
+# >>>>>>> b-refactor-tests
 
+# """
+
+# <<<<<<< HEAD
+def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
+    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
+    # properties to match by, and relationshpi type. Labels already in node objects.
+    s_node_properties = ", ".join(
+        f"""{{{k}: \"{v}\"}}""" for (k, v) in s_node_properties.items())
+    e_node_properties = ", ".join(
+        f"""{{{k}: \"{v}\"}}""" for (k, v) in e_node_properties.items())
+    query = f"""
+    MATCH (starting_node:{s_node_labels} {s_node_properties})
+    MATCH (ending_node:{e_node_labels} {e_node_properties})
+    CREATE (starting_node)-[:{relationship_type}]->(ending_node)
+    """
+    return tx.run(query)
+# =======
+# >>>>>>> b-refactor-tests
+
+def create_node(tx, labels, properties):
+    # NOTE: this current code assumes all properties are a string.
+    if isinstance(labels, list):
+        labels = ':'.join(labels)
     query = f"CREATE (new_node:{labels} {{" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
     return tx.run(query)
 
+# <<<<<<< HEAD
+
+
+# =======
+
+# def basic_user_node(user):
+#     return {'properties': dict(user), 'labels': 'Person'}
+
+
+# def basic_chatroom_node(user):
+#     return {'properties': dict(user), 'labels': 'Chatroom'}
 
 def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
     # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
@@ -89,6 +134,7 @@ def basic_chatroom_node(user):
     return {'properties': dict(user), 'labels': 'Chatroom'}
 
 
+# >>>>>>> b-refactor-tests
 def basic_space_node(user):
     return {'properties': dict(user), 'labels': 'Space'}
 
@@ -96,13 +142,23 @@ def basic_space_node(user):
 def basic_business_node(business):
     return {'properties': dict(business), 'labels': 'Business'}
 
+def basic_tag_node(tag):
+    return {'properties': dict(tag), 'labels': 'Tag'}
+
+def create_full_text_indexes(tx):
+    queries = []
+    queries.append("CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])")
+    queries.append("CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])")
+    queries.append("CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])")
+    queries.append("CALL db.index.fulltext.createNodeIndex('SearchTagIndex', ['Tag'], ['name'])")
+    for query in queries:
+        tx.run(query)
 
 # This does two things. It creates a post, and relates the post to a user.
 """CREATE_POSTS = f""
     MATCH (user_a:Person {{email:'{USER_WITH_MULTIPLE_POSTS['email']}'}})
     MATCH (user_b:Person {{email:'{USER_THAT_POSTED_POST_A['email']}'}})
     MATCH (user_c:Person {{email:'{USER_THAT_POSTED_POST_B['email']}'}})
-
     CREATE (post_a:Post {{uuid: '{EXISTING_POST['uuid']}',
         content:'{EXISTING_POST['content']}',
         created: datetime('{EXISTING_POST['created']}'),
@@ -113,29 +169,24 @@ def basic_business_node(business):
         created: datetime('{POST_TO_BE_UPDATED_THAT_EXISTS['created']}'),
         modified: datetime('{POST_TO_BE_UPDATED_THAT_EXISTS['modified']}')
         }})
-
     CREATE (post_c:Post {{uuid: '{POST_TO_BE_DELETED_THAT_EXISTS['uuid']}',
         content:'{POST_TO_BE_DELETED_THAT_EXISTS['content']}',
         created: datetime('{POST_TO_BE_DELETED_THAT_EXISTS['created']}'),
         modified: datetime('{POST_TO_BE_DELETED_THAT_EXISTS['modified']}')
         }})
-
     CREATE (post_d:Post {{uuid: '{USER_POST_A['uuid']}',
         content:'{USER_POST_A['content']}',
         created: datetime('{USER_POST_A['created']}'),
         modified: datetime('{USER_POST_A['modified']}')
         }})
-
     CREATE (post_e:Post {{uuid: '{USER_POST_B['uuid']}',
         content:'{USER_POST_B['content']}',
         created: datetime('{USER_POST_B['created']}'),
         modified: datetime('{USER_POST_B['modified']}')
         }})
-
     CREATE (user_a)-[:POSTED]->(post_a)
     CREATE (user_a)-[:POSTED]->(post_b)
     CREATE (user_a)-[:POSTED]->(post_c)
-
     CREATE (user_b)-[:POSTED]->(post_d)
     CREATE (user_c)-[:POSTED]->(post_e)
 CREATE_FOLLOWS_FOR_POSTS_USERS = f""
@@ -144,12 +195,10 @@ MATCH(user_b: Person {{email: '{USER_THAT_POSTED_POST_A['email']}'}})
 MATCH(user_c: Person {{email: '{USER_THAT_POSTED_POST_B['email']}'}})
 CREATE(user_a)-[:FOLLOWS] -> (user_b)
 CREATE(user_a)-[:FOLLOWS] -> (user_c)
-
 FOLLOWS_AA = f""
 MATCH(user_a: Person {{email: '{USER_FOLLOWING['email']}'}})
 MATCH(user_b: Person {{email: '{USER_BEING_FOLLOWED['email']}'}})
 CREATE(user_a)-[:FOLLOWS] -> (user_b)
-
 CREATE_FOLLOW_REQUESTS = f""
 MATCH(user_a: Person {{email: '{FOLLOW_REQUESTER_A['email']}'}})
 MATCH(user_b: Person {{email: '{FOLLOW_REQUESTER_B['email']}'}})
@@ -157,7 +206,6 @@ MATCH(user_c: Person {{email: '{FOLLOW_REQUEST_RECIPIENT['email']}'}})
 CREATE(user_a)-[:REQUESTED_FOLLOW] -> (user_c)
 CREATE(user_b)-[:REQUESTED_FOLLOW] -> (user_c)
 ""
-
 CREATE_FOLLOW_REQUEST_FOR_NOTIFICATION_TEST = f""
 MATCH(user_a: Person {{email: '{USER_REQUESTING_USER_WITH_NOTIFICATIONS_A['email']}'}})
 MATCH(user_b: Business {{email: '{BUSINESS_REQUESTING_AFFILIATION_TO_USER['email']}'}})
@@ -165,7 +213,6 @@ MATCH(user_c: Person {{email: '{USER_WITH_NOTIFICATIONS['email']}'}})
 CREATE(user_a)-[:REQUESTED_FOLLOW] -> (user_c)
 CREATE(user_b)-[:REQUESTED_AFFILIATION] -> (user_c)
 ""
-
 RELATIONSHIPS_FOLLOWS_USER_A = f""
 MATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
 MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
@@ -174,7 +221,6 @@ MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
 CREATE(user_a)-[:FOLLOWS] -> (user_b)
 CREATE(user_a)-[:FOLLOWS] -> (user_c)
 CREATE(user_a)-[:FOLLOWS] -> (user_d)""
-
 RELATIONSHIPS_FOLLOWS_USER_B = f""
 MATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
 MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
@@ -182,36 +228,28 @@ MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
 MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
 CREATE(user_b)-[:FOLLOWS] -> (user_c)
 CREATE(user_b)-[:FOLLOWS] -> (user_d)""
-
 RELATIONSHIPS_FOLLOWS_USER_C = f""
 MATCH(user_a: Person {{email: '{USER_WITH_THREE_FOLLOWINGS['email']}'}})
 MATCH(user_b: Person {{email: '{USER_WITH_TWO_FOLLOWINGS['email']}'}})
 MATCH(user_c: Person {{email: '{USER_WITH_ONE_FOLLOWING['email']}'}})
 MATCH(user_d: Person {{email: '{USER_WITH_NO_FOLLOWINGS['email']}'}})
 CREATE(user_c)-[:FOLLOWS] -> (user_d)""
-
 CREATE_AFFILIATION_REQUESTS = f""
 MATCH(user_a: Business {{email: '{AFFILIATION_REQUESTER_A['email']}'}})
 MATCH(user_b: Business {{email: '{AFFILIATION_REQUESTER_B['email']}'}})
 MATCH(user_c: Person {{email: '{AFFILIATION_REQUEST_RECIPIENT['email']}'}})
 CREATE(user_a)-[:REQUESTED_AFFILIATION] -> (user_c)
 CREATE(user_b)-[:REQUESTED_AFFILIATION] -> (user_c)
-
-
 CONSTRAINT_USER_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Person) ASSERT user.email IS UNIQUE"
 CONSTRAINT_USER_EMAIL_EXISTS = "CREATE CONSTRAINT ON(user: Person) ASSERT EXISTS (user.email)"
 CONSTRAINT_POST_CONTENT_EXISTS = "CREATE CONSTRAINT ON(post: Post) ASSERT EXISTS (post.content)"
-
-
 TAGS = [KING_SLAYER_TAG, COLES_TAG]
 TAG_LABELS = [KING_SLAYER_LABELS, COLES_LABELS]
-
 create_tag_queries = []
 for tag, tag_labels in zip(TAGS, TAG_LABELS):
     labels = ':'.join(tag_labels)
     query = f""CREATE(new_tag: {labels} {{name: "{tag['name']}", created: datetime("{tag['created']}"), uuid: "{tag['uuid']}"}})""
     create_tag_queries.append(query)
-
 ASSOCIATE_VALID_USER_TO_THEIR_TAGS = f
 MATCH(valid_user: Person {{email: '{VALID_USER['email']}'}})
 MATCH(tag_a: Tag {{uuid: '{COLES_TAG['uuid']}'}})
@@ -219,7 +257,6 @@ MATCH(tag_b: Tag {{uuid: '{KING_SLAYER_TAG['uuid']}'}})
 CREATE(valid_user)-[:TAGGED] -> (tag_a)
 CREATE(valid_user)-[:TAGGED] -> (tag_b)
 "
-
 BUSINESSES_TO_TEST = [
     VALID_BUSINESS,
     VALID_BUSINESS_TO_BE_UPDATED,
@@ -238,7 +275,6 @@ BUSINESSES_TO_TEST = [
     AFFILIATION_REQUESTER_B,
     BUSINESS_REQUESTING_AFFILIATION_TO_USER
 ]
-
 # TODO: restructure this
 CREATE_TEST_BUSINESS_DATA = ""
 for BUSINESS in BUSINESSES_TO_TEST:
@@ -257,11 +293,7 @@ for BUSINESS in BUSINESSES_TO_TEST:
         BUSINESS['location'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "email: \'" + BUSINESS['email'] + "\' , "
     CREATE_TEST_BUSINESS_DATA += "story: \'" + BUSINESS['story'] + "\'}) \n"
-
-
 CONSTRAINT_BUSINESS_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Business) ASSERT user.email IS UNIQUE"
-
-
 SPACES_TO_TEST = [
     VALID_SPACE,
     VALID_SPACE_TO_BE_UPDATED,
@@ -277,8 +309,6 @@ SPACES_TO_TEST = [
     SPACE_BEING_FOLLOWED,
     SPACE_WITH_FOLLOWINGS_THAT_HAVE_POSTS
 ]
-
-
 CREATE_TEST_SPACE_DATA = ""
 for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "CREATE (" + SPACE['full_name'] + ":Space { "
@@ -290,13 +320,10 @@ for SPACE in SPACES_TO_TEST:
     CREATE_TEST_SPACE_DATA += "short_bio: \'" + SPACE['short_bio'] + "\' , "
     CREATE_TEST_SPACE_DATA += "location: \'" + SPACE['location'] + "\' , "
     CREATE_TEST_SPACE_DATA += "email: \'" + SPACE['email'] + "\'}) \n"
-
-
 CREATE_EXISTING_CHATROOM_DATA = ""
 for CHAT in CHATROOMS:
     CREATE_EXISTING_CHATROOM_DATA += "CREATE (:Chatroom { "
     CREATE_EXISTING_CHATROOM_DATA += "chat_id: \'" + CHAT + "\'}) \n"
-
 CREATE_CHATROOM_RELATIONSHIPS_A = (
     f"MATCH (user_a:Person {{email: '{CHATROOM_USERS[0]['email']}'}})\n"
     f"MATCH (user_b:Person {{email: '{CHATROOM_USERS[1]['email']}'}})\n"
@@ -311,11 +338,9 @@ CREATE_CHATROOM_RELATIONSHIPS_B = (
     "CREATE (user_a)-[:CHATS_IN]->(chat)\n"
     "CREATE (user_b)-[:CHATS_IN]->(chat)"
 )
-
 CREATE_TO_BE_DELETED_CHATROOM_DATA = "CREATE (:Chatroom { "
 CREATE_TO_BE_DELETED_CHATROOM_DATA += "chat_id: \'" + \
     VALID_CHATROOM_TO_BE_DELETED + "\'}) \n"
-
 CREATE_CHATROOM_RELATIONSHIPS_C = (
     f"MATCH (user_a:Person {{email: '{VALID_CHATROOM_TO_BE_DELETED_USERS[0]['email']}'}})\n"
     f"MATCH (user_b:Person {{email: '{VALID_CHATROOM_TO_BE_DELETED_USERS[1]['email']}'}})\n"
@@ -323,18 +348,16 @@ CREATE_CHATROOM_RELATIONSHIPS_C = (
     "CREATE (user_a)-[:CHATS_IN]->(chat)\n"
     "CREATE (user_b)-[:CHATS_IN]->(chat)"
 )
-
-
 CONSTRAINT_SPACE_EMAIL_UNIQUE = "CREATE CONSTRAINT ON(user: Space) ASSERT user.email IS UNIQUE"
-
 CREATE_SEARCH_USER_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])"
 
 CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
-
+CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
+CREATE_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])"
 CREATE_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])"
 
-CONSTRAINT_CHATROOM_ID_UNIQUE = "CREATE CONSTRAINT ON(chat: Chatroom) ASSERT chat.chat_id IS UNIQUE"
 
+CONSTRAINT_CHATROOM_ID_UNIQUE = "CREATE CONSTRAINT ON(chat: Chatroom) ASSERT chat.chat_id IS UNIQUE"
 queries = [
     CREATE_SEARCH_USER_INDEX,
     CREATE_SEARCH_BUSINESS_INDEX,

@@ -19,6 +19,7 @@ api = Namespace('businesses', title='Business related operations')
 # Schema used for serialisations
 
 
+
 class BusinessSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)

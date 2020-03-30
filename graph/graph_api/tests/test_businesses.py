@@ -32,13 +32,17 @@ class TestGet:
             assert key in response
             assert value == response[key]
 
-    def test_get_business_with_valid_email_that_does_not_exist(self, app):
+    def test_get_business_with_valid_email_that_does_not_exist(self, app, populate_db):
+        populate_db()
+
         nonexistant_business_email = 'does_not_exist@void.com'
         response = app.get(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_get_business_with_invalid_email(self, app):
+    def test_get_business_with_invalid_email(self, app, populate_db):
+        populate_db()
+
         invalid_email = 'invalidemail.com'
         response = app.get(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -66,13 +70,17 @@ class TestDelete:
         response = app.get(f"/businesses/{email}")
         assert response.status == '404 NOT FOUND'
 
-    def test_delete_business_with_valid_email_that_does_not_exist(self, app):
+    def test_delete_business_with_valid_email_that_does_not_exist(self, app, populate_db):
+        populate_db()
+
         nonexistant_business_email = 'does_not_exist@void.com'
         response = app.delete(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_delete_business_with_invalid_email(self, app):
+    def test_delete_business_with_invalid_email(self, app, populate_db):
+        populate_db()
+
         invalid_email = "invalidemaill.com"
         response = app.delete(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -97,7 +105,8 @@ class TestPut:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    def test_put_business_with_valid_email_that_does_not_exist(self, app):
+    def test_put_business_with_valid_email_that_does_not_exist(self, app, populate_db):
+        populate_db()
         nonexistant_business_email = 'does_not_exist@void.com'
         new_business_fields = dict(
             full_name='new full name', phone='phone', location='new location')
@@ -106,7 +115,8 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_put_business_with_invalid_email(self, app):
+    def test_put_business_with_invalid_email(self, app, populate_db):
+        populate_db()
         invalid_email = 'invalidemail.com'
         new_business_fields = dict(
             full_name='new full name', phone='phone', location='new location')
@@ -124,6 +134,7 @@ class TestPost:
         # Define Nodes
         business = Business(email='business_to_create@rona.com')._asdict()
         business.pop('tags')  # TODO: handle tests later
+        populate_db()
 
         # Populate
         response = app.post(
@@ -156,7 +167,8 @@ class TestPost:
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
-    def test_post_business_with_invalid_payload(self, app):
+    def test_post_business_with_invalid_payload(self, app, populate_db):
+        populate_db()
         invalid_business = Business(email='bademail.com')._asdict()
         response = app.post(
             "/businesses/", json=dict(invalid_business))

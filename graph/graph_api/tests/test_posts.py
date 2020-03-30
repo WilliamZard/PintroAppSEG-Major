@@ -23,7 +23,8 @@ class TestGET:
         # TODO: change how this is done
         assert response.data == jsonify(post).data
 
-    def test_GET_post_that_does_not_exist(self, app):
+    def test_GET_post_that_does_not_exist(self, app, populate_db):
+        populate_db()
         non_existing_uuid = uuid.uuid4()
         response = app.get(f"/posts/{non_existing_uuid}")
         assert response.status == '404 NOT FOUND'
@@ -48,7 +49,8 @@ class TestPUT:
         # TODO: assert created was not changed for all put tests
         # TODO: get request and assertion to check correct update
 
-    def test_PUT_non_existent_post(self, app):
+    def test_PUT_non_existent_post(self, app, populate_db):
+        populate_db()
         post = Post(content='content_x')._asdict()
 
         response = app.put(
@@ -81,9 +83,13 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-    def test_POST_post_with_invalid_payload(self, app):
+    def test_POST_post_with_invalid_payload(self, app, populate_db):
+        post = Post(content="")._asdict()
+        user_email = 'test@test.com'
+        populate_db()
+
         response = app.post(
-            f"/posts/", json={'content': '', 'user_email': POST_TO_BE_CREATED['user_email']})
+            f"/posts/", json={'content': '', 'user_email': user_email})
         assert response.status == '400 BAD REQUEST'
         assert response.data == b"{'content': ['Length must be between 1 and 200.']}"
 
@@ -117,7 +123,8 @@ class TestDELETE:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    def test_DELETE_non_existing_post(self, app):
+    def test_DELETE_non_existing_post(self, app, populate_db):
+        populate_db()
         response = app.delete(
             f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'

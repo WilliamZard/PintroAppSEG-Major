@@ -23,7 +23,6 @@ Space = namedtuple('Space', SPACE_PROPERTIES, defaults=SPACE_DEFAULTS)
 """
 VALID_SPACE = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Sara_A_Lovelace', '911',
                                           'not godless', 'strand', 'nothing_ucl@kcl.ac.uk', 'What is GKT?']))
-
 VALID_SPACE_TO_BE_UPDATED = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'aDTrump', '000',
                                                         'genius', 'white house', 'geniusds@fakenews.cnn', 'Covfefe']))
 VALID_SPACE_TO_BE_UPDATED_NEW_FIELDS = dict(zip(SPACE_PROPERTIES, ['0000', 'new_image', 'aaDonaldTrump', '999',
@@ -76,6 +75,5 @@ SPACE_THAT_POSTED_POST_B = dict(zip(SPACE_PROPERTIES, ['password', 'image', 'Mgf
                                                        'Siberia', 'Unknown', 'm@mdfr.co.uk', 'shut it 007']))
 
 NONEXISTANT_SPACE_EMAIL = 'does@exist.not'
-
 INVALID_EMAIL = 'invalidateme.now'
 """

@@ -13,12 +13,9 @@ Tag = namedtuple('Tag', TAG_PROPERTIES, defaults=TAG_DEFAULTS)
 LABEL_TAG = 'Tag'
 LABEL_SKILL = 'Skill'
 LABEL_PASSION = 'Passion'
-
-
 KING_SLAYER_TAG = dict(
     zip(TAG_PROPERTIES, [str(uuid.uuid4()), NOW, 'King Slayer']))
 KING_SLAYER_LABELS = {LABEL_SKILL, LABEL_TAG}
-
 COLES_TAG = dict(
     zip(TAG_PROPERTIES, [str(uuid.uuid4()), NOW, 'Space Explorer']))
 COLES_LABELS = {LABEL_TAG, LABEL_PASSION}
