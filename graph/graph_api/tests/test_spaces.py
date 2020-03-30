@@ -1,13 +1,6 @@
-# TODO: note need for local neo4j db setup
-# TODO: seperate testing and production database creation logic. Right now it's all in neo4j_ops, which is bad.
-# TODO: have a folder for database stuff? That could make it easier to separate
-# TODO: add logic for wether or not to populate db
-from ast import literal_eval
-
 import pytest
 from flask.json import jsonify
 
-#from graph_api import create_app
 from .conftest import app, populate_db
 from .generate_test_data import Space, basic_space_node
 
@@ -45,7 +38,6 @@ class TestGet:
 
 @pytest.mark.DELETE_space
 class TestDelete:
-    # TODO: some duplicate code here for each endpoint test. Refactor.
     def test_delete_space_with_valid_email_that_exists(self, app, populate_db):
         # Generate data
         space = Space(email='space@test.com')._asdict()
@@ -56,7 +48,6 @@ class TestDelete:
         # Test
         response = app.delete(f"/spaces/{space['email']}")
         assert response.status == '204 NO CONTENT'
-        # TODO: consider using standard json.dumps instead of jsonify
         assert response.data == b''
 
         # Assert space was actually deleted in the database
@@ -115,7 +106,7 @@ class TestPut:
         invalid_email = "invalidemail.com"
         new_space = Space(email='space@test.com',
                           short_bio='not default')._asdict()
-        
+
         populate_db()
 
         # Test
