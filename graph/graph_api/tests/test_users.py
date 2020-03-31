@@ -25,7 +25,7 @@ class TestGET:
         assert len(json_response) == len(valid_user)
         for key, value in valid_user.items():
             assert key in json_response
-            assert str(value) == json_response[key]
+            assert value == json_response[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
