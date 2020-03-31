@@ -2,8 +2,6 @@ from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
@@ -15,21 +13,6 @@ from .neo4j_ops import (create_session, create_business, delete_business_by_emai
 
 
 api = Namespace('businesses', title='Business related operations')
-
-# Schema used for serialisations
-
-
-
-class BusinessSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
-    full_name = fields.Str(required=True)
-    profile_image = fields.String()
-    phone = fields.String()
-    location = fields.String()
-    short_bio = fields.String()
-    story = fields.String()
-    tags = fields.List(fields.String())
 
 
 # Schema used for doc generation
@@ -44,8 +27,6 @@ businesses = api.model('Businesses', {
     'story': restx_fields.String(title='story describing the business of maximum 250 words.'),
     'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the business is related to.')
 })
-
-business_schema = BusinessSchema()
 
 
 @api.route('/<string:email>')
@@ -104,17 +85,12 @@ class BusinessPost(Resource):
     @api.response(409, 'Business with that email already exists')
     def post(self):
         '''Create a business.'''
-        try:
-            deserialised_payload = business_schema.load(api.payload)
-        except ValidationError as e:
-            if 'email' in e.messages:
-                return make_response(e.messages['email'][0], 422)
-            if 'tags' in e.messages:
-                return make_response(e.messages['tags'][0], 422)
+        if not valid_email(api.payload['email']):
+            return make_response('Not a valid email address.', 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(
-                    create_business, deserialised_payload)
+                    create_business, api.payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:
