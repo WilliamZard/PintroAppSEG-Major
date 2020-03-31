@@ -5,8 +5,6 @@ from flask import make_response, abort
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields, validate
-from marshmallow.exceptions import ValidationError
 
 from .neo4j_ops import (create_session, get_tags)
 
@@ -24,13 +22,6 @@ def convert_to_cypher_datetime(datetime):
 
 api = Namespace('tags', description='Tag related operations.')
 
-
-class TagSchema(Schema):
-    uuid = fields.UUID()
-    created = fields.Str()
-    name = fields.Str()
-
-
 tags = api.model('Tag', {
     'uuid': restx_fields.String(required=True),
     'created': restx_fields.String(),
@@ -40,9 +31,6 @@ tags = api.model('Tag', {
 labels = api.model('Label', {
     'labels': restx_fields.List(restx_fields.String())
 })
-
-
-tags_schema = TagSchema()
 
 
 @api.route('/')
@@ -63,4 +51,4 @@ class Tags(Resource):
                 get_tags, api.payload['labels'])
             if response:
                 data = [dict(tag['tag'].items()) for tag in response.data()]
-                return tags_schema.dump(data, many=True)
+                return jsonify(data)
