@@ -172,7 +172,7 @@ class TestPost:
         # Assert user was actually created in the database
         response = app.get(f"/users/{user['email']}")
         assert response.status == '200 OK'
-        response = json.loads(response.get_json())
+        response = response.get_json()
         assert len(response) == len(user)
         for key, value in user.items():
             assert key in response

@@ -103,19 +103,13 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
-        # validate email
-        try:
-            deserialised_payload = user_schema.load(api.payload)
-        except ValidationError as e:
-            if 'email' in e.messages:
-                return make_response(e.messages['email'][0], 422)
-            if 'tags' in e.messages:
-                return make_response(e.messages['tags'][0], 422)
-            return make_response(e.messages, 422)
+        # TODO:validate email
+        if not valid_email(api.payload['email']):
+            return make_response('Not a valid email address.', 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(
-                    create_user, deserialised_payload)
+                    create_user, api.payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:
