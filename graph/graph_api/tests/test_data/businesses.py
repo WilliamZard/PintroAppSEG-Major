@@ -8,7 +8,14 @@ BUSINESS_PROPERTIES = [
     "location",
     "email",
     "story",
-    "tags"]
+    "tags",
+    "date_founded",
+    "company_size",
+    "funding",
+    "team_members",
+    "seeking_investment",
+    "currently_hiring"
+    ]
 BUSINESS_DEFAULTS = [
     "Default Password",
     "Default Image",
@@ -18,7 +25,14 @@ BUSINESS_DEFAULTS = [
     "Default Location",
     "Default Email",
     "Default Story",
-    []
+    [],
+    "Default Date Founded",
+    "Default Company Size",
+    "Default Funding",
+    "Default Team Members",
+    "Default Seeking Investment",
+    "Default Currently Hiring",
+    
 ]
 
 Business = namedtuple('Business', BUSINESS_PROPERTIES,
