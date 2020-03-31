@@ -11,7 +11,6 @@ class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app, populate_db):
         # Define Nodes
         business = Business(email='new_business@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tags later
         business_node = basic_business_node(business)
         # Populate
         populate_db(nodes_to_create=[business_node])
@@ -48,7 +47,6 @@ class TestDelete:
     def test_delete_business_with_valid_email_that_exists(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_delete@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tests later
         business_node = basic_business_node(business)
         # Populate
         populate_db(nodes_to_create=[business_node])
@@ -84,7 +82,6 @@ class TestPut:
     def test_put_business_with_valid_email_that_exists(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_update@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tests later
         business_node = basic_business_node(business)
 
         new_business_fields = dict(
@@ -125,7 +122,6 @@ class TestPost:
     def test_post_business_with_valid_payload_that_does_not_exist(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_create@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tags later
         populate_db()
 
         # Populate
@@ -142,12 +138,11 @@ class TestPost:
         assert len(json) == len(business)
         for key, value in business.items():
             assert key in json
-            assert value in json[key]
+            assert value == json[key]
 
     def test_post_business_with_valid_payload_that_exists(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_create@rona.com')._asdict()
-        business.pop('tags')  # TODO: handle tags later
         business_node = basic_business_node(business)
 
         # Populate

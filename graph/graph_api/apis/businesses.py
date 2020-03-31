@@ -42,8 +42,10 @@ class Businesses(Resource):
             response = session.read_transaction(get_business_by_email, email)
             response = response.single()
             if response:
-                business = dict(response.data()['user'].items())
-                return business
+                data = response.data()
+                business = dict(data['user'].items())
+                business['tags'] = data['tags']
+                return jsonify(**business)
             return make_response('', 404)
 
     @api.doc('delete_business')

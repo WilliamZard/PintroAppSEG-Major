@@ -123,7 +123,7 @@ def get_business_by_email(tx, business_email):
     query = f"""
     MATCH (user:Business {{email: '{business_email}'}})
     OPTIONAL MATCH (user)-->(tag:Tag)
-    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
+    RETURN user, COLLECT(tag.name) AS tags"""
     return tx.run(query)
 
 
