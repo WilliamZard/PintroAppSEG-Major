@@ -15,8 +15,6 @@ class TestGET:
         valid_user = User(full_name='Duke Wellington',
                           email='duke@wellington.com')._asdict()
         # TODO: review how to handle tags at some point.
-        valid_user.pop('passions')
-        valid_user.pop('help_others')
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
         populate_db(nodes_to_create=[valid_user_node])
 
@@ -27,7 +25,7 @@ class TestGET:
         assert len(json_response) == len(valid_user)
         for key, value in valid_user.items():
             assert key in json_response
-            assert value == json_response[key]
+            assert str(value) == json_response[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
@@ -54,9 +52,6 @@ class TestDelete:
         # Generate test data
         user = User(
             university='Gatwick Airpot', full_name='taaj', email='taaj@hotmail.co.uk')._asdict()
-        # TODO: review how to handle tags at some point.
-        user.pop('passions')
-        user.pop('help_others')
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
@@ -68,6 +63,7 @@ class TestDelete:
         # Assert user was actually deleted in the database
         response = app.get(f"/users/{user['email']}")
         assert response.status == '404 NOT FOUND'
+        # TODO: add test to ensure all tagged relationships where deleted.
 
     def test_DELETE_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
