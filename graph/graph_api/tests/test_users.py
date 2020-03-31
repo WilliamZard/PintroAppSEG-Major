@@ -202,16 +202,10 @@ class TestUsersGETFollowers:
         # Generate Test Data
         # Define users
         user_with_followers = User(email='jj@gmail.com')._asdict()
-        user_with_followers.pop('passions')
-        user_with_followers.pop('help_others')
 
         user_following_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
-        user_following_a.pop('passions')
-        user_following_a.pop('help_others')
 
         user_following_b = User(email='lello@gmail.com')._asdict()
-        user_following_b.pop('passions')
-        user_following_b.pop('help_others')
         user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
             user_with_followers, user_following_a, user_following_b]]
 
@@ -260,16 +254,10 @@ class TestUsersGETFollowings:
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
-        user_with_followings.pop('passions')
-        user_with_followings.pop('help_others')
 
         user_being_followed_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
-        user_being_followed_a.pop('passions')
-        user_being_followed_a.pop('help_others')
 
         user_being_followed_b = User(email='lello@gmail.com')._asdict()
-        user_being_followed_b.pop('passions')
-        user_being_followed_b.pop('help_others')
         user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
             user_with_followings, user_being_followed_a, user_being_followed_b]]
 
@@ -319,16 +307,10 @@ class TestUsersGETFollowingsPosts:
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
-        user_with_followings.pop('passions')
-        user_with_followings.pop('help_others')
 
         user_being_followed_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
-        user_being_followed_a.pop('passions')
-        user_being_followed_a.pop('help_others')
 
         user_being_followed_b = User(email='lello@gmail.com')._asdict()
-        user_being_followed_b.pop('passions')
-        user_being_followed_b.pop('help_others')
         user_nodes = list(map(basic_user_node, [
                           user_with_followings, user_being_followed_a, user_being_followed_b]))
         post_a_uuid = str(uuid.uuid4())
