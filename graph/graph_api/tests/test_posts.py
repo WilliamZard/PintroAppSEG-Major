@@ -83,14 +83,13 @@ class TestPOST:
         assert response.data == b''
 
     def test_POST_post_with_invalid_payload(self, app, populate_db):
-        post = Post(content="")._asdict()
         user_email = 'test@test.com'
         populate_db()
 
         response = app.post(
             f"/posts/", json={'content': '', 'user_email': user_email})
-        assert response.status == '400 BAD REQUEST'
-        assert response.data == b"{'content': ['Length must be between 1 and 200.']}"
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b"Post content length must be between 1 and 300."
 
     @pytest.mark.xfail
     def test_POST_post_creates_posted_relation(self, app):
