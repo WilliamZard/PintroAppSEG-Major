@@ -2,8 +2,6 @@ from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 from .posts import posts
@@ -18,31 +16,6 @@ from .neo4j_ops import (create_session, create_user, delete_user_by_email,
 api = Namespace('users', title='User related operations')
 
 # Schema used for serialisations
-
-
-class UserSchema(Schema):
-    full_name = fields.Str(required=True)
-    preferred_name = fields.String()
-    profile_image = fields.String()
-    short_bio = fields.String()
-    gender = fields.String()
-    story = fields.String()
-    email = fields.Email(required=True)
-    phone_number = fields.String()
-    job_title = fields.String()
-    current_company = fields.String()
-    years_in_industry = fields.Int()
-    industry = fields.String()
-    previous_company = fields.String()
-    previous_company_year_finished = fields.String()
-    university = fields.String()
-    university_year_finished = fields.Int()
-    academic_level = fields.String()
-    date_of_birth = fields.String()
-    location = fields.String()
-    passions = fields.List(fields.String())
-    help_others = fields.List(fields.String())
-    active = fields.String()
 
 
 # TODO: update model with new schema
@@ -71,8 +44,6 @@ users = api.model('Users', {
     'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
     'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
-
-user_schema = UserSchema()
 
 
 @api.route('/<string:email>')
@@ -132,6 +103,7 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
+        # validate email
         try:
             deserialised_payload = user_schema.load(api.payload)
         except ValidationError as e:
