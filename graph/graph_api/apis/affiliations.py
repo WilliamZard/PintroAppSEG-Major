@@ -1,15 +1,12 @@
-from flask.json import jsonify
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
+
+from .neo4j_ops import (create_affiliation_relationship, create_session,
+                        delete_affiliation_relationship)
 from .utils import valid_email
-
-from .neo4j_ops import (
-    create_session, create_affiliation_relationship, delete_affiliation_relationship)
-
 
 api = Namespace(
     'affiliation', title='Operations related to the AFFILIATION relationship')
@@ -25,7 +22,7 @@ class AffiliationRequest(Resource):
                 create_affiliation_relationship, affiliation_requester, affiliation_request_recipient)
             if response.summary().counters.relationships_created == 1:
                 return make_response('', 201)
-            return make_response ('', 400)
+            return make_response('', 400)
 
     def delete(self, affiliation_requester, affiliation_request_recipient):
         '''Delete the AFFILIATION relationship, where affiliation_requester wants to be affiliated with affiliation_request_recipient'''
@@ -37,4 +34,3 @@ class AffiliationRequest(Resource):
                 print('reached')
                 return make_response('', 204)
             return make_response('', 400)
-
