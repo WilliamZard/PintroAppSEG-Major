@@ -89,8 +89,6 @@ class TestPut:
         user = User(
             full_name='Donald Trump', email='genius@fakenews.cnn')._asdict()
         # TODO: review how to handle tags at some point.
-        user.pop('passions')
-        user.pop('help_others')
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
