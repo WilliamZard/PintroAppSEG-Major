@@ -58,7 +58,10 @@ class Users(Resource):
             response = session.read_transaction(get_user_by_email, email)
             response = response.single()
             if response:
-                user = dict(response.data()['user'].items())
+                data = response.data()
+                user = dict(data['user'].items())
+                user['passions'] = data['passions']
+                user['help_others'] = data['help_others']
                 return jsonify(**user)
             return make_response('', 404)
 
@@ -156,7 +159,6 @@ class UsersGETPostsOfFollowings(Resource):
             response = session.read_transaction(
                 get_posts_of_followings_of_a_user, email)
             data = response.data()
-
             # Adjusting different in datetime format. Should not be like this.
             for post in data:
                 for key in post:

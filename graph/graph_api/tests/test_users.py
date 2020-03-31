@@ -153,8 +153,6 @@ class TestPost:
         # Generate Test Data
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
-        user.pop('passions')
-        user.pop('help_others')
         populate_db()
 
         # Test
@@ -176,8 +174,6 @@ class TestPost:
         # Generate Test Data
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
-        user.pop('passions')
-        user.pop('help_others')
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 

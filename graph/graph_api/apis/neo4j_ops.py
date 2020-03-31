@@ -90,7 +90,7 @@ def create_user(tx, fields):
     if 'passions' in fields:
         passions = fields['passions']
         fields.pop('passions')
-    if 'help others' in fields:
+    if 'help_others' in fields:
         help_others = fields['help_others']
         fields.pop('help_others')
     query = "CREATE (new_user: Person {" + ", ".join(
