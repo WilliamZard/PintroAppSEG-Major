@@ -326,10 +326,6 @@ class TestUsersGETFollowings:
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
     def test_GET_all_posts_of_all_followers(self, app, populate_db):
-        # create three users
-        # create two posts
-        # have one user follow two others
-        # have those two posted posts
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
@@ -384,11 +380,14 @@ class TestUsersGETFollowingsPosts:
         json = response.get_json()
         user_post_a = {'content': post_a['content'],
                        'modified': post_a['modified'],
+                       'created': post_a['created'],
+                       'uuid': post_a['uuid'],
                        'user_email': user_being_followed_a['email']}
         user_post_b = {'content': post_b['content'],
                        'modified': post_b['modified'],
+                       'created': post_b['created'],
+                       'uuid': post_b['uuid'],
                        'user_email': user_being_followed_b['email']}
-        print(json)
         assert len(json) == 2
         assert user_post_a in json
         assert user_post_b in json
