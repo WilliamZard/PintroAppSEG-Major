@@ -88,8 +88,7 @@ class Users(Resource):
             response = response.single()
             if response:
                 user = dict(response.data()['user'].items())
-                user = user_schema.dumps(user)
-                return user
+                return jsonify(**user)
             return make_response('', 404)
 
     @api.doc('delete_user')
