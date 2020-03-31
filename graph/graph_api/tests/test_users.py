@@ -243,9 +243,14 @@ class TestUsersGETFollowers:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.xfail
-    def test_GET_followers_of_user_with_no_followers(self, app):
-        raise NotImplementedError
+    def test_GET_followers_of_user_with_no_followers(self, app, populate_db):
+        user = User(email='jj@gmail.com')._asdict()
+        user_node = basic_user_node(user)
+        populate_db(nodes_to_create=[user_node])
+
+        response = app.get(f"/users/{user['email']}/followers")
+        assert response.status == '200 OK'
+        assert not response.get_json()
 
 
 @pytest.mark.GET_user_followings

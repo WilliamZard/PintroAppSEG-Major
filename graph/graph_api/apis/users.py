@@ -129,8 +129,11 @@ class UsersGETFollowers(Resource):
             response = session.read_transaction(
                 get_followers_of_a_user, email)
             data = response.data()
+            print(data)
             if data:
                 return jsonify(data)
+            else:
+                return jsonify([])
             return make_response('', 404)
 
 
