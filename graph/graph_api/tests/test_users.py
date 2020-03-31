@@ -23,7 +23,7 @@ class TestGET:
         # Test
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
-        json_response = json.loads(response.get_json())
+        json_response = response.get_json()
         assert len(json_response) == len(valid_user)
         for key, value in valid_user.items():
             assert key in json_response
