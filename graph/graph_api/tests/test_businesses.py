@@ -3,7 +3,7 @@ import json
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import Business, basic_business_node
+from .generate_test_data import Business, basic_business_node, Tag, basic_tag_node
 
 
 @pytest.mark.GET_business
@@ -84,16 +84,30 @@ class TestPut:
         business = Business(email='business_to_update@rona.com')._asdict()
         business_node = basic_business_node(business)
 
-        new_business_fields = dict(
-            full_name='new full name', phone='phone', location='new location')
+        tag = Tag(name='TestBusinessTag')._asdict()
+        tag_node = basic_tag_node(tag)
+
+        new_business = Business(
+            email=business['email'], full_name='new full name', phone='phone', location='new location', tags=[tag['uuid']])._asdict()
         # Populate
-        populate_db(nodes_to_create=[business_node])
+        populate_db(nodes_to_create=[business_node, tag_node])
 
         response = app.put(
-            f"/businesses/{business['email']}", json=new_business_fields)
+            f"/businesses/{business['email']}", json=dict(new_business))
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
+        response = app.get(
+            f"/businesses/{business['email']}")
+        print(response)
+        response = response.get_json()
+        print(response)
+        assert len(response) == len(business)
+        for key, value in new_business.items():
+            assert key in response
+            assert value == response[key]
+
+    @pytest.mark.skip
     def test_put_business_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
         nonexistant_business_email = 'does_not_exist@void.com'
@@ -104,6 +118,7 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
+    @pytest.mark.skip
     def test_put_business_with_invalid_email(self, app, populate_db):
         populate_db()
         invalid_email = 'invalidemail.com'
