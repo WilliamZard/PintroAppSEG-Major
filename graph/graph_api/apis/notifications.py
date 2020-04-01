@@ -15,6 +15,7 @@ notifications = api.model('Notification', {
     'requster_email': restx_fields.String(),
     'recipient_email': restx_fields.String(),
     'relationship_type': restx_fields.String(),
+    'created_at': restx_fields.Float(),
 })
 
 
@@ -29,5 +30,12 @@ class Notifications(Resource):
             if response:
                 data = [{key: REVERSED_REQUEST_RELATIONSHIPS[notification[key]] if notification[key] in REVERSED_REQUEST_RELATIONSHIPS else notification[key] for key in notification}
                         for notification in response.data()]
-                return jsonify(data)
-            return make_response('', 400)
+
+
+<< << << < HEAD
+return jsonify(data)
+== == == =
+data.sort(key=lambda n: n['created_at'] * -1)
+return notifications_schema.dump(data, many=True)
+>>>>>> > back-dev
+return make_response('', 400)

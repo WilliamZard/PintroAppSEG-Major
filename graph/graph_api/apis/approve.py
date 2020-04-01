@@ -4,6 +4,8 @@ from flask import make_response
 from .neo4j_ops import create_session, approve_request
 from .request import REQUEST_RELATIONSHIPS
 
+import time
+
 api = Namespace(
     'approve', title='For approving user relationships(eg FOLLOW or AFFILIATED_WITH')
 
@@ -25,8 +27,14 @@ class Approve(Resource):
 
         # TODO: validate emails
         with create_session() as session:
+            created_at = time.time()
             response = session.write_transaction(
-                approve_request, REQUEST_RELATIONSHIPS[relationship_type], APPROVE_RELATIONSHIPS_MAPPING[relationship_type], requester_email, request_recipient_email)
+                approve_request,
+                REQUEST_RELATIONSHIPS[relationship_type],
+                APPROVE_RELATIONSHIPS_MAPPING[relationship_type],
+                requester_email,
+                request_recipient_email,
+                created_at)
             if response.summary().counters.relationships_created == 1 and response.summary().counters.relationships_deleted == 1:
                 return make_response('', 201)
             return make_response('USER NOT FOUND', 404)

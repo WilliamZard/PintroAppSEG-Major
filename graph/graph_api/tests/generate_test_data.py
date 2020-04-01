@@ -23,41 +23,26 @@ def create_node(tx, labels, properties):
     return tx.run(query)
 
 
-def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
+def create_relationship(tx,
+                        s_node_properties, s_node_labels,
+                        e_node_properties, e_node_labels,
+                        relationship_type, relationship_properties=None):
     # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
-    # properties to match by, and relationshpi type. Labels already in node objects.
+    # properties to match by, and relationship type. Labels already in node objects.
     s_node_properties = ", ".join(
-        f"""{{{k}: \"{v}\"}}""" for (k, v) in s_node_properties.items())
+        f"""{{{k}: "{v}"}}""" for k, v in s_node_properties.items())
     e_node_properties = ", ".join(
-        f"""{{{k}: \"{v}\"}}""" for (k, v) in e_node_properties.items())
+        f"""{{{k}: "{v}"}}""" for k, v in e_node_properties.items())
+    if relationship_properties is None:
+        relationship_properties = ""
+    else:
+        relationship_properties = ", ".join(
+            f"""{{{k}: "{v}"}}""" for k, v in relationship_properties.items()
+        )
     query = f"""
     MATCH (starting_node:{s_node_labels} {s_node_properties})
     MATCH (ending_node:{e_node_labels} {e_node_properties})
-    CREATE (starting_node)-[:{relationship_type}]->(ending_node)
-    """
-    return tx.run(query)
-
-
-def create_node(tx, labels, properties):
-    # NOTE: this current code assumes all properties are a string.
-    if isinstance(labels, list):
-        labels = ':'.join(labels)
-    query = f"CREATE (new_node:{labels} {{" + ", ".join(
-        f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
-    return tx.run(query)
-
-
-def create_relationship(tx, s_node_properties, s_node_labels, e_node_properties, e_node_labels, relationship_type):
-    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
-    # properties to match by, and relationshpi type. Labels already in node objects.
-    s_node_properties = ", ".join(
-        f"""{{{k}: \"{v}\"}}""" for (k, v) in s_node_properties.items())
-    e_node_properties = ", ".join(
-        f"""{{{k}: \"{v}\"}}""" for (k, v) in e_node_properties.items())
-    query = f"""
-    MATCH (starting_node:{s_node_labels} {s_node_properties})
-    MATCH (ending_node:{e_node_labels} {e_node_properties})
-    CREATE (starting_node)-[:{relationship_type}]->(ending_node)
+    CREATE (starting_node)-[:{relationship_type} {relationship_properties}]->(ending_node)
     """
     return tx.run(query)
 
