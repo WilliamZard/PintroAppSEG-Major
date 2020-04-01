@@ -25,7 +25,13 @@ businesses = api.model('Businesses', {
     'location': restx_fields.String(title='current city of the business.'),
     'short_bio': restx_fields.String(title='short bio describing the business of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the business of maximum 250 words.'),
-    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the business is related to.')
+    'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the business is related to.'),
+    'date_founded': restx_fields.String(title='date the company was founded.'),
+    'company_size': restx_fields.String(title='size of the company.'),
+    'funding': restx_fields.String(title='amount of funding the comapy currently controls.'),
+    'team_members': restx_fields.String(title='main team memebers of the company.'),
+    'seeking_investment': restx_fields.String(title='whether the company is looking for investments.'),
+    'currently_hiring': restx_fields.String(title='whether the company is currently looking for potential employees.')
 })
 
 
