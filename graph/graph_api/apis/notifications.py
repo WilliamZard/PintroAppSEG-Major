@@ -1,9 +1,9 @@
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
 from flask import make_response
 from .neo4j_ops import create_session, get_notifications
 from .request import REQUEST_RELATIONSHIPS
+from flask.json import jsonify
 
 REVERSED_REQUEST_RELATIONSHIPS = {
     value: key for key, value in REQUEST_RELATIONSHIPS.items()}
@@ -11,22 +11,12 @@ REVERSED_REQUEST_RELATIONSHIPS = {
 api = Namespace('notifications',
                 title='Endpoint for operation on notifications.')
 
-
-class NotificationSchema(Schema):
-    requester_email = fields.Email()
-    recipient_email = fields.Email()
-    relationship_type = fields.Str()
-    created_at = fields.Float()
-
-
 notifications = api.model('Notification', {
     'requster_email': restx_fields.String(),
     'recipient_email': restx_fields.String(),
     'relationship_type': restx_fields.String(),
     'created_at': restx_fields.Float(),
 })
-
-notifications_schema = NotificationSchema()
 
 
 @api.route('/<string:user_email>')
@@ -40,6 +30,12 @@ class Notifications(Resource):
             if response:
                 data = [{key: REVERSED_REQUEST_RELATIONSHIPS[notification[key]] if notification[key] in REVERSED_REQUEST_RELATIONSHIPS else notification[key] for key in notification}
                         for notification in response.data()]
-                data.sort(key=lambda n: n['created_at'] * -1)
-                return notifications_schema.dump(data, many=True)
-            return make_response('', 400)
+
+
+<< << << < HEAD
+return jsonify(data)
+== == == =
+data.sort(key=lambda n: n['created_at'] * -1)
+return notifications_schema.dump(data, many=True)
+>>>>>> > back-dev
+return make_response('', 400)

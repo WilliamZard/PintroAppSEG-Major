@@ -67,8 +67,8 @@ def basic_business_node(business):
     return {'properties': dict(business), 'labels': 'Business'}
 
 
-def basic_tag_node(tag):
-    return {'properties': dict(tag), 'labels': 'Tag'}
+def basic_tag_node(tag, labels=':Tag'):
+    return {'properties': dict(tag), 'labels': labels}
 
 
 def create_full_text_indexes(tx):

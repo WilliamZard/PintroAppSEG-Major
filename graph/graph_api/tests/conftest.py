@@ -56,7 +56,8 @@ def populate_db():
                 session.write_transaction(create_relationship, **relationship)
         # TODO: do this properly. Move all db stuff connect() function. Use yield.
         driver.close()
-    return populate
+    yield populate
+    clear_db()
 
 
 @pytest.fixture()
@@ -64,11 +65,9 @@ def app():
     app = create_app()
     app.testing = True
 
-    clear_db()
     # TODO: right now this populates and clears the database for all tests, as opposed to every test
     # Not sure which if this should happen per test or per module.
     # Figure this out.
     with app.test_client() as client:
         # NOTE commented out populate db
         yield client
-    #clear_db()

@@ -1,15 +1,17 @@
-from flask.json import jsonify
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
-from .posts import posts
 
-from .neo4j_ops import (create_session, create_user, delete_user_by_email,
-                        get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user, get_posts_of_followings_of_a_user)
+from .neo4j_ops import (create_session, create_TAGGED_relationships,
+                        create_user, delete_tagged_relationships,
+                        delete_user_by_email, get_followers_of_a_user,
+                        get_followings_of_a_user,
+                        get_posts_of_followings_of_a_user, get_user_by_email,
+                        set_user_fields)
+from .posts import posts
+from .utils import valid_email
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -18,31 +20,6 @@ from .neo4j_ops import (create_session, create_user, delete_user_by_email,
 api = Namespace('users', title='User related operations')
 
 # Schema used for serialisations
-
-
-class UserSchema(Schema):
-    full_name = fields.Str(required=True)
-    preferred_name = fields.String()
-    profile_image = fields.String()
-    short_bio = fields.String()
-    gender = fields.String()
-    story = fields.String()
-    email = fields.Email(required=True)
-    phone_number = fields.String()
-    job_title = fields.String()
-    current_company = fields.String()
-    years_in_industry = fields.Int()
-    industry = fields.String()
-    previous_company = fields.String()
-    previous_company_year_finished = fields.String()
-    university = fields.String()
-    university_year_finished = fields.Int()
-    academic_level = fields.String()
-    date_of_birth = fields.String()
-    location = fields.String()
-    passions = fields.List(fields.String())
-    help_others = fields.List(fields.String())
-    active = fields.String()
 
 
 # TODO: update model with new schema
@@ -72,8 +49,6 @@ users = api.model('Users', {
     'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
-user_schema = UserSchema()
-
 
 @api.route('/<string:email>')
 @api.produces('application/json')
@@ -87,9 +62,11 @@ class Users(Resource):
             response = session.read_transaction(get_user_by_email, email)
             response = response.single()
             if response:
-                user = dict(response.data()['user'].items())
-                user = user_schema.dumps(user)
-                return user
+                data = response.data()
+                user = dict(data['user'].items())
+                user['passions'] = data['passions']
+                user['help_others'] = data['help_others']
+                return jsonify(**user)
             return make_response('', 404)
 
     @api.doc('delete_user')
@@ -114,13 +91,16 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
 
-        # TODO: validate payload
+        response = None
         with create_session() as session:
-            response = session.write_transaction(
-                set_user_fields, email, api.payload)
-            if response.summary().counters.properties_set == len(api.payload):
-                return make_response('', 204)
-            return make_response('', 404)
+            tx = session.begin_transaction()
+            delete_tagged_relationships(tx, email)
+            response = set_user_fields(tx, email, api.payload)
+            tx.commit()
+        # TODO: validate payload
+        if response.summary().counters.properties_set == len(api.payload):
+            return make_response('', 204)
+        return make_response('', 404)
 
 
 @api.route('/')
@@ -133,18 +113,27 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self):
         '''Create a user.'''
-        try:
-            deserialised_payload = user_schema.load(api.payload)
-        except ValidationError as e:
-            if 'email' in e.messages:
-                return make_response(e.messages['email'][0], 422)
-            if 'tags' in e.messages:
-                return make_response(e.messages['tags'][0], 422)
-            return make_response(e.messages, 422)
+        # TODO:validate email
+        if not valid_email(api.payload['email']):
+            return make_response('Not a valid email address.', 422)
+        payload = api.payload
+        passions = help_others = []
+        if 'passions' in payload:
+            passions = payload['passions']
+            payload.pop('passions')
+        if 'help_others' in payload:
+            help_others = payload['help_others']
+            payload.pop('help_others')
         with create_session() as session:
             try:
-                response = session.write_transaction(
-                    create_user, deserialised_payload)
+                tx = session.begin_transaction()
+                response = create_user(tx, payload)
+                email = payload['email']
+                create_TAGGED_relationships(
+                    tx, email, passions, 'Tag:Passion')
+                create_TAGGED_relationships(
+                    tx, email, help_others, 'Tag:Skill')
+                tx.commit()
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:
@@ -163,6 +152,8 @@ class UsersGETFollowers(Resource):
             data = response.data()
             if data:
                 return jsonify(data)
+            else:
+                return jsonify([])
             return make_response('', 404)
 
 
@@ -191,7 +182,6 @@ class UsersGETPostsOfFollowings(Resource):
             response = session.read_transaction(
                 get_posts_of_followings_of_a_user, email)
             data = response.data()
-
             # Adjusting different in datetime format. Should not be like this.
             for post in data:
                 for key in post:

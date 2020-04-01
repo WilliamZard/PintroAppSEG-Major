@@ -65,16 +65,19 @@ def set_user_fields(tx, user_email, fields):
     The query is dynamic. It only operates on fields that are given in the fields paramater.
     This query will also update relationships with tags.
     '''
-    create_tag_query = None
-    if 'tags' in fields:
-        tags = fields['tags']
-        fields.pop('tags')
-        create_tag_query = f"""
-        WITH {tags} AS tag_uuids
-        UNWIND tag_uuids AS tag_uuid
-        MATCH (tag:Tag {{uuid: tag_uuid}})
-        MATCH (user:Person {{email: '{user_email}'}})
-        MERGE (user)-[:TAGGED]->(tag)"""
+    passions = help_others = []
+    if 'passions' in fields:
+        passions = fields['passions']
+        fields.pop('passions')
+    if 'help_others' in fields:
+        help_others = fields['help_others']
+        fields.pop('help_others')
+    create_tag_query = f"""
+    WITH {passions+help_others} AS tag_names
+    UNWIND tag_names AS tag_name
+    MATCH (tag:Tag {{name: tag_name}})
+    MATCH (user:Person {{email: '{user_email}'}})
+    MERGE (user)-[:TAGGED]->(tag)"""
 
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
@@ -85,26 +88,29 @@ def set_user_fields(tx, user_email, fields):
     return tx.run(query)
 
 
+def delete_tagged_relationships(tx, email):
+    query = f"""
+    MATCH (user {{email: '{email}'}})-[rel:TAGGED]->(:Tag)
+    DELETE rel
+    """
+    return tx.run(query)
+
+
+def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
+    query = f"""
+        WITH {tag_names} AS tag_names
+        UNWIND tag_names AS tag_name
+        MATCH (tag:{tag_labels} {{name: tag_name}})
+        MATCH (user {{email: '{email}'}})
+        CREATE (user)-[:TAGGED] -> (tag)
+    """
+    return tx.run(query)
+
+
 def create_user(tx, fields):
-    passions = help_others = []
-    if 'passions' in fields:
-        passions = fields['passions']
-        fields.pop('passions')
-    if 'help others' in fields:
-        help_others = fields['help_others']
-        fields.pop('help_others')
+    # TODO: update this function to use logic of above one.
     query = "CREATE (new_user: Person {" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
-
-    if not passions or not help_others:
-        tags = help_others + passions
-        create_TAGGED_relationships_query = f"""
-        WITH {tags} AS tag_uuids
-        UNWIND tag_uuids AS tag_uuid
-        MATCH(tag: Tag {{uuid: tag_uuid}})
-        MATCH(user: Person {{email: '{fields['email']}'}})
-        CREATE(user)-[:TAGGED] -> (tag)"""
-        query += create_TAGGED_relationships_query
     return tx.run(query)
 
 
@@ -123,7 +129,7 @@ def get_business_by_email(tx, business_email):
     query = f"""
     MATCH (user:Business {{email: '{business_email}'}})
     OPTIONAL MATCH (user)-->(tag:Tag)
-    RETURN user, COLLECT(tag.name) AS tags, COLLECT(labels(tag)) AS tag_labels"""
+    RETURN user, COLLECT(tag.name) AS tags"""
     return tx.run(query)
 
 
@@ -289,7 +295,7 @@ def get_posts_of_followings_of_a_user(tx, email):
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
         -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as email"""
+        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as user_email"""
     return tx.run(query)
 
 
@@ -338,15 +344,6 @@ def get_followings_of_a_user(tx, email):
     return tx.run(query)
 
 
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
-    return tx.run(query)
-
-
 def get_nodes_for_user_search(tx, search_string):
     query = f"""CALL db.index.fulltext.queryNodes('SearchUserIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
@@ -363,12 +360,13 @@ def get_nodes_for_space_search(tx, search_string):
     query = f"""CALL db.index.fulltext.queryNodes('SearchSpaceIndex', '"{search_string}"~0.2') YIELD node, score
                 RETURN node, score LIMIT 10"""
 
-    return tx.run(query)    
+    return tx.run(query)
+
 
 def get_nodes_for_tag_search(tx, search_string):
     query = f"""CALL db.index.fulltext.queryNodes('SearchTagIndex', '"{search_string}"~0.2') YIELD node, score 
                 RETURN node, score"""
-    return tx.run(query) 
+    return tx.run(query)
 
 # def get_users_with_tag(tx, tag):
 #     query = f"""OPTIONAL MATCH (node:Person)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
@@ -376,28 +374,15 @@ def get_nodes_for_tag_search(tx, search_string):
 #             """
 #     return tx.run(query)
 
+
 def get_accounts_with_tag(tx, tag, label):
     query = f"""OPTIONAL MATCH (node:{label})-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
                 RETURN node LIMIT 10
              """
-    # query = f"""MATCH (node:{label}) 
+    # query = f"""MATCH (node:{label})
     #             WHERE any(x IN node.tags WHERE x = '{tag}')
     #             RETURN node LIMIT 10
     #         """
-    return tx.run(query)
-
-# def get_spaces_with_tag(tx, tag):
-#     query = f"""OPTIONAL MATCH (node:Space)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
-#                 RETURN space LIMIT 10
-#              """
-#     return tx.run(query)
-
-def get_posts_of_followings_of_a_user(tx, email):
-    query = f"""
-        MATCH (:Person {{email: '{email}'}})
-        -[:FOLLOWS]->(user:Person)
-        -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid"""
     return tx.run(query)
 
 

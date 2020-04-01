@@ -5,29 +5,37 @@ from ast import literal_eval
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import User, basic_user_node, Post, basic_post_node
+from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag
 
 
 @pytest.mark.GET_user
 class TestGET:
     def test_GET_user_with_valid_email_that_exists(self, app, populate_db):
         # Generate test data
+        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+
         valid_user = User(full_name='Duke Wellington',
-                          email='duke@wellington.com')._asdict()
-        # TODO: review how to handle tags at some point.
-        valid_user.pop('passions')
-        valid_user.pop('help_others')
+                          email='duke@wellington.com', help_others=[tag_a['name']])._asdict()
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
-        populate_db(nodes_to_create=[valid_user_node])
+
+        # Define relationships
+        tagged_a = {
+            's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+
+        populate_db(nodes_to_create=[valid_user_node, tag_a_node],
+                    relationships_to_create=[tagged_a])
 
         # Test
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
-        json_response = json.loads(response.get_json())
-        assert len(json_response) == len(valid_user)
+        response = response.get_json()
+        assert len(response) == len(valid_user)
         for key, value in valid_user.items():
-            assert key in json_response
-            assert value == json_response[key]
+            assert key in response
+            assert value == response[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
@@ -54,9 +62,6 @@ class TestDelete:
         # Generate test data
         user = User(
             university='Gatwick Airpot', full_name='taaj', email='taaj@hotmail.co.uk')._asdict()
-        # TODO: review how to handle tags at some point.
-        user.pop('passions')
-        user.pop('help_others')
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
@@ -68,6 +73,7 @@ class TestDelete:
         # Assert user was actually deleted in the database
         response = app.get(f"/users/{user['email']}")
         assert response.status == '404 NOT FOUND'
+        # TODO: add test to ensure all tagged relationships where deleted.
 
     def test_DELETE_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
@@ -90,19 +96,28 @@ class TestDelete:
 class TestPut:
     def test_PUT_user_with_valid_email_that_exists(self, app, populate_db):
         # Generate Test Data
-        user = User(
-            full_name='Donald Trump', email='genius@fakenews.cnn')._asdict()
-        # TODO: review how to handle tags at some point.
-        user.pop('passions')
-        user.pop('help_others')
+        tag_a = Tag(name='King Slayer')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+        tag_b = Tag(name='New King Slayer')._asdict()
+        tag_b_node = {'properties': tag_b, 'labels': ['Tag', 'Skill']}
+
+        user = User()._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
-        populate_db(nodes_to_create=[user_node])
+
+        # Define relationships
+        tagged_a = {
+            's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+
+        populate_db(nodes_to_create=[user_node, tag_a_node, tag_b_node],
+                    relationships_to_create=[tagged_a])
 
         # Test
         new_user_fields = dict(
             profile_image='new_image', full_name='Donald Trump', gender='masculine',
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
-            preferred_name='GOAT'
+            preferred_name='GOAT', help_others=[tag_b['name']]
         )
         email = user['email']
         response = app.put(
@@ -111,15 +126,16 @@ class TestPut:
         assert response.data == b''
 
         # TODO: complete these assertions.
-        """
+
         response = app.get(f"/users/{email}")
         assert response.status == '200 OK'
-        json = dict(response.get_json())
-        print(json)
-        assert len(json) == 13
-        for key, value in VALID_USER_TO_BE_UPDATED_NEW_FIELDS.items():
-            assert key in json
-            assert value == json[key]"""
+        response = response.get_json()
+        user = User(**new_user_fields
+                    )._asdict()
+        assert len(response) == len(user)
+        for key, value in user.items():
+            assert key in response
+            assert value == response[key]
 
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         # Generate test data
@@ -157,11 +173,11 @@ class TestPost:
     # TODO: test creating a user with tag creation
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app, populate_db):
         # Generate Test Data
+        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
         user = User(
-            full_name='precious', email='precious@gmail.com')._asdict()
-        user.pop('passions')
-        user.pop('help_others')
-        populate_db()
+            full_name='precious', email='precious@gmail.com', help_others=[tag_a['name']])._asdict()
+        populate_db(nodes_to_create=[tag_a_node])
 
         # Test
         response = app.post(
@@ -172,7 +188,7 @@ class TestPost:
         # Assert user was actually created in the database
         response = app.get(f"/users/{user['email']}")
         assert response.status == '200 OK'
-        response = json.loads(response.get_json())
+        response = response.get_json()
         assert len(response) == len(user)
         for key, value in user.items():
             assert key in response
@@ -182,8 +198,6 @@ class TestPost:
         # Generate Test Data
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
-        user.pop('passions')
-        user.pop('help_others')
         user_node = {'properties': dict(user), 'labels': 'Person'}
         populate_db(nodes_to_create=[user_node])
 
@@ -212,16 +226,10 @@ class TestUsersGETFollowers:
         # Generate Test Data
         # Define users
         user_with_followers = User(email='jj@gmail.com')._asdict()
-        user_with_followers.pop('passions')
-        user_with_followers.pop('help_others')
 
         user_following_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
-        user_following_a.pop('passions')
-        user_following_a.pop('help_others')
 
         user_following_b = User(email='lello@gmail.com')._asdict()
-        user_following_b.pop('passions')
-        user_following_b.pop('help_others')
         user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
             user_with_followers, user_following_a, user_following_b]]
 
@@ -252,16 +260,20 @@ class TestUsersGETFollowers:
                 assert key in user
                 assert value in user[key]
 
-    def test_GET_followers_of_non_existing_user(self, app, populate_db):
-        populate_db()
+    def test_GET_followers_of_non_existing_user(self, app):
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.xfail
-    def test_GET_followers_of_user_with_no_followers(self, app):
-        raise NotImplementedError
+    def test_GET_followers_of_user_with_no_followers(self, app, populate_db):
+        user = User(email='jj@gmail.com')._asdict()
+        user_node = basic_user_node(user)
+        populate_db(nodes_to_create=[user_node])
+
+        response = app.get(f"/users/{user['email']}/followers")
+        assert response.status == '200 OK'
+        assert not response.get_json()
 
 
 @pytest.mark.GET_user_followings
@@ -270,16 +282,10 @@ class TestUsersGETFollowings:
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
-        user_with_followings.pop('passions')
-        user_with_followings.pop('help_others')
 
         user_being_followed_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
-        user_being_followed_a.pop('passions')
-        user_being_followed_a.pop('help_others')
 
         user_being_followed_b = User(email='lello@gmail.com')._asdict()
-        user_being_followed_b.pop('passions')
-        user_being_followed_b.pop('help_others')
         user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
             user_with_followings, user_being_followed_a, user_being_followed_b]]
 
@@ -326,23 +332,13 @@ class TestUsersGETFollowings:
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
     def test_GET_all_posts_of_all_followers(self, app, populate_db):
-        # create three users
-        # create two posts
-        # have one user follow two others
-        # have those two posted posts
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
-        user_with_followings.pop('passions')
-        user_with_followings.pop('help_others')
 
         user_being_followed_a = User(email='yes_ucl@kcl.ac.uk')._asdict()
-        user_being_followed_a.pop('passions')
-        user_being_followed_a.pop('help_others')
 
         user_being_followed_b = User(email='lello@gmail.com')._asdict()
-        user_being_followed_b.pop('passions')
-        user_being_followed_b.pop('help_others')
         user_nodes = list(map(basic_user_node, [
                           user_with_followings, user_being_followed_a, user_being_followed_b]))
         post_a_uuid = str(uuid.uuid4())
@@ -384,11 +380,14 @@ class TestUsersGETFollowingsPosts:
         json = response.get_json()
         user_post_a = {'content': post_a['content'],
                        'modified': post_a['modified'],
+                       'created': post_a['created'],
+                       'uuid': post_a['uuid'],
                        'user_email': user_being_followed_a['email']}
         user_post_b = {'content': post_b['content'],
                        'modified': post_b['modified'],
+                       'created': post_b['created'],
+                       'uuid': post_b['uuid'],
                        'user_email': user_being_followed_b['email']}
-        print(json)
         assert len(json) == 2
         assert user_post_a in json
         assert user_post_b in json

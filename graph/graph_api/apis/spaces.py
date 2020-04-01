@@ -2,8 +2,6 @@ from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
@@ -16,18 +14,6 @@ from .neo4j_ops import (create_session, create_space, delete_space_by_email,
 
 api = Namespace('spaces', title='Space related operations')
 
-# Schema used for serialisations
-
-
-class SpaceSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
-    full_name = fields.Str(required=True)
-    profile_image = fields.String()
-    phone = fields.String()
-    location = fields.String()
-    short_bio = fields.String()
-
 
 # Schema used for doc generation
 spaces = api.model('Spaces', {
@@ -38,14 +24,11 @@ spaces = api.model('Spaces', {
     'phone': restx_fields.String(title="The co-working space's phone number."),
     'location': restx_fields.String(title='current city of the co-working space.'),
     'short_bio': restx_fields.String(title='short bio describing the co-working space of maximum 250 characters.')
-    })  # title for accounts that needs to be created.
-
-space_schema = SpaceSchema()
+})  # title for accounts that needs to be created.
 
 
 @api.route('/<string:email>')
 @api.produces('application/json')
-@api.expect(spaces)
 class Spaces(Resource):
     def get(self, email):
         '''Fetch a co-working space given its email.'''
@@ -58,7 +41,7 @@ class Spaces(Resource):
             if space:
                 # TODO: a lot going on here. See if this can be improved.
                 data = dict(space.data()['user'].items())
-                return jsonify(space_schema.dump(data))
+                return jsonify(**data)
             return make_response('', 404)
 
     @api.doc('delete_space')
@@ -92,21 +75,19 @@ class Spaces(Resource):
 
 @api.route('/')
 @api.produces('application/json')
-@api.expect(spaces)
-class UsersPost(Resource):
+class SpacesPost(Resource):
     @api.doc('create_space')
     @api.response(204, 'Co-working space created')
     @api.response(409, 'Co-working space with that email already exists')
     def post(self):
         '''Create a co-working space.'''
-        try:
-            deserialised_payload = space_schema.load(api.payload)
-        except ValidationError as e:
-            return make_response(e.messages['email'][0], 422)
+        payload = api.payload
+        if not valid_email(payload['email']):
+            return make_response('Not a valid email address.', 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(
-                    create_space, deserialised_payload)
+                    create_space, api.payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:

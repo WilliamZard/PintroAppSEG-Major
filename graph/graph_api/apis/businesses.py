@@ -2,40 +2,17 @@ from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, create_business, delete_business_by_email,
-                        get_business_by_email, set_business_fields)
+                        get_business_by_email, set_business_fields, delete_tagged_relationships, create_TAGGED_relationships)
 
 # TODO: enable swagger API spec
 # TODO: email validation
 
 
 api = Namespace('businesses', title='Business related operations')
-
-# Schema used for serialisations
-
-
-
-class BusinessSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
-    full_name = fields.Str(required=True)
-    profile_image = fields.String()
-    phone = fields.String()
-    location = fields.String()
-    short_bio = fields.String()
-    story = fields.String()
-    tags = fields.List(fields.String())
-    date_founded = fields.String()
-    company_size = fields.String()
-    funding = fields.String()
-    team_members = fields.String()
-    seeking_investment = fields.String()
-    currently_hiring = fields.String()
 
 
 # Schema used for doc generation
@@ -49,15 +26,13 @@ businesses = api.model('Businesses', {
     'short_bio': restx_fields.String(title='short bio describing the business of maximum 250 characters.'),
     'story': restx_fields.String(title='story describing the business of maximum 250 words.'),
     'tags': restx_fields.List(restx_fields.String(), description='List of tag UUIDs that the business is related to.'),
-    'date_founded' : restx_fields.String(title='date the company was founded.'),
-    'company_size' : restx_fields.String(title='size of the company.'),
-    'funding' : restx_fields.String(title='amount of funding the comapy currently controls.'),
-    'team_members' : restx_fields.String(title='main team memebers of the company.'),
-    'seeking_investment' : restx_fields.String(title='whether the company is looking for investments.'),
-    'currently_hiring' : restx_fields.String(title='whether the company is currently looking for potential employees.')
+    'date_founded': restx_fields.String(title='date the company was founded.'),
+    'company_size': restx_fields.String(title='size of the company.'),
+    'funding': restx_fields.String(title='amount of funding the comapy currently controls.'),
+    'team_members': restx_fields.String(title='main team memebers of the company.'),
+    'seeking_investment': restx_fields.String(title='whether the company is looking for investments.'),
+    'currently_hiring': restx_fields.String(title='whether the company is currently looking for potential employees.')
 })
-
-business_schema = BusinessSchema()
 
 
 @api.route('/<string:email>')
@@ -73,8 +48,10 @@ class Businesses(Resource):
             response = session.read_transaction(get_business_by_email, email)
             response = response.single()
             if response:
-                business = dict(response.data()['user'].items())
-                return business
+                data = response.data()
+                business = dict(data['user'].items())
+                business['tags'] = data['tags']
+                return jsonify(**business)
             return make_response('', 404)
 
     @api.doc('delete_business')
@@ -98,13 +75,22 @@ class Businesses(Resource):
         if not valid_email(email):
             return make_response('', 422)
 
-        # TODO: validate payload
+        payload = api.payload
+        tags = []
+        if 'tags' in payload:
+            tags = payload['tags']
+            payload.pop('tags')
+
+        response = None
         with create_session() as session:
-            response = session.write_transaction(
-                set_business_fields, email, api.payload)
-            if response.summary().counters.properties_set == len(api.payload):
-                return make_response('', 204)
-            return make_response('', 404)
+            tx = session.begin_transaction()
+            delete_tagged_relationships(tx, email)
+            response = set_business_fields(tx, email, api.payload)
+            create_TAGGED_relationships(tx, email, tags, 'BusinessTag')
+            tx.commit()
+        if response.summary().counters.properties_set == len(payload):
+            return make_response('', 204)
+        return make_response('', 404)
 
 
 @api.route('/')
@@ -116,17 +102,12 @@ class BusinessPost(Resource):
     @api.response(409, 'Business with that email already exists')
     def post(self):
         '''Create a business.'''
-        try:
-            deserialised_payload = business_schema.load(api.payload)
-        except ValidationError as e:
-            if 'email' in e.messages:
-                return make_response(e.messages['email'][0], 422)
-            if 'tags' in e.messages:
-                return make_response(e.messages['tags'][0], 422)
+        if not valid_email(api.payload['email']):
+            return make_response('Not a valid email address.', 422)
         with create_session() as session:
             try:
                 response = session.write_transaction(
-                    create_business, deserialised_payload)
+                    create_business, api.payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:

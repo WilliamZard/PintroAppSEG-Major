@@ -3,8 +3,6 @@ from flask.json import jsonify
 from flask import make_response
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields, validate
-from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
@@ -27,27 +25,6 @@ def convert_to_cypher_datetime(datetime):
 
 api = Namespace('posts', title='Posting related operations')
 
-# TODO: add more fields to post based on specs
-# Schema representing a post element
-
-
-class PostSchema(Schema):
-    # TODO: set these datetime fields to be tz aware
-    content = fields.Str(required=True, validate=validate.Length(1, 200))
-    user_email = fields.Email()
-    uuid = fields.UUID()
-    created = fields.DateTime()
-    modified = fields.DateTime()
-
-
-# TODO: look into how relationship propeties should work
-# Schema representing a relation between a user and a post.
-
-
-"""
-class POSTEDRelationSchema(Schema):
-    created = fields.DateTime(required=True)
-"""
 
 # TODO: review this
 # Schema used for doc generation
@@ -58,12 +35,6 @@ posts = api.model('Post', {
     'modified': restx_fields.DateTime(),
     'user_email': restx_fields.String()
 })
-"""
-update_post_model = api.model('Modifying a post', {'post_id': restx_fields.String(required=True, title='Id of the post that needs to be deleted. '),
-                                                   'new_content': restx_fields.String(title='The new content to give to the post')})
-delete_post_model = api.model('Deleting a post', {'post_id': restx_fields.String(
-    required=True, title='Id of the post that needs to be deleted. ')})"""
-post_schema = PostSchema()
 
 
 @api.route('/<string:uuid>')
@@ -120,14 +91,13 @@ class PostsPost(Resource):
     @api.response(204, 'Post created')
     def post(self):
         '''Create a post.'''
-        try:
-            deserialised_payload = post_schema.load(api.payload)
-        except ValidationError as e:
-            return make_response(str(e), 400)
+        payload = api.payload
+        if len(payload['content']) <= 300 and len(payload['content']) == 0:
+            return make_response('Post content length must be between 1 and 300.', 422)
         created = modified = convert_to_cypher_datetime(get_time())
         post_uuid = uuid.uuid4()
-        content = deserialised_payload['content']
-        user_email = deserialised_payload['user_email']
+        content = payload['content']
+        user_email = payload['user_email']
         with create_session() as session:
             try:
                 response = session.write_transaction(
