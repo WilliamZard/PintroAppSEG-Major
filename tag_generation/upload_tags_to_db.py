@@ -3,7 +3,6 @@ from neo4j import GraphDatabase
 import sys
 import os
 import pandas as pd
-import uuid
 import time
 
 
@@ -44,11 +43,10 @@ def convert_to_cypher_datetime(datetime):
 
 def create_tag_node(tx, tag):
     tags_string = ':Tag'  # have all tag nodes have default label :Tags
-    tag_uuid = uuid.uuid4()
     created = convert_to_cypher_datetime(get_time())
     if tag['labels']:
         tags_string = tags_string + ':' + ':'.join(tag['labels'])
-    query = f"""CREATE (new_tag{tags_string} {{name: "{tag['Name']}", created: datetime("{created}"), uuid: "{tag_uuid}"}})"""
+    query = f"""CREATE (new_tag{tags_string} {{name: "{tag['Name']}", created: datetime("{created}")}})"""
     tx.run(query)
 
 
