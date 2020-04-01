@@ -260,8 +260,7 @@ class TestUsersGETFollowers:
                 assert key in user
                 assert value in user[key]
 
-    def test_GET_followers_of_non_existing_user(self, app, populate_db):
-        populate_db()
+    def test_GET_followers_of_non_existing_user(self, app):
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
         assert response.status == '404 NOT FOUND'
