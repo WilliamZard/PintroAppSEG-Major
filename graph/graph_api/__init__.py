@@ -1,9 +1,11 @@
 from flask import Flask
 import os
+import logging
 
 
 def create_app():
-    # TODO: use config files instead of env variables in dockerfiles
+    # TODO: make logging configurable
+    logging.basicConfig(level=logging.DEBUG)
     app = Flask(__name__)
 
     from .apis import api
