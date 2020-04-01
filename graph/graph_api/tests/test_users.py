@@ -5,27 +5,37 @@ from ast import literal_eval
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import User, basic_user_node, Post, basic_post_node
+from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag
 
 
 @pytest.mark.GET_user
 class TestGET:
     def test_GET_user_with_valid_email_that_exists(self, app, populate_db):
         # Generate test data
+        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+
         valid_user = User(full_name='Duke Wellington',
-                          email='duke@wellington.com')._asdict()
-        # TODO: review how to handle tags at some point.
+                          email='duke@wellington.com', help_others=[tag_a['name']])._asdict()
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
-        populate_db(nodes_to_create=[valid_user_node])
+
+        # Define relationships
+        tagged_a = {
+            's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+
+        populate_db(nodes_to_create=[valid_user_node, tag_a_node],
+                    relationships_to_create=[tagged_a])
 
         # Test
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
-        json_response = response.get_json()
-        assert len(json_response) == len(valid_user)
+        response = response.get_json()
+        assert len(response) == len(valid_user)
         for key, value in valid_user.items():
-            assert key in json_response
-            assert value == json_response[key]
+            assert key in response
+            assert value == response[key]
 
     def test_GET_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
