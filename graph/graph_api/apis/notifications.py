@@ -31,11 +31,6 @@ class Notifications(Resource):
                 data = [{key: REVERSED_REQUEST_RELATIONSHIPS[notification[key]] if notification[key] in REVERSED_REQUEST_RELATIONSHIPS else notification[key] for key in notification}
                         for notification in response.data()]
 
-
-<< << << < HEAD
-return jsonify(data)
-== == == =
-data.sort(key=lambda n: n['created_at'] * -1)
-return notifications_schema.dump(data, many=True)
->>>>>> > back-dev
-return make_response('', 400)
+            data.sort(key=lambda n: n['created_at'] * -1)
+            return jsonify(data)
+        return make_response('', 400)
