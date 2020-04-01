@@ -173,9 +173,11 @@ class TestPost:
     # TODO: test creating a user with tag creation
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app, populate_db):
         # Generate Test Data
+        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
         user = User(
-            full_name='precious', email='precious@gmail.com')._asdict()
-        populate_db()
+            full_name='precious', email='precious@gmail.com', help_others=[tag_a['name']])._asdict()
+        populate_db(nodes_to_create=[tag_a_node])
 
         # Test
         response = app.post(

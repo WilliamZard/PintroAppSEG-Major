@@ -96,28 +96,21 @@ def delete_tagged_relationships(tx, email):
     return tx.run(query)
 
 
+def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
+    query = f"""
+        WITH {tag_names} AS tag_names
+        UNWIND tag_names AS tag_name
+        MATCH (tag:{tag_labels} {{name: tag_name}})
+        MATCH (user: Person {{email: '{email}'}})
+        CREATE (user)-[:TAGGED] -> (tag)
+    """
+    return tx.run(query)
+
+
 def create_user(tx, fields):
     # TODO: update this function to use logic of above one.
-    passions = help_others = []
-    if 'passions' in fields:
-        passions = fields['passions']
-        fields.pop('passions')
-    if 'help_others' in fields:
-        help_others = fields['help_others']
-        fields.pop('help_others')
     query = "CREATE (new_user: Person {" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
-
-    if not passions or not help_others:
-        tags = help_others + passions
-        create_TAGGED_relationships_query = f"""
-        WITH {tags} AS tag_uuids
-        UNWIND tag_uuids AS tag_uuid
-        MATCH(tag: Tag {{uuid: tag_uuid}})
-        MATCH(user: Person {{email: '{fields['email']}'}})
-        CREATE(user)-[:TAGGED] -> (tag)"""
-        query += create_TAGGED_relationships_query
-    print(query)
     return tx.run(query)
 
 
