@@ -10,17 +10,27 @@ from .generate_test_data import Business, basic_business_node, Tag, basic_tag_no
 class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app, populate_db):
         # Define Nodes
-        business = Business(email='new_business@rona.com')._asdict()
+        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'BusinessTag']}
+
+        business = Business(email='new_business@rona.com',
+                            tags=[tag_a['name']])._asdict()
         business_node = basic_business_node(business)
+
+        # Define relationships
+        tagged_a = {
+            's_node_properties': {'email': business['email']}, 's_node_labels': 'Business',
+            'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
         # Populate
-        populate_db(nodes_to_create=[business_node])
+        populate_db(nodes_to_create=[
+                    business_node, tag_a_node], relationships_to_create=[tagged_a])
 
         # Test
         response = app.get(f"/businesses/{business['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
         assert len(response) == len(business)
-        print(response)
         for key, value in business.items():
             assert key in response
             assert value == response[key]
