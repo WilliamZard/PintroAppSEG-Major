@@ -20,6 +20,7 @@ class TestGet:
         assert response.status == '200 OK'
         response = response.get_json()
         assert len(response) == len(business)
+        print(response)
         for key, value in business.items():
             assert key in response
             assert value == response[key]

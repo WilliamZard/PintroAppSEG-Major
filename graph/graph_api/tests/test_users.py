@@ -96,17 +96,28 @@ class TestDelete:
 class TestPut:
     def test_PUT_user_with_valid_email_that_exists(self, app, populate_db):
         # Generate Test Data
-        user = User(
-            full_name='Donald Trump', email='genius@fakenews.cnn')._asdict()
-        # TODO: review how to handle tags at some point.
+        tag_a = Tag(name='King Slayer')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+        tag_b = Tag(name='New King Slayer')._asdict()
+        tag_b_node = {'properties': tag_b, 'labels': ['Tag', 'Skill']}
+
+        user = User()._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
-        populate_db(nodes_to_create=[user_node])
+
+        # Define relationships
+        tagged_a = {
+            's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+
+        populate_db(nodes_to_create=[user_node, tag_a_node, tag_b_node],
+                    relationships_to_create=[tagged_a])
 
         # Test
         new_user_fields = dict(
             profile_image='new_image', full_name='Donald Trump', gender='masculine',
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
-            preferred_name='GOAT'
+            preferred_name='GOAT', help_others=[tag_b['name']]
         )
         email = user['email']
         response = app.put(
@@ -115,16 +126,19 @@ class TestPut:
         assert response.data == b''
 
         # TODO: complete these assertions.
-        """
+
         response = app.get(f"/users/{email}")
         assert response.status == '200 OK'
-        json = dict(response.get_json())
-        print(json)
-        assert len(json) == 13
-        for key, value in VALID_USER_TO_BE_UPDATED_NEW_FIELDS.items():
-            assert key in json
-            assert value == json[key]"""
+        response = response.get_json()
+        print(response)
+        user = User(**new_user_fields
+                    )._asdict()
+        assert len(response) == len(user)
+        for key, value in user.items():
+            assert key in response
+            assert value == response[key]
 
+    @pytest.mark.skip
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         # Generate test data
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
@@ -139,6 +153,7 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
+    @pytest.mark.skip
     def test_PUT_user_with_invalid_email(self, app, populate_db):
         # Generate test data
         INVALID_EMAIL = 'invalidateme.now'
