@@ -5,90 +5,6 @@ from .generate_test_data import (Chatroom, User, basic_chatroom_node,
                                  basic_user_node)
 
 
-@pytest.mark.GET_chatroom
-class TestGET:
-    def test_GET_chatrooms_for_users_that_exist(self, app, populate_db):
-        # Generate Data
-        users = [
-            User(email='user1@test.com')._asdict(),
-            User(email='user2@test.com')._asdict(),
-            User(email='user3@test.com')._asdict(),
-            User(email='user4@test.com')._asdict(),
-        ]
-        chatrooms = [
-            Chatroom()._asdict(),
-            Chatroom()._asdict(),
-        ]
-
-        # Relationships
-        userA_chatroomA = {
-            's_node_properties': {'email': users[0]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[0]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-        userB_chatroomA = {
-            's_node_properties': {'email': users[1]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[0]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-        userA_chatroomB = {
-            's_node_properties': {'email': users[0]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[1]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-        userC_chatroomB = {
-            's_node_properties': {'email': users[2]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[1]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-
-        populate_db(
-            nodes_to_create=list(map(basic_user_node, users)) +
-            list(map(basic_chatroom_node, chatrooms)),
-            relationships_to_create=[
-                userA_chatroomA, userB_chatroomA, userA_chatroomB, userC_chatroomB]
-        )
-
-        response = app.get(f"/chatrooms/{users[0]['email']}")
-        assert response.status == '200 OK'
-        # the order of chatrooms is arbitrary and sorted by the frontend,
-        # so turning it into a set allows orderless checking of the data inside
-        json = response.get_json()
-        assert len(json) == 2
-        assert {"chat_id": str(chatrooms[0]['chat_id']),
-                "recipient": users[1]['email']} in json
-        assert {"chat_id": str(chatrooms[1]['chat_id']),
-                "recipient": users[2]['email']} in json
-
-        response = app.get(f"/chatrooms/{users[1]['email']}")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 1
-        assert {"chat_id": str(chatrooms[0]['chat_id']),
-                "recipient": users[0]['email']} in json
-
-        response = app.get(f"/chatrooms/{users[2]['email']}")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 1
-        assert {"chat_id": str(chatrooms[1]['chat_id']),
-                "recipient": users[0]['email']} in json
-
-        response = app.get(f"/chatrooms/{users[3]['email']}")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 0
-
-    def test_GET_chatrooms_for_user_that_does_not_exists(self, app, populate_db):
-        populate_db()
-
-        nonexistant_email = 'doesnotexist@test.com'
-        response = app.get(f"/chatrooms/{nonexistant_email}")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 0
-
-
 @pytest.mark.POST_chatroom
 class TestPost:
     def test_POST_new_chatroom_for_users_with_no_existing_chatroom(self, app, populate_db):
@@ -108,7 +24,7 @@ class TestPost:
         new_chat_id = json['chat_id']
 
         response = app.get(
-            f"/chatrooms/{users[0]['email']}")
+            f"/users/{users[0]['email']}/chatrooms")
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 1
@@ -116,7 +32,7 @@ class TestPost:
                 "recipient": users[1]['email']} in json
 
         response = app.get(
-            f"/chatrooms/{users[1]['email']}")
+            f"/users/{users[1]['email']}/chatrooms")
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 1
@@ -177,13 +93,13 @@ class TestDelete:
         assert response.data == b''
 
         response = app.get(
-            f"/chatrooms/{users[0]['email']}")
+            f"/users/{users[0]['email']}/chatrooms")
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 0
 
         response = app.get(
-            f"/chatrooms/{users[0]['email']}")
+            f"/users/{users[0]['email']}/chatrooms")
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 0

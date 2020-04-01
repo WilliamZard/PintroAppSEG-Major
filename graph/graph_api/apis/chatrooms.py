@@ -26,19 +26,6 @@ chatrooms = api.model('Chatrooms', {
 })
 
 
-@api.route('/<string:email>')
-@api.produces('application/json')
-class Chatrooms(Resource):
-    def get(self, email):
-        '''Gets the chatrooms a user is in.'''
-        if not valid_email(email):
-            return make_response('', 422)
-
-        with create_session() as session:
-            response = session.read_transaction(get_chatrooms_of_user, email)
-            response = response.data()
-            return jsonify(response)
-
 
 @api.route("/<string:email1>/<string:email2>")
 @api.produces("application/json")

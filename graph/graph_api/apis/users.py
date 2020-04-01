@@ -9,16 +9,14 @@ from .neo4j_ops import (create_session, create_TAGGED_relationships,
                         delete_user_by_email, get_followers_of_a_user,
                         get_followings_of_a_user,
                         get_posts_of_followings_of_a_user, get_user_by_email,
-                        set_user_fields)
+                        set_user_fields, get_chatrooms_of_user)
 from .posts import posts
 from .utils import valid_email
-
 # TODO: enable swagger API spec
 # TODO: email validation
 
 
 api = Namespace('users', title='User related operations')
-
 # Schema used for serialisations
 
 
@@ -228,3 +226,17 @@ class Users(Resource):
             if response.summary().counters.properties_set == 1:
                 return make_response('', 204)
             return make_response('', 404)
+
+
+@api.route('/<string:email>/chatrooms')
+@api.produces('application/json')
+class GETUserChatrooms(Resource):
+    def get(self, email):
+        '''Gets the chatrooms a user is in.'''
+        if not valid_email(email):
+            return make_response('', 422)
+
+        with create_session() as session:
+            response = session.read_transaction(get_chatrooms_of_user, email)
+            response = response.data()
+            return jsonify(response)
