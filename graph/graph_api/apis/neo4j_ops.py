@@ -90,7 +90,7 @@ def set_user_fields(tx, user_email, fields):
 
 def delete_tagged_relationships(tx, email):
     query = f"""
-    MATCH (user:Person {{email: '{email}'}})-[rel:TAGGED]->(:Tag)
+    MATCH (user {{email: '{email}'}})-[rel:TAGGED]->(:Tag)
     DELETE rel
     """
     return tx.run(query)
@@ -101,7 +101,7 @@ def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
         WITH {tag_names} AS tag_names
         UNWIND tag_names AS tag_name
         MATCH (tag:{tag_labels} {{name: tag_name}})
-        MATCH (user: Person {{email: '{email}'}})
+        MATCH (user {{email: '{email}'}})
         CREATE (user)-[:TAGGED] -> (tag)
     """
     return tx.run(query)

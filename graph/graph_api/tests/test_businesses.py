@@ -107,10 +107,10 @@ class TestPut:
         business_node = basic_business_node(business)
 
         tag = Tag(name='TestBusinessTag')._asdict()
-        tag_node = basic_tag_node(tag)
+        tag_node = basic_tag_node(tag, 'Tag:BusinessTag')
 
         new_business = Business(
-            email=business['email'], full_name='new full name', phone='phone', location='new location', tags=[tag['uuid']])._asdict()
+            email=business['email'], full_name='new full name', phone='phone', location='new location', tags=[tag['name']])._asdict()
         # Populate
         populate_db(nodes_to_create=[business_node, tag_node])
 
@@ -121,15 +121,12 @@ class TestPut:
 
         response = app.get(
             f"/businesses/{business['email']}")
-        print(response)
         response = response.get_json()
-        print(response)
         assert len(response) == len(business)
         for key, value in new_business.items():
             assert key in response
             assert value == response[key]
 
-    @pytest.mark.skip
     def test_put_business_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()
         nonexistant_business_email = 'does_not_exist@void.com'
@@ -140,7 +137,6 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.skip
     def test_put_business_with_invalid_email(self, app, populate_db):
         populate_db()
         invalid_email = 'invalidemail.com'

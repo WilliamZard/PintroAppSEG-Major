@@ -6,7 +6,7 @@ from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
 from .neo4j_ops import (create_session, create_business, delete_business_by_email,
-                        get_business_by_email, set_business_fields)
+                        get_business_by_email, set_business_fields, delete_tagged_relationships, create_TAGGED_relationships)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -75,13 +75,22 @@ class Businesses(Resource):
         if not valid_email(email):
             return make_response('', 422)
 
-        # TODO: validate payload
+        payload = api.payload
+        tags = []
+        if 'tags' in payload:
+            tags = payload['tags']
+            payload.pop('tags')
+
+        response = None
         with create_session() as session:
-            response = session.write_transaction(
-                set_business_fields, email, api.payload)
-            if response.summary().counters.properties_set == len(api.payload):
-                return make_response('', 204)
-            return make_response('', 404)
+            tx = session.begin_transaction()
+            delete_tagged_relationships(tx, email)
+            response = set_business_fields(tx, email, api.payload)
+            create_TAGGED_relationships(tx, email, tags, 'BusinessTag')
+            tx.commit()
+        if response.summary().counters.properties_set == len(payload):
+            return make_response('', 204)
+        return make_response('', 404)
 
 
 @api.route('/')
