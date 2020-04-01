@@ -85,7 +85,14 @@ def set_user_fields(tx, user_email, fields):
 
     if create_tag_query:
         query = query + create_tag_query
-    print(query)
+    return tx.run(query)
+
+
+def delete_tagged_relationships(tx, email):
+    query = f"""
+    MATCH (user:Person {{email: '{email}'}})-[rel:TAGGED]->(:Tag)
+    DELETE rel
+    """
     return tx.run(query)
 
 

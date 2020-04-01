@@ -7,7 +7,7 @@ from .utils import valid_email
 from .posts import posts
 
 from .neo4j_ops import (create_session, create_user, delete_user_by_email,
-                        get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user, get_posts_of_followings_of_a_user)
+                        get_user_by_email, set_user_fields, get_followers_of_a_user, get_followings_of_a_user, get_posts_of_followings_of_a_user, delete_tagged_relationships)
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -87,13 +87,16 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
 
-        # TODO: validate payload
+        response = None
         with create_session() as session:
-            response = session.write_transaction(
-                set_user_fields, email, api.payload)
-            if response.summary().counters.properties_set == len(api.payload):
-                return make_response('', 204)
-            return make_response('', 404)
+            tx = session.begin_transaction()
+            delete_tagged_relationships(tx, email)
+            response = set_user_fields(tx, email, api.payload)
+            tx.commit()
+        # TODO: validate payload
+        if response.summary().counters.properties_set == len(api.payload):
+            return make_response('', 204)
+        return make_response('', 404)
 
 
 @api.route('/')

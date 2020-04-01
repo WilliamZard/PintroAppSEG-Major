@@ -130,7 +130,6 @@ class TestPut:
         response = app.get(f"/users/{email}")
         assert response.status == '200 OK'
         response = response.get_json()
-        print(response)
         user = User(**new_user_fields
                     )._asdict()
         assert len(response) == len(user)
@@ -138,7 +137,6 @@ class TestPut:
             assert key in response
             assert value == response[key]
 
-    @pytest.mark.skip
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app, populate_db):
         # Generate test data
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
@@ -153,7 +151,6 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.skip
     def test_PUT_user_with_invalid_email(self, app, populate_db):
         # Generate test data
         INVALID_EMAIL = 'invalidateme.now'
