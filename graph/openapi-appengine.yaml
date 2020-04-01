@@ -1,26 +1,32 @@
-# [START swagger]
-swagger: "2.0"
-info:
-  title: Pintro Graph Api
-  version: '0.1'
-produces:
-  - application/json
-consumes:
-  - application/json
-tags:
-  - name: users
-  - name: businesses
-  - name: spaces
-  - name: posts
-  - name: following
-  - name: search
-  - name: tags
+swagger: '2.0'
 schemes:
 - "https"
 host: "bluej-pintro-project.appspot.com"
-# [END swagger]
 basePath: /
 paths:
+  '/approve/{relationship_type}/{requester_email}/{request_recipient_email}':
+    parameters:
+      - name: relationship_type
+        in: path
+        required: true
+        type: string
+      - name: requester_email
+        in: path
+        required: true
+        type: string
+      - name: request_recipient_email
+        in: path
+        required: true
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Replace the existing request relationship with an approved relationship
+      description: E.g. REQUESTED_FOLLOW => FOLLOWS
+      operationId: post_approve
+      tags:
+        - approve
   /businesses:
     parameters:
       - name: payload
@@ -49,14 +55,6 @@ paths:
         in: path
         required: true
         type: string
-    put:
-      responses:
-        '204':
-          description: Business Fields Deleted
-      summary: Update a business by the given fields
-      operationId: update_business
-      tags:
-        - businesses
     get:
       responses:
         '200':
@@ -73,36 +71,60 @@ paths:
       operationId: delete_business
       tags:
         - businesses
-  '/following/{follower_email}/{following_email}':
+    put:
+      responses:
+        '204':
+          description: Business Fields Deleted
+      summary: Update a business by the given fields
+      operationId: update_business
+      tags:
+        - businesses
+  '/chatrooms/{chat_id}':
     parameters:
-      - name: follower_email
+      - name: chat_id
         in: path
         required: true
         type: string
-      - name: following_email
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Deletes the chatroom with the given ID
+      operationId: delete_chatrooms_delete
+      tags:
+        - chatrooms
+  '/chatrooms/{email1}/{email2}':
+    parameters:
+      - name: email1
+        in: path
+        required: true
+        type: string
+      - name: email2
         in: path
         required: true
         type: string
     post:
       responses:
-        '200':
-          description: Success
-      summary: >-
-        Create a FOLLOW relationship, where follower_email follows
-        following_email
-      operationId: post_following
+        '409':
+          description: Chatroom with these users already exists
+      summary: Create a chatroom with the given users in it
+      operationId: create_chatroom
       tags:
-        - following
-    delete:
+        - chatrooms
+  '/notifications/{user_email}':
+    parameters:
+      - name: user_email
+        in: path
+        required: true
+        type: string
+    get:
       responses:
         '200':
           description: Success
-      summary: >-
-        Delete the FOLLOW relationship, where follower_email follows
-        following_email
-      operationId: delete_following
+      summary: Get all notification of the given user
+      operationId: get_notifications
       tags:
-        - following
+        - notifications
   /posts:
     parameters:
       - name: payload
@@ -124,20 +146,6 @@ paths:
         in: path
         required: true
         type: string
-    put:
-      responses:
-        '204':
-          description: Post updated
-      summary: Update a Post's content
-      operationId: update_post
-      parameters:
-        - name: payload
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/Post'
-      tags:
-        - posts
     get:
       responses:
         '200':
@@ -154,6 +162,50 @@ paths:
       operationId: delete_post
       tags:
         - posts
+    put:
+      responses:
+        '204':
+          description: Post updated
+      summary: Update a Post's content
+      operationId: update_post
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Post'
+      tags:
+        - posts
+  '/request/{relationship_type}/{requester_email}/{request_recipient_email}':
+    parameters:
+      - name: relationship_type
+        in: path
+        required: true
+        type: string
+      - name: requester_email
+        in: path
+        required: true
+        type: string
+      - name: request_recipient_email
+        in: path
+        required: true
+        type: string
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: 'Delete request relationship, effectively denying the request'
+      operationId: delete_request
+      tags:
+        - request
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Create a request relationship
+      operationId: post_request
+      tags:
+        - request
   /search:
     parameters:
       - name: payload
@@ -165,24 +217,14 @@ paths:
       responses:
         '200':
           description: Success
-      summary: >-
-        Search users, business accounts, or co-working spaces given some
-        keywords
-      description: >-
-        It returns a record. It limits the result to only contain at most 10
-        spaces,
-
+      summary: 'Search users, business accounts, or co-working spaces given some keywords or tags'
+      description: |-
+        It returns a record. It limits the result to only contain at most 10 spaces,
         business profiles, or users.
       operationId: search_query
       tags:
         - search
   /spaces:
-    parameters:
-      - name: payload
-        required: true
-        in: body
-        schema:
-          $ref: '#/definitions/Spaces'
     post:
       responses:
         '204':
@@ -195,23 +237,10 @@ paths:
         - spaces
   '/spaces/{email}':
     parameters:
-      - name: payload
-        required: true
-        in: body
-        schema:
-          $ref: '#/definitions/Spaces'
       - name: email
         in: path
         required: true
         type: string
-    put:
-      responses:
-        '204':
-          description: Co-working Space Fields Deleted
-      summary: Update a co-working space by the given fields
-      operationId: update_space
-      tags:
-        - spaces
     get:
       responses:
         '200':
@@ -226,6 +255,14 @@ paths:
           description: Co-working space Deleted
       summary: Delete a co-working space given its email
       operationId: delete_space
+      tags:
+        - spaces
+    put:
+      responses:
+        '204':
+          description: Co-working Space Fields Deleted
+      summary: Update a co-working space by the given fields
+      operationId: update_space
       tags:
         - spaces
   /tags:
@@ -296,20 +333,6 @@ paths:
         in: path
         required: true
         type: string
-    put:
-      responses:
-        '204':
-          description: User Fields Deleted
-      summary: Update a user by the given fields
-      operationId: update_user
-      parameters:
-        - name: payload
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/Users'
-      tags:
-        - users
     get:
       responses:
         '200':
@@ -324,6 +347,34 @@ paths:
           description: User deleted.
       summary: Delete a user given its email
       operationId: delete_user
+      tags:
+        - users
+    put:
+      responses:
+        '204':
+          description: User Fields Deleted
+      summary: Update a user by the given fields
+      operationId: update_user
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Users'
+      tags:
+        - users
+  '/users/{email}/chatrooms':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the chatrooms a user is in
+      operationId: get_get_user_chatrooms
       tags:
         - users
   '/users/{email}/followers':
@@ -368,19 +419,31 @@ paths:
       operationId: Get the posts of users the given user follows.
       tags:
         - users
+info:
+  title: Pintro Graph Api
+  version: '0.1'
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: users
+  - name: businesses
+  - name: spaces
+  - name: posts
+  - name: tags
+    description: Tag related operations.
+  - name: request
+  - name: approve
+  - name: search
+  - name: chatrooms
+  - name: notifications
 definitions:
   Users:
     required:
       - email
       - full_name
-      - password
     properties:
-      email:
-        type: string
-        title: The user email.
-      password:
-        type: string
-        title: The user password.
       full_name:
         type: string
         title: The user full name.
@@ -390,31 +453,58 @@ definitions:
       profile_image:
         type: string
         title: image saved as array of Bytes representing the user's profile pic.
-      phone:
-        type: string
-        title: The user's phone number.
-      gender:
-        type: string
-        title: The User's geneder
-      job_title:
-        type: string
-        title: current job title of the user.
-      location:
-        type: string
-        title: current city of the user.
       short_bio:
         type: string
         title: short bio describing the user of maximum 250 characters.
+      gender:
+        type: string
+        title: The User's geneder
       story:
         type: string
         title: story describing the user of maximum 250 words.
-      education:
+      email:
         type: string
-        title: Highest level obtained.
-      tags_as_uuids:
+        title: The user email.
+      phone_number:
+        type: string
+        title: The user's phone number.
+      job_title:
+        type: string
+        title: current job title of the user.
+      current_company:
+        type: string
+      years_in_industry:
+        type: string
+      industry:
+        type: string
+      previous_company:
+        type: string
+      previous_company_year_finished:
+        type: string
+      university:
+        type: string
+      university_year_finished:
+        type: string
+      academic_level:
+        type: string
+      date_of_birth:
+        type: string
+      location:
+        type: string
+        title: current city of the user.
+      passions:
         type: array
+        description: List of Passion Tag UUIDs
         items:
           type: string
+      help_others:
+        type: array
+        description: List of skill Tag UUIDs that user is offering
+        items:
+          type: string
+      active:
+        type: string
+        title: 'DO NOT TOUCH, whether user is active or not.'
     type: object
   Businesses:
     required:
@@ -446,36 +536,29 @@ definitions:
       story:
         type: string
         title: story describing the business of maximum 250 words.
-    type: object
-  Spaces:
-    required:
-      - email
-      - full_name
-      - password
-    properties:
-      email:
+      tags:
+        type: array
+        description: List of tag UUIDs that the business is related to.
+        items:
+          type: string
+      date_founded:
         type: string
-        title: The co-working space email.
-      password:
+        title: date the company was founded.
+      company_size:
         type: string
-        title: The co-working space password.
-      full_name:
+        title: size of the company.
+      funding:
         type: string
-        title: The co-working space full name.
-      profile_image:
+        title: amount of funding the comapy currently controls.
+      team_members:
         type: string
-        title: >-
-          image saved as array of Bytes representing the co-working space's
-          profile pic.
-      phone:
+        title: main team memebers of the company.
+      seeking_investment:
         type: string
-        title: The co-working space's phone number.
-      location:
+        title: whether the company is looking for investments.
+      currently_hiring:
         type: string
-        title: current city of the co-working space.
-      short_bio:
-        type: string
-        title: short bio describing the co-working space of maximum 250 characters.
+        title: whether the company is currently looking for potential employees.
     type: object
   Post:
     required:
@@ -495,6 +578,13 @@ definitions:
       user_email:
         type: string
     type: object
+  Label:
+    properties:
+      labels:
+        type: array
+        items:
+          type: string
+    type: object
   Query:
     required:
       - query
@@ -502,13 +592,6 @@ definitions:
       query:
         type: string
         title: String to look for relevant search.
-    type: object
-  Label:
-    properties:
-      labels:
-        type: array
-        items:
-          type: string
     type: object
 responses:
   ParseError:
