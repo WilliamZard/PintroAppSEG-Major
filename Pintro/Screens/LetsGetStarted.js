@@ -1,5 +1,5 @@
 import React, {useReducer, useCallback,useState,useEffect } from 'react';
-import { StyleSheet, Text, View, Button,ActivityIndicator, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button,ActivityIndicator, TextInput,Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
@@ -21,6 +21,9 @@ import Input from '../Components/Input';
 
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
+
+
+
 
 const formReducer = (state, action) => {
   if (action.type === FORM_INPUT_UPDATE) {
@@ -54,6 +57,8 @@ const LetsGetStarted = props => {
  
 
 
+const [confirmPassword,setConfirmPassword] = useState();
+const [phoneNumber,setPhoneNumber] = useState();
 const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState();
 const [isSignup, setIsSignup] = useState(false);
@@ -88,7 +93,15 @@ setError(null);
 setIsLoading(true);
 try {
   await dispatch(action);
-  props.navigation.navigate({routeName:'Camera'});
+  if(formState.inputValue.password === confirmPassword){
+    props.navigation.navigate({routeName:'Camera'},{
+      phoneToPass:phoneNumber,
+      emailToPass:formState.inputValue.email
+    });
+  }else{
+    Alert.alert("Passwords do no match","Try again");
+  }
+
 } catch (err) {
   setError(err.message);
   setIsLoading(false);
@@ -140,7 +153,7 @@ const inputChangeHandler = useCallback(
             />
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Phone number</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white' keyboardType='numeric'/>
+                            <TextInput onChangeText={setPhoneNumber} style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white' keyboardType='numeric'/>
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Password</Text>
                             <Input
@@ -152,17 +165,19 @@ const inputChangeHandler = useCallback(
               minLength={5}
               autoCapitalize="none"
               errorText="Please enter a valid password."
-              onInputChange={inputChangeHandler}
+              onInputChange={inputChangeHandler
+                }
               initialValue=""
               style={styles.inputBox}
             />
                             <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Confirm password</Text>
-                            <TextInput style={styles.inputBox} placeholder="********" placeholderTextColor='white' secureTextEntry={true} />
+                            <TextInput  onChangeText={setConfirmPassword} style={styles.inputBox} placeholder="********" placeholderTextColor='white' secureTextEntry={true} />
                             <View style={styles.horizintalLineStyle}></View>
 
                             {isLoading?  ( <ActivityIndicator size="small" color={'white'} />
                             ):(
+                       
                                 <InvertedSignInUpButton onPress={signupHandler
                                     //()=>   props.navigation.navigate({routeName:'Camera'}) 
                                 }>STEP 1 OF 6</InvertedSignInUpButton>

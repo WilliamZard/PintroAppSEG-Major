@@ -18,9 +18,26 @@ import {ListItem,SearchBar } from 'react-native-elements';
  */
 
 
-
-
 const WhatAreYourPassions = props => {
+
+
+    const phoneNumber = props.navigation.getParam('phoneToPass');
+    const email = props.navigation.getParam('emailToPass');
+    const name = props.navigation.getParam('nameToPass');
+    const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
+    const currentCompany = props.navigation.getParam('currentCompanyToPass');
+    const story = props.navigation.getParam('storyToPass');
+    const workExperience = props.navigation.getParam('workExperienceToPass');
+    const industry = props.navigation.getParam('industryToPass');
+    const previousCompany = props.navigation.getParam('previousCompanyToPass');
+    const pastEducation = props.navigation.getParam('pastEducationToPass');
+    const academicLevel = props.navigation.getParam('academicLevelToPass');
+  
+    
+
+
+
+
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
@@ -150,7 +167,20 @@ clearIcon={null}/>
    <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Diversity</Text></TouchableOpacity>
    <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
  </ScrollView>
- <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'HelpOthers'}) }>STEP 5 OF 6</InvertedSignInUpButton>
+ <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'HelpOthers'},{
+     phoneToPass:phoneNumber,
+     emailToPass:email,
+     nameToPass:name,
+     currentJobTitleToPass:currentJobTitle,
+     currentCompanyToPass:currentCompany,
+     storyToPass:story,
+     workExperienceToPass:workExperience,
+     industryToPass:industry,
+     previousCompanyToPass:previousCompany,
+     pastEducationToPass:pastEducation,
+     academicLevelToPass:academicLevel,
+     passionsToPass:chosenTags
+ }) }>STEP 5 OF 6</InvertedSignInUpButton>
                             
                        
                     </View>
