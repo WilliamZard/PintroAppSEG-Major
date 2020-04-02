@@ -250,6 +250,9 @@ class TestPOST:
             nodes.append(basic_space_node(space))
 
         user_data = []
+        matching_user_a = User(
+            email='matching_user_a@test.com')._asdict()
+        user_data.append(matching_user_a)
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
@@ -267,8 +270,13 @@ class TestPOST:
             'e_node_properties': {'name': matching_tag['name']}, 'e_node_labels': 'Tag',
             'relationship_type': 'TAGGED'}
 
+        tag_c = {
+            's_node_properties': {'email': matching_user_a['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': matching_tag['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+
         populate_db(nodes_to_create=nodes,
-                    relationships_to_create=[tag_a, tag_b])
+                    relationships_to_create=[tag_a, tag_b, tag_c])
 
         # Test
         string_query = 'Civil'
@@ -277,7 +285,7 @@ class TestPOST:
         json_response = prepere_search_responses_for_account_assertion(
             response)
         json_response = ordered(json_response)
-        expected_accounts = ordered([matching_business_a, matching_business_b])
+        expected_accounts = ordered([matching_business_a, matching_business_b, matching_user_a])
         # Assertion
         assert response.status == '200 OK'
         assert json_response == expected_accounts
