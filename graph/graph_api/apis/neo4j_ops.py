@@ -178,9 +178,9 @@ def create_business(tx, fields):
         tags = fields['tags']
         fields.pop('tags')
         create_TAGGED_relationships_query = f"""
-        WITH {tags} AS tag_uuids
-        UNWIND tag_uuids AS tag_uuid
-        MATCH(tag: Tag {{uuid: tag_uuid}})
+        WITH {tags} AS tag_names
+        UNWIND tag_names AS tag_name
+        MATCH(tag: Tag {{name: tag_name}})
         MATCH(user: Business {{email: '{fields['email']}'}})
         CREATE(user)-[:TAGGED] -> (tag)"""
 
@@ -188,6 +188,7 @@ def create_business(tx, fields):
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
 
     query = create_user_query + create_TAGGED_relationships_query
+    print(query)
     return tx.run(query)
 
 
