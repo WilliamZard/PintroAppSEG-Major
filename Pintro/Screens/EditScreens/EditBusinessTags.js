@@ -7,8 +7,11 @@ import { TextInput, ScrollView } from 'react-native-gesture-handler';
 import data2 from '../../Constants/data2.json';
 import { ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
+import { useDispatch } from 'react-redux';
+import * as BusinessActions from '../../store/actions/business.js';
 
 const EditBusinessTag = props => {
+    const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [chosenTags,setChosenTags] = useState([]);
     const [suggestions,setSuggestions] = useState([]);
@@ -60,7 +63,6 @@ const EditBusinessTag = props => {
     }
 
     function onTagPress(tagName) {
-        console.log(tagName);
         if(!chosenTags.includes(tagName)){
             chosenTags.push(tagName);
             setChosenTags(chosenTags);
@@ -69,8 +71,36 @@ const EditBusinessTag = props => {
         }
     }
 
-    function onPressDone() {
+    async function onPressDone() {
         console.log(chosenTags);
+        const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                redirect: 'follow',
+                body: JSON.stringify({
+                    email: props.navigation.state.params.business.email,
+                    password: props.navigation.state.params.business.password,
+                    full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
+                    profile_image: props.navigation.state.params.business.profile_image,
+                    phone: props.navigation.state.params.business.phone,
+                    location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
+                    short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                    story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                    tags: chosenTags,
+                    date_founded: props.navigation.state.params.business.date_founded,
+                    company_size: props.navigation.state.params.business.company_size,
+                    funding: props.navigation.state.params.business.funding,
+                    team_members: props.navigation.state.params.business.team_members,
+                    seeking_investment: props.navigation.state.params.business.seeking_investment,
+                    currently_hiring: props.navigation.state.params.business.currently_hiring,
+                })
+            }
+        );
+        console.log(response.status);
+        dispatch(BusinessActions.getBusiness());
     }
 
     return(
