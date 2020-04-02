@@ -11,12 +11,12 @@ const EditIntro = props => {
     const [selectedValue2, setSelectedValue2] = useState();
     const [selectedValue3, setSelectedValue3] = useState();
     const [selectedValue4, setSelectedValue4] = useState();
-    const [seekingInvest, setInvest] = useState(false);
-    const [hiring, setHiring] = useState(false);
-    const [investPic, setInvestPic] = useState();
-    const [hiringPic, setHiringPic] = useState();
+    const [seekingInvest, setInvest] = useState(props.navigation.state.params.business.seeking_investment);
+    const [hiring, setHiring] = useState(props.navigation.state.params.business.currently_hiring);
     const tick = require('../../assets/tickBlack.png');
     const circle = require('../../assets/blankCircle.png');
+    const [investPic, setInvestPic] = useState((seekingInvest==="True") ? tick : circle);
+    const [hiringPic, setHiringPic] = useState((hiring==="True") ? tick : circle);
 
     const item = {
         "email": "piing@pong.com",
@@ -50,7 +50,7 @@ const EditIntro = props => {
     }
 
     function onPressInvest() {
-        if(seekingInvest) {
+        if(seekingInvest === true) {
             setInvest(false);
             setInvestPic(circle);
         } else {
@@ -75,7 +75,14 @@ const EditIntro = props => {
                     phone: props.navigation.state.params.business.phone,
                     location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
                     short_bio: bio,
-                    story: story
+                    story: story,
+                    tags: props.navigation.state.params.business.tags,
+                    date_founded: props.navigation.state.params.business.date_founded,
+                    company_size: props.navigation.state.params.business.company_size,
+                    funding: props.navigation.state.params.business.funding,
+                    team_members: props.navigation.state.params.business.team_members,
+                    seeking_investment: seekingInvest,
+                    currently_hiring: hiring
                 })
             }
         );
@@ -96,7 +103,7 @@ const EditIntro = props => {
     }
 
     function onPressHiring() {
-        if(hiring) {
+        if(hiring === true) {
             setHiring(false);
             setHiringPic(circle);
         } else {
