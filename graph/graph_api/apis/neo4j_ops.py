@@ -2,7 +2,7 @@ from neo4j import GraphDatabase
 from flask import g
 import os
 import datetime
-
+from .image_storing import *
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -109,6 +109,9 @@ def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
 
 def create_user(tx, fields):
     # TODO: update this function to use logic of above one.
+    if 'profile_image' in fields:
+        if len(fields['profile_image']) > 0:
+            fields['profile_image'] = upload_data_to_gcs(os.environ.get('IMAGES_BUCKET_NAME'), fields['profile_image'])
     query = "CREATE (new_user: Person {" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
     return tx.run(query)
