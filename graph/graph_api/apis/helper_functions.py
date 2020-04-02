@@ -6,13 +6,13 @@ def get_accouts_with_tags(tag_records, session):
     for tag_record in tag_records:
         tag = dict(tag_record.data().get('node').items())
         # #Check for normal users with such tag.
-        # tag_user_records = session.write_transaction(get_users_with_tag, tag['name']).records()
-        # for tag_user_record in tag_user_records:
-        #     if tag_user_record.data().get('node') is not None:
-        #         extracted_user = dict(tag_user_record.data().get('node').items())
-        #         extracted_user['score'] = tag_record.data()['score']
-        #         extracted_user['profile_type'] = "person"
-        #         profiles_with_tags.append(extracted_user)
+        tag_user_records = session.write_transaction(get_accounts_with_tag, tag['name'], 'Person').records()
+        for tag_user_record in tag_user_records:
+            if tag_user_record.data().get('node') is not None:
+                extracted_user = dict(tag_user_record.data().get('node').items())
+                extracted_user['score'] = tag_record.data()['score']
+                extracted_user['profile_type'] = "person"
+                profiles_with_tags.append(extracted_user)
         # #Check for business accounts with such tag.
         tag_business_records = session.write_transaction(get_accounts_with_tag, tag['name'], 'Business').records()
         for tag_business_record in tag_business_records:
@@ -22,13 +22,13 @@ def get_accouts_with_tags(tag_records, session):
                 extracted_business['profile_type'] = "business"
                 profiles_with_tags.append(extracted_business)
         # #Check for coworking spaces with such tag.
-        # tag_space_records = session.write_transaction(get_spaces_with_tag, tag['name']).records()
-        # for tag_space_record in tag_space_records:
-        #     if tag_space_record.data().get('node') is not None:
-        #         extracted_space = dict(tag_space_record.data().get('node').items())
-        #         extracted_space['score'] = tag_record.data()['score']
-        #         extracted_space['profile_type'] = "space"
-        #         profiles_with_tags.append(extracted_space)
+        tag_space_records = session.write_transaction(get_accounts_with_tag, tag['name'], 'Space').records()
+        for tag_space_record in tag_space_records:
+            if tag_space_record.data().get('node') is not None:
+                extracted_space = dict(tag_space_record.data().get('node').items())
+                extracted_space['score'] = tag_record.data()['score']
+                extracted_space['profile_type'] = "space"
+                profiles_with_tags.append(extracted_space)
 
     return profiles_with_tags
 
