@@ -12,70 +12,9 @@ from .helper_functions import *
 
 api = Namespace('search', title='Operations for full text search')
 
-### Schemas used for serializations TODO once you ll have the business, and spaces API and their schemas instance you might just 
-### want to import them from there and not creating them here, or event better create a schemas.py file and have em all in there.
-
-class UserResultSchema(Schema):
-    full_name = fields.Str(required=True)
-    preferred_name = fields.String()
-    profile_image = fields.String()
-    short_bio = fields.String()
-    gender = fields.String()
-    story = fields.String()
-    email = fields.Email(required=True)
-    phone_number = fields.String()
-    job_title = fields.String()
-    current_company = fields.String()
-    years_in_industry = fields.Int()
-    industry = fields.String()
-    previous_company = fields.String()
-    previous_company_year_finished = fields.String()
-    university = fields.String()
-    university_year_finished = fields.Int()
-    academic_level = fields.String()
-    date_of_birth = fields.String()
-    location = fields.String()
-    passions = fields.List(fields.String())
-    help_others = fields.List(fields.String())
-    active = fields.String()
-    profile_type = fields.String()
-    score = fields.String()
-# #TODO Change user space and business schema
-
-    
-class SpaceResultSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.String()
-    full_name = fields.Str(required=True)
-    profile_image = fields.String()
-    phone = fields.String()
-    location = fields.String()
-    events = fields.String()
-    short_bio = fields.String()
-    profile_type = fields.String()
-    score = fields.String()
-    
-
-class BusinessResultSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
-    full_name = fields.Str(required=True)
-    profile_image = fields.String()
-    phone = fields.String()
-    location = fields.String()
-    short_bio = fields.String()
-    story = fields.String()
-    tags = fields.List(fields.String())
-    profile_type = fields.String()
-    score = fields.String()
-
 ###  Models needed as payload in request for searching call
 
 query = api.model('Query', {'query': restx_fields.String(required=True, title='String to look for relevant search.')})
-
-user_result_schema = UserResultSchema()
-space_result_schema = SpaceResultSchema()
-business_result_schema = BusinessResultSchema()
 
 @api.route('/')
 @api.produces('application/json')
@@ -115,24 +54,21 @@ class SearchPost(Resource):
                 extracted_user = dict(record.data().get('node').items())
                 extracted_user['score'] = record.data()['score']
                 extracted_user['profile_type'] = "person"
-                formatted_user = user_result_schema.dump(extracted_user)
-                data.append(formatted_user)
+                data.append(extracted_user)
 
             #Append all the business profiles that matched the full text search to data.
             for record in business_records:
                 extracted_business = dict(record.data().get('node').items())
                 extracted_business['score'] = record.data()['score']
                 extracted_business['profile_type'] = "business"
-                formatted_business = business_result_schema.dump(extracted_business)
-                data.append(formatted_business)
+                data.append(extracted_business)
 
             #Append all the coworking spaces that matched the full text search to data.
             for record in space_records:
                 extracted_space = dict(record.data().get('node').items())
                 extracted_space['score'] = record.data()['score']
                 extracted_space['profile_type'] = "space"
-                formatted_space = space_result_schema.dump(extracted_space)
-                data.append(formatted_space)
+                data.append(extracted_space)
             
             #delete duplicate nodes in data.
             data = remove_duplicates(data)
