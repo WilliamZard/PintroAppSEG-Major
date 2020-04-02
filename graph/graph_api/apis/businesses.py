@@ -106,6 +106,7 @@ class BusinessPost(Resource):
             return make_response('Not a valid email address.', 422)
         with create_session() as session:
             try:
+                # TODO: break up create_business function into different queries.
                 response = session.write_transaction(
                     create_business, api.payload)
                 if response.summary().counters.nodes_created == 1:

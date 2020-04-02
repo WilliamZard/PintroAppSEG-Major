@@ -154,8 +154,12 @@ class TestPut:
 class TestPost:
     def test_post_business_with_valid_payload_that_does_not_exist(self, app, populate_db):
         # Define Nodes
-        business = Business(email='business_to_create@rona.com')._asdict()
-        populate_db()
+        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'BusinessTag']}
+
+        business = Business(email='business_to_create@rona.com', tags=[
+                            tag_a['name']])._asdict()
+        populate_db(nodes_to_create=[tag_a_node])
 
         # Populate
         response = app.post(
