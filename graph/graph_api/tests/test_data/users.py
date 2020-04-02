@@ -8,7 +8,7 @@ USERS_PROPERTIES = [
     'university_year_finished', 'academic_level', 'location', 'date_of_birth', 'passions',
     'help_others', 'active']
 USER_DEFAULTS = [
-    'Default Name', 'Defaulter', 'Default Image', 'Default Short Bio', 'Default Gender',
+    'Default Name', 'Defaulter', '', 'Default Short Bio', 'Default Gender',
     'Default Story', 'default@default.com', '000', 'Default Job Title', 'Default Current Company',
     '100', 'Default Industry', 'Default previous company', '10', 'Default University', '1812',
     'Default Academic Level', 'Default Location', '01/01/1812', [], [], 'True']
