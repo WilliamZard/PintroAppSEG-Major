@@ -114,9 +114,9 @@ const BusinessAccountScreen = props => {
                 <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
                 <PencilBlack onPress={() => switchEditTags()}/>
                 <View style={styles.tagContainer}>
-                    <BlackTag props={props.BlackTag}>START-UP</BlackTag>
-                    <BlackTag props={props.BlackTag}>PRE-SEED</BlackTag>
-                    <BlackTag props={props.BlackTag}>NETWORKING</BlackTag>
+                    <BlackTag props={props.BlackTag}>{businessObj.tags[0]}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{businessObj.tags[1]}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{businessObj.tags[2]}</BlackTag>
                 </View>
                 <View style={styles.tagContainer}>
                     <BlackTag props={props.BlackTag}>ENTREPRENEUR</BlackTag>
