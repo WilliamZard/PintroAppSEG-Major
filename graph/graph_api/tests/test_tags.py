@@ -24,8 +24,8 @@ class TestPOST:
         assert response.status == "200 OK"
         response = response.get_json()
         assert len(response) == 2
-        assert dict(tag_a) in response
-        assert dict(tag_b) in response
+        assert tag_a['name'] in response
+        assert tag_a['name'] in response
 
     def test_POST_tags_without_specifying_labels(self, app, populate_db):
         populate_db()

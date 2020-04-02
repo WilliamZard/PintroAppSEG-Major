@@ -50,5 +50,6 @@ class Tags(Resource):
             response = session.read_transaction(
                 get_tags, api.payload['labels'])
             if response:
-                data = [dict(tag['tag'].items()) for tag in response.data()]
+                data = [dict(tag['tag'].items())['name']
+                        for tag in response.data()]
                 return jsonify(data)
