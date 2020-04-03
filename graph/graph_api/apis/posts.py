@@ -30,6 +30,7 @@ api = Namespace('posts', title='Posting related operations')
 # Schema used for doc generation
 posts = api.model('Post', {
     'content': restx_fields.String(required=True, title='The content of the post.'),
+    'hashtags': restx_fields.String(title='The post\'s hashtags'),
     'uuid': restx_fields.String(),
     'created': restx_fields.DateTime(),
     'modified': restx_fields.DateTime(),
