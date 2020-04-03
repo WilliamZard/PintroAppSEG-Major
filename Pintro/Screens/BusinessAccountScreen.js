@@ -114,14 +114,14 @@ const BusinessAccountScreen = props => {
                 <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
                 <PencilBlack onPress={() => switchEditTags()}/>
                 <View style={styles.tagContainer}>
-                    <BlackTag props={props.BlackTag}>{businessObj.tags[0]}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{businessObj.tags[1]}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{businessObj.tags[2]}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[0]!==undefined)? businessObj.tags[0].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[1]!==undefined)? businessObj.tags[1].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[2]!==undefined)? businessObj.tags[2].toUpperCase() : null}</BlackTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <BlackTag props={props.BlackTag}>ENTREPRENEUR</BlackTag>
-                    <BlackTag props={props.BlackTag}>APP</BlackTag>
-                    <BlackTag props={props.BlackTag}>CO-WORKING</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[3]!==undefined)? businessObj.tags[3].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[4]!==undefined)? businessObj.tags[4].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[5]!==undefined)? businessObj.tags[5].toUpperCase() : null}</BlackTag>
                 </View>
                 <ScrollView style={styles.helpContainer} horizontal={true}>
                     <HelpMeWith props={props.HelpMeWith}>Business Modelling</HelpMeWith>
