@@ -5,8 +5,9 @@ from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
 from .neo4j_ops import create_session
+from .neo4j_ops.general import set_properties
 from .neo4j_ops.businesses import (create_business, delete_business_by_email,
-                                   get_business_by_email, set_business_fields)
+                                   get_business_by_email)
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
 from .utils import valid_email
@@ -88,7 +89,8 @@ class Businesses(Resource):
         with create_session() as session:
             tx = session.begin_transaction()
             delete_tagged_relationships(tx, email)
-            response = set_business_fields(tx, email, api.payload)
+            response = set_properties(
+                tx, 'Business', 'email', email, api.payload)
             create_TAGGED_relationships(tx, email, tags, 'BusinessTag')
             tx.commit()
         if response.summary().counters.properties_set == len(payload):

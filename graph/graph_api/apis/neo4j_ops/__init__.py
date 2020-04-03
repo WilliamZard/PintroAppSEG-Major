@@ -1,7 +1,6 @@
 from neo4j import GraphDatabase
 from flask import g
 import os
-import datetime
 
 
 def connect():
@@ -28,28 +27,3 @@ def close_db(error):
     if hasattr(g, 'neo4j_db'):
         g.neo4j_db.close()
 """
-
-""" Functions for Users """
-# TODO: start grouping functions by resource type for organisation's sake
-
-
-""" Functions for Businesses """
-
-
-"""functions for POSTS"""
-
-
-"""
-def get_posts_for_timeline(tx, user_email):
-    query = f""MATCH(user: Person {{email: '{user_email}'}})-[:FOLLOWS] -> ()-[posted:POSTED] -> (post: Post)
-                WITH posted, post
-                ORDER BY posted.date
-                return post
-             ""
-    return tx.run(query)"""
-
-
-"""functions for FOLLOW RELATIONSHIPS"""
-
-
-""" functions for AFFILIATIONS """

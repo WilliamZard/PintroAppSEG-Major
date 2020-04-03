@@ -27,35 +27,6 @@ def delete_user_by_email(tx, user_email):
     return tx.run(query)
 
 
-def set_user_fields(tx, user_email, fields):
-    '''
-    Sets properties of user with user_email to fields given in fields.
-    The query is dynamic. It only operates on fields that are given in the fields paramater.
-    This query will also update relationships with tags.
-    '''
-    passions = help_others = []
-    if 'passions' in fields:
-        passions = fields['passions']
-        fields.pop('passions')
-    if 'help_others' in fields:
-        help_others = fields['help_others']
-        fields.pop('help_others')
-    create_tag_query = f"""
-    WITH {passions+help_others} AS tag_names
-    UNWIND tag_names AS tag_name
-    MATCH (tag:Tag {{name: tag_name}})
-    MATCH (user:Person {{email: '{user_email}'}})
-    MERGE (user)-[:TAGGED]->(tag)"""
-
-    # NOTE: this could error when assigning string values that need quotations
-    query = f"MATCH (user:Person {{email: '{user_email}'}}) SET " + \
-        ", ".join(f"""user.{k}=\"{v}\"""" for (k, v) in fields.items())
-
-    if create_tag_query:
-        query = query + create_tag_query
-    return tx.run(query)
-
-
 def create_user(tx, fields):
     # TODO: update this function to use logic of above one.
     query = "CREATE (new_user: Person {" + ", ".join(

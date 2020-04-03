@@ -5,8 +5,9 @@ from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
 from .neo4j_ops import create_session
+from .neo4j_ops.general import set_properties
 from .neo4j_ops.spaces import (create_space, delete_space_by_email,
-                               get_space_by_email, set_space_fields)
+                               get_space_by_email)
 from .utils import valid_email
 
 # TODO: enable swagger API spec
@@ -68,7 +69,7 @@ class Spaces(Resource):
         # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
-                set_space_fields, email, api.payload)
+                set_properties, 'Space', 'email', email, api.payload)
             if response.summary().counters.properties_set == len(api.payload):
                 return make_response('', 204)
             return make_response('', 404)

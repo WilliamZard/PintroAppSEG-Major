@@ -8,9 +8,9 @@ from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
 from .neo4j_ops import create_session
+from .neo4j_ops.general import set_properties
 from .neo4j_ops.posts import (create_post, delete_post,
-                              get_list_of_user_post_dates, get_post_by_uuid,
-                              set_post_fields)
+                              get_list_of_user_post_dates, get_post_by_uuid)
 from .utils import valid_email
 
 
@@ -67,7 +67,7 @@ class Posts(Resource):
             content = api.payload['content']
             hashtags = api.payload['hashtags']
             response = session.write_transaction(
-                set_post_fields, uuid, content, hashtags)
+                set_properties, 'Post', 'uuid', uuid, {'content': content, 'hashtags': hashtags})
             if response.summary().counters.properties_set == 2:
                 return make_response('', 204)
             return make_response('', 404)
