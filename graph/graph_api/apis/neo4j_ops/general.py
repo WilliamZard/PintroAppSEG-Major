@@ -26,7 +26,7 @@ def create_relationship(tx,
     query = f"""
     MATCH (starting_node:{s_node_labels} {s_node_properties})
     MATCH (ending_node:{e_node_labels} {e_node_properties})
-    CREATE (starting_node)-[:{relationship_type} {relationship_properties}]->(ending_node)
+    CREATE (starting_node)-[:{relationship_type}{relationship_properties}]->(ending_node)
     """
     return tx.run(query)
 
