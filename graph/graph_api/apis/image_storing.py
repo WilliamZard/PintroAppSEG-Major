@@ -39,9 +39,8 @@ def get_data_from_gcs(file_url):
             bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
             bucket = client.bucket(bucket_name)
             target_key = get_file_name_from_url(file_url)
-            blob = bucket.get_blob(target_key).download_as_string()# get bucket data as blob
-            json_data = blob.download_as_string()# Download the contents of this blob as a bytes object.
-            return json_data
+            blob_json = bucket.get_blob(target_key).download_as_string(raw_download=True)# get bucket data as blob
+            return blob_json
         
         except Exception as e:
             print(e)
@@ -96,4 +95,4 @@ def update_data_from_gcs(old_file_url, new_data):
     return ''
 
 def get_file_name_from_url(file_url):
-    return str.split("/")[-1]
+    return str(os.path.split(file_url)[1])
