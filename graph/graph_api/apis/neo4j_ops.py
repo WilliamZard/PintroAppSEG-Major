@@ -42,10 +42,11 @@ def get_user_by_email(tx, user_email):
         tx = the context from where to run chipher statements and retreiving information from the db.
         user_email = the email of the user whose data needs to be retrieved.
     '''
+    # NOTE: tag labels are hardcoded here. If they change in tags csv, must be changed here.
     query = f"""
     MATCH (user:Person {{email: '{user_email}'}})
-    OPTIONAL MATCH (user)-->(skill_tag:Tag:Skill)
-    OPTIONAL MATCH (user)-->(passion_tag:Tag:Passion)
+    OPTIONAL MATCH (user)-->(skill_tag:Tag:CanHelpWithTag)
+    OPTIONAL MATCH (user)-->(passion_tag:Tag:PassionsTag)
     RETURN user, COLLECT(skill_tag.name) AS help_others, COLLECT(passion_tag.name) AS passions"""
     return tx.run(query)
 
@@ -175,7 +176,6 @@ def create_business(tx, fields):
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
 
     query = create_user_query + create_TAGGED_relationships_query
-    print(query)
     return tx.run(query)
 
 

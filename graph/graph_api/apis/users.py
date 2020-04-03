@@ -88,7 +88,6 @@ class Users(Resource):
         '''Update a user by the given fields.'''
         if not valid_email(email):
             return make_response('', 422)
-
         response = None
         with create_session() as session:
             tx = session.begin_transaction()
@@ -127,10 +126,11 @@ class UsersPost(Resource):
                 tx = session.begin_transaction()
                 response = create_user(tx, payload)
                 email = payload['email']
+                # NOTE: tag labels specified must be identical to actual tag labels
                 create_TAGGED_relationships(
-                    tx, email, passions, 'Tag:Passion')
+                    tx, email, passions, 'Tag:PassionsTag')
                 create_TAGGED_relationships(
-                    tx, email, help_others, 'Tag:Skill')
+                    tx, email, help_others, 'Tag:CanHelpWithTag')
                 tx.commit()
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)

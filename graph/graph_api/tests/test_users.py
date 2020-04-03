@@ -174,7 +174,7 @@ class TestPost:
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app, populate_db):
         # Generate Test Data
         tag_a = Tag(name='King Slaying')._asdict()
-        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
         user = User(
             full_name='precious', email='precious@gmail.com', help_others=[tag_a['name']])._asdict()
         populate_db(nodes_to_create=[tag_a_node])
@@ -207,11 +207,10 @@ class TestPost:
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
-    def test_POST_user_with_invalid_payload(self, app, populate_db):
+    def test_POST_user_with_invalid_payload(self, app):
         # Generate Test Data
         INVALID_USER_TO_BE_CREATED = User(
             full_name='precious', email='praciousgmail.com')._asdict()
-        populate_db()
 
         # Test
         response = app.post(
