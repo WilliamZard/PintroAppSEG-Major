@@ -102,7 +102,7 @@ class TestDELETE:
     def test_DELETE_existing_post(self, app, populate_db):
         # Generate Test Data
         # Nodes
-        post = Post(content='content_x')._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
         post_node = {'properties': dict(post), 'labels': 'Post'}
         user = User(email='created_post@post.com')._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
@@ -122,8 +122,7 @@ class TestDELETE:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    def test_DELETE_non_existing_post(self, app, populate_db):
-        populate_db()
+    def test_DELETE_non_existing_post(self, app):
         response = app.delete(
             f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'
