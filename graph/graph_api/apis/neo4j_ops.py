@@ -236,7 +236,7 @@ def create_post(tx, post_content, user_email, created, modified, uuid):
 # TODO: this function can be more dynamic, no need for fixed paramters. See create user function for guide.
 
 
-def set_post_fields(tx, uuid, content):
+def set_post_fields(tx, uuid, content, hashtags):
     '''
         Function for setting a new email of a user which has a particular email saved in database.
         It returns a BoltStatementResult containing the record of the edited user.
@@ -247,7 +247,7 @@ def set_post_fields(tx, uuid, content):
         new_email = the new email to assign to that user.
     '''
     # NOTE: this could error when assigning string values that need quotations
-    query = f"MATCH (post:Post {{uuid: '{uuid}'}}) SET post.content='{content}'"
+    query = f"MATCH (post:Post {{uuid: '{uuid}'}}) SET post.content='{content}', post.hashtags='{hashtags}'"
     return tx.run(query)
 
 

@@ -12,8 +12,7 @@ from .test_data.users import User
 class TestGET:
     def test_GET_post_that_exists(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x', hashtags=[
-                    "#tag_a", "#tag_b"])._asdict()
+        post = Post(content='content_x', hashtags="# tag_a #tag_b")._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
@@ -38,8 +37,8 @@ class TestGET:
 class TestPUT:
     def test_PUT_existing_post(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x', hashtags=["tag_a", "tag_b"])._asdict()
-        new_post = Post(content='content_y', hashtags=["new_tag_a"])._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
+        new_post = Post(content='content_y', hashtags="#new_tag_a")._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
@@ -52,12 +51,11 @@ class TestPUT:
         # TODO: assert created was not changed for all put tests
         # TODO: get request and assertion to check correct update
 
-    def test_PUT_non_existent_post(self, app, populate_db):
-        populate_db()
-        post = Post(content='content_x')._asdict()
+    def test_PUT_non_existent_post(self, app):
+        post = Post(content='content_x', hashtags="#new_tag_a")._asdict()
 
         response = app.put(
-            f"/posts/{uuid.uuid4()}", json=post['content'])
+            f"/posts/{uuid.uuid4()}", json={'content': post['content'], 'hashtags': post['hashtags']})
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 

@@ -60,9 +60,11 @@ class Posts(Resource):
         '''Update a Post's content.'''
 
         with create_session() as session:
+            content = api.payload['content']
+            hashtags = api.payload['hashtags']
             response = session.write_transaction(
-                set_post_fields, uuid, api.payload)
-            if response.summary().counters.properties_set == 1:
+                set_post_fields, uuid, content, hashtags)
+            if response.summary().counters.properties_set == 2:
                 return make_response('', 204)
             return make_response('', 404)
 
