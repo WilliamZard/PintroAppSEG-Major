@@ -3,6 +3,7 @@ from flask import g
 import os
 import datetime
 from .image_storing import *
+import ast
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -58,6 +59,11 @@ def delete_user_by_email(tx, user_email):
     DETACH DELETE n, p"""
     return tx.run(query)
 
+def get_user_field(tx, user_email, field):
+    query = f"""MATCH(n:Person {{email:'{user_email}'}})
+                RETURN n.{field} as {field}"""
+    return tx.run(query)
+
 
 def set_user_fields(tx, user_email, fields):
     '''
@@ -72,6 +78,10 @@ def set_user_fields(tx, user_email, fields):
     if 'help_others' in fields:
         help_others = fields['help_others']
         fields.pop('help_others')
+    if 'profile_image' in fields:
+        if len(fields['profile_image']) > 0:
+            old_image_url = dict(get_user_field(tx, user_email, 'profile_image').data()[0])['profile_image']
+            fields['profile_image'] = update_data_from_gcs(old_image_url, ast.literal_eval(fields['profile_image']))
     create_tag_query = f"""
     WITH {passions+help_others} AS tag_names
     UNWIND tag_names AS tag_name
