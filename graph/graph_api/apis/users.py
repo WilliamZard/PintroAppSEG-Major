@@ -8,8 +8,8 @@ from .neo4j_ops import create_session
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
 from .neo4j_ops.chatrooms import get_chatrooms_of_user
-from .neo4j_ops.general import set_properties
-from .neo4j_ops.users import (create_user, delete_user_by_email,
+from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.users import (delete_user_by_email,
                               get_followers_of_a_user,
                               get_followings_of_a_user,
                               get_posts_of_followings_of_a_user,
@@ -140,7 +140,7 @@ class UsersPost(Resource):
         with create_session() as session:
             try:
                 tx = session.begin_transaction()
-                response = create_user(tx, payload)
+                response = create_node(tx, 'Person', payload)
                 email = payload['email']
                 # NOTE: tag labels specified must be identical to actual tag labels
                 create_TAGGED_relationships(

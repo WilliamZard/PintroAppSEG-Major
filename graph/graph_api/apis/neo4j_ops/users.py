@@ -27,13 +27,6 @@ def delete_user_by_email(tx, user_email):
     return tx.run(query)
 
 
-def create_user(tx, fields):
-    # TODO: update this function to use logic of above one.
-    query = "CREATE (new_user: Person {" + ", ".join(
-        f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
-    return tx.run(query)
-
-
 def get_posts_of_followings_of_a_user(tx, email):
     query = f"""
         MATCH (:Person {{email: '{email}'}})

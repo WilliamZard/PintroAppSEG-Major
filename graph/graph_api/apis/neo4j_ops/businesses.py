@@ -22,23 +22,3 @@ def delete_business_by_email(tx, business_email):
     OPTIONAL MATCH(n)--(p: Post)
     DETACH DELETE n, p"""
     return tx.run(query)
-
-
-def create_business(tx, fields):
-
-    create_TAGGED_relationships_query = ""
-    if 'tags' in fields:
-        tags = fields['tags']
-        fields.pop('tags')
-        create_TAGGED_relationships_query = f"""
-        WITH {tags} AS tag_names
-        UNWIND tag_names AS tag_name
-        MATCH(tag: Tag {{name: tag_name}})
-        MATCH(user: Business {{email: '{fields['email']}'}})
-        CREATE(user)-[:TAGGED] -> (tag)"""
-
-    create_user_query = "CREATE (new_user: Business{" + ", ".join(
-        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
-
-    query = create_user_query + create_TAGGED_relationships_query
-    return tx.run(query)

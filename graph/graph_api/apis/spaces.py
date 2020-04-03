@@ -5,8 +5,8 @@ from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
 from .neo4j_ops import create_session
-from .neo4j_ops.general import set_properties
-from .neo4j_ops.spaces import (create_space, delete_space_by_email,
+from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.spaces import (delete_space_by_email,
                                get_space_by_email)
 from .utils import valid_email
 
@@ -89,7 +89,7 @@ class SpacesPost(Resource):
         with create_session() as session:
             try:
                 response = session.write_transaction(
-                    create_space, api.payload)
+                    create_node, 'Space', api.payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:

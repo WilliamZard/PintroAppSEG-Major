@@ -17,17 +17,6 @@ def check_users_in_chatroom(tx, email1, email2):
     return tx.run(query)
 
 
-def create_chatroom(tx, email1, email2, chat_id):
-    query = f"""
-        MATCH (u1:Person {{email: \'{email1}\'}})
-        MATCH (u2:Person {{email: \'{email2}\'}})
-        CREATE (c:Chatroom {{chat_id: \'{chat_id}\'}})
-        CREATE (u1)-[:CHATS_IN]->(c)
-        CREATE (u2)-[:CHATS_IN]->(c)
-    """
-    return tx.run(query)
-
-
 def check_chatroom_exists(tx, chat_id):
     query = f"""
         MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})

@@ -5,8 +5,8 @@ from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
 from .neo4j_ops import create_session
-from .neo4j_ops.general import set_properties
-from .neo4j_ops.businesses import (create_business, delete_business_by_email,
+from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.businesses import (delete_business_by_email,
                                    get_business_by_email)
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
@@ -109,11 +109,22 @@ class BusinessPost(Resource):
         '''Create a business.'''
         if not valid_email(api.payload['email']):
             return make_response('Not a valid email address.', 422)
+
+        payload = api.payload
+        tags = []
+        if 'tags' in payload:
+            tags = payload['tags']
+            payload.pop('tags')
+
+        response = None
         with create_session() as session:
             try:
                 # TODO: break up create_business function into different queries.
-                response = session.write_transaction(
-                    create_business, api.payload)
+                tx = session.begin_transaction()
+                response = create_node(tx, 'Business', payload)
+                create_TAGGED_relationships(
+                    tx, payload['email'], tags, 'BusinessTag')
+                tx.commit()
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:

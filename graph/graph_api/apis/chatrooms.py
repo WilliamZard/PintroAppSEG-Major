@@ -7,8 +7,9 @@ from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
 from .neo4j_ops import create_session
+from .neo4j_ops.general import create_node, create_relationship
 from .neo4j_ops.chatrooms import (check_chatroom_exists,
-                                  check_users_in_chatroom, create_chatroom,
+                                  check_users_in_chatroom,
                                   delete_chatroom, get_chatrooms_of_user)
 from .posts import posts
 from .utils import valid_email
@@ -43,8 +44,14 @@ class ChatroomsPOST(Resource):
                 check_users_in_chatroom, email1, email2)
             if check_not_exists.value('result'):
                 return make_response('', 409)
-            new_id = uuid.uuid4()
-            session.read_transaction(create_chatroom, email1, email2, new_id)
+            new_id = str(uuid.uuid4())
+            tx = session.begin_transaction()
+            create_node(tx, 'Chatroom', {'chat_id': new_id})
+            create_relationship(tx, 'Person', {'email': email1}, 'Chatroom', {
+                                'chat_id': new_id}, 'CHATS_IN')
+            create_relationship(tx, 'Person', {'email': email2}, 'Chatroom', {
+                                'chat_id': new_id}, 'CHATS_IN')
+            tx.commit()
             return jsonify({'chat_id': new_id})
 
 

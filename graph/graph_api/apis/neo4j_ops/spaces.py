@@ -13,9 +13,3 @@ def get_space_by_email(tx, space_email):
 
 def delete_space_by_email(tx, space_email):
     return tx.run(f"MATCH (user:Space {{email: '{space_email}'}}) DELETE user")
-
-
-def create_space(tx, fields):
-    query = "CREATE (user: Space {" + ", ".join(
-        f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
-    return tx.run(query)
