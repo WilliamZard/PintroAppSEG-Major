@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View,StyleSheet,Text,Picker } from 'react-native';
+import { View,StyleSheet,Text,Picker, Alert } from 'react-native';
 import Colors from '../../Constants/Colors.js';
 import BlackTag from '../../Components/BlackTag.js';
 import GreyTag from '../../Components/GreyTag.js';
@@ -73,35 +73,43 @@ const EditBusinessTag = props => {
 
     async function onPressDone() {
         console.log(chosenTags);
-        const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                redirect: 'follow',
-                body: JSON.stringify({
-                    email: props.navigation.state.params.business.email,
-                    password: props.navigation.state.params.business.password,
-                    full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
-                    profile_image: props.navigation.state.params.business.profile_image,
-                    phone: props.navigation.state.params.business.phone,
-                    location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
-                    short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
-                    story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
-                    tags: chosenTags,
-                    date_founded: props.navigation.state.params.business.date_founded,
-                    company_size: props.navigation.state.params.business.company_size,
-                    funding: props.navigation.state.params.business.funding,
-                    team_members: props.navigation.state.params.business.team_members,
-                    seeking_investment: props.navigation.state.params.business.seeking_investment,
-                    currently_hiring: props.navigation.state.params.business.currently_hiring,
-                })
-            }
-        );
-        console.log(response.status);
-        dispatch(BusinessActions.getBusiness());
+        if(chosenTags.length < 3) {
+            Alert.alert('Too few tags','Minimum of 3 tags needed');
+        } else if(chosenTags.length > 6){
+            Alert.alert('Too many tags','Maximum of 6 tags');
+        } else {
+            const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    body: JSON.stringify({
+                        email: props.navigation.state.params.business.email,
+                        password: props.navigation.state.params.business.password,
+                        full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
+                        profile_image: props.navigation.state.params.business.profile_image,
+                        phone: props.navigation.state.params.business.phone,
+                        location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
+                        short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                        story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                        tags: chosenTags,
+                        date_founded: props.navigation.state.params.business.date_founded,
+                        company_size: props.navigation.state.params.business.company_size,
+                        funding: props.navigation.state.params.business.funding,
+                        team_members: props.navigation.state.params.business.team_members,
+                        seeking_investment: props.navigation.state.params.business.seeking_investment,
+                        currently_hiring: props.navigation.state.params.business.currently_hiring,
+                    })
+                }
+            );
+            console.log(response.status);
+            dispatch(BusinessActions.getBusiness());
+        } 
     }
+
+
 
     return(
         <ScrollView>
@@ -121,14 +129,14 @@ const EditBusinessTag = props => {
                 {suggestedItems}
                 <Text style={styles.subtitle}>Or choose from the most popular</Text>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Feminisim"}>FEMINISIM</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Start-up"}>START-UP</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindulness"}>MINDFULNESS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Students"}>STUDENTS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Startups"}>STARTUPS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindfulness"}>MINDFULNESS</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Personal Growth"}>PERSONAL GROWTH</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"App"}>APP</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Networking"}>NETWORKING</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Work/life Balance"}>WORK/LIFE BALANCE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Apple"}>APPLE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Social Media"}>SOCIAL MEDIA</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Neuroscience"}>NEUROSCIENCE</GreyTag>
@@ -138,7 +146,7 @@ const EditBusinessTag = props => {
                 <View style={styles.tagContainer}>
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-seed"}>PRE-SEED</GreyTag>
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"}>DIVERSITY</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Co-working"}>CO-WORKING</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Teamwork"}>TEAMWORK</GreyTag>
                 </View>
                 <View style={{marginVertical: 20}}/>
                 <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
