@@ -36,10 +36,10 @@ const GreyTag = props => {
             fontFamily: 'Poppins-Regular',
             fontSize: 12
         }
-
-    const[tagStyle,setTag] = useState(greyTag);
-    const[tagText,setText] = useState(blackText);
-    const[selected,select] = useState(false);
+    const[selected,select] = useState(props.initial);
+    const[tagStyle,setTag] = useState((selected)? blackTag : greyTag);
+    const[tagText,setText] = useState((selected)? whiteText : blackText);
+    
 
     
 
@@ -48,6 +48,7 @@ const GreyTag = props => {
             setTag(greyTag);
             setText(blackText);
             select(false);
+            props.callback(props.val);
         } else {
             setTag(blackTag);
             setText(whiteText);

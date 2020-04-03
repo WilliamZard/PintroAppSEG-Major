@@ -13,10 +13,11 @@ import * as BusinessActions from '../../store/actions/business.js';
 const EditBusinessTag = props => {
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
-    const [chosenTags,setChosenTags] = useState([]);
+    const [chosenTags,setChosenTags] = useState(props.navigation.state.params.business.tags);
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
-    
+    let popularTags = ["Students","Startups","Mindfulness","Work/life Balance","Apple","Social Media","Neuroscience","Nutrition","Innovation","Pre-seed","Diversity","Teamwork"];
+
     var tagNames = data2.map(function(item) {
         return item['name'];
     });
@@ -109,7 +110,7 @@ const EditBusinessTag = props => {
         } 
     }
 
-
+    popularTags = popularTags.map((item) => (chosenTags.some(tag => tag == item))? true : false);
 
     return(
         <ScrollView>
@@ -129,24 +130,24 @@ const EditBusinessTag = props => {
                 {suggestedItems}
                 <Text style={styles.subtitle}>Or choose from the most popular</Text>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Students"}>STUDENTS</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Startups"}>STARTUPS</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindfulness"}>MINDFULNESS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Students"} initial={popularTags[0]}>STUDENTS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Startups"} initial={popularTags[1]}>STARTUPS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindfulness"} initial={popularTags[2]}>MINDFULNESS</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Work/life Balance"}>WORK/LIFE BALANCE</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Apple"}>APPLE</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Social Media"}>SOCIAL MEDIA</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Work/life Balance"} initial={popularTags[3]}>WORK/LIFE BALANCE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Apple"} initial={popularTags[4]}>APPLE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Social Media"} initial={popularTags[5]}>SOCIAL MEDIA</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Neuroscience"}>NEUROSCIENCE</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Nutrition"}>NUTRITION</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Innovation"}>INNOVATION</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Neuroscience"} initial={popularTags[6]}>NEUROSCIENCE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Nutrition"} initial={popularTags[7]}>NUTRITION</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Innovation"} initial={popularTags[8]}>INNOVATION</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-seed"}>PRE-SEED</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"}>DIVERSITY</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Teamwork"}>TEAMWORK</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-seed"} initial={popularTags[9]}>PRE-SEED</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"} initial={popularTags[10]}>DIVERSITY</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Teamwork"} initial={popularTags[11]}>TEAMWORK</GreyTag>
                 </View>
                 <View style={{marginVertical: 20}}/>
                 <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
