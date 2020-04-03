@@ -113,16 +113,16 @@ const BusinessAccountScreen = props => {
                 </Text>
                 <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
                 <PencilBlack onPress={() => switchEditTags()}/>
-                <View style={styles.tagContainer}>
+                <ScrollView style={styles.tagContainer} horizontal={true}>
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[0]!==undefined)? businessObj.tags[0].toUpperCase() : null}</BlackTag>
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[1]!==undefined)? businessObj.tags[1].toUpperCase() : null}</BlackTag>
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[2]!==undefined)? businessObj.tags[2].toUpperCase() : null}</BlackTag>
-                </View>
-                <View style={styles.tagContainer}>
+                </ScrollView>
+                <ScrollView style={styles.tagContainer} horizontal={true}>
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[3]!==undefined)? businessObj.tags[3].toUpperCase() : null}</BlackTag>
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[4]!==undefined)? businessObj.tags[4].toUpperCase() : null}</BlackTag>
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[5]!==undefined)? businessObj.tags[5].toUpperCase() : null}</BlackTag>
-                </View>
+                </ScrollView>
                 <ScrollView style={styles.helpContainer} horizontal={true}>
                     <HelpMeWith props={props.HelpMeWith}>Business Modelling</HelpMeWith>
                     <HelpMeWith props={props.HelpMeWith}>Crepe Investments</HelpMeWith>
@@ -255,12 +255,12 @@ const styles = StyleSheet.create({
     tagContainer: {
         flexDirection: 'row',
         marginTop: 10,
-        marginLeft: 10
+        marginHorizontal: 10
     },
     helpContainer: {
         flexDirection: 'row',
         paddingLeft: 30,
-        marginRight: 20
+        marginRight: 20,
     },
     journey: {
         marginLeft: 30,

@@ -16,7 +16,7 @@ const EditBusinessTag = props => {
     const [chosenTags,setChosenTags] = useState(props.navigation.state.params.business.tags);
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
-    let popularTags = ["Students","Startups","Mindfulness","Work/life Balance","Apple","Social Media","Neuroscience","Nutrition","Innovation","Pre-seed","Diversity","Teamwork"];
+    let popularTags = ["Students","Startups","Mindfulness","Work/life Balance","Apple","Social Media","Neuroscience","Nutrition","Innovation","Pre-Seed","Diversity","Teamwork"];
 
     var tagNames = data2.map(function(item) {
         return item['name'];
@@ -145,7 +145,7 @@ const EditBusinessTag = props => {
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Innovation"} initial={popularTags[8]}>INNOVATION</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-seed"} initial={popularTags[9]}>PRE-SEED</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-Seed"} initial={popularTags[9]}>PRE-SEED</GreyTag>
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"} initial={popularTags[10]}>DIVERSITY</GreyTag>
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Teamwork"} initial={popularTags[11]}>TEAMWORK</GreyTag>
                 </View>
