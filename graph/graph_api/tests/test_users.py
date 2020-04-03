@@ -97,9 +97,9 @@ class TestPut:
     def test_PUT_user_with_valid_email_that_exists(self, app, populate_db):
         # Generate Test Data
         tag_a = Tag(name='King Slayer')._asdict()
-        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
         tag_b = Tag(name='New King Slayer')._asdict()
-        tag_b_node = {'properties': tag_b, 'labels': ['Tag', 'Skill']}
+        tag_b_node = {'properties': tag_b, 'labels': ['Tag', 'CanHelpWithTag']}
 
         user = User()._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
