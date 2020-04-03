@@ -71,7 +71,7 @@ class TestPOST:
     # TODO: get request and assertion to check correct update
     def test_POST_post_with_valid_payload(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x')._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
         user = User(email='created_post@post.com')._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
         payload = {'content': post['content'], 'user_email': user['email']}
@@ -84,12 +84,11 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-    def test_POST_post_with_invalid_payload(self, app, populate_db):
+    def test_POST_post_with_invalid_payload(self, app):
         user_email = 'test@test.com'
-        populate_db()
 
         response = app.post(
-            f"/posts/", json={'content': '', 'user_email': user_email})
+            f"/posts/", json={'content': '', 'user_email': user_email, 'hashtags': '#hashtag'})
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b"Post content length must be between 1 and 300."
 
