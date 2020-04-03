@@ -13,10 +13,11 @@ NOW = str(datetime.datetime.now()).replace(' ', 'T') + '000Z'
 # POSTS
 POST_PROPERTIES = [
     "content",
+    "hashtags",
     "created",
     "modified",
     "uuid",
 ]
-POST_DEFAULTS = ['default_content', NOW, NOW, str(uuid.uuid4())]
+POST_DEFAULTS = ['default_content', [], NOW, NOW, str(uuid.uuid4())]
 
 Post = namedtuple('Post', POST_PROPERTIES, defaults=POST_DEFAULTS)

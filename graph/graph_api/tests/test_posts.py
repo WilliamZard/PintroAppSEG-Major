@@ -12,7 +12,8 @@ from .test_data.users import User
 class TestGET:
     def test_GET_post_that_exists(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x')._asdict()
+        post = Post(content='content_x', hashtags=[
+                    "#tag_a", "tag_b"])._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
@@ -34,14 +35,14 @@ class TestGET:
 class TestPUT:
     def test_PUT_existing_post(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x')._asdict()
-        new_post = Post(content='content_y')._asdict()
+        post = Post(content='content_x', hashtags=["tag_a", "tag_b"])._asdict()
+        new_post = Post(content='content_y', hashtags=["new_tag_a"])._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
         # Test
         response = app.put(
-            f"/posts/{post['uuid']}", json=post['content'])
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags'])
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
         # TODO: assert modified was changed properly for all put tests
