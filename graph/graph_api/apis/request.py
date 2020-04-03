@@ -1,7 +1,8 @@
 
 from flask_restx import Namespace, Resource
 from flask import make_response
-from .neo4j_ops import create_session, create_request_relationship, delete_request_relationship
+from .neo4j_ops import create_session
+from .neo4j_ops.requests import create_request_relationship, delete_request_relationship
 
 import time
 

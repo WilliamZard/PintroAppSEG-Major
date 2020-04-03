@@ -4,14 +4,17 @@ from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
-from .neo4j_ops import (create_session, create_TAGGED_relationships,
-                        create_user, delete_tagged_relationships,
-                        delete_user_by_email, get_followers_of_a_user,
-                        get_followings_of_a_user,
-                        get_posts_of_followings_of_a_user, get_user_by_email,
-                        set_user_fields, get_chatrooms_of_user)
-from .posts import posts
+from .neo4j_ops import create_session
+from .neo4j_ops.tags import (create_TAGGED_relationships,
+                             delete_tagged_relationships)
+from .neo4j_ops.chatrooms import get_chatrooms_of_user
+from .neo4j_ops.users import (create_user, delete_user_by_email,
+                              get_followers_of_a_user,
+                              get_followings_of_a_user,
+                              get_posts_of_followings_of_a_user,
+                              get_user_by_email, set_user_fields)
 from .utils import valid_email
+
 # TODO: enable swagger API spec
 # TODO: email validation
 

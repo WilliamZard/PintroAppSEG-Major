@@ -1,14 +1,17 @@
+import time
 import uuid
-from flask.json import jsonify
+
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
 
-from .neo4j_ops import (create_session, get_post_by_uuid,
-                        set_post_fields, delete_post, get_list_of_user_post_dates, create_post)
-import time
+from .neo4j_ops import create_session
+from .neo4j_ops.posts import (create_post, delete_post,
+                              get_list_of_user_post_dates, get_post_by_uuid,
+                              set_post_fields)
+from .utils import valid_email
 
 
 def get_time():

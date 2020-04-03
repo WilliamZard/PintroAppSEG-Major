@@ -1,17 +1,17 @@
-from flask.json import jsonify
+import uuid
+
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
+
+from .neo4j_ops import create_session
+from .neo4j_ops.chatrooms import (check_chatroom_exists,
+                                  check_users_in_chatroom, create_chatroom,
+                                  delete_chatroom, get_chatrooms_of_user)
 from .posts import posts
-
-from .neo4j_ops import (create_session,
-                        get_chatrooms_of_user, check_users_in_chatroom, check_chatroom_exists,
-                        create_chatroom,
-                        delete_chatroom)
-
-import uuid
+from .utils import valid_email
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -24,7 +24,6 @@ api = Namespace('chatrooms', title='Chatroom related operations')
 chatrooms = api.model('Chatrooms', {
     'chat_id': restx_fields.String(required=True, title='The chatroom ID.'),
 })
-
 
 
 @api.route("/<string:email1>/<string:email2>")

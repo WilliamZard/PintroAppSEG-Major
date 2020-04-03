@@ -1,10 +1,12 @@
 
-from flask_restx import Namespace, Resource
-from flask import make_response
-from .neo4j_ops import create_session, approve_request
-from .request import REQUEST_RELATIONSHIPS
-
 import time
+
+from flask import make_response
+from flask_restx import Namespace, Resource
+
+from .neo4j_ops import create_session
+from .neo4j_ops.requests import approve_request
+from .request import REQUEST_RELATIONSHIPS
 
 api = Namespace(
     'approve', title='For approving user relationships(eg FOLLOW or AFFILIATED_WITH')

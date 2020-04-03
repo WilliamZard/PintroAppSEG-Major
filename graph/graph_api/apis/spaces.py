@@ -1,12 +1,13 @@
-from flask.json import jsonify
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
 
-from .neo4j_ops import (create_session, create_space, delete_space_by_email,
-                        get_space_by_email, set_space_fields)
+from .neo4j_ops import create_session
+from .neo4j_ops.spaces import (create_space, delete_space_by_email,
+                               get_space_by_email, set_space_fields)
+from .utils import valid_email
 
 # TODO: enable swagger API spec
 # TODO: email validation
