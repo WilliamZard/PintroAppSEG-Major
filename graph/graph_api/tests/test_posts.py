@@ -13,18 +13,21 @@ class TestGET:
     def test_GET_post_that_exists(self, app, populate_db):
         # Generate Test Data
         post = Post(content='content_x', hashtags=[
-                    "#tag_a", "tag_b"])._asdict()
+                    "#tag_a", "#tag_b"])._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
         # Test
         response = app.get(f"/posts/{post['uuid']}")
         assert response.status == '200 OK'
-        # TODO: change how this is done
-        assert response.data == jsonify(post).data
+        response = response.get_json()
+        assert len(response) == len(post)
+        for key, value in post.items():
+            assert key in response
+            # NOTE: conversion to string is a workaroud until proper handling of arrays in neo4j
+            assert str(value) == response[key]
 
-    def test_GET_post_that_does_not_exist(self, app, populate_db):
-        populate_db()
+    def test_GET_post_that_does_not_exist(self, app):
         non_existing_uuid = uuid.uuid4()
         response = app.get(f"/posts/{non_existing_uuid}")
         assert response.status == '404 NOT FOUND'
@@ -42,7 +45,7 @@ class TestPUT:
 
         # Test
         response = app.put(
-            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags'])
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
         # TODO: assert modified was changed properly for all put tests
