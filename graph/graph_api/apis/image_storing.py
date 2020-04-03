@@ -7,7 +7,7 @@ def upload_data_to_gcs(bucket_name, data):
         -bucket_name = the name of the GCP bucket where to store the image in.
         -data = an array of bytes rapresenting the image to store.
     Return:
-        The public URL where the file is stored or None if an exception occurs.
+        The public URL where the file is stored or an empty String if an exception occurs.
     '''
     try:
         client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
@@ -19,7 +19,7 @@ def upload_data_to_gcs(bucket_name, data):
     except Exception as e:
         print(e)
 
-    return None
+    return ''
 
 def get_data_from_gcs(bucket_name, file_url):
     '''Function that gets a file stored in GCP buckets and returns a bytes object.
@@ -27,7 +27,8 @@ def get_data_from_gcs(bucket_name, file_url):
         -bucket_name = the name of the GCP bucket where to look for the given file.
         -file_url = url for the file stored in GCP bucket that needs to be retrieved. 
     Return:
-        A byte object that represents the retrieved file or None if an error occurs or file_url is of length 0.
+        A byte object that represents the retrieved file or an empty String  if an error 
+        occurs or file_url is of length 0.
     Raise:
         A credentials related exceptions or an exception if the file is not found.
     '''
@@ -43,7 +44,7 @@ def get_data_from_gcs(bucket_name, file_url):
         except Exception as e:
             print(e)
 
-    return None
+    return ''
 
 def delete_data_from_gcs(bucket_name, file_url):
     '''Function that deletes a file stored in GCP buckets.
@@ -69,7 +70,7 @@ def update_data_from_gcs(bucket_name, old_file_url, new_data):
         -old_file_url = url of the old file in GCP bucket that needs to be deleted from it.
         -new_data = new data in bytes that must be stored in a GCP bucket.
     Return:
-        The public URL where the new file is stored or None if an exception occurs.
+        The public URL where the new file is stored or an empty String if an exception occurs.
     Raise:
         A credentials related exceptions or an exception if the file is not found.
     '''
@@ -88,7 +89,7 @@ def update_data_from_gcs(bucket_name, old_file_url, new_data):
     except Exception as e:
         print(e)
     
-    return None
+    return ''
 
 def get_file_name_from_url(file_url):
     return str.split("/")[-1]
