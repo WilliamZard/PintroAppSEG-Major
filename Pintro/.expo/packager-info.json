@@ -2,8 +2,8 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 13588,
-  "expoServerNgrokUrl": "https://m8-bdd.anonymous.pintro.exp.direct",
-  "packagerNgrokUrl": "https://packager.m8-bdd.anonymous.pintro.exp.direct",
-  "ngrokPid": 11720
+  "packagerPid": 23528,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }

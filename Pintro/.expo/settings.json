@@ -1,8 +1,8 @@
 {
-  "hostType": "tunnel",
+  "urlRandomness": "yk-vuu",
+  "hostType": "localhost",
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": "m8-bdd",
   "https": false
 }

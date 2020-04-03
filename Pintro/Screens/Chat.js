@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {GiftedChat, Bubble} from 'react-native-gifted-chat';
-import firebase from '@react-native-firebase/app';
+import firebase from 'firebase';
 import Spinner from "react-native-loading-spinner-overlay";
 
 export default class Chat extends Component {

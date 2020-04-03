@@ -7,9 +7,10 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import firebase from '@react-native-firebase/app';
+import firebase from 'firebase';
 import Spinner from "react-native-loading-spinner-overlay";
 import TimeAgo from 'react-native-timeago';
+import {connect} from "react-redux";
 
 class ChatroomEntry extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class ChatroomEntry extends Component {
     let lastSeen;
     let lastMessage;
     let lastSeenRef = firebase.database().ref(
-      "last_seen/"+this.props.chat_id+'/'+this.props.currentEmail.replace(/[.#$\[\]]/g, '?')
+      "last_seen/"+this.props.chat_id+'/'+this.props.email.replace(/[.#$\[\]]/g, '?')
     );
     await lastSeenRef.once("value", snap => {
       lastSeen = snap.val();
@@ -59,7 +60,7 @@ class ChatroomEntry extends Component {
       <TouchableOpacity
         onPress={() => {
           this.props.navigation.navigate('Chat', {
-            email: this.props.currentEmail,
+            email: this.props.email,
             recipient: this.props.recipient,
             chat_id: this.props.chat_id,
             updateLastMessage: this.updateLastMessage,
@@ -94,74 +95,30 @@ class ChatroomEntry extends Component {
   }
 }
 
-export default class Messaging extends Component {
+class Messaging extends Component {
   constructor(props) {
     super(props);
-    this.accountList = [
-      {email: 'example1@gmail.com', password: '123456'},
-      {email: 'example2@gmail.com', password: '123456'},
-      {email: 'example3@gmail.com', password: '123456'},
-      {email: 'example4@gmail.com', password: '123456'},
-    ];
-    this.currentAccount = 0;
     this.state = {
       chats: null,
       loading: true,
-      currentEmail: this.accountList[0].email,
-      currentChats: null,
     };
   }
 
-  changeLogin = () => {
-    this.setState({loading: true});
-    this.currentAccount += 1;
-    this.currentAccount %= this.accountList.length;
-    let {email, password} = this.accountList[this.currentAccount];
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        firebase
-          .auth()
-          .signInWithEmailAndPassword(email, password)
-          .then(() => {
-            this.setState({
-              currentEmail: email,
-            });
-            this.loadChats(email);
-          });
-      });
-  };
-
-  loadChats(email) {
-    // eventually thisll be an api call to /chatrooms/<email>
-    // for now ill just hardcode data
-    let testData;
-    switch (this.state.currentEmail) {
-      case 'example1@gmail.com':
-        testData = [
-          {chat_id: 'CHAT_A_B', recipient: 'example2@gmail.com'},
-          {chat_id: 'CHAT_A_C', recipient: 'example3@gmail.com'},
-        ];
-        break;
-      case 'example2@gmail.com':
-        testData = [{chat_id: 'CHAT_A_B', recipient: 'example1@gmail.com'}];
-        break;
-      case 'example3@gmail.com':
-        testData = [{chat_id: 'CHAT_A_C', recipient: 'example1@gmail.com'}];
-        break;
-      case 'example4@gmail.com':
-        testData = [];
-        break;
-    }
+  async loadChats() {
+    let chatData = await fetch(
+      `https://bluej-pintro-project.appspot.com/users/${this.props.email}/chatrooms`,
+      {
+        method: 'GET',
+      }
+    );
     this.setState({
-      chats: testData,
+      chats: await chatData.json(),
       loading: false,
     });
   }
 
-  componentDidMount() {
-    this.loadChats(this.state.email);
+  async componentDidMount() {
+    await this.loadChats();
   }
 
   renderRow = ({item}) => {
@@ -169,20 +126,16 @@ export default class Messaging extends Component {
       navigation={this.props.navigation}
       recipient={item.recipient}
       chat_id={item.chat_id}
-      currentEmail={this.state.currentEmail}
+      email={this.props.email}
     />;
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.changeLogin.bind(this)}>
-          <View style={styles.emailView}>
-            <Text style={styles.subHeaderText}>
-              Direct Chats ({this.state.currentEmail})
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.emailView}>
+          <Text style={styles.subHeaderText}>Direct Chats</Text>
+        </View>
         <FlatList
           data={this.state.chats}
           renderItem={this.renderRow}
@@ -194,6 +147,8 @@ export default class Messaging extends Component {
     );
   }
 }
+
+export default connect(state => ({email: state.auth.email}))(Messaging);
 
 const styles = StyleSheet.create({
   container: {

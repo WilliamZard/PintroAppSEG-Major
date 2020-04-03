@@ -11,6 +11,19 @@ import timeLineReducer from './store/reducers/timeline';
 import FinalSignUp from './Screens/FinalSignUp';
 import tagsReducer from './store/reducers/tags';
 import searchReducer from './store/reducers/search';
+import firebase from 'firebase';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZCyQcrrz5h-RcBT4SlXEopYH9F4tjuA8",
+  authDomain: "pintrobeta.firebaseapp.com",
+  databaseURL: "https://pintrobeta.firebaseio.com",
+  projectId: "pintrobeta",
+  storageBucket: "pintrobeta.appspot.com",
+  messagingSenderId: "339344139567",
+  appId: "1:339344139567:web:5633c6995c07fae26e6dda",
+  measurementId: "G-J0CMZ9VZM0"
+};
+firebase.initializeApp(firebaseConfig);
 
 /**
  * Loading all fonts. The requite methods imply that the app will
@@ -65,21 +78,3 @@ export default function App() {
 
 const styles = StyleSheet.create({
 });
-
-// FROM NEW App.js
-import Connect from './Screens/Connect.js';
-import Chat from './Screens/Chat.js';
-
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-
-const Stack = createStackNavigator({
-  Connect: {
-    screen: Connect,
-  },
-  Chat: {
-    screen: Chat,
-  },
-});
-
-export default createAppContainer(Stack);

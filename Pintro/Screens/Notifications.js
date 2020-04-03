@@ -28,7 +28,7 @@ function acceptChoiceNotif(props, message, accept, decline) {
           onPress={decline}
         >
           <Image
-            source={require('../assets/Images/buttonDecline.png')}
+            source={require('../assets/buttonDecline.png')}
             style={styles.choiceButtonStyle}
           />
         </TouchableOpacity>
@@ -36,7 +36,7 @@ function acceptChoiceNotif(props, message, accept, decline) {
           onPress={accept}
         >
           <Image
-            source={require('../assets/Images/buttonAccept.png')}
+            source={require('../assets/buttonAccept.png')}
             style={styles.choiceButtonStyle}
           />
         </TouchableOpacity>
@@ -46,16 +46,27 @@ function acceptChoiceNotif(props, message, accept, decline) {
 }
 
 const notifTypes = {
-  // TODO: add actual api calls to this (button functionality and getting user data)
   follow(props) {
     return acceptChoiceNotif(
       props,
       `User ${props.notification.requester_email} sent you a follow request.`,
-      () => {
-        console.log('accept pressed for follow request');
+      async () => {
+        await fetch(
+          `https://bluej-pintro-project.appspot.com/approve/follow/${props.notification.requester_email}/${this.props.email}`,
+          {
+            method: 'POST',
+          }
+        );
+        props.deleteNotif();
       },
-      () => {
-        console.log('decline pressed for follow request');
+      async () => {
+        await fetch(
+          `https://bluej-pintro-project.appspot.com/request/follow/${props.notification.requester_email}/${this.props.email}`,
+          {
+            method: 'DELETE',
+          }
+        );
+        props.deleteNotif();
       }
     );
   },
@@ -63,11 +74,23 @@ const notifTypes = {
     return acceptChoiceNotif(
       props,
       `Business ${props.notification.requester_email} sent you an affiliation request.`,
-      () => {
-        console.log('accept pressed for affiliation request');
+      async () => {
+        await fetch(
+          `https://bluej-pintro-project.appspot.com/approve/affiliation/${props.notification.requester_email}/${this.props.email}`,
+          {
+            method: 'POST',
+          }
+        );
+        props.deleteNotif();
       },
-      () => {
-        console.log('decline pressed for affiliation request');
+      async () => {
+        await fetch(
+          `https://bluej-pintro-project.appspot.com/request/affiliation/${props.notification.requester_email}/${this.props.email}`,
+          {
+            method: 'DELETE',
+          }
+        );
+        props.deleteNotif();
       }
     );
   },
@@ -83,29 +106,27 @@ export default class Notifications extends Component {
   }
 
   async componentDidMount() {
-    // TODO: put an actual api call here
-    // these should have recipient_email as well
-    // but i dont actually need to use it, so whatever
+    let notifData = await fetch(
+      `https://bluej-pintro-project.appspot.com/notifications/${this.props.email}`,
+      {
+        method: 'GET',
+      }
+    );
     this.setState({
       loading: false,
-      notifs: [
-        {
-          requester_email: 'example1@gmail.com',
-          relationship_type: 'follow',
-          created_at: 1585777435.3389518
-        },
-        {
-          requester_email: 'example2@gmail.com',
-          relationship_type: 'affiliation',
-          created_at: 1585777415.3389518
-        }
-      ]
+      notifs: await notifData.json(),
     });
   }
 
-  mapNotif = ({item}) => {
+  deleteNotif = (index) => () => {
+    let notifs = [...this.state.notifs];
+    notifs.splice(index, 1);
+    this.setState({notifs});
+  };
+
+  mapNotif = ({item, index}) => {
     let NotificationType = notifTypes[item.relationship_type];
-    return <NotificationType notification={item}/>;
+    return <NotificationType notification={item} deleteNotif={this.deleteNotif(index)}/>;
   };
 
   render() {

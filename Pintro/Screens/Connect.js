@@ -6,10 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import firebase from '@react-native-firebase/app';
-import '@react-native-firebase/auth';
-import '@react-native-firebase/database';
-import Spinner from 'react-native-loading-spinner-overlay';
+import firebase from 'firebase';
 
 import Messaging from './Messaging';
 import Notifications from './Notifications';
