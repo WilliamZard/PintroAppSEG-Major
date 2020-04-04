@@ -12,18 +12,21 @@ from .test_data.users import User
 class TestGET:
     def test_GET_post_that_exists(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x')._asdict()
+        post = Post(content='content_x', hashtags="# tag_a #tag_b")._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
         # Test
         response = app.get(f"/posts/{post['uuid']}")
         assert response.status == '200 OK'
-        # TODO: change how this is done
-        assert response.data == jsonify(post).data
+        response = response.get_json()
+        assert len(response) == len(post)
+        for key, value in post.items():
+            assert key in response
+            # NOTE: conversion to string is a workaroud until proper handling of arrays in neo4j
+            assert str(value) == response[key]
 
-    def test_GET_post_that_does_not_exist(self, app, populate_db):
-        populate_db()
+    def test_GET_post_that_does_not_exist(self, app):
         non_existing_uuid = uuid.uuid4()
         response = app.get(f"/posts/{non_existing_uuid}")
         assert response.status == '404 NOT FOUND'
@@ -34,26 +37,25 @@ class TestGET:
 class TestPUT:
     def test_PUT_existing_post(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x')._asdict()
-        new_post = Post(content='content_y')._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
+        new_post = Post(content='content_y', hashtags="#new_tag_a")._asdict()
         posts = [{'properties': dict(post), 'labels': 'Post'}]
         populate_db(nodes_to_create=posts)
 
         # Test
         response = app.put(
-            f"/posts/{post['uuid']}", json=post['content'])
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
         # TODO: assert modified was changed properly for all put tests
         # TODO: assert created was not changed for all put tests
         # TODO: get request and assertion to check correct update
 
-    def test_PUT_non_existent_post(self, app, populate_db):
-        populate_db()
-        post = Post(content='content_x')._asdict()
+    def test_PUT_non_existent_post(self, app):
+        post = Post(content='content_x', hashtags="#new_tag_a")._asdict()
 
         response = app.put(
-            f"/posts/{uuid.uuid4()}", json=post['content'])
+            f"/posts/{uuid.uuid4()}", json={'content': post['content'], 'hashtags': post['hashtags']})
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
@@ -69,7 +71,7 @@ class TestPOST:
     # TODO: get request and assertion to check correct update
     def test_POST_post_with_valid_payload(self, app, populate_db):
         # Generate Test Data
-        post = Post(content='content_x')._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
         user = User(email='created_post@post.com')._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
         payload = {'content': post['content'], 'user_email': user['email']}
@@ -82,12 +84,11 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-    def test_POST_post_with_invalid_payload(self, app, populate_db):
+    def test_POST_post_with_invalid_payload(self, app):
         user_email = 'test@test.com'
-        populate_db()
 
         response = app.post(
-            f"/posts/", json={'content': '', 'user_email': user_email})
+            f"/posts/", json={'content': '', 'user_email': user_email, 'hashtags': '#hashtag'})
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b"Post content length must be between 1 and 300."
 
@@ -101,7 +102,7 @@ class TestDELETE:
     def test_DELETE_existing_post(self, app, populate_db):
         # Generate Test Data
         # Nodes
-        post = Post(content='content_x')._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
         post_node = {'properties': dict(post), 'labels': 'Post'}
         user = User(email='created_post@post.com')._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
@@ -121,8 +122,7 @@ class TestDELETE:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-    def test_DELETE_non_existing_post(self, app, populate_db):
-        populate_db()
+    def test_DELETE_non_existing_post(self, app):
         response = app.delete(
             f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'

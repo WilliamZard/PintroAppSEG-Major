@@ -7,8 +7,9 @@ from marshmallow.exceptions import ValidationError
 from neo4j.exceptions import ConstraintError
 from .utils import valid_email
 
-from .neo4j_ops import (
-    create_session, create_follow_relationship, delete_follow_relationship, approve_follow_request)
+from .neo4j_ops import create_session
+from .neo4j_ops.requests import (
+    create_follow_relationship, delete_follow_relationship, approve_follow_request)
 
 
 api = Namespace(
