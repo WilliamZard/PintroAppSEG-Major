@@ -12,6 +12,7 @@ from .neo4j_ops import (create_session, create_TAGGED_relationships,
                         set_user_fields, get_chatrooms_of_user)
 from .posts import posts
 from .utils import valid_email
+from .image_storing import *
 # TODO: enable swagger API spec
 # TODO: email validation
 
@@ -64,6 +65,7 @@ class Users(Resource):
                 user = dict(data['user'].items())
                 user['passions'] = data['passions']
                 user['help_others'] = data['help_others']
+                user['profile_image'] = get_data_from_gcs(user['profile_image'])
                 return jsonify(**user)
             return make_response('', 404)
 
