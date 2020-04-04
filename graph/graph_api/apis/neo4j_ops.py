@@ -121,7 +121,7 @@ def create_user(tx, fields):
     # TODO: update this function to use logic of above one.
     if 'profile_image' in fields:
         if len(fields['profile_image']) > 0:
-            fields['profile_image'] = upload_data_to_gcs(os.environ.get('IMAGES_BUCKET_NAME'), fields['profile_image'])
+            fields['profile_image'] = upload_data_to_gcs(ast.literal_eval(fields['profile_image']))
     query = "CREATE (new_user: Person {" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
     return tx.run(query)
