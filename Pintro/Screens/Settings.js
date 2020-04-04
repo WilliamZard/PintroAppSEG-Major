@@ -15,12 +15,33 @@ const Settings = props => {
 const dispatch = useDispatch();
 return(
 
-<View >
-<View style={{marginTop:20,marginHorizontal:30}}>
+<View > 
+    <ScrollView>
+<View style={{marginTop:100,marginHorizontal:30}}>
+   
            <Text style={{fontSize:10}}>Personal</Text>
        </View>
-       <SettingsButton title="Edit Profile"/>
+       <SettingsButton 
+       onPress={()=>    props.navigation.navigate({routeName:'StoryPage'})}
+       title="Edit Story"/>
        <View style={styles.horizintalLineStyle}></View>
+       <SettingsButton 
+       onPress={()=>    props.navigation.navigate({routeName:'ExperiencePage'})}
+       title="Edit History"/>
+       <View style={styles.horizintalLineStyle}></View>
+       <SettingsButton 
+       onPress={()=>    props.navigation.navigate({routeName:'PhotoPage'})}
+       title="Edit Picture"/>
+       <View style={styles.horizintalLineStyle}></View>
+       <SettingsButton 
+       onPress={()=>    props.navigation.navigate({routeName:'PassionsPage'})}
+       title="Edit Passions"/>
+       <View style={styles.horizintalLineStyle}></View>
+       <SettingsButton 
+       onPress={()=>    props.navigation.navigate({routeName:'HelpOthersPage'})}
+       title="Edit Skills"/>
+       <View style={styles.horizintalLineStyle}></View>
+       
        <SettingsButton title="Push notifiations"/>
        <View style={styles.horizintalLineStyle}></View>
        <SettingsButton title="Set nearby distance"/>
@@ -50,9 +71,10 @@ return(
         props.navigation.navigate({routeName:'routeOne'})}} title="Log out"/>
        <View style={styles.horizintalLineStyle}></View>
        <SettingsButton title="Delete my account"/>
+     
        <View style={styles.horizintalLineStyle}></View>
     
-    
+       </ScrollView>
 </View>)
 
 };

@@ -18,15 +18,50 @@ import {ListItem,SearchBar } from 'react-native-elements';
  */
 
 
-
-
 const WhatAreYourPassions = props => {
+
+
+    const phoneNumber = props.navigation.getParam('phoneToPass');
+    const email = props.navigation.getParam('emailToPass');
+    const name = props.navigation.getParam('nameToPass');
+    const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
+    const currentCompany = props.navigation.getParam('currentCompanyToPass');
+    const story = props.navigation.getParam('storyToPass');
+    const workExperience = props.navigation.getParam('workExperienceToPass');
+    const industry = props.navigation.getParam('industryToPass');
+    const previousCompany = props.navigation.getParam('previousCompanyToPass');
+    const pastEducation = props.navigation.getParam('pastEducationToPass');
+    const academicLevel = props.navigation.getParam('academicLevelToPass');
+  /*
+   <ScrollView horizontal={true} >
+ {favouriteTags.map((tag)=> {
+        if(chosenTags.includes(tag)){
+           return (<TouchableOpacity key={tag} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{tag}</Text></TouchableOpacity>);
+        }else{
+           return(
+           <TouchableOpacity key={tag}
+           onPress={()=>{console.log(tag)
+               chosenTags.push(tag);
+               favouriteTags.push("ssss");
+               setChosenTags(chosenTags);
+           console.log(chosenTags)}}
+            style ={styles.tagButton}><Text style={{color:'white'}}>{tag}</Text></TouchableOpacity>);
+        }
+    })}
+ </ScrollView> */
+    
+
+
+
+    const favouriteTags = ["Accounting","Meister","Wie","gehts","dir"]
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
+    const [currentlyChanging,setCurrentlyChanin] = useState(false);
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
     const [chosenTags,setChosenTags] = useState([])
     const loadedTags = useSelector(state => state.tags.tagsArray);
+    
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
@@ -55,7 +90,7 @@ const WhatAreYourPassions = props => {
         }else{
             setChosenTags(chosenTags.filter((arrayElement)=>arrayElement!==item));
         }
-       console.log(chosenTags);
+    
     }
     
     function renderSuggestions() {
@@ -87,7 +122,9 @@ const WhatAreYourPassions = props => {
             );
         }
     }
+    
 
+    
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -120,14 +157,27 @@ clearIcon={null}/>
                         </View>
  <View style={styles.horizintalLineStyle}></View>
  <Text style={styles.aboveInputText}>or choose from the most popular</Text>
- <ScrollView horizontal={true}>
-    <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Feminism</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.choosenButton} ><Text style={{color:Color.pintroYellow}}>Coaching</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Mindfulness</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
+
+ <FlatList data ={favouriteTags} renderItem={
+  ({item})=> {
+     
+      if(chosenTags.includes(item)){
+        return (<TouchableOpacity key={item} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+      }else{
+        return (<TouchableOpacity key={item}  onPress={()=>{
+          
+          
+            chosenTags.push(item);
+           
+            setChosenTags(chosenTags);
+            setCurrentlyChanin(!currentlyChanging);
+        }} style ={styles.tagButton}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+      }
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
  <ScrollView horizontal={true}>
  <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Skill Swap</Text></TouchableOpacity> 
    <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Personal Growth</Text></TouchableOpacity>
@@ -150,7 +200,20 @@ clearIcon={null}/>
    <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Diversity</Text></TouchableOpacity>
    <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
  </ScrollView>
- <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'HelpOthers'}) }>STEP 5 OF 6</InvertedSignInUpButton>
+ <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'HelpOthers',params:{
+     phoneToPass:phoneNumber,
+     emailToPass:email,
+     nameToPass:name,
+     currentJobTitleToPass:currentJobTitle,
+     currentCompanyToPass:currentCompany,
+     storyToPass:story,
+     workExperienceToPass:workExperience,
+     industryToPass:industry,
+     previousCompanyToPass:previousCompany,
+     pastEducationToPass:pastEducation,
+     academicLevelToPass:academicLevel,
+     passionsToPass:chosenTags
+    }})}>STEP 5 OF 6</InvertedSignInUpButton>
                             
                        
                     </View>

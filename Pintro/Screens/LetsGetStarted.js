@@ -1,10 +1,10 @@
 import React, {useReducer, useCallback,useState,useEffect } from 'react';
-import { StyleSheet, Text, View, Button,ActivityIndicator, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button,ActivityIndicator, TextInput,Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import * as Animatable from 'react-native-animatable';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import * as authActions from '../store/actions/auth';
 import Input from '../Components/Input';
 
@@ -20,33 +20,6 @@ import Input from '../Components/Input';
 //SIGN UP STUFF
 
 
-const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
-
-const formReducer = (state, action) => {
-  if (action.type === FORM_INPUT_UPDATE) {
-    const updatedValues = {
-      ...state.inputValues,
-      [action.input]: action.value
-    };
-    const updatedValidities = {
-      ...state.inputValidities,
-      [action.input]: action.isValid
-    };
-    let updatedFormIsValid = true;
-    for (const key in updatedValidities) {
-      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
-    }
-    return {
-      formIsValid: updatedFormIsValid,
-      inputValidities: updatedValidities,
-      inputValues: updatedValues
-    };
-  }
-  return state;
-};
-
-//
-
 
 const LetsGetStarted = props => {
 
@@ -54,41 +27,30 @@ const LetsGetStarted = props => {
  
 
 
+const [confirmPassword,setConfirmPassword] = useState();
+const [userEmail,setUserEmail] = useState();
+const [userPassword,setUserPassword]= useState();
+const [phoneNumber,setPhoneNumber] = useState();
 const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState();
 const [isSignup, setIsSignup] = useState(false);
 const dispatch = useDispatch();
 
-const [formState, dispatchFormState] = useReducer(formReducer, {
-  inputValues: {
-    email: '',
-    password: ''
-  },
-  inputValidities: {
-    email: false,
-    password: false
-  },
-  formIsValid: false
-});
-useEffect(() => {
-if (error) {
-  Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
-}
-}, [error]);
 
 const signupHandler = async () => {
-let action;
-   action =  authActions.signup(
-      formState.inputValues.email,
-      formState.inputValues.password
-
-  );
 
 setError(null);
 setIsLoading(true);
 try {
-  await dispatch(action);
-  props.navigation.navigate({routeName:'Camera'});
+   await dispatch(authActions.signup(userEmail,userPassword));
+  console.log(userEmail);
+
+  props.navigation.navigate({routeName:'Camera',params:{
+    phoneToPass:phoneNumber,
+    emailToPass:userEmail}})
+
+   
+
 } catch (err) {
   setError(err.message);
   setIsLoading(false);
@@ -96,19 +58,7 @@ try {
 
 };  
 
-const inputChangeHandler = useCallback(
-  (inputIdentifier, inputValue, inputValidity) => {
-    dispatchFormState({
-      type: FORM_INPUT_UPDATE,
-      value: inputValue,
-      isValid: inputValidity,
-      input: inputIdentifier
-    });
-  },
-  [dispatchFormState]
-);
 
-//
 
     return (
         <KeyboardAwareScrollView
@@ -127,42 +77,21 @@ const inputChangeHandler = useCallback(
                         <Text style={styles.aboveInputText}>Create your account</Text>
                         </View>
                             <Text style={styles.aboveInputText}>Email address</Text>
-                            <Input
-              id="email"
-              label=""
-              keyboardType="email-address"
-              required
-              email
-              autoCapitalize="none"
-              errorText="Please enter a valid email address."
-              onInputChange={inputChangeHandler}
-              initialValue=""
-            />
+                            <TextInput onChangeText={setPhoneNumber} style={styles.inputBox} onChangeText={(text)=>setUserEmail(text)} placeholder="Enter your email" placeholderTextColor='white' />
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Phone number</Text>
-                            <TextInput style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white' keyboardType='numeric'/>
+                            <TextInput onChangeText={setPhoneNumber} style={styles.inputBox} placeholder="Enter your phone number" placeholderTextColor='white' keyboardType='numeric'/>
  <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Password</Text>
-                            <Input
-              id="password"
-              label=""
-              keyboardType="default"
-              secureTextEntry
-              required
-              minLength={5}
-              autoCapitalize="none"
-              errorText="Please enter a valid password."
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              style={styles.inputBox}
-            />
+                            <TextInput onChangeText={setPhoneNumber} style={styles.inputBox}onChangeText={(text)=>setUserPassword(text)} placeholder="Enter your password" placeholderTextColor='white' secureTextEntry={true}/>
                             <View style={styles.horizintalLineStyle}></View>
                             <Text style={styles.aboveInputText}>Confirm password</Text>
-                            <TextInput style={styles.inputBox} placeholder="********" placeholderTextColor='white' secureTextEntry={true} />
+                            <TextInput  onChangeText={setConfirmPassword} style={styles.inputBox} placeholder="********" placeholderTextColor='white' secureTextEntry={true} />
                             <View style={styles.horizintalLineStyle}></View>
 
                             {isLoading?  ( <ActivityIndicator size="small" color={'white'} />
                             ):(
+                       
                                 <InvertedSignInUpButton onPress={signupHandler
                                     //()=>   props.navigation.navigate({routeName:'Camera'}) 
                                 }>STEP 1 OF 6</InvertedSignInUpButton>
