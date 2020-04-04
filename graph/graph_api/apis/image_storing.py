@@ -86,9 +86,10 @@ def update_data_from_gcs(old_file_url, new_data):
             old_target_key = get_file_name_from_url(old_file_url)
             bucket.delete_blob(old_target_key)
         #post the new file.
-        new_target_key = str(uuid.uuid4())# unique file name in the bucket.
-        bucket.blob(new_target_key).upload_from_string(new_data)
-        return bucket.blob(new_target_key).public_url
+        if(len(new_data) > 0):#If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
+            new_target_key = str(uuid.uuid4())# unique file name in the bucket.
+            bucket.blob(new_target_key).upload_from_string(new_data)
+            return bucket.blob(new_target_key).public_url
     
     except Exception as e:
         print(e)
