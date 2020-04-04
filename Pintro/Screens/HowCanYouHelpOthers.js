@@ -11,6 +11,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Color from '../Constants/Colors';
 import { fonts } from '../Constants/Fonts.js';
 import Colors from '../Constants/Colors';
+import * as userActions from '../store/actions/user';
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
  * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
@@ -18,16 +19,30 @@ import Colors from '../Constants/Colors';
  * @param {} props 
  */
 
-
-
-
 const WhatAreYourPassions = props => {
+
+
+const phoneNumber = props.navigation.getParam('phoneToPass');
+const email = props.navigation.getParam('emailToPass');
+const name = props.navigation.getParam('nameToPass');
+const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
+const currentCompany = props.navigation.getParam('currentCompanyToPass');
+const story = props.navigation.getParam('storyToPass');
+const workExperience = props.navigation.getParam('workExperienceToPass');
+const industry = props.navigation.getParam('industryToPass');
+const previousCompany = props.navigation.getParam('previousCompanyToPass');
+const pastEducation = props.navigation.getParam('pastEducationToPass');
+const academicLevel = props.navigation.getParam('academicLevelToPass');
+const passions = props.navigation.getParam('passionsToPass');
+
+
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
     const [chosenTags,setChosenTags] = useState([])
     const loadedTags = useSelector(state => state.tags.tagsArray);
+    const info = useSelector(state => state.auth.emailToGet);
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
@@ -89,7 +104,8 @@ const WhatAreYourPassions = props => {
         }
     }
 
-
+console.log("dddd");
+console.log(info);
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -155,9 +171,19 @@ const WhatAreYourPassions = props => {
    <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
  </ScrollView>
                             <InvertedSignInUpButton style={{width:'80%'}} 
-                         onPress={()=>   props.navigation.navigate({routeName:'BusinessYesNo'}) }>Finish</InvertedSignInUpButton>
+                         onPress={ //create user
+
+                          ()=> dispatch(userActions.create_User("dwdwede","dwdwede","dwdwede",info,"dwdwede","dwdwede","dwdwede",[],[],"dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede"))
+                           //  props.navigation.navigate({routeName:'BusinessYesNo'})
+                        
+                         }>Finishh</InvertedSignInUpButton>
                             
-                       
+                
+
+
+
+
+
                     </View>
                 
             </View>
