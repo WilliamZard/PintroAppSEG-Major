@@ -96,5 +96,17 @@ def update_data_from_gcs(old_file_url, new_data):
     
     return ''
 
+def clear_bucket():
+    '''Function to clear all the existing files in a bucket.
+    '''
+    client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+    bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
+    bucket = client.bucket(bucket_name)
+    try:
+        bucket.delete_blobs(blobs=bucket.list_blobs())
+    except Exception as e:
+        print(e)
+
+
 def get_file_name_from_url(file_url):
     return str(os.path.split(file_url)[1])
