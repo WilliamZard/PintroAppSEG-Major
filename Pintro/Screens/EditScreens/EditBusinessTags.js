@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View,StyleSheet,Text,Picker } from 'react-native';
+import { View,StyleSheet,Text,Picker, Alert } from 'react-native';
 import Colors from '../../Constants/Colors.js';
 import BlackTag from '../../Components/BlackTag.js';
 import GreyTag from '../../Components/GreyTag.js';
@@ -7,13 +7,17 @@ import { TextInput, ScrollView } from 'react-native-gesture-handler';
 import data2 from '../../Constants/data2.json';
 import { ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
+import { useDispatch } from 'react-redux';
+import * as BusinessActions from '../../store/actions/business.js';
 
 const EditBusinessTag = props => {
+    const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
-    const [chosenTags,setChosenTags] = useState([]);
+    const [chosenTags,setChosenTags] = useState(props.navigation.state.params.business.tags);
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
-    
+    let popularTags = ["Students","Startups","Mindfulness","Work/life Balance","Apple","Social Media","Neuroscience","Nutrition","Innovation","Pre-Seed","Diversity","Teamwork"];
+
     var tagNames = data2.map(function(item) {
         return item['name'];
     });
@@ -60,7 +64,6 @@ const EditBusinessTag = props => {
     }
 
     function onTagPress(tagName) {
-        console.log(tagName);
         if(!chosenTags.includes(tagName)){
             chosenTags.push(tagName);
             setChosenTags(chosenTags);
@@ -69,9 +72,45 @@ const EditBusinessTag = props => {
         }
     }
 
-    function onPressDone() {
+    async function onPressDone() {
         console.log(chosenTags);
+        if(chosenTags.length < 3) {
+            Alert.alert('Too few tags','Minimum of 3 tags needed');
+        } else if(chosenTags.length > 6){
+            Alert.alert('Too many tags','Maximum of 6 tags');
+        } else {
+            const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    body: JSON.stringify({
+                        email: props.navigation.state.params.business.email,
+                        password: props.navigation.state.params.business.password,
+                        full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
+                        profile_image: props.navigation.state.params.business.profile_image,
+                        phone: props.navigation.state.params.business.phone,
+                        location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
+                        short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                        story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                        tags: chosenTags,
+                        date_founded: props.navigation.state.params.business.date_founded,
+                        company_size: props.navigation.state.params.business.company_size,
+                        funding: props.navigation.state.params.business.funding,
+                        team_members: props.navigation.state.params.business.team_members,
+                        seeking_investment: props.navigation.state.params.business.seeking_investment,
+                        currently_hiring: props.navigation.state.params.business.currently_hiring,
+                    })
+                }
+            );
+            console.log(response.status);
+            dispatch(BusinessActions.getBusiness());
+        } 
     }
+
+    popularTags = popularTags.map((item) => (chosenTags.some(tag => tag == item))? true : false);
 
     return(
         <ScrollView>
@@ -91,24 +130,24 @@ const EditBusinessTag = props => {
                 {suggestedItems}
                 <Text style={styles.subtitle}>Or choose from the most popular</Text>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Feminisim"}>FEMINISIM</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Start-up"}>START-UP</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindulness"}>MINDFULNESS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Students"} initial={popularTags[0]}>STUDENTS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Startups"} initial={popularTags[1]}>STARTUPS</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Mindfulness"} initial={popularTags[2]}>MINDFULNESS</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Personal Growth"}>PERSONAL GROWTH</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"App"}>APP</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Networking"}>NETWORKING</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Work/life Balance"} initial={popularTags[3]}>WORK/LIFE BALANCE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Apple"} initial={popularTags[4]}>APPLE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Social Media"} initial={popularTags[5]}>SOCIAL MEDIA</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Neuroscience"}>NEUROSCIENCE</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Nutrition"}>NUTRITION</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Innovation"}>INNOVATION</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Neuroscience"} initial={popularTags[6]}>NEUROSCIENCE</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Nutrition"} initial={popularTags[7]}>NUTRITION</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Innovation"} initial={popularTags[8]}>INNOVATION</GreyTag>
                 </View>
                 <View style={styles.tagContainer}>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-seed"}>PRE-SEED</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"}>DIVERSITY</GreyTag>
-                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Co-working"}>CO-WORKING</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Pre-Seed"} initial={popularTags[9]}>PRE-SEED</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Diversity"} initial={popularTags[10]}>DIVERSITY</GreyTag>
+                    <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Teamwork"} initial={popularTags[11]}>TEAMWORK</GreyTag>
                 </View>
                 <View style={{marginVertical: 20}}/>
                 <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>

@@ -23,8 +23,8 @@ export const getBusiness = () => {
         const resData = await response.json();
 
 
-        var searchedBusiness = new Business(resData.email,resData.full_name,resData.location,resData.password,resData.phone,resData.profile_image,resData.short_bio,resData.story);
-       console.log("New Business = " + searchedBusiness);
+        var searchedBusiness = new Business(resData.company_size,resData.currently_hiring,resData.date_founded,resData.email,resData.full_name,resData.funding,resData.location,resData.password,resData.phone,resData.profile_image,resData.seeking_investment,resData.short_bio,resData.story,resData.tags,resData.team_members);
+        //console.log("New Business = " + searchedBusiness);
 
         dispatch({type: GETBUSINESS,businessObj:searchedBusiness});
     }

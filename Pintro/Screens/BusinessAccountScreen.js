@@ -12,7 +12,6 @@ import PencilWhite from '../Components/PencilWhite.js';
 import Colors from '../Constants/Colors.js';
 import JourneyPoint from '../Components/JourneyPoint.js';
 import TimelinePostComponent from '../Components/TimelinePostComponent.js';
-import * as businessActions from '../store/actions/business';
 
 
 const BusinessAccountScreen = props => {
@@ -64,6 +63,22 @@ const BusinessAccountScreen = props => {
         props.navigation.navigate('Team', {business: businessObj});
     }
 
+
+    let investText;
+    let hiringText;
+
+    if(businessObj.seeking_investment==="True") {
+        investText = <Text style={fonts.title_yellow}>SEEKING INVESTMENT</Text>;
+    } else {
+        investText = null;
+    }
+
+    if(businessObj.currently_hiring==="True") {
+        hiringText = <Text style={fonts.title_black}>CURRENTLY HIRING</Text>;
+    } else {
+        hiringText = null;
+    }
+
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
@@ -85,13 +100,11 @@ const BusinessAccountScreen = props => {
                     <Edit props={props.Edit}>. . .</Edit>
                 </View>
                 <View style={styles.rowContainer}>
-                    <TouchableOpacity style={styles.thumbsButton}>
-                        <Image source={require('../assets/yellowThumbsUp.png')} style={{height: 20, width: 20, marginHorizontal: 5}}/>
-                        <Text style={fonts.title_yellow}>SEEKING INVESTMENT</Text>
+                    <TouchableOpacity style={styles.thumbsButton}>      
+                        {investText}
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.thumbsButton}>
-                        <Image source={require('../assets/blackThumbsDown.png')} style={{height: 20, width: 20, marginHorizontal: 5}}/>
-                        <Text style={fonts.title_black}>CURRENTLY HIRING</Text>
+                        {hiringText}
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.title}>Our Story</Text>
@@ -100,16 +113,16 @@ const BusinessAccountScreen = props => {
                 </Text>
                 <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
                 <PencilBlack onPress={() => switchEditTags()}/>
-                <View style={styles.tagContainer}>
-                    <BlackTag props={props.BlackTag}>START-UP</BlackTag>
-                    <BlackTag props={props.BlackTag}>PRE-SEED</BlackTag>
-                    <BlackTag props={props.BlackTag}>NETWORKING</BlackTag>
-                </View>
-                <View style={styles.tagContainer}>
-                    <BlackTag props={props.BlackTag}>ENTREPRENEUR</BlackTag>
-                    <BlackTag props={props.BlackTag}>APP</BlackTag>
-                    <BlackTag props={props.BlackTag}>CO-WORKING</BlackTag>
-                </View>
+                <ScrollView style={styles.tagContainer} horizontal={true}>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[0]!==undefined)? businessObj.tags[0].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[1]!==undefined)? businessObj.tags[1].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[2]!==undefined)? businessObj.tags[2].toUpperCase() : null}</BlackTag>
+                </ScrollView>
+                <ScrollView style={styles.tagContainer} horizontal={true}>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[3]!==undefined)? businessObj.tags[3].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[4]!==undefined)? businessObj.tags[4].toUpperCase() : null}</BlackTag>
+                    <BlackTag props={props.BlackTag}>{(businessObj.tags[5]!==undefined)? businessObj.tags[5].toUpperCase() : null}</BlackTag>
+                </ScrollView>
                 <ScrollView style={styles.helpContainer} horizontal={true}>
                     <HelpMeWith props={props.HelpMeWith}>Business Modelling</HelpMeWith>
                     <HelpMeWith props={props.HelpMeWith}>Crepe Investments</HelpMeWith>
@@ -120,10 +133,10 @@ const BusinessAccountScreen = props => {
                         <Text style={styles.journey}>Our journey</Text>
                         <PencilBlack onPress={() => switchEditJourney()}/>
                     </View>
-                    <JourneyPoint default={"Founded:"} userData={"May 2017"}/>
+                    <JourneyPoint default={"Founded:"} userData={businessObj.date_founded}/>
                     <JourneyPoint default={"Location:"} userData={businessObj.location}/>
-                    <JourneyPoint default={"Company Size:"} userData={"5 Team Members"}/>
-                    <JourneyPoint default={"Funding:"} userData={"Pre-Seed"}/>
+                    <JourneyPoint default={"Company Size:"} userData={businessObj.company_size}/>
+                    <JourneyPoint default={"Funding:"} userData={businessObj.funding}/>
                 </View>
                 <View>
                     <View style={styles.rowContainer}>
@@ -242,12 +255,12 @@ const styles = StyleSheet.create({
     tagContainer: {
         flexDirection: 'row',
         marginTop: 10,
-        marginLeft: 10
+        marginHorizontal: 10
     },
     helpContainer: {
         flexDirection: 'row',
         paddingLeft: 30,
-        marginRight: 20
+        marginRight: 20,
     },
     journey: {
         marginLeft: 30,

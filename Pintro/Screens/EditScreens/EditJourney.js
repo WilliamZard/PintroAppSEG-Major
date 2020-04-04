@@ -8,9 +8,9 @@ import * as BusinessActions from '../../store/actions/business.js';
 
 const EditJourney = props => {
     const dispatch = useDispatch();
-    const [companySize, setSize] = useState();
-    const [funding, setFunding] = useState();
-    const [founded, setDate] = useState();
+    const [companySize, setSize] = useState(props.navigation.state.params.business.company_size);
+    const [funding, setFunding] = useState(props.navigation.state.params.business.funding);
+    const [founded, setDate] = useState(props.navigation.state.params.business.date_founded);
     const [location, setLocation] = useState(props.navigation.state.params.business.location);
 
     function updateDate(newDate) {
@@ -40,12 +40,19 @@ const EditJourney = props => {
                 body: JSON.stringify({
                     email: props.navigation.state.params.business.email,
                     password: props.navigation.state.params.business.password,
-                    full_name: props.navigation.state.params.business.full_name,
+                    full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
                     profile_image: props.navigation.state.params.business.profile_image,
                     phone: props.navigation.state.params.business.phone,
                     location: location,
                     short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
-                    story: props.navigation.state.params.business.story.replace(/'/g,"\\'")
+                    story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                    tags: props.navigation.state.params.business.tags,
+                    date_founded: founded,
+                    company_size: companySize,
+                    funding: funding,
+                    team_members: props.navigation.state.params.business.team_members,
+                    seeking_investment: props.navigation.state.params.business.seeking_investment,
+                    currently_hiring: props.navigation.state.params.business.currently_hiring
                 })
             }
         );
@@ -65,7 +72,7 @@ const EditJourney = props => {
                 <Text style={styles.title}>Edit your details</Text>
                 <Text style={styles.subtitle}>Your company journey</Text>
                 <Text style={styles.subtitle}>Date Founded</Text>
-                <TextInput style={styles.inputText} onChangeText={value => updateDate(value)}>{item.Date}</TextInput>
+                <TextInput style={styles.inputText} onChangeText={value => updateDate(value)}>{props.navigation.state.params.business.date_founded}</TextInput>
                 <View style={styles.horizintalLineStyle}/>
                 <Text style={styles.subtitle}>Location</Text>
                 <TextInput style={styles.inputText} onChangeText={value => updateLocation(value)}>{props.navigation.state.params.business.location}</TextInput>
