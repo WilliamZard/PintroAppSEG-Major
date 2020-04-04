@@ -9,16 +9,17 @@ def upload_data_to_gcs(data):
     Return:
         The public URL where the file is stored or an empty String if an exception occurs.
     '''
-    try:
-        client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
-        bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
-        bucket = client.bucket(bucket_name)
-        target_key = str(uuid.uuid4())# unique file name in the bucket.
-        bucket.blob(target_key).upload_from_string(data)
-        return bucket.blob(target_key).public_url
+    if len(data) > 0:#If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
+        try:
+            client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
+            bucket = client.bucket(bucket_name)
+            target_key = str(uuid.uuid4())# unique file name in the bucket.
+            bucket.blob(target_key).upload_from_string(data)
+            return bucket.blob(target_key).public_url
 
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
 
     return ''
 
