@@ -181,7 +181,7 @@ def set_business_fields(tx, business_email, fields):
     if 'profile_image' in fields:
         #upload the image on gcp first and then store its url.
         if len(fields['profile_image']) > 0:
-            old_image_url = dict(get_account_field(tx, user_email, 'Business', 'profile_image').data()[0])['profile_image']
+            old_image_url = dict(get_account_field(tx, business_email, 'Business', 'profile_image').data()[0])['profile_image']
             fields['profile_image'] = update_data_from_gcs(old_image_url, literal_eval(fields['profile_image']))
 
     # NOTE: this could error when assigning string values that need quotations
