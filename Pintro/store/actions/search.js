@@ -3,10 +3,11 @@ import { BearerToken }  from '../../Constants/BearerToken';
 export const GETRESULTS = 'GETRESULTS';
 export const getResults = (item) => {
     return async dispatch => {
-        const response = await fetch("https://bluej-pintro-project.appspot.com/search",
+        const response = await fetch("https://bluej-pintro-project.appspot.com/search/",
             {
               method: 'POST',
               headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': BearerToken
               },
@@ -17,10 +18,10 @@ export const getResults = (item) => {
             }   
         );
         console.log(response.status);
-
         if(!response.ok) {
           const errorResData = await response.json();
           console.log(errorResData);
+          console.log(await response.text());
           let message = 'Something went wrong';
           throw new Error(message);
         }
