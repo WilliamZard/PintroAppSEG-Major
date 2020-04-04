@@ -10,7 +10,7 @@ SPACE_PROPERTIES = [
 
 SPACE_DEFAULTS = [
     "Default Password",
-    "Default Profile Image",
+    "",
     "Default Full Name",
     "Default Phone",
     "Default Short Bio",
