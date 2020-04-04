@@ -7,6 +7,7 @@ from .utils import valid_email
 
 from .neo4j_ops import (create_session, create_business, delete_business_by_email,
                         get_business_by_email, set_business_fields, delete_tagged_relationships, create_TAGGED_relationships)
+from .image_storing import *
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -51,6 +52,7 @@ class Businesses(Resource):
                 data = response.data()
                 business = dict(data['user'].items())
                 business['tags'] = data['tags']
+                business['profile_image'] = str(get_data_from_gcs(business['profile_image']))
                 return jsonify(**business)
             return make_response('', 404)
 
