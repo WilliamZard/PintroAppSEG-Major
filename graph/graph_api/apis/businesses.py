@@ -1,12 +1,16 @@
-from flask.json import jsonify
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
 
-from .neo4j_ops import (create_session, create_business, delete_business_by_email,
-                        get_business_by_email, set_business_fields, delete_tagged_relationships, create_TAGGED_relationships)
+from .neo4j_ops import create_session
+from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.businesses import (delete_business_by_email,
+                                   get_business_by_email)
+from .neo4j_ops.tags import (create_TAGGED_relationships,
+                             delete_tagged_relationships)
+from .utils import valid_email
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -85,7 +89,8 @@ class Businesses(Resource):
         with create_session() as session:
             tx = session.begin_transaction()
             delete_tagged_relationships(tx, email)
-            response = set_business_fields(tx, email, api.payload)
+            response = set_properties(
+                tx, 'Business', 'email', email, api.payload)
             create_TAGGED_relationships(tx, email, tags, 'BusinessTag')
             tx.commit()
         if response.summary().counters.properties_set == len(payload):
@@ -104,11 +109,22 @@ class BusinessPost(Resource):
         '''Create a business.'''
         if not valid_email(api.payload['email']):
             return make_response('Not a valid email address.', 422)
+
+        payload = api.payload
+        tags = []
+        if 'tags' in payload:
+            tags = payload['tags']
+            payload.pop('tags')
+
+        response = None
         with create_session() as session:
             try:
                 # TODO: break up create_business function into different queries.
-                response = session.write_transaction(
-                    create_business, api.payload)
+                tx = session.begin_transaction()
+                response = create_node(tx, 'Business', payload)
+                create_TAGGED_relationships(
+                    tx, payload['email'], tags, 'BusinessTag')
+                tx.commit()
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:

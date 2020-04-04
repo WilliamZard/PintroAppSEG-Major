@@ -1,14 +1,15 @@
+import time
+
 from flask import make_response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
-from .neo4j_ops import (create_affiliation_relationship, create_session,
-                        delete_affiliation_relationship)
+from .neo4j_ops import create_session
+from .neo4j_ops.requests import (create_affiliation_relationship,
+                                 delete_affiliation_relationship)
 from .utils import valid_email
-import time
-
 
 api = Namespace(
     'affiliation', title='Operations related to the AFFILIATION relationship')

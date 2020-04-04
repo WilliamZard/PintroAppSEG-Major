@@ -4,14 +4,18 @@ from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
-from .neo4j_ops import (create_session, create_TAGGED_relationships,
-                        create_user, delete_tagged_relationships,
-                        delete_user_by_email, get_followers_of_a_user,
-                        get_followings_of_a_user,
-                        get_posts_of_followings_of_a_user, get_user_by_email,
-                        set_user_fields, get_chatrooms_of_user)
-from .posts import posts
+from .neo4j_ops import create_session
+from .neo4j_ops.tags import (create_TAGGED_relationships,
+                             delete_tagged_relationships)
+from .neo4j_ops.chatrooms import get_chatrooms_of_user
+from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.users import (delete_user_by_email,
+                              get_followers_of_a_user,
+                              get_followings_of_a_user,
+                              get_posts_of_followings_of_a_user,
+                              get_user_by_email)
 from .utils import valid_email
+
 # TODO: enable swagger API spec
 # TODO: email validation
 
@@ -88,11 +92,23 @@ class Users(Resource):
         '''Update a user by the given fields.'''
         if not valid_email(email):
             return make_response('', 422)
+        payload = api.payload
+        passions = help_others = []
+        if 'passions' in payload:
+            passions = payload['passions']
+            payload.pop('passions')
+        if 'help_others' in payload:
+            help_others = payload['help_others']
+            payload.pop('help_others')
         response = None
         with create_session() as session:
             tx = session.begin_transaction()
             delete_tagged_relationships(tx, email)
-            response = set_user_fields(tx, email, api.payload)
+            response = set_properties(
+                tx, 'Person', 'email', email, api.payload)
+            create_TAGGED_relationships(tx, email, passions, 'PassionsTag')
+            create_TAGGED_relationships(
+                tx, email, help_others, 'CanHelpWithTag')
             tx.commit()
         # TODO: validate payload
         if response.summary().counters.properties_set == len(api.payload):
@@ -124,7 +140,7 @@ class UsersPost(Resource):
         with create_session() as session:
             try:
                 tx = session.begin_transaction()
-                response = create_user(tx, payload)
+                response = create_node(tx, 'Person', payload)
                 email = payload['email']
                 # NOTE: tag labels specified must be identical to actual tag labels
                 create_TAGGED_relationships(
@@ -203,7 +219,7 @@ class Users(Resource):
         # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
-                set_user_fields, email, fields)
+                set_properties, 'Person', 'email', email, fields)
             if response.summary().counters.properties_set == 1:
                 return make_response('', 204)
             return make_response('', 404)
@@ -222,7 +238,7 @@ class Users(Resource):
         # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
-                set_user_fields, email, fields)
+                set_properties, 'Person', 'email', email, fields)
             if response.summary().counters.properties_set == 1:
                 return make_response('', 204)
             return make_response('', 404)

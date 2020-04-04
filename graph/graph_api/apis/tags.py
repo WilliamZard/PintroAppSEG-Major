@@ -1,12 +1,13 @@
-import time
 import re
+import time
 
-from flask import make_response, abort
+from flask import abort, make_response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 
-from .neo4j_ops import (create_session, get_tags)
+from .neo4j_ops import create_session
+from .neo4j_ops.tags import get_tags
 
 
 # TODO: refactor these util functions

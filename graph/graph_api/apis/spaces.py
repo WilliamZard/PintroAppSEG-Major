@@ -1,12 +1,14 @@
-from flask.json import jsonify
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
 
-from .neo4j_ops import (create_session, create_space, delete_space_by_email,
-                        get_space_by_email, set_space_fields)
+from .neo4j_ops import create_session
+from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.spaces import (delete_space_by_email,
+                               get_space_by_email)
+from .utils import valid_email
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -67,7 +69,7 @@ class Spaces(Resource):
         # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
-                set_space_fields, email, api.payload)
+                set_properties, 'Space', 'email', email, api.payload)
             if response.summary().counters.properties_set == len(api.payload):
                 return make_response('', 204)
             return make_response('', 404)
@@ -87,7 +89,7 @@ class SpacesPost(Resource):
         with create_session() as session:
             try:
                 response = session.write_transaction(
-                    create_space, api.payload)
+                    create_node, 'Space', api.payload)
                 if response.summary().counters.nodes_created == 1:
                     return make_response('', 201)
             except ConstraintError:

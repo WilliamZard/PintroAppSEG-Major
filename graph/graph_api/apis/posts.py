@@ -1,14 +1,17 @@
+import time
 import uuid
-from flask.json import jsonify
+
 from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
-from .utils import valid_email
 
-from .neo4j_ops import (create_session, get_post_by_uuid,
-                        set_post_fields, delete_post, get_list_of_user_post_dates, create_post)
-import time
+from .neo4j_ops import create_session
+from .neo4j_ops.general import set_properties, create_node, create_relationship
+from .neo4j_ops.posts import (delete_post,
+                              get_list_of_user_post_dates, get_post_by_uuid)
+from .utils import valid_email
 
 
 def get_time():
@@ -64,7 +67,7 @@ class Posts(Resource):
             content = api.payload['content']
             hashtags = api.payload['hashtags']
             response = session.write_transaction(
-                set_post_fields, uuid, content, hashtags)
+                set_properties, 'Post', 'uuid', uuid, {'content': content, 'hashtags': hashtags})
             if response.summary().counters.properties_set == 2:
                 return make_response('', 204)
             return make_response('', 404)
@@ -101,13 +104,20 @@ class PostsPost(Resource):
         post_uuid = uuid.uuid4()
         content = payload['content']
         user_email = payload['user_email']
+        properties = dict(created=created, uuid=post_uuid,
+                          content=content, modified=modified)
         with create_session() as session:
             try:
-                response = session.write_transaction(
-                    create_post, content, user_email,
-                    created, modified, post_uuid)
-                counters = response.summary().counters
-                if counters.nodes_created == 1 and counters.relationships_created == 1 and counters.labels_added == 1 and counters.properties_set == 4:
+                tx = session.begin_transaction()
+                node_creation_response = create_node(tx, 'Post', properties)
+                node_creation_counters = node_creation_response.summary().counters
+                relationship_creation_response = create_relationship(tx, 'Person', {'email': user_email}, 'Post', {
+                    'uuid': post_uuid}, 'POSTED')
+                relationship_creation_counters = relationship_creation_response.summary().counters
+                if (node_creation_counters.nodes_created == 1
+                    and relationship_creation_counters.relationships_created == 1
+                    and node_creation_counters.labels_added == 1  # NOTE: What is this for?
+                        and node_creation_counters.properties_set == 4):
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)

@@ -1,9 +1,11 @@
+from flask import make_response
+from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from flask import make_response
-from .neo4j_ops import create_session, get_notifications
+
+from .neo4j_ops import create_session
+from .neo4j_ops.notifications import get_notifications
 from .request import REQUEST_RELATIONSHIPS
-from flask.json import jsonify
 
 REVERSED_REQUEST_RELATIONSHIPS = {
     value: key for key, value in REQUEST_RELATIONSHIPS.items()}
