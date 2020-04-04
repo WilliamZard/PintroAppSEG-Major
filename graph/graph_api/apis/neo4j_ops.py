@@ -243,6 +243,11 @@ def set_space_fields(tx, space_email, fields):
         user_email = the email of the user whose data needs to be edited.
         new_email = the new email to assign to that user.
     '''
+    if 'profile_image' in fields:
+        #upload the image on gcp first and then store its url.
+        if len(fields['profile_image']) > 0:
+            old_image_url = dict(get_account_field(tx, space_email, 'Space', 'profile_image').data()[0])['profile_image']
+            fields['profile_image'] = update_data_from_gcs(old_image_url, literal_eval(fields['profile_image']))
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Space {{email: '{space_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
@@ -250,6 +255,10 @@ def set_space_fields(tx, space_email, fields):
 
 
 def create_space(tx, fields):
+    #If an image is given, store it in GSP and get its url
+    if 'profile_image' in fields:
+        if len(fields['profile_image']) > 0:
+                fields['profile_image'] = upload_data_to_gcs(literal_eval(fields['profile_image'])) 
     query = "CREATE (user: Space {" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
     return tx.run(query)
