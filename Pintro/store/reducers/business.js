@@ -1,8 +1,9 @@
 import { 
     GETBUSINESS 
     } from '../actions/business';
+import Business from '../../Model/Business';
     const initialState = {
-        businessObj: null
+        businessObj: new Business("2","No","ddd","dwawqd","dwqqdw","qdwwqd","ewfewfewf","fewfewfewf","qwdqwd","qqdwqwd","dqwdqwdqw","cwececw","dwqqwdqwd",[],"qwddqwdwq")
     };
 
     export default (state = initialState, action) => {
