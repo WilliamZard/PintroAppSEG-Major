@@ -5,7 +5,7 @@ from flask import make_response
 from flask_restx import Namespace, Resource
 
 from .neo4j_ops import create_session
-from .neo4j_ops.requests import approve_request
+from .neo4j_ops.general import create_relationship, delete_relationship
 from .request import REQUEST_RELATIONSHIPS
 
 api = Namespace(
@@ -27,16 +27,19 @@ class Approve(Resource):
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
 
+        s_node_label = e_node_label = 'Person'
+        if relationship_type == 'affiliation':
+            s_node_label = 'Business'
+
         # TODO: validate emails
         with create_session() as session:
             created_at = time.time()
-            response = session.write_transaction(
-                approve_request,
-                REQUEST_RELATIONSHIPS[relationship_type],
-                APPROVE_RELATIONSHIPS_MAPPING[relationship_type],
-                requester_email,
-                request_recipient_email,
-                created_at)
-            if response.summary().counters.relationships_created == 1 and response.summary().counters.relationships_deleted == 1:
+            tx = session.begin_transaction()
+            del_response = delete_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
+                'email': request_recipient_email}, REQUEST_RELATIONSHIPS[relationship_type])
+            create_response = create_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
+                'email': request_recipient_email}, APPROVE_RELATIONSHIPS_MAPPING[relationship_type], {'created_at': created_at})
+            tx.commit()
+            if create_response.summary().counters.relationships_created == 1 and del_response.summary().counters.relationships_deleted == 1:
                 return make_response('', 201)
             return make_response('USER NOT FOUND', 404)

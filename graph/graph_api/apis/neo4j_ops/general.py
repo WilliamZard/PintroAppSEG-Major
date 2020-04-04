@@ -31,6 +31,21 @@ def create_relationship(tx,
     return tx.run(query)
 
 
+def delete_relationship(tx,
+                        s_node_labels, s_node_properties,
+                        e_node_labels, e_node_properties,
+                        relationship_type):
+    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
+    # properties to match by, and relationship type. Labels already in node objects.
+    s_node_properties = _make_properties_string(s_node_properties)
+    e_node_properties = _make_properties_string(e_node_properties)
+    query = f"""
+    MATCH (starting_node:{s_node_labels} {s_node_properties})-[rel:{relationship_type}]->(ending_node:{e_node_labels} {e_node_properties})
+    DELETE rel
+    """
+    return tx.run(query)
+
+
 def _make_properties_string(properties):
     return ", ".join(
         f"""{{{k}: "{v}"}}""" for k, v in properties.items())
