@@ -1,11 +1,15 @@
 import uuid
 import json
 from ast import literal_eval
+import base64
+from pathlib import Path
+import ast
 
 import pytest
 
 from .conftest import app, populate_db
 from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag, Chatroom, basic_chatroom_node
+from graph_api.apis.image_storing import *
 
 
 @pytest.mark.GET_user
@@ -91,6 +95,25 @@ class TestDelete:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
+    def test_DELETE_user_with_set_profile_image(self, app, populate_db):
+        #Generate test data
+        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image2.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            new_image = base64.b64encode(imageFile.read())
+        
+        user = User(email='user_to_delete@gmail.com', profile_image=new_image)._asdict()
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+        
+        populate_db(nodes_to_create=[user_node])
+
+        image_url = user['profile_image']
+
+        
+        #Test
+        response = app.delete(f"/users/{user['email']}")
+        assert response.status == '204 NO CONTENT'
+        assert get_data_from_gcs(image_url) == ''
+
 
 @pytest.mark.PUT_user
 class TestPut:
@@ -114,8 +137,12 @@ class TestPut:
                     relationships_to_create=[tagged_a])
 
         # Test
+        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image1.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            new_image = base64.b64encode(imageFile.read())
+
         new_user_fields = dict(
-            profile_image='new_image', full_name='Donald Trump', gender='masculine',
+            profile_image=str(new_image), full_name='Donald Trump', gender='masculine',
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
             preferred_name='GOAT', help_others=[tag_b['name']]
         )
@@ -135,6 +162,10 @@ class TestPut:
         assert len(response) == len(user)
         for key, value in user.items():
             assert key in response
+            if(key == 'profile_image'):
+                #Check that image bytes are the equal.
+                assert ast.literal_eval(value) == get_data_from_gcs(response[key])
+                continue
             assert value == response[key]
 
     def test_PUT_user_with_valid_email_that_does_not_exist(self, app, populate_db):
