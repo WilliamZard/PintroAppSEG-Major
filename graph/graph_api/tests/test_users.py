@@ -71,7 +71,7 @@ class TestGET:
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
-        assert get_data_from_gcs(response['profile image']) == image
+        assert literal_eval(response['profile_image']) == image
 
 
 @pytest.mark.DELETE_user
