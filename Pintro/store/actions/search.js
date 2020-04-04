@@ -1,26 +1,28 @@
 import User from '../../Model/User';
+import { BearerToken }  from '../../Constants/BearerToken';
 export const GETRESULTS = 'GETRESULTS';
-export const getResults =  () => {
+export const getResults = (item) => {
     return async dispatch => {
-        console.log("Search word:");
-        const response = await fetch('https://bluej-pintro-project.appspot.com/search',
+        const response = await fetch("https://bluej-pintro-project.appspot.com/search",
             {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': BearerToken
               },
               body: JSON.stringify({
-                query: "Post Man2"
-              })
+                query: item
+              }),
+              redirect: 'follow'
             }   
         );
-        console.log(4);
+        console.log(response.status);
+
         if(!response.ok) {
-            console.log(5);
-            const errorResData = await response.json();
-            console.log(errorResData);
-            let message = 'Something went wrong';
-            throw new Error(message);
+          const errorResData = await response.json();
+          console.log(errorResData);
+          let message = 'Something went wrong';
+          throw new Error(message);
         }
 
         const resData = await response.json();
