@@ -8,6 +8,7 @@ from marshmallow.exceptions import ValidationError
 from .neo4j_ops import (create_session, get_nodes_for_user_search, get_nodes_for_business_search, get_nodes_for_space_search, 
                         get_accounts_with_tag, get_nodes_for_tag_search) #get_users_with_tag, get_spaces_with_tag,
 from .helper_functions import *
+from .image_storing import *
 
 
 api = Namespace('search', title='Operations for full text search')
@@ -47,12 +48,14 @@ class SearchPost(Resource):
             #Append all the profiles that used a tag in tag records.
             accounts_with_tags = get_accouts_with_tags(tag_records, session)
             for val in accounts_with_tags:
+                val['profile_image'] = get_data_from_gcs(val['profile_image']) 
                 data.append(val)
             
             #Append all the normal users that matched the full text search to data.
             for record in user_records:
                 extracted_user = dict(record.data().get('node').items())
                 extracted_user['score'] = record.data()['score']
+                extracted_user['profile_image'] = get_data_from_gcs(extracted_user['profile_image'])
                 extracted_user['profile_type'] = "person"
                 data.append(extracted_user)
 
@@ -60,6 +63,7 @@ class SearchPost(Resource):
             for record in business_records:
                 extracted_business = dict(record.data().get('node').items())
                 extracted_business['score'] = record.data()['score']
+                extracted_business['profile_image'] = get_data_from_gcs(extracted_business['profile_image'])
                 extracted_business['profile_type'] = "business"
                 data.append(extracted_business)
 
@@ -67,6 +71,7 @@ class SearchPost(Resource):
             for record in space_records:
                 extracted_space = dict(record.data().get('node').items())
                 extracted_space['score'] = record.data()['score']
+                extracted_space['profile_image'] = get_data_from_gcs(extracted_space['profile_image'])
                 extracted_space['profile_type'] = "space"
                 data.append(extracted_space)
             
