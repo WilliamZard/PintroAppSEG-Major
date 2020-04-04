@@ -3,7 +3,7 @@ from flask import g
 import os
 import datetime
 from .image_storing import *
-import ast
+from ast import literal_eval
 
 def connect():
     uri = os.getenv('NEO4J_URI')
@@ -33,6 +33,10 @@ def close_db(error):
 """ Functions for Users """
 # TODO: start grouping functions by resource type for organisation's sake
 
+def get_account_field(tx, user_email, label, field):
+    query = f"""MATCH(n:{label} {{email:'{user_email}'}})
+                RETURN n.{field} as {field}"""
+    return tx.run(query)
 
 def get_user_by_email(tx, user_email):
     '''
@@ -59,10 +63,6 @@ def delete_user_by_email(tx, user_email):
     DETACH DELETE n, p"""
     return tx.run(query)
 
-def get_user_field(tx, user_email, field):
-    query = f"""MATCH(n:Person {{email:'{user_email}'}})
-                RETURN n.{field} as {field}"""
-    return tx.run(query)
 
 
 def set_user_fields(tx, user_email, fields):
@@ -79,9 +79,10 @@ def set_user_fields(tx, user_email, fields):
         help_others = fields['help_others']
         fields.pop('help_others')
     if 'profile_image' in fields:
+        #upload the image on gcp first and then store its url.
         if len(fields['profile_image']) > 0:
-            old_image_url = dict(get_user_field(tx, user_email, 'profile_image').data()[0])['profile_image']
-            fields['profile_image'] = update_data_from_gcs(old_image_url, ast.literal_eval(fields['profile_image']))
+            old_image_url = dict(get_account_field(tx, user_email, 'Person', 'profile_image').data()[0])['profile_image']
+            fields['profile_image'] = update_data_from_gcs(old_image_url, literal_eval(fields['profile_image']))
     create_tag_query = f"""
     WITH {passions+help_others} AS tag_names
     UNWIND tag_names AS tag_name
@@ -119,9 +120,11 @@ def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
 
 def create_user(tx, fields):
     # TODO: update this function to use logic of above one.
+    #If an image is given, store it in GSP and get its url
     if 'profile_image' in fields:
         if len(fields['profile_image']) > 0:
-            fields['profile_image'] = upload_data_to_gcs(ast.literal_eval(fields['profile_image']))
+            fields['profile_image'] = upload_data_to_gcs(literal_eval(fields['profile_image']))
+
     query = "CREATE (new_user: Person {" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in fields.items()) + "})"
     return tx.run(query)
@@ -175,6 +178,12 @@ def set_business_fields(tx, business_email, fields):
         MATCH (user:Business {{email: '{business_email}'}})
         MERGE (user)-[:TAGGED]->(tag)"""
 
+    if 'profile_image' in fields:
+        #upload the image on gcp first and then store its url.
+        if len(fields['profile_image']) > 0:
+            old_image_url = dict(get_account_field(tx, user_email, 'Business', 'profile_image').data()[0])['profile_image']
+            fields['profile_image'] = update_data_from_gcs(old_image_url, literal_eval(fields['profile_image']))
+
     # NOTE: this could error when assigning string values that need quotations
     query = f"MATCH (user:Business {{email: '{business_email}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in fields.items())
@@ -196,6 +205,10 @@ def create_business(tx, fields):
         MATCH(tag: Tag {{uuid: tag_uuid}})
         MATCH(user: Business {{email: '{fields['email']}'}})
         CREATE(user)-[:TAGGED] -> (tag)"""
+    #If an image is given, store it in GSP and get its url
+    if 'profile_image' in fields:
+        if len(fields['profile_image']) > 0:
+                fields['profile_image'] = upload_data_to_gcs(literal_eval(fields['profile_image'])) 
 
     create_user_query = "CREATE (new_user: Business{" + ", ".join(
         f"{k}: '{v}'" for (k, v) in fields.items()) + "})"
