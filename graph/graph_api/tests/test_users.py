@@ -3,7 +3,6 @@ import json
 from ast import literal_eval
 import base64
 from pathlib import Path
-import ast
 
 import pytest
 
@@ -181,7 +180,7 @@ class TestPut:
             assert key in response
             if(key == 'profile_image'):
                 #Check that image bytes are the equal.
-                assert new_image == get_data_from_gcs(response[key])
+                assert new_image == literal_eval(response[key])
                 continue
             assert value == response[key]
 
@@ -282,7 +281,7 @@ class TestPost:
         assert response.status == '201 CREATED'
         response = app.get(f"/users/{user_to_add['email']}")
         response = response.get_json()
-        assert image == get_data_from_gcs(response['profile_image'])
+        assert image == literal_eval(response['profile_image'])
 
 
 
