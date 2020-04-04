@@ -57,6 +57,23 @@ class TestGET:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
+    def test_GET_user_with_profile_image_has_the_right_image_stored_in_gcs(self, app, populate_db):
+        #Generate test data
+        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image3.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            image = base64.b64encode(imageFile.read())
+        
+        user = User(profile_image=image)._asdict()
+        user_node = {'properties': dict(user), 'labels': 'Person'}
+        
+        populate_db(nodes_to_create=[user_node])
+        
+        #Test
+        response = app.get(f"/users/{valid_user['email']}")
+        assert response.status == '200 OK'
+        response = response.get_json()
+        assert get_data_from_gcs(response['profile image']) == image
+
 
 @pytest.mark.DELETE_user
 class TestDelete:
@@ -164,7 +181,7 @@ class TestPut:
             assert key in response
             if(key == 'profile_image'):
                 #Check that image bytes are the equal.
-                assert ast.literal_eval(value) == get_data_from_gcs(response[key])
+                assert new_image == get_data_from_gcs(response[key])
                 continue
             assert value == response[key]
 
@@ -249,6 +266,24 @@ class TestPost:
             "/users/", json=INVALID_USER_TO_BE_CREATED)
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
+
+    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app, populate_db):  
+        #Generate Test Data     
+        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image3.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            image = base64.b64encode(imageFile.read())
+        
+        user_to_add = User(profile_image=str(image))._asdict()
+        
+        populate_db()
+
+        #Test
+        response = app.post("/users/", json=user_to_add)
+        assert response.status == '201 CREATED'
+        response = app.get(f"/users/{user_to_add['email']}")
+        response = response.get_json()
+        assert image == get_data_from_gcs(response['profile_image'])
+
 
 
 @pytest.mark.GET_user_followers
