@@ -39,14 +39,16 @@ class TestGet:
         assert response.data == b''
 
     def test_GET_space_with_profile_image_has_its_true_profile_image(self, app, populate_db):
-        #Generate test data
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image1.jpg"
+        # Generate test data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image1.jpg"
         with image_path.open(mode="rb") as imageFile:
             image = base64.b64encode(imageFile.read())
-        
-        space = Space(email='space_test@gmail.com', profile_image=image)._asdict()
+
+        space = Space(email='space_test@gmail.com',
+                      profile_image=image)._asdict()
         space_node = {'properties': dict(space), 'labels': 'Space'}
-        
+
         populate_db(nodes_to_create=[space_node])
 
         # Test
@@ -99,8 +101,9 @@ class TestPut:
         space = Space(email='space@test.com')._asdict()
         space_node = basic_space_node(space)
 
-        #new image for space
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image1.jpg"
+        # new image for space
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image1.jpg"
         with image_path.open(mode="rb") as imageFile:
             new_image = base64.b64encode(imageFile.read())
 
@@ -113,7 +116,7 @@ class TestPut:
             f"/spaces/{space['email']}", json=dict(new_space))
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
-        
+
         response = app.get(
             f"/spaces/{space['email']}")
         response = response.get_json()
@@ -121,7 +124,7 @@ class TestPut:
         for key, value in new_space.items():
             assert key in response
             if(key == 'profile_image'):
-                #Check that image bytes are the equal.
+                # Check that image bytes are the equal.
                 assert new_image == literal_eval(response[key])
                 continue
             assert value == response[key]
@@ -198,20 +201,21 @@ class TestPost:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_space_with_image_posts_correct_image_in_gcs(self, app, populate_db):  
-        #Generate Test Data     
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image3.jpg"
+    def test_POST_space_with_image_posts_correct_image_in_gcs(self, app, populate_db):
+        # Generate Test Data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
         with image_path.open(mode="rb") as imageFile:
             image = base64.b64encode(imageFile.read())
-        
-        space_to_add = Space(email ='space_test@gmail.com', profile_image=str(image))._asdict()
-        
+
+        space_to_add = Space(email='space_test@gmail.com',
+                             profile_image=str(image))._asdict()
+
         populate_db()
 
-        #Test
+        # Test
         response = app.post("/spaces/", json=space_to_add)
         assert response.status == '201 CREATED'
         response = app.get(f"/spaces/{space_to_add['email']}")
         response = response.get_json()
         assert image == literal_eval(response['profile_image'])
-

@@ -57,17 +57,18 @@ class TestGET:
         assert response.data == b''
 
     def test_GET_user_with_profile_image_has_the_right_image_stored_in_gcs(self, app, populate_db):
-        #Generate test data
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image3.jpg"
+        # Generate test data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
         with image_path.open(mode="rb") as imageFile:
             image = base64.b64encode(imageFile.read())
-        
+
         user = User(profile_image=image)._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
-        
+
         populate_db(nodes_to_create=[user_node])
-        
-        #Test
+
+        # Test
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
@@ -112,20 +113,21 @@ class TestDelete:
         assert response.data == b''
 
     def test_DELETE_user_with_set_profile_image(self, app, populate_db):
-        #Generate test data
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image2.jpg"
+        # Generate test data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image2.jpg"
         with image_path.open(mode="rb") as imageFile:
             new_image = base64.b64encode(imageFile.read())
-        
-        user = User(email='user_to_delete@gmail.com', profile_image=new_image)._asdict()
+
+        user = User(email='user_to_delete@gmail.com',
+                    profile_image=new_image)._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
-        
+
         populate_db(nodes_to_create=[user_node])
 
         image_url = user['profile_image']
 
-        
-        #Test
+        # Test
         response = app.delete(f"/users/{user['email']}")
         assert response.status == '204 NO CONTENT'
         assert get_data_from_gcs(image_url) == ''
@@ -153,7 +155,8 @@ class TestPut:
                     relationships_to_create=[tagged_a])
 
         # Test
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image1.jpg"
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image1.jpg"
         with image_path.open(mode="rb") as imageFile:
             new_image = base64.b64encode(imageFile.read())
 
@@ -179,7 +182,7 @@ class TestPut:
         for key, value in user.items():
             assert key in response
             if(key == 'profile_image'):
-                #Check that image bytes are the equal.
+                # Check that image bytes are the equal.
                 assert new_image == literal_eval(response[key])
                 continue
             assert value == response[key]
@@ -266,23 +269,23 @@ class TestPost:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app, populate_db):  
-        #Generate Test Data     
-        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image3.jpg"
+    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app, populate_db):
+        # Generate Test Data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
         with image_path.open(mode="rb") as imageFile:
             image = base64.b64encode(imageFile.read())
-        
+
         user_to_add = User(profile_image=str(image))._asdict()
-        
+
         populate_db()
 
-        #Test
+        # Test
         response = app.post("/users/", json=user_to_add)
         assert response.status == '201 CREATED'
         response = app.get(f"/users/{user_to_add['email']}")
         response = response.get_json()
         assert image == literal_eval(response['profile_image'])
-
 
 
 @pytest.mark.GET_user_followers
