@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import Colors from '../Constants/Colors.js';
 import { fonts } from '../Constants/Fonts.js';
 const Company = props => {
+    const email = props.email;
     
     return (
         <View style={styles.rowContainer}>
