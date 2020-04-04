@@ -1,4 +1,7 @@
 import json
+import base64
+from pathlib import Path
+from ast import literal_eval
 
 import pytest
 
@@ -50,6 +53,24 @@ class TestGet:
         response = app.get(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
+
+    def test_GET_business_with_profile_image_has_its_true_profile_image(self, app, populate_db):
+        #Generate test data
+        image_path = Path(__file__).parent / "test_data\\profile_images\\profile_image1.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            image = base64.b64encode(imageFile.read())
+        
+        business = Business(email='business_test@gmail.com', profile_image=image)._asdict()
+        business_node = {'properties': dict(business), 'labels': 'Business'}
+        
+        populate_db(nodes_to_create=[business_node])
+
+        # Test
+        response = app.get(f"/businesses/{business['email']}")
+        assert response.status == '200 OK'
+        response = response.get_json()
+        assert len(response) == len(business)
+        assert literal_eval(response['profile_image']) == image
 
 
 @pytest.mark.DELETE_business
