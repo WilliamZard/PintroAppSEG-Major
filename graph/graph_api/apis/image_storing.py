@@ -15,7 +15,7 @@ def upload_data_to_gcs(data):
             bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
             bucket = client.bucket(bucket_name)
             target_key = str(uuid.uuid4())# unique file name in the bucket.
-            bucket.get_blob(target_key, timeout=150).upload_from_string(data)
+            bucket.blob(target_key).upload_from_string(data)
             return bucket.get_blob(target_key, timeout=150).public_url
 
         except Exception as e:
@@ -88,7 +88,7 @@ def update_data_from_gcs(old_file_url, new_data):
         #post the new file.
         if(len(new_data) > 0):#If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
             new_target_key = str(uuid.uuid4())# unique file name in the bucket.
-            bucket.get_blob(new_target_key, timeout=150).upload_from_string(new_data)
+            bucket.blob(new_target_key).upload_from_string(new_data)
             return bucket.get_blob(new_target_key, timeout=150).public_url
     
     except Exception as e:
