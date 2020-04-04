@@ -1,6 +1,7 @@
 import datetime
 import os
 from neo4j import GraphDatabase
+from graph_api.apis.image_storing import *
 
 
 from .test_data.users import *
@@ -19,7 +20,7 @@ def create_node(tx, labels, properties):
     if isinstance(labels, list):
         labels = ':'.join(labels)
     query = f"CREATE (new_node:{labels} {{" + ", ".join(
-        f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
+        f"""{k}: \"{v}\"""" if k != 'profile_image' else f"""{k}: \"{upload_data_to_gcs(v)}\"""" for (k, v) in properties.items()) + "})"
     return tx.run(query)
 
 
