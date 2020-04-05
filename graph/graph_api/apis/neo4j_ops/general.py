@@ -1,10 +1,28 @@
+from graph_api.apis.image_storing import *
+from ast import literal_eval
+
+def get_account_field(tx, user_email, label, field):
+    query = f"""MATCH(n:{label} {{email:'{user_email}'}})
+                RETURN n.{field} as {field}"""
+    return tx.run(query)
+
 def set_properties(tx, label, match_field, match_property, set_properties):
+    if 'profile_image' in set_properties:
+        #upload the image on gcp first and then store its url.
+        if len(set_properties['profile_image']) > 0:
+            old_image_url = dict(get_account_field(tx, match_property, label, 'profile_image').data()[0])['profile_image']
+            set_properties['profile_image'] = update_data_from_gcs(old_image_url, literal_eval(set_properties['profile_image']))
     query = f"MATCH (user:{label} {{{match_field}: '{match_property}'}}) SET " + \
         ", ".join(f"user.{k}='{v}'" for (k, v) in set_properties.items())
     return tx.run(query)
 
 
 def create_node(tx, label, properties):
+    #If an image is given, store it in GSP and get its url
+    if 'profile_image' in properties:
+        if len(properties['profile_image']) > 0:
+            properties['profile_image'] = upload_data_to_gcs(literal_eval(properties['profile_image']))
+
     query = f"CREATE (new_node:{label}" + "{" + ", ".join(
         f"""{k}: \"{v}\"""" for (k, v) in properties.items()) + "})"
     return tx.run(query)

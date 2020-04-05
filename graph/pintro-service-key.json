@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bluej-pintro-project",
+  "private_key_id": "a2aad1835d66911f82b824f6f73ddf6b9422c45a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDIT5K2o9aN8fg0\nV+O1BKzlfnIE33bxsnccDngDNDHF9L6U7j6ttsm7o5xF/rIEeCqZEMNdz1U547k6\n/11LCDbz/9h8m070tUhNMf4QF8M/XikIWC/4TiI3VAvNsrr0dEGT2FqR/kaLstU8\nLKyicfRh3a8GNk0taV1KxcelO2KZf9iIlZMiI4YJyEAXfvprbin4/WyCrCwFrZMs\nVt+2qhjoneZN4M/bJhvG56aYr28SwXDTHK+rh84/hqQrY6Vddwv6tOsbJkEU80PG\ncFDR0p41I39sZ8WkyCZ2GqoOMhWPogPDhRETT5RAyk3K7MSa/5TtWVgALxubJ3U3\nfPGJj3G/AgMBAAECggEAWaPCdBk9mqf9+u6Z6Bf/h3Pecm/OOrsyskuHSWfCHmQ4\nJU24nuR9woqlFG22HGnqJjVqOEDgUtelvNEqXrl+XhLQPnMCEmBNyr3khC8eIO1y\nT1mnnebZSQlDfvnM0Dh2YEMhxNOVnk6ZPiR/3PJB+snJ2W3Te877AMshXMAGj8nq\nypxBLEaRcTzzElVknDoYIWjQTH0WAIbvVt+shaRqOMrmMlQBLbej1idl830Y5A+T\n2+7ho+JX5EH6DMrYZJuIKLI03JK5gRQAWK9uUBhOG/j0PaU9Qnv7Rtxsb9zniF1i\n7rGiZD7HAjS433urxrBROrNtYi3tAMDLWDwkOWmugQKBgQD7E/aHVYNnyfmakpL5\nMdbk24S6Fiu92bnW/fiYcIxe3d5BaPK0FzntCQ5782Rhh0vYN191XUphL0XfxLvM\n1uyrEv/EkDX66vC9PYs7INoMgg2gBQY+V1WCXQIe6UZB1IDB78QHk9yjILX4kTG7\n/qVq7df1dCQirhSy0fd0QZq31QKBgQDMPNWwzhgbhwx6pjonniierXRaQEBxi14o\nk+k2VBL5VUiFfpvRK8EDdziW7ZyB33Y5rXPJb04VKJuP5h/FHgoOv0FAq42erSyN\nILWJ5N4MkIb/MGlBH/oh6JDnNrdjrR7shy32u1qK4mLdo2o1+u/zto+zFTtNbtaZ\nZZiDqDOBQwKBgBueSYr/fBHppLw9DU++DL5l60aw86TRk2Cz1Smnj7lLvIwDaFcp\nCuUpDt/RmSQlRtGE3cpCNdFU6uG/eU0CA0yaLWpI1rdAKrUWVP9vEK05jRgiFVq8\nLprFcltGG8VYA8XRgwW2XRnQmlO6XPcp/rYxbYUBfowWDA7Ti93M7aD1AoGAMxFn\nEU2HI6LyENztn6hhWcPfWw3Dz2Bcy+KoJqiBEg0sFA0jYvsAySAPa1XAk4zPn/5p\n/E0zhgDgXOvat8waEbPq2gPLZojAog0yt2cdyqB80ORG/TzEq6PeT6IT2v2XxObM\nLGyOaDnRJMBOt26mfxb/+XRunp7/U93ec9UkA8cCgYBW5BHkeRhPmttiXcpLK4qL\nVdckVLq8vKqNkb/b3D469RT+0yDOHDdn61w4OsqFLaSXmgLWju3JMoPKxwrkV8tY\n5sQMMIeKpT8CN8FJtFVOLW7NbNSEsBREko2pUgPa8w/iz0YX9C7YgppfDAu3uiK3\nwmhaUaXdK6s3l7ebO8HBNg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "pintro-service@bluej-pintro-project.iam.gserviceaccount.com",
+  "client_id": "102415192927239537474",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pintro-service%40bluej-pintro-project.iam.gserviceaccount.com"
+}

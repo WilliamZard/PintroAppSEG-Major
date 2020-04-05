@@ -5,6 +5,8 @@ from graph_api import create_app
 from .generate_test_data import create_node, create_relationship, create_full_text_indexes
 import os
 from neo4j import GraphDatabase
+from graph_api.apis.image_storing import clear_bucket
+
 
 
 def connect():
@@ -16,6 +18,7 @@ def connect():
 
 
 def clear_db():
+    clear_bucket()
     DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
     DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
     DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\")"

@@ -8,13 +8,14 @@ from .neo4j_ops import create_session
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
 from .neo4j_ops.chatrooms import get_chatrooms_of_user
-from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.general import set_properties, create_node, get_account_field
 from .neo4j_ops.users import (delete_user_by_email,
                               get_followers_of_a_user,
                               get_followings_of_a_user,
                               get_posts_of_followings_of_a_user,
                               get_user_by_email)
 from .utils import valid_email
+from .image_storing import *
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -68,6 +69,7 @@ class Users(Resource):
                 user = dict(data['user'].items())
                 user['passions'] = data['passions']
                 user['help_others'] = data['help_others']
+                user['profile_image'] = str(get_data_from_gcs(user['profile_image']))
                 return jsonify(**user)
             return make_response('', 404)
 
@@ -79,9 +81,14 @@ class Users(Resource):
             return make_response('', 422)
 
         with create_session() as session:
+            # Fetch user image url in gcp storage that needs to be deleted.
+            profile_image_url = (session.read_transaction(get_account_field, email, 'Person', 'profile_image').data())
+            if len(profile_image_url) > 0:
+                profile_image_url = profile_image_url[0]['profile_image']
             response = session.write_transaction(delete_user_by_email, email)
             # >= because post nodes of user may have been deleted
             if response.summary().counters.nodes_deleted >= 1:
+                delete_data_from_gcs(profile_image_url)
                 return make_response('', 204)
             return make_response('', 404)
 
@@ -165,7 +172,7 @@ class UsersGETFollowers(Resource):
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                return jsonify(data)
+                return jsonify(data)#TODO iterate on followers and retrieve images, not url.
             else:
                 return jsonify([])
             return make_response('', 404)
@@ -179,7 +186,7 @@ class UsersGETFollowings(Resource):
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)
+                get_followings_of_a_user, email)#TODO iterate on followings and retrieve images, not url.
             data = response.data()
             if data:
                 return jsonify(data)

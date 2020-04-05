@@ -16,5 +16,6 @@ ENV FLASK_ENV=testing
 ENV FLASK_RUN_PORT=8080
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_APP=graph_api:create_app
-
+ENV GOOGLE_APPLICATION_CREDENTIALS="./pintro-service-key.json" 
+ENV IMAGES_BUCKET_NAME=profile-pics-test
 CMD [ "pytest" ]

@@ -4,11 +4,13 @@ from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
+from .image_storing import *
 from .neo4j_ops import create_session
-from .neo4j_ops.general import set_properties, create_node
+from .neo4j_ops.general import set_properties, create_node, get_account_field
 from .neo4j_ops.spaces import (delete_space_by_email,
                                get_space_by_email)
 from .utils import valid_email
+
 
 # TODO: enable swagger API spec
 # TODO: email validation
@@ -43,6 +45,7 @@ class Spaces(Resource):
             if space:
                 # TODO: a lot going on here. See if this can be improved.
                 data = dict(space.data()['user'].items())
+                data['profile_image'] = str(get_data_from_gcs(data['profile_image']))
                 return jsonify(**data)
             return make_response('', 404)
 
@@ -54,8 +57,13 @@ class Spaces(Resource):
             return make_response('', 422)
 
         with create_session() as session:
+            # Fetch user image url in gcp storage that needs to be deleted.
+            profile_image_url = (session.read_transaction(get_account_field, email, 'Space', 'profile_image').data())
+            if len(profile_image_url) > 0:
+                profile_image_url = profile_image_url[0]['profile_image']
             response = session.read_transaction(delete_space_by_email, email)
             if response.summary().counters.nodes_deleted == 1:
+                delete_data_from_gcs(profile_image_url)
                 return make_response('', 204)
             return make_response('', 404)
 

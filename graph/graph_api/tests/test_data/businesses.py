@@ -18,7 +18,7 @@ BUSINESS_PROPERTIES = [
     ]
 BUSINESS_DEFAULTS = [
     "Default Password",
-    "Default Image",
+    "",
     "Default Full Name",
     "Default Phone",
     "Default Short Bio",

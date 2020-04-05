@@ -1,4 +1,7 @@
 import json
+import base64
+from pathlib import Path
+from ast import literal_eval
 
 import pytest
 
@@ -51,6 +54,26 @@ class TestGet:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
+    def test_GET_business_with_profile_image_has_its_true_profile_image(self, app, populate_db):
+        # Generate test data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image1.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            image = base64.b64encode(imageFile.read())
+
+        business = Business(email='business_test@gmail.com',
+                            profile_image=image)._asdict()
+        business_node = {'properties': dict(business), 'labels': 'Business'}
+
+        populate_db(nodes_to_create=[business_node])
+
+        # Test
+        response = app.get(f"/businesses/{business['email']}")
+        assert response.status == '200 OK'
+        response = response.get_json()
+        assert len(response) == len(business)
+        assert literal_eval(response['profile_image']) == image
+
 
 @pytest.mark.DELETE_business
 class TestDelete:
@@ -98,10 +121,29 @@ class TestDelete:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
+    # def test_DELETE_businessuser_with_set_profile_image_deletes_image_from_gcp(self, app, populate_db):
+    #     #Generate test data
+    #     image_path = Path(__file__).parent / "test_data/profile_images/profile_image3.jpg"
+    #     with image_path.open(mode="rb") as imageFile:
+    #         image = base64.b64encode(imageFile.read())
+
+    #     business = Business(email='business_to_delete@gmail.com', profile_image=image)._asdict()
+    #     business_node = {'properties': dict(business), 'labels': 'Person'}
+
+    #     populate_db(nodes_to_create=[business_node])
+
+    #     response = app.get(f"/businesses/{business['email']}")
+    #     image_url = response.get_json()['']
+
+    #     #Test
+    #     response = app.delete(f"/users/{user['email']}")
+    #     assert response.status == '204 NO CONTENT'
+    #     assert get_data_from_gcs(image_url) == ''
+
 
 @pytest.mark.PUT_business
 class TestPut:
-    def test_put_business_with_valid_email_that_exists(self, app, populate_db):
+    def test_put_business_with_valid_email_that_exists_and_new_image(self, app, populate_db):
         # Define Nodes
         business = Business(email='business_to_update@rona.com')._asdict()
         business_node = basic_business_node(business)
@@ -109,8 +151,15 @@ class TestPut:
         tag = Tag(name='TestBusinessTag')._asdict()
         tag_node = basic_tag_node(tag, 'Tag:BusinessTag')
 
+        # new image for business
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image1.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            new_image = base64.b64encode(imageFile.read())
+
         new_business = Business(
-            email=business['email'], full_name='new full name', phone='phone', location='new location', tags=[tag['name']])._asdict()
+            email=business['email'], full_name='new full name', phone='phone', location='new location', tags=[tag['name']], profile_image=str(new_image))._asdict()
+
         # Populate
         populate_db(nodes_to_create=[business_node, tag_node])
 
@@ -125,6 +174,10 @@ class TestPut:
         assert len(response) == len(business)
         for key, value in new_business.items():
             assert key in response
+            if(key == 'profile_image'):
+                # Check that image bytes are the equal.
+                assert new_image == literal_eval(response[key])
+                continue
             assert value == response[key]
 
     def test_put_business_with_valid_email_that_does_not_exist(self, app, populate_db):
@@ -198,3 +251,22 @@ class TestPost:
             "/businesses/", json=dict(invalid_business))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
+
+    def test_POST_business_with_image_posts_correct_image_in_gcs(self, app, populate_db):
+        # Generate Test Data
+        image_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
+        with image_path.open(mode="rb") as imageFile:
+            image = base64.b64encode(imageFile.read())
+
+        business_to_add = Business(
+            email='business_test@gmail.com', profile_image=str(image))._asdict()
+
+        populate_db()
+
+        # Test
+        response = app.post("/businesses/", json=business_to_add)
+        assert response.status == '201 CREATED'
+        response = app.get(f"/businesses/{business_to_add['email']}")
+        response = response.get_json()
+        assert image == literal_eval(response['profile_image'])
