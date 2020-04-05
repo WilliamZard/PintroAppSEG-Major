@@ -19,7 +19,7 @@ const SearchResults = props => {
     
     function onCompanyPress(value) {
         dispatch(BusinessActions.getBusiness(value));
-        props.navigation.navigate('Business');
+        props.navigation.navigate('navBusiness');
     }
     businesses = businesses.map((item) => <Company props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
 

@@ -7,6 +7,7 @@ import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
 import * as SearchActions from "../../store/actions/search";
 import data2 from '../../Constants/data2.json'
+
 const SearchScreen = props => {
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
@@ -34,7 +35,7 @@ const SearchScreen = props => {
         setSearchKeyword(item);
         setItems(null);
         dispatch(SearchActions.getResults(item)); 
-        props.navigation.navigate('Results', {searchParam: item});
+        props.navigation.navigate('Results',{searchParam: item});
     }
     
     function renderSuggestions() {
