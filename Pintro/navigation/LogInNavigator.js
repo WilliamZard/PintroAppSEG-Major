@@ -93,20 +93,11 @@ const SearchNavigator = createStackNavigator({
     Results:{screen:SearchResults,navigationOptions:{
         headerTitle: '',
     }},
-    Business:{screen:BusinessAccountScreen,navigationOptions:{
-        headerTitle: '',
-        headerStyle:{
-            backgroundColor: null
-        }
-    }}
 });
 
 const BusinessNavigator = createStackNavigator({
     Account:{screen:BusinessAccountScreen,navigationOptions:{
-        headerTitle: '',
-        headerStyle:{
-            backgroundColor: null
-        }
+        headerShown: false
     }},
     Intro:{screen:EditIntro,navigationOptions:{
         headerTitle: '',
@@ -123,7 +114,16 @@ const BusinessNavigator = createStackNavigator({
     Team:{screen:EditYourTeam,navigationOptions:{
         headerTitle: '',
     }}
-})
+});
+
+const MainSearchNav = createStackNavigator({
+    navSearch: {screen:SearchNavigator, navigationOptions:{
+        headerShown: false,
+    }},
+    navBusiness: {screen:BusinessNavigator, navigationOptions: {
+        headerShown: false,
+    }},
+});
 
 const MainNav = createBottomTabNavigator({
     firstScreen:{
@@ -144,7 +144,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     searchScreen:{
-        screen:SearchNavigator,navigationOptions:{
+        screen:MainSearchNav,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 
