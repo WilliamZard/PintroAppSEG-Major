@@ -92,12 +92,21 @@ const SearchNavigator = createStackNavigator({
     }},
     Results:{screen:SearchResults,navigationOptions:{
         headerTitle: '',
+    }},
+    Business:{screen:BusinessAccountScreen,navigationOptions:{
+        headerTitle: '',
+        headerStyle:{
+            backgroundColor: null
+        }
     }}
 });
 
 const BusinessNavigator = createStackNavigator({
     Account:{screen:BusinessAccountScreen,navigationOptions:{
-        headerShown: false
+        headerTitle: '',
+        headerStyle:{
+            backgroundColor: null
+        }
     }},
     Intro:{screen:EditIntro,navigationOptions:{
         headerTitle: '',
@@ -115,7 +124,6 @@ const BusinessNavigator = createStackNavigator({
         headerTitle: '',
     }}
 })
-
 
 const MainNav = createBottomTabNavigator({
     firstScreen:{

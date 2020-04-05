@@ -34,7 +34,8 @@ const EditJourney = props => {
             {
                 method: 'PUT',
                 headers: {
-                    'Content-type': 'application/json'
+                    'Content-type': 'application/json',
+                    'Authorization': BearerToken
                 },
                 redirect: 'follow',
                 body: JSON.stringify({
@@ -57,7 +58,7 @@ const EditJourney = props => {
             }
         );
         console.log(response.status);
-        dispatch(BusinessActions.getBusiness());
+        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
 
     }
 

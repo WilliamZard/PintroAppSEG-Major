@@ -9,6 +9,7 @@ import { ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import { useDispatch } from 'react-redux';
 import * as BusinessActions from '../../store/actions/business.js';
+import { BearerToken } from '../../Constants/BearerToken.js';
 
 const EditBusinessTag = props => {
     const dispatch = useDispatch();
@@ -83,7 +84,8 @@ const EditBusinessTag = props => {
                 {
                     method: 'PUT',
                     headers: {
-                        'Content-type': 'application/json'
+                        'Content-type': 'application/json',
+                        'Authorization': BearerToken
                     },
                     redirect: 'follow',
                     body: JSON.stringify({
@@ -106,7 +108,7 @@ const EditBusinessTag = props => {
                 }
             );
             console.log(response.status);
-            dispatch(BusinessActions.getBusiness());
+            dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
         } 
     }
 

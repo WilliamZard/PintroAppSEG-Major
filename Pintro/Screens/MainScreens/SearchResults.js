@@ -7,15 +7,21 @@ import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
 import UserButton from '../../Components/UserButton.js';
+import * as BusinessActions from '../../store/actions/business';
 
 const SearchResults = props => {
+    const dispatch = useDispatch();
     const [scroll,setScroll] = useState(false);
     const searchResults = useSelector(state => state.search.usersArray);
 
     let businesses = searchResults.map((item) => (item.profile_type === "business")? item : null).filter(profile => profile !== null);
     let users = searchResults.map((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
-
-    businesses = businesses.map((item) => <Company name={item.full_name} bio={item.short_bio} email={item.email} />);
+    
+    function onCompanyPress(value) {
+        dispatch(BusinessActions.getBusiness(value));
+        props.navigation.navigate('Business');
+    }
+    businesses = businesses.map((item) => <Company props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
 
     const DATA = [
         {
@@ -104,6 +110,8 @@ const SearchResults = props => {
     function seeAllUsers() {
         setScroll(true);
     }
+
+   
 
     return (
         <ScrollView style={styles.scrollContainer}>
