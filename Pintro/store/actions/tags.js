@@ -24,12 +24,77 @@ export const getTags = () => {
       loadedTags.push(new Tag("2009",tags[element].name,tags[element].uuid));
    }
    console.log("Loaded " + loadedTags.length +" Tags");
-    dispatch({type: GETTAGS,tagsArray:loadedTags});
+
+
+
+
+
+const favorites1 = await fetch('https://first-rest-api-sen.herokuapp.com/favs/1',
+{
+    method:"GET",
+    headers:{
+        "Content-Type":"application/json"
+    }
+    
+}
+);
+
+const returnedFaves1 = await favorites1.json();
+
+const loadedfavTags1 = [];
+for(const fav1 in returnedFaves1){
+loadedfavTags1.push(new Tag("2009",returnedFaves1[fav1].name,returnedFaves1[fav1].uuid));
+}
+
+const favorites2 = await fetch('https://first-rest-api-sen.herokuapp.com/favs/2',
+{
+    method:"GET",
+    headers:{
+        "Content-Type":"application/json"
+    }
+    
+}
+);
+
+const returnedFaves2 = await favorites2.json();
+
+const loadedfavTags2 = [];
+for(const fav2 in returnedFaves2){
+loadedfavTags2.push(new Tag("2009",returnedFaves2[fav2].name,returnedFaves2[fav2].uuid));
+}
+
+
+const favorites3 = await fetch('https://first-rest-api-sen.herokuapp.com/favs/3',
+{
+    method:"GET",
+    headers:{
+        "Content-Type":"application/json"
+    }
+    
+}
+);
+
+const returnedFaves3 = await favorites3.json();
+
+const loadedfavTags3 = [];
+for(const fav3 in returnedFaves3){
+loadedfavTags3.push(new Tag("2009",returnedFaves3[fav3].name,returnedFaves3[fav3].uuid));
+}
+
+
+console.log("1: " + loadedfavTags1 + " 2: " + loadedfavTags2 + " 3: " + loadedfavTags3);
+
+    dispatch({type: GETTAGS,tagsArray:loadedTags,favs1:loadedfavTags1,favs2:loadedfavTags2,favs3:loadedfavTags3});
+    
     
 
   };
   
+  
 };
+
+
+
 
 /*
 

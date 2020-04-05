@@ -32,28 +32,9 @@ const WhatAreYourPassions = props => {
     const previousCompany = props.navigation.getParam('previousCompanyToPass');
     const pastEducation = props.navigation.getParam('pastEducationToPass');
     const academicLevel = props.navigation.getParam('academicLevelToPass');
-  /*
-   <ScrollView horizontal={true} >
- {favouriteTags.map((tag)=> {
-        if(chosenTags.includes(tag)){
-           return (<TouchableOpacity key={tag} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{tag}</Text></TouchableOpacity>);
-        }else{
-           return(
-           <TouchableOpacity key={tag}
-           onPress={()=>{console.log(tag)
-               chosenTags.push(tag);
-               favouriteTags.push("ssss");
-               setChosenTags(chosenTags);
-           console.log(chosenTags)}}
-            style ={styles.tagButton}><Text style={{color:'white'}}>{tag}</Text></TouchableOpacity>);
-        }
-    })}
- </ScrollView> */
-    
+  
 
-
-
-    const favouriteTags = ["Accounting","Meister","Wie","gehts","dir"]
+ 
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [currentlyChanging,setCurrentlyChanin] = useState(false);
@@ -61,10 +42,23 @@ const WhatAreYourPassions = props => {
     const [suggestedItems,setItems] = useState([])
     const [chosenTags,setChosenTags] = useState([])
     const loadedTags = useSelector(state => state.tags.tagsArray);
+    const favs1 = useSelector(state => state.tags.favs1);
+    const favs2 = useSelector(state => state.tags.favs2);
+    const favs3 = useSelector(state => state.tags.favs3);
     
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
+      var favsNames1 = favs1.map(function(item) {
+        return item['name'];
+      });
+      var favsNames2 = favs2.map(function(item) {
+        return item['name'];
+      });
+      var favsNames3 = favs3.map(function(item) {
+        return item['name'];
+      });
+
       function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
@@ -130,7 +124,7 @@ const WhatAreYourPassions = props => {
             style={{ backgroundColor: '#1a1a1a' }}
             resetScrollToCoords={{ x: 0, y: 0 }}
             contentContainerStyle={styles.container}
-            scrollEnabled={false}>
+            scrollEnabled={true}>
             <View style={styles.backGround}>
                 <View style={styles.main}>
                     <View style={styles.inputController}>
@@ -138,11 +132,24 @@ const WhatAreYourPassions = props => {
 
                         <Text style={styles.signInText}>What are your passions?</Text>
                         <View style={styles.BottomMargin}>
-
                         <Text style={styles.aboveInputText}>Choose your superpowers(6 minimum). Current Selection:</Text>
-                        <ScrollView horizontal={true}>
-    {chosenTags.map((tag)=>  <TouchableOpacity key={tag} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{tag}</Text></TouchableOpacity> )}
-                        </ScrollView>
+
+
+                        <FlatList data ={chosenTags} renderItem={
+  ({item})=> {
+     
+    return (<TouchableOpacity key={item} onPress={()=>{
+        chosenTags.splice(chosenTags.indexOf(item),1);
+           
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+
+    }} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
                         </View>
                             </Animatable.View>
                         <SearchBar
@@ -158,11 +165,15 @@ clearIcon={null}/>
  <View style={styles.horizintalLineStyle}></View>
  <Text style={styles.aboveInputText}>or choose from the most popular</Text>
 
- <FlatList data ={favouriteTags} renderItem={
+ <FlatList data ={favsNames1} renderItem={
   ({item})=> {
      
       if(chosenTags.includes(item)){
-        return (<TouchableOpacity key={item} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+        return (<TouchableOpacity key={item} onPress={()=>{
+            chosenTags.splice(chosenTags.indexOf(item),1);
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+        }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
       }else{
         return (<TouchableOpacity key={item}  onPress={()=>{
           
@@ -178,28 +189,57 @@ clearIcon={null}/>
  horizontal={true}
  extraData={currentlyChanging}
  />
- <ScrollView horizontal={true}>
- <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Personal Growth</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>EdTech</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Inclusivity</Text></TouchableOpacity>
 
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
- <ScrollView horizontal={true}>
- <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Wireframing</Text></TouchableOpacity>
- <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Social Media</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.choosenButton} ><Text style={{color:Color.pintroYellow}}>SEO</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
- <ScrollView horizontal={true}>
- <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
+<FlatList data ={favsNames2} renderItem={
+  ({item})=> {
+     
+      if(chosenTags.includes(item)){
+        return (<TouchableOpacity key={item} onPress={()=>{
+            chosenTags.splice(chosenTags.indexOf(item),1);
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+        }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+      }else{
+        return (<TouchableOpacity key={item}  onPress={()=>{
+          
+          
+            chosenTags.push(item);
+           
+            setChosenTags(chosenTags);
+            setCurrentlyChanin(!currentlyChanging);
+        }} style ={styles.tagButton}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+      }
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
+<FlatList data ={favsNames3} renderItem={
+  ({item})=> {
+     
+      if(chosenTags.includes(item)){
+        return (<TouchableOpacity key={item} onPress={()=>{
+            chosenTags.splice(chosenTags.indexOf(item),1);
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+        }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+      }else{
+        return (<TouchableOpacity key={item}  onPress={()=>{
+          
+          
+            chosenTags.push(item);
+           
+            setChosenTags(chosenTags);
+            setCurrentlyChanin(!currentlyChanging);
+        }} style ={styles.tagButton}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+      }
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
+ 
+
  <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'HelpOthers',params:{
      phoneToPass:phoneNumber,
      emailToPass:email,
@@ -286,7 +326,7 @@ const styles = StyleSheet.create({
     horizintalLineStyle:{
         borderBottomColor: 'white',
          borderBottomWidth: StyleSheet.hairlineWidth,
-         marginBottom:30,
+         marginBottom:5,
          marginTop:10
     },backButton:{
         width:'80%',
