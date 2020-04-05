@@ -1,39 +1,38 @@
 export const CREATE_USER = 'CREATE_USER';
 
-
+import { BearerToken }  from '../../Constants/BearerToken';
 export const create_User = (Industry,academic_Level,current_Company,email,full_name,gender,help_Others,location,passions,
   phone_number,preferrred_name,previous_Company,previous_Company_Year_Finished,profile_image,short_bio,story,university,
   university_Year_Finished,years_in_industry) => {
   return async (dispatch,getState) => {
-const bear = ("Bearer "+ getState().auth.tokenToGet);
-console.log(bear);
-    const response = await fetch('https://bluej-pintro-project.appspot.com/users',
+console.log("Bearer "+getState().auth.tokenToGet);
+    const response = await fetch('https://bluej-pintro-project.appspot.com/users/',
       {
         method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization":bear},
+        headers: {                'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+getState().auth.tokenToGet},
            body: JSON.stringify({
-          "full_name":"e3223e",
-          "preferrred_name":"fewfwef",
-          "profile_image":"wefewfwef",
-          "short_bio":"fwefwefwe",
-          "gender":"wefwefwef",
-          "story":"wfeewfwef",
-          "email":email,
-          "phone_number":"wfefwef",
-          "current_Company":"weffwefwef",
-          "years_in_industry":"fwefwefwe",
-          "Industry":"fwefewf",
-          "previous_Company":"fwewfwef",
-          "previous_Company_Year_Finished":"fwefwef",
-          "university":"fwefewfewf",
-          "university_Year_Finished":"fwefewfwef",
-          "academic_Level":"fwefwe",
-          "location":"fwefewf",
-          "passions":["Account Management"],
-          "help_Others": ["Account Management"]
-      })
+            "education": "Amazon",
+            "email": email,
+            "full_name": "Pos9",
+            "gender": "male",
+            "help_others": [
+                "Agile"
+            ],
+            "job_title": "Chief Postman",
+            "location": "Landan",
+            "passions": [
+                "Agile"
+            ],
+            "password": "password",
+            "phone": "999",
+            "preferred_name": "Postit",
+            "previous_Company_Year_Finished": "dadaw",
+            "profile_image": "",
+            "short_bio": "posting",
+            "story": "posting..."
+      }), redirect: 'follow'
 
       }
     );

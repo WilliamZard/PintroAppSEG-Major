@@ -245,8 +245,8 @@ console.log(info);
                             <InvertedSignInUpButton style={{width:'80%'}} 
                          onPress={ //create user
 
-                         // ()=> dispatch(userActions.create_User("dwdwede","dwdwede","dwdwede",info,"dwdwede","dwdwede","dwdwede",[],[],"dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede"))
-                          ()=>  props.navigation.navigate({routeName:'BusinessYesNo'})
+                         ()=> dispatch(userActions.create_User("dwdwede","dwdwede","dwdwede",info,"dwdwede","dwdwede","dwdwede",[],[],"dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede"))
+                        // ()=>  props.navigation.navigate({routeName:'BusinessYesNo'})
                         
                          }>Finishh</InvertedSignInUpButton>
                             

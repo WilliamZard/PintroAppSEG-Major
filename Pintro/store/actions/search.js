@@ -26,7 +26,7 @@ export const getResults = (item) => {
         }
 
         const resData = await response.json();
-
+console.log(resData);
 
         const searchResultsArray = [];
        
