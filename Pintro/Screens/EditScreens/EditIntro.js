@@ -64,7 +64,8 @@ const EditIntro = props => {
             {
                 method: 'PUT',
                 headers: {
-                    'Content-type': 'application/json'
+                    'Content-type': 'application/json',
+                    'Authorization': BearerToken
                 },
                 redirect: 'follow',
                 body: JSON.stringify({
@@ -87,7 +88,7 @@ const EditIntro = props => {
             }
         );
         console.log(response.status);
-        dispatch(BusinessActions.getBusiness());
+        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
     }
 
     function updateName(newName) {
