@@ -18,18 +18,17 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.pintroBlack,
         borderWidth: 0.5,
         paddingVertical:12,
-        width:'15%',
-        paddingHorizontal:30,
+        paddingHorizontal:50,
         borderRadius:13,
         marginTop:10,
         marginRight:10,
         marginLeft:10,
-        marginBottom:15
+        marginBottom:15,
     },
     buttonText:{
         color: Colors.pintroWhite,
         textAlign: 'center',
-        fontFamily:'Poppins-Light',
+        fontFamily:'Poppins-Regular',
         fontSize: 10
     }
 });

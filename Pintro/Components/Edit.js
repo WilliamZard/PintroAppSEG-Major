@@ -17,8 +17,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.pintroBlack,
         borderWidth: 0.5,
         paddingVertical:12,
-        width:'7%',
-        paddingHorizontal:30,
+        paddingHorizontal:15,
         borderRadius:13,
         marginTop:10,
         marginBottom:15
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
     buttonText:{
         color: Colors.pintroBlack,
         textAlign: 'center',
-        fontFamily:'Poppins-Light',
+        fontFamily:'Poppins-Regular',
         fontSize: 10
     }
 });

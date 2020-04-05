@@ -7,12 +7,21 @@ import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
 import UserButton from '../../Components/UserButton.js';
-
+import * as BusinessActions from '../../store/actions/business';
 
 const SearchResults = props => {
+    const dispatch = useDispatch();
     const [scroll,setScroll] = useState(false);
     const searchResults = useSelector(state => state.search.usersArray);
-    //console.log("Results = " + searchResults);
+
+    let businesses = searchResults.map((item) => (item.profile_type === "business")? item : null).filter(profile => profile !== null);
+    let users = searchResults.map((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
+    
+    function onCompanyPress(value) {
+        dispatch(BusinessActions.getBusiness(value));
+        props.navigation.navigate('Business');
+    }
+    businesses = businesses.map((item) => <Company props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
 
     const DATA = [
         {
@@ -102,11 +111,13 @@ const SearchResults = props => {
         setScroll(true);
     }
 
+   
+
     return (
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.pageContainer}>
                 <View style={styles.topContainer}>
-                    <Text style={styles.results}>Results (87)</Text>
+                    <Text style={styles.results}>Results ({(searchResults.length == 0)? 0 : searchResults.length})</Text>
                     <Text style={styles.found}>Found what you're looking for?</Text>
                     <SearchBar 
                         platform="default"
@@ -126,9 +137,9 @@ const SearchResults = props => {
                     <Text style={styles.seeAll1} onPress={() => seeAllUsers()} color={scroll? 'grey' : Colors.pintroYellow}>See all</Text>
                 </View>
                 <FlatList 
-                    data={DATA}
+                    data={users}
                     renderItem={({ item }) => <UserButton name={item.full_name}/>}
-                    keyExtractor={item => item.full_name + item.index}
+                    keyExtractor={item => item.email}
                     horizontal={true}
                     scrollEnabled={scroll}
                 />
@@ -137,14 +148,7 @@ const SearchResults = props => {
                         <Text style={styles.sectionTitle}>Companies</Text>
                         <Text style={styles.seeAll2}>See all</Text>
                     </View>
-                    <Company 
-                        name={"Piin App Limited"} 
-                        bio={"Connect in Real Life with Piin App"}
-                    />
-                    <Company
-                        name={"Colour Coded Limited"}
-                        bio={"Promote your business with brnaded workwear"}
-                    />
+                    {businesses}
                 </View>
                 <View>
                     <View style={styles.rowContainer}>

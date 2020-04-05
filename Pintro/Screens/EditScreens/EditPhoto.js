@@ -22,7 +22,7 @@ const EditPhoto = props => {
                     <View style={styles.inputController}>
                        
 
-                        <Text style={styles.signInText}>Show us your face</Text>
+                        <Text style={styles.signInText}>Edit your photo</Text>
                         <View style={styles.BottomMargin}>
                         <Text style={styles.aboveInputText}>Upload a profile photo</Text>
                         </View>
@@ -36,7 +36,7 @@ const EditPhoto = props => {
        justifyContent:'center',
        width:280,
        height:280,
-       backgroundColor:'grey',
+       backgroundColor:'black',
        borderRadius:190,
      }}><Text style={{color:'white',fontSize:60,fontFamily:'Poppins-Thin'}}>+</Text></TouchableOpacity>
                     </View>
@@ -45,10 +45,10 @@ const EditPhoto = props => {
                 <View style={styles.bottomButton}>
                 <InvertedSignInUpButton onPress={
   () =>
-  props.navigation.navigate({routeName:'WhatsYourStory'})
+  props.navigation.navigate({routeName:'Account'})
 
 
-                            }>STEP 2 OF 6</InvertedSignInUpButton>
+                            }>Done</InvertedSignInUpButton>
             </View>
             </View>
  
@@ -58,7 +58,7 @@ const EditPhoto = props => {
 
 const styles = StyleSheet.create({
     backGround: {
-        backgroundColor: '#1a1a1a',
+        backgroundColor: 'white',
         flex: 1
     },
     main: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         fontWeight: 'normal'
 
     }, signInText: {
-        color: 'white',
+        color: 'black',
         fontFamily: 'Poppins-Bold',
         fontSize: 25
     },
@@ -104,10 +104,9 @@ const styles = StyleSheet.create({
         marginBottom:60
     },
     bottomButton:{
-    //    backgroundColor:'yellow'
+    marginBottom:30
     },camera:{
 flex:1,
-marginTop:70,
 marginBottom:100
     }
 });

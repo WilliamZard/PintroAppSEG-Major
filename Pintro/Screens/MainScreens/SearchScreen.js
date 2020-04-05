@@ -6,6 +6,7 @@ import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
 import * as SearchActions from "../../store/actions/search";
+import data2 from '../../Constants/data2.json'
 const SearchScreen = props => {
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
@@ -13,13 +14,9 @@ const SearchScreen = props => {
     const [suggestedItems,setItems] = useState([])
 
     const loadedTags = useSelector(state => state.tags.tagsArray);
-    var tagNames = loadedTags.map(function(item) {
+    var tagNames = data2.map(function(item) {
         return item['name'];
       });
-
-    const tagList = [
-        'Abicus','Business', 'Comics', 'Abicoids', 'Buseans', 'Comiaracus', 'Post Man2'
-    ];
     
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -36,7 +33,7 @@ const SearchScreen = props => {
         //console.log(item);
         setSearchKeyword(item);
         setItems(null);
-        dispatch(SearchActions.getResults(item));
+        dispatch(SearchActions.getResults(item)); 
         props.navigation.navigate('Results', {searchParam: item});
     }
     
