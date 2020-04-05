@@ -21,7 +21,6 @@ export const getResults = (item) => {
         if(!response.ok) {
           const errorResData = await response.json();
           console.log(errorResData);
-          console.log(await response.text());
           let message = 'Something went wrong';
           throw new Error(message);
         }
