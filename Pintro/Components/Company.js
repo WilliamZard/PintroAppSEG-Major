@@ -1,18 +1,21 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../Constants/Colors.js';
 import { fonts } from '../Constants/Fonts.js';
 const Company = props => {
-    const email = props.email;
     
+    function onCompanyPress() {
+        props.callback(props.email);
+    }
+
     return (
-        <View style={styles.rowContainer}>
+        <TouchableOpacity style={styles.rowContainer} onPress={() => onCompanyPress()}>
             <Image source={require('../assets/blankImage.png')} style={styles.circleImage}/>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>{props.name}</Text>
                 <Text style={styles.subtitle}>{props.bio}</Text> 
             </View>
-        </View>
+        </TouchableOpacity>
     )
      
 }
