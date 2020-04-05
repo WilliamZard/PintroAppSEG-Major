@@ -13,8 +13,8 @@ ENV FLASK_ENV=development
 ENV FLASK_RUN_PORT=8080
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_APP=graph_api:create_app
-#Environment variable for GCP credentials. Needed for accessing GCP buckets.
 ENV GOOGLE_APPLICATION_CREDENTIALS="./pintro-service-key.json" 
 ENV IMAGES_BUCKET_NAME=profile-pics-dev
+
 ENTRYPOINT [ "flask" ]
 CMD [ "run" ]
