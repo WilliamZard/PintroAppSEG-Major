@@ -1,19 +1,20 @@
 import Business from '../../Model/Business';
+import { BearerToken } from '../../Constants/BearerToken';
 export const GETBUSINESS = 'GETBUSINESS';
-export const getBusiness = () => {
+export const getBusiness = value => {
     return async dispatch => {
-
-        const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/postman_business@post.man',
+        const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + value,
             {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': BearerToken
                 },
                 redirect: 'follow'
             }
         );
 
-        
+        console.log(response.status);
         if(!response.ok) {
             const errorResData = await response.json();
             let message = 'Something went wrong';
