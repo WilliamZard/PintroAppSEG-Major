@@ -19,99 +19,15 @@ const SearchResults = props => {
     
     function onCompanyPress(value) {
         dispatch(BusinessActions.getBusiness(value));
-        props.navigation.navigate('Profile');
+        props.navigation.navigate('navBusiness');
     }
-    businesses = businesses.map((item) => <Company props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
 
-    const DATA = [
-        {
-            "job_title": "Chief Postman",
-            "preferred_name": "Postit",
-            "location": "Landan",
-            "story": "posting...",
-            "password": "password",
-            "short_bio": "posting",
-            "score": "1.0966600179672241",
-            "phone": "999",
-            "education": "Amazon",
-            "gender": "male",
-            "profile_type": "person",
-            "profile_image": "image",
-            "full_name": "Rick Sanchez",
-            "email": "test@kcl.ac.uk"
-        },
-        {
-            "job_title": "Chief Postman",
-            "preferred_name": "Postit",
-            "location": "Landan",
-            "story": "posting...",
-            "password": "password",
-            "short_bio": "posting",
-            "score": "1.0966600179672241",
-            "phone": "999",
-            "education": "Amazon",
-            "gender": "male",
-            "profile_type": "person",
-            "profile_image": "image",
-            "full_name": "Morty Smith",
-            "email": "test@kcl.ac.uk"
-        },
-        {
-            "job_title": "Chief Postman",
-            "preferred_name": "Postit",
-            "location": "Landan",
-            "story": "posting...",
-            "password": "password",
-            "short_bio": "posting",
-            "score": "1.0966600179672241",
-            "phone": "999",
-            "education": "Amazon",
-            "gender": "male",
-            "profile_type": "person",
-            "profile_image": "image",
-            "full_name": "Bob Parr",
-            "email": "test@kcl.ac.uk"
-        },
-        {
-            "job_title": "Chief Postman",
-            "preferred_name": "Postit",
-            "location": "Landan",
-            "story": "posting...",
-            "password": "password",
-            "short_bio": "posting",
-            "score": "1.0966600179672241",
-            "phone": "999",
-            "education": "Amazon",
-            "gender": "male",
-            "profile_type": "person",
-            "profile_image": "image",
-            "full_name": "Billiam Bobbert",
-            "email": "test@kcl.ac.uk"
-        },
-        {
-            "job_title": "Chief Postman",
-            "preferred_name": "Postit",
-            "location": "Landan",
-            "story": "posting...",
-            "password": "password",
-            "short_bio": "posting",
-            "score": "1.0966600179672241",
-            "phone": "999",
-            "education": "Amazon",
-            "gender": "male",
-            "profile_type": "person",
-            "profile_image": "image",
-            "full_name": "Lucius Best",
-            "email": "test@kcl.ac.uk"
-        }
-    ]
+    businesses = businesses.map((item) => <Company props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
         
 
     function seeAllUsers() {
         setScroll(true);
     }
-
-   
 
     return (
         <ScrollView style={styles.scrollContainer}>
