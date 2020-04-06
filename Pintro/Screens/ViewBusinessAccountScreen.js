@@ -56,12 +56,21 @@ const ViewBusinessAccountScreen = props => {
         hiringText = null;
     }
 
+    function onPressBack() {
+        props.navigation.navigate('Results')
+    }
+
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
-                <TouchableOpacity>
-                    <Image source={require('../assets/shareWhite.png')} style={styles.shareImage}/>
-                </TouchableOpacity>
+                <View style={styles.rowContainer}>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => onPressBack()}>
+                        <Image source={require('../assets/backWhite.png')} style={styles.back}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../assets/shareWhite.png')} style={styles.shareImage}/>
+                    </TouchableOpacity> 
+                </View>
                 <Image source={require('../assets/blankImage.png')} style={styles.coverPhoto}/>
             </View>
             <View style={styles.whiteContainer}>
@@ -286,6 +295,11 @@ const styles = StyleSheet.create({
     postContainer: {
         flexDirection: 'row',
         marginVertical: 10
+    },
+    back: {
+        height: 20, 
+        width: 20, 
+        marginLeft: 10,
     }
 });
 

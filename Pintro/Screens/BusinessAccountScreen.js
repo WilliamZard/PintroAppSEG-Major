@@ -79,12 +79,21 @@ const BusinessAccountScreen = props => {
         hiringText = null;
     }
 
+    function onPressBack() {
+        props.navigation.goBack(null);
+    }
+
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
-                <TouchableOpacity>
-                    <Image source={require('../assets/shareWhite.png')} style={styles.shareImage}/>
-                </TouchableOpacity>
+                <View style={styles.rowContainer}>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => onPressBack()}>
+                        <Image source={require('../assets/backWhite.png')} style={styles.back}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../assets/shareWhite.png')} style={styles.shareImage}/>
+                    </TouchableOpacity> 
+                </View>
                 <Image source={require('../assets/blankImage.png')} style={styles.coverPhoto}/>
                 <PencilWhite onPress={() => switchEditPhoto()}/>
             </View>
@@ -212,13 +221,13 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         marginBottom: 0,
-        marginTop: 50,
+        marginTop: 30,
     },
     shareImage: {
         height: 20, 
-        width: 20, 
-        alignSelf: 'flex-end', 
-        marginRight: 10
+        width: 20,  
+        marginRight: 10,
+
     },
     coverPhoto: {
         height: 200, 
@@ -314,6 +323,11 @@ const styles = StyleSheet.create({
     postContainer: {
         flexDirection: 'row',
         marginVertical: 10
+    },
+    back: {
+        height: 20, 
+        width: 20, 
+        marginLeft: 10,
     }
 });
 
