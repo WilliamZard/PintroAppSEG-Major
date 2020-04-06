@@ -1,22 +1,58 @@
-import React from 'react';
-import { View,TouchableOpacity,Text,Image,StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View,TouchableOpacity,Text,Image,StyleSheet,Alert } from 'react-native';
 import BlackTag from '../../Components/BlackTag';
 import Colors from '../../Constants/Colors';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from "expo-image-manipulator";
+
 
 const EditBusinessPhoto = props => {
+    const[imageUri,setImage] = useState(null);
+
+    async function pickImage() {
+        const permission = await ImagePicker.requestCameraRollPermissionsAsync();
+        if(permission !== 'granted'){
+            getPermission();
+        }
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1
+        });
+
+        console.log(result);
+
+        if(!result.cancelled) {
+            setImage(result.uri);
+        }
+    }
+
+    async function getPermission() {
+        const status = await ImagePicker.requestCameraRollPermissionsAsync();
+        if(status !== 'granted') {
+            Alert.alert('Permission needed','We need permission to access your camera roll');
+        }
+    }
+
+    async function onPressDone() {
+        console.log("Done was pressed");
+        const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
+    }
+
     return(
         <View>
             <View style={styles.primaryContainer}>
                 <Text style={styles.title}>Change your photo</Text>
                 <Text style={styles.subtitle}>Upload a team photo or logo</Text>
                 <View style={styles.camera}>
-                    <TouchableOpacity style={styles.pictureButton}>
-                        <Image source={require('../../assets/blankImage.png')} style={styles.userImage}/>
+                    <TouchableOpacity style={styles.pictureButton} onPress={() => pickImage()}>
+                        <Image source={(imageUri===null)? require('../../assets/blankImage.png') : {uri: imageUri}} style={styles.userImage}/>
                         <Text style={styles.add}>+</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{marginBottom: 200}}/>
-                <BlackTag props={props.BlackTag}>Done</BlackTag>   
+                <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>   
             </View>
         </View>
     );
