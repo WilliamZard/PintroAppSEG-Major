@@ -43,6 +43,7 @@ import EditBusinessTags from '../Screens/EditScreens/EditBusinessTags';
 import EditJourney from '../Screens/EditScreens/EditJourney';
 import EditBusinessPhoto from '../Screens/EditScreens/EditBusinessPhoto';
 import EditYourTeam from '../Screens/EditScreens/EditYourTeam';
+import ViewBusinessAccountScreen from '../Screens/ViewBusinessAccountScreen';
 const businessSignUp = createStackNavigator({
 
     LetGetStartet:LetsGetIntoIt
@@ -113,6 +114,9 @@ const BusinessNavigator = createStackNavigator({
     }},
     Team:{screen:EditYourTeam,navigationOptions:{
         headerTitle: '',
+    }},
+    Profile:{screen:ViewBusinessAccountScreen,navigationOptions:{
+        headerShown: false,
     }}
 });
 
