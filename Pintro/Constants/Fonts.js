@@ -35,7 +35,7 @@ const fonts = StyleSheet.create({
     tag_button_white: {
         color: Colors.pintroWhite,
         fontFamily: 'Poppins-Light',
-        fontSize: 10 
+        fontSize: 10
     },
     story: {
         color: 'grey',
