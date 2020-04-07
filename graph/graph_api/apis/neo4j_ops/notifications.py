@@ -1,6 +1,7 @@
+from neo4j import Transaction, BoltStatementResult
 
 
-def get_notifications(tx, user_email):
+def get_notifications(tx: Transaction, user_email: str) -> BoltStatementResult:
     query = f"""
         MATCH (recipient:Person {{email: '{user_email}'}})<-[r]-(requester)
         WHERE type(r) = 'REQUESTED_FOLLOW' OR type(r) = 'REQUESTED_AFFILIATION'

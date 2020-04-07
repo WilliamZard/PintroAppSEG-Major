@@ -1,5 +1,7 @@
+from neo4j import Transaction, BoltStatementResult
 
-def get_space_by_email(tx, space_email):
+
+def get_space_by_email(tx: Transaction, space_email: str) -> BoltStatementResult:
     '''
         Function that gets all the data related to a user with a particular email.
         It returns a BoltStatementResult.
@@ -11,5 +13,5 @@ def get_space_by_email(tx, space_email):
     return tx.run(f"MATCH (user:Space {{email: '{space_email}'}}) RETURN user")
 
 
-def delete_space_by_email(tx, space_email):
+def delete_space_by_email(tx: Transaction, space_email: str) -> BoltStatementResult:
     return tx.run(f"MATCH (user:Space {{email: '{space_email}'}}) DELETE user")

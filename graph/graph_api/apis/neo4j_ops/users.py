@@ -1,6 +1,7 @@
+from neo4j import Transaction, BoltStatementResult
 
 
-def get_user_by_email(tx, user_email):
+def get_user_by_email(tx: Transaction, user_email: str) -> BoltStatementResult:
     '''
         Function that gets all the data related to a user with a particular email.
         It returns a BoltStatementResult.

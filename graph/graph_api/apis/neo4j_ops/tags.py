@@ -1,5 +1,7 @@
+from neo4j import Transaction, BoltStatementResult
 
-def delete_tagged_relationships(tx, email):
+
+def delete_tagged_relationships(tx: Transaction, email: str) -> BoltStatementResult:
     query = f"""
     MATCH (user {{email: '{email}'}})-[rel:TAGGED]->(:Tag)
     DELETE rel
@@ -7,7 +9,7 @@ def delete_tagged_relationships(tx, email):
     return tx.run(query)
 
 
-def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
+def create_TAGGED_relationships(tx: Transaction, email: str, tag_names: str, tag_labels: str) -> BoltStatementResult:
     query = f"""
         WITH {tag_names} AS tag_names
         UNWIND tag_names AS tag_name
@@ -18,7 +20,7 @@ def create_TAGGED_relationships(tx, email, tag_names, tag_labels):
     return tx.run(query)
 
 
-def get_tags(tx, labels):
+def get_tags(tx: Transaction, labels: List[str]) -> BoltStatementResult:
     labels = ' OR '.join(f'tag:{label}' for label in labels)
     query = f"""
         MATCH (tag)
