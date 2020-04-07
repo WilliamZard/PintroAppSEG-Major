@@ -13,25 +13,21 @@ console.log("Bearer "+getState().auth.tokenToGet);
         'Content-Type': 'application/json',
         'Authorization': 'Bearer '+getState().auth.tokenToGet},
            body: JSON.stringify({
-            "education": "Amazon",
+            "education": university,
             "email": email,
-            "full_name": "Pos9",
-            "gender": "male",
-            "help_others": [
-                "Agile"
-            ],
-            "job_title": "Chief Postman",
-            "location": "Landan",
-            "passions": [
-                "Agile"
-            ],
-            "password": "password",
-            "phone": "999",
-            "preferred_name": "Postit",
-            "previous_Company_Year_Finished": "dadaw",
-            "profile_image": "",
-            "short_bio": "posting",
-            "story": "posting..."
+            "full_name": full_name,
+            "gender": gender,
+            "help_others":help_Others,
+            "job_title": current_Company,
+            "location": location,
+            "passions": passions,
+            "password": "",
+            "phone": phone_number,
+            "preferred_name": preferrred_name,
+            "previous_Company_Year_Finished": previous_Company_Year_Finished,
+            "profile_image": profile_image,
+            "short_bio": short_bio,
+            "story": story
       }), redirect: 'follow'
 
       }

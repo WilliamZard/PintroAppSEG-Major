@@ -38,6 +38,7 @@ const EditBusinessPhoto = props => {
     async function onPressDone() {
         console.log("Done was pressed");
         const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
+        console.log(result.base64.length);
     }
 
     return(

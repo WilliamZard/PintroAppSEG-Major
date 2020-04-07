@@ -33,7 +33,7 @@ const HistoryScreen = props => {
     const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
     const currentCompany = props.navigation.getParam('currentCompanyToPass');
     const story = props.navigation.getParam('storyToPass');
-    
+    const photo =  props.navigation.getParam('photoToPass');
 
     const [workExperience,setWorkExperience] = useState();
     const [industry,setIndustry] = useState();
@@ -124,6 +124,7 @@ industryToPass:industry,
 previousCompanyToPass:previousCompany,
 pastEducationToPass:pastEducation,
 academicLevelToPass:academicLevel,
+photoToPass:photo
  }}) }>STEP 4 OF 6</InvertedSignInUpButton>       
                         </Animatable.View>
                     </View>

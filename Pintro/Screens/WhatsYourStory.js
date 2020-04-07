@@ -16,6 +16,7 @@ import GoBack from '../Components/GoBack';
 const WhatsYourStory = props => {
     const phoneNumber = props.navigation.getParam('phoneToPass');
     const email = props.navigation.getParam('emailToPass');
+    const photo = props.navigation.getParam('photoToPass');
     
 
     const [name,setName] = useState();
@@ -81,6 +82,7 @@ style={styles.inputBoxFullStory}
     phoneToPass:phoneNumber,
     emailToPass:email,
     nameToPass:name,
+    photoToPass:photo,
     currentJobTitleToPass:currentJobTitle,
     currentCompanyToPass:currentCompany,
     storyToPass:story

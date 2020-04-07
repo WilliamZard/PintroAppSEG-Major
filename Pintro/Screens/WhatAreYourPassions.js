@@ -32,6 +32,7 @@ const WhatAreYourPassions = props => {
     const previousCompany = props.navigation.getParam('previousCompanyToPass');
     const pastEducation = props.navigation.getParam('pastEducationToPass');
     const academicLevel = props.navigation.getParam('academicLevelToPass');
+    const photo = props.navigation.getParam('photoToPass');
   
 
  
@@ -252,7 +253,8 @@ clearIcon={null}/>
      previousCompanyToPass:previousCompany,
      pastEducationToPass:pastEducation,
      academicLevelToPass:academicLevel,
-     passionsToPass:chosenTags
+     passionsToPass:chosenTags,
+     photoToPass:photo
     }})}>STEP 5 OF 6</InvertedSignInUpButton>
                             
                        

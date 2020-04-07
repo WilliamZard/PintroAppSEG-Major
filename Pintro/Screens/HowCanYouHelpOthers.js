@@ -34,6 +34,8 @@ const previousCompany = props.navigation.getParam('previousCompanyToPass');
 const pastEducation = props.navigation.getParam('pastEducationToPass');
 const academicLevel = props.navigation.getParam('academicLevelToPass');
 const passions = props.navigation.getParam('passionsToPass');
+const photo = props.navigation.getParam('photoToPass');
+
 
 
     const dispatch = useDispatch();
@@ -245,8 +247,11 @@ console.log(info);
                             <InvertedSignInUpButton style={{width:'80%'}} 
                          onPress={ //create user
 
-                         ()=> dispatch(userActions.create_User("dwdwede","dwdwede","dwdwede",info,"dwdwede","dwdwede","dwdwede",[],[],"dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede","dwdwede"))
-                        // ()=>  props.navigation.navigate({routeName:'BusinessYesNo'})
+                         ()=> {dispatch(userActions.create_User(industry,academicLevel,
+                            currentCompany,email,name,"NA",chosenTags,"NA",passions,
+                            phoneNumber,name,previousCompany,"NA",photo,"NA",story,
+                            pastEducation,"NA",workExperience))
+                         props.navigation.navigate({routeName:'BusinessYesNo'})}
                         
                          }>Finishh</InvertedSignInUpButton>
                             
