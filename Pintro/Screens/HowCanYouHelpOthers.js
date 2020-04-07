@@ -11,6 +11,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Color from '../Constants/Colors';
 import { fonts } from '../Constants/Fonts.js';
 import Colors from '../Constants/Colors';
+import * as userActions from '../store/actions/user';
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
  * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
@@ -18,16 +19,50 @@ import Colors from '../Constants/Colors';
  * @param {} props 
  */
 
-
-
-
 const WhatAreYourPassions = props => {
+
+
+const phoneNumber = props.navigation.getParam('phoneToPass');
+const email = props.navigation.getParam('emailToPass');
+const name = props.navigation.getParam('nameToPass');
+const currentJobTitle = props.navigation.getParam('currentJobTitleToPass');
+const currentCompany = props.navigation.getParam('currentCompanyToPass');
+const story = props.navigation.getParam('storyToPass');
+const workExperience = props.navigation.getParam('workExperienceToPass');
+const industry = props.navigation.getParam('industryToPass');
+const previousCompany = props.navigation.getParam('previousCompanyToPass');
+const pastEducation = props.navigation.getParam('pastEducationToPass');
+const academicLevel = props.navigation.getParam('academicLevelToPass');
+const passions = props.navigation.getParam('passionsToPass');
+const photo = props.navigation.getParam('photoToPass');
+
+
+
     const dispatch = useDispatch();
+    const [currentlyChanging,setCurrentlyChanin] = useState(false);
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
     const [chosenTags,setChosenTags] = useState([])
     const loadedTags = useSelector(state => state.tags.tagsArray);
+    const favs1 = useSelector(state => state.tags.favs1);
+    const favs2 = useSelector(state => state.tags.favs2);
+    const favs3 = useSelector(state => state.tags.favs3);
+
+    var tagNames = loadedTags.map(function(item) {
+        return item['name'];
+      });
+      var favsNames1 = favs1.map(function(item) {
+        return item['name'];
+      });
+      var favsNames2 = favs2.map(function(item) {
+        return item['name'];
+      });
+      var favsNames3 = favs3.map(function(item) {
+        return item['name'];
+      });
+
+    const info = useSelector(state => state.auth.emailToGet);
     var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
@@ -89,7 +124,8 @@ const WhatAreYourPassions = props => {
         }
     }
 
-
+console.log("dddd");
+console.log(info);
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -104,9 +140,21 @@ const WhatAreYourPassions = props => {
                         <Text style={styles.signInText}>How can you help others?</Text>
                         <View style={styles.BottomMargin}>
                         <Text style={styles.aboveInputText}>Choose your superpowers(6 minimum). Current Selection:</Text>
-                        <ScrollView horizontal={true}>
-    {chosenTags.map((tag)=>  <TouchableOpacity key={tag} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{tag}</Text></TouchableOpacity> )}
-                        </ScrollView>
+                        <FlatList data ={chosenTags} renderItem={
+  ({item})=> {
+     
+    return (<TouchableOpacity key={item} onPress={()=>{
+        chosenTags.splice(chosenTags.indexOf(item),1);
+           
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+
+    }} style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
                            
                         </View>
          
@@ -124,40 +172,95 @@ const WhatAreYourPassions = props => {
                         </View>
  <View style={styles.horizintalLineStyle}></View>
  <Text style={styles.aboveInputText}>or choose from the most popular</Text>
- <ScrollView horizontal={true}>
-    <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Feminism</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.choosenButton} ><Text style={{color:Color.pintroYellow}}>Coaching</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Mindfulness</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
- <ScrollView horizontal={true}>
- <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Personal Growth</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>EdTech</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Inclusivity</Text></TouchableOpacity>
-
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
- <ScrollView horizontal={true}>
- <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Wireframing</Text></TouchableOpacity>
- <TouchableOpacity style ={styles.tagButton} ><Text style={{color:'white'}}>Social Media</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.choosenButton} ><Text style={{color:Color.pintroYellow}}>SEO</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
- <ScrollView horizontal={true}>
- <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>Skill Swap</Text></TouchableOpacity> 
-   <TouchableOpacity style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>Diversity</Text></TouchableOpacity>
-   <TouchableOpacity style ={styles.tagButton}><Text style={{color:'white'}}>User Experience</Text></TouchableOpacity>
- </ScrollView>
+ <FlatList data ={favsNames1} renderItem={
+  ({item})=> {
+     
+      if(chosenTags.includes(item)){
+        return (<TouchableOpacity key={item} onPress={()=>{
+            chosenTags.splice(chosenTags.indexOf(item),1);
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+        }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+      }else{
+        return (<TouchableOpacity key={item}  onPress={()=>{
+          
+          
+            chosenTags.push(item);
+           
+            setChosenTags(chosenTags);
+            setCurrentlyChanin(!currentlyChanging);
+        }} style ={styles.tagButton}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+      }
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
+ <FlatList data ={favsNames2} renderItem={
+  ({item})=> {
+     
+      if(chosenTags.includes(item)){
+        return (<TouchableOpacity key={item} onPress={()=>{
+            chosenTags.splice(chosenTags.indexOf(item),1);
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+        }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+      }else{
+        return (<TouchableOpacity key={item}  onPress={()=>{
+          
+          
+            chosenTags.push(item);
+           
+            setChosenTags(chosenTags);
+            setCurrentlyChanin(!currentlyChanging);
+        }} style ={styles.tagButton}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+      }
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
+<FlatList data ={favsNames3} renderItem={
+  ({item})=> {
+     
+      if(chosenTags.includes(item)){
+        return (<TouchableOpacity key={item} onPress={()=>{
+            chosenTags.splice(chosenTags.indexOf(item),1);
+        setChosenTags(chosenTags);
+        setCurrentlyChanin(!currentlyChanging);
+        }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
+      }else{
+        return (<TouchableOpacity key={item}  onPress={()=>{
+          
+          
+            chosenTags.push(item);
+           
+            setChosenTags(chosenTags);
+            setCurrentlyChanin(!currentlyChanging);
+        }} style ={styles.tagButton}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+      }
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ extraData={currentlyChanging}
+ />
                             <InvertedSignInUpButton style={{width:'80%'}} 
-                         onPress={()=>   props.navigation.navigate({routeName:'BusinessYesNo'}) }>Finish</InvertedSignInUpButton>
+                         onPress={ //create user
+
+                         ()=> {dispatch(userActions.create_User(industry,academicLevel,
+                            currentCompany,email,name,"NA",chosenTags,"NA",passions,
+                            phoneNumber,name,previousCompany,"NA",photo,"NA",story,
+                            pastEducation,"NA",workExperience))
+                         props.navigation.navigate({routeName:'BusinessYesNo'})}
+                        
+                         }>Finishh</InvertedSignInUpButton>
                             
-                       
+                
+
+
+
+
+
                     </View>
                 
             </View>

@@ -2,9 +2,10 @@ import React,{useState} from 'react';
 import {View,
 Text,
 Image,
-StyleSheet,TouchableHighlight,
+StyleSheet,
 Modal,
 TextInput,
+TouchableOpacity,
 Button
 } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
@@ -39,31 +40,31 @@ justifyContent:'center'}}>
                    
                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                      <View style={styles.buttonsToFunc}><TouchableHighlight><Text>Check-In</Text></TouchableHighlight></View> 
+                      <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Check-In</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableHighlight><Text>Talk to me about</Text></TouchableHighlight></View> 
+                       <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Talk to me about</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableHighlight><Text>Ask for help</Text></TouchableHighlight></View> 
+                       <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Ask for help</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableHighlight
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
                         onPress={()=>{
                             setInFocus(false);
                             setWritingPost(true);
                         }}
-                       ><Text>Request an intro</Text></TouchableHighlight></View> 
+                       ><Text>Request an intro</Text></TouchableOpacity></View> 
                   
                    </View>
                     <View>
-                        <TouchableHighlight style={styles.buttonLayout} onPress={()=>setInFocus(false)}><Text style={{color:'white'}}>Cancel</Text></TouchableHighlight>
+                        <TouchableOpacity style={styles.buttonLayout} onPress={()=>setInFocus(false)}><Text style={{color:'white'}}>Cancel</Text></TouchableOpacity>
                     </View>
                     </View>
                     </View>
@@ -71,7 +72,7 @@ justifyContent:'center'}}>
                   
                     </Modal>
            <View style={styles.button}>
-               <TouchableHighlight underlayColor="#7F58FF" onPress={()=>{
+               <TouchableOpacity underlayColor="#7F58FF" onPress={()=>{
                         setInFocus(true);
                     
                }}>
@@ -84,7 +85,7 @@ justifyContent:'center'}}>
               
                </View>
 
-               </TouchableHighlight>
+               </TouchableOpacity>
            </View>
         </View>
     );

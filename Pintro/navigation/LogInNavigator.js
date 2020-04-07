@@ -13,7 +13,13 @@ import {Image} from 'react-native' ;
 import Colors from '../Constants/Colors';
 import WhatAreYourPassions from '../Screens/WhatAreYourPassions';
 import HowCanYouHelpOthers from '../Screens/HowCanYouHelpOthers';
+
+import EditExperience from '../Screens/EditScreens/EditExperience';
 import EditPhoto from '../Screens/EditScreens/EditPhoto';
+import EditHelpOthers from '../Screens/EditScreens/EditHelpOthers';
+import EditPassions from '../Screens/EditScreens/EditPassions';
+import EditStory from '../Screens/EditScreens/EditStory';
+
 import MainMenubutton from '../Components/MainMenubutton';
 import FirstScreen from '../Screens/MainScreens/FirstScreen';
 import TimelinePage from '../Screens/MainScreens/TimelinePage';
@@ -31,11 +37,30 @@ import GiveUsDetails from '../Screens/BusinessScreens/GiveUsDetails';
 import WhatsYourBrand from '../Screens/BusinessScreens/WhatsYourBrand';
 import BusinessTeam from '../Screens/BusinessScreens/BusinessTeam';
 import BusinessToMain from '../Screens/BusinessScreens/BusinessToMain';
+import BusinessAccountScreen from '../Screens/BusinessAccountScreen';
+import EditIntro from '../Screens/EditScreens/EditIntro';
+import EditBusinessTags from '../Screens/EditScreens/EditBusinessTags';
+import EditJourney from '../Screens/EditScreens/EditJourney';
+import EditBusinessPhoto from '../Screens/EditScreens/EditBusinessPhoto';
+import EditYourTeam from '../Screens/EditScreens/EditYourTeam';
+import ViewBusinessAccountScreen from '../Screens/ViewBusinessAccountScreen';
 const businessSignUp = createStackNavigator({
 
     LetGetStartet:LetsGetIntoIt
 
 })
+const editProvileNav = createStackNavigator({
+    SettingsPage:Settings,
+    ExperiencePage:EditExperience,
+    HelpOthersPage:EditHelpOthers,
+    PassionsPage:EditPassions,
+    PhotoPage:EditPhoto,
+    StoryPage:EditStory
+})
+
+
+
+
 
 const defaultStackNavOptions = {
     headerStyle: {
@@ -68,9 +93,41 @@ const SearchNavigator = createStackNavigator({
     }},
     Results:{screen:SearchResults,navigationOptions:{
         headerTitle: '',
+    }},
+});
+
+const BusinessNavigator = createStackNavigator({
+    Account:{screen:BusinessAccountScreen,navigationOptions:{
+        headerShown: false
+    }},
+    Intro:{screen:EditIntro,navigationOptions:{
+        headerTitle: '',
+    }},
+    Tags:{screen:EditBusinessTags,navigationOptions:{
+        headerTitle: '',
+    }},
+    Journey:{screen:EditJourney,navigationOptions:{
+        headerTitle: '',  
+    }},
+    Photo:{screen:EditBusinessPhoto,navigationOptions:{
+        headerTitle: '',
+    }},
+    Team:{screen:EditYourTeam,navigationOptions:{
+        headerTitle: '',
+    }},
+    Profile:{screen:ViewBusinessAccountScreen,navigationOptions:{
+        headerShown: false,
     }}
 });
 
+const MainSearchNav = createStackNavigator({
+    navSearch: {screen:SearchNavigator, navigationOptions:{
+        headerShown: false,
+    }},
+    navBusiness: {screen:BusinessNavigator, navigationOptions: {
+        headerShown: false,
+    }},
+});
 
 const MainNav = createBottomTabNavigator({
     firstScreen:{
@@ -91,7 +148,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     searchScreen:{
-        screen:SearchNavigator,navigationOptions:{
+        screen:MainSearchNav,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 
@@ -121,7 +178,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     messageScreen:{
-        screen:MessageScreen,navigationOptions:{
+        screen:editProvileNav,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 
@@ -138,7 +195,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     thirdScreen:{
-        screen:AccountNavigator,navigationOptions:{
+        screen:BusinessNavigator,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 

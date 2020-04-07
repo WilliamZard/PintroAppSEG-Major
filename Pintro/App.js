@@ -5,12 +5,15 @@ import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import ReduxThunk from 'redux-thunk';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import auth from './store/reducers/auth';
+import authReducer from './store/reducers/auth';
 import Navigator from './navigation/LogInNavigator';
 import timeLineReducer from './store/reducers/timeline';
-import FinalSignUp from './Screens/FinalSignUp';
+
 import tagsReducer from './store/reducers/tags';
 import searchReducer from './store/reducers/search';
+import businessReducer from './store/reducers/business';
+
+import userReducer from './store/reducers/user';
 import firebase from 'firebase';
 
 const firebaseConfig = {
@@ -30,10 +33,12 @@ firebase.initializeApp(firebaseConfig);
  *  not start before every font has been loaded
  */
 const rootReducer = combineReducers({
-  auth: auth,
+  auth: authReducer,
   timelinePosts:timeLineReducer,
   tags:tagsReducer,
-  search:searchReducer
+  search:searchReducer,
+  business:businessReducer,
+  user:userReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
