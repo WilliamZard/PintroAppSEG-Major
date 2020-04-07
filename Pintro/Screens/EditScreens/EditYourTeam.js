@@ -1,13 +1,41 @@
-import React from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,TextInput,Picker } from 'react-native';
-import {fonts} from '../../Constants/Fonts';
+import React, { useState } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import { View,StyleSheet,Text,TouchableOpacity,Image,TextInput,Picker,Alert } from 'react-native';
+import { fonts } from '../../Constants/Fonts';
 import Colors from '../../Constants/Colors';
 import BlackTag from '../../Components/BlackTag';
+import TeamMember from '../../Components/TeamMember';
+import * as SearchActions from "../../store/actions/search";
 
 const EditYourTeam = props => {
+    const dispatch = useDispatch();
+    const [searchKeyword,setSearchKeyword] = useState();
+    const [teamMembers,setMembers] = useState([]);
+    const searchResults = useSelector(state => state.search.usersArray);
+    
 
-    function onTextChanged(value){
-        "do nothing";
+    function onTextChanged(searchWord) {
+        setSearchKeyword(searchWord);
+    }
+
+    function onPressRemove(value) {
+        setMembers(teamMembers.filter((element)=>element!==value));
+    }
+
+    function handleKeyPress() {
+        console.log(searchKeyword);
+        dispatch(SearchActions.getResults(searchKeyword));
+        console.log(searchResults.length);
+        let personProfiles = searchResults.filter((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
+        if(personProfiles.length == 0) {
+            Alert.alert('No results found','No users were found that match your search');
+        } else {
+            setMembers(personProfiles);
+        }
+    }
+
+    function onPressDone() {
+        console.log("You pressed done(a lot)");
     }
 
     return (
@@ -17,35 +45,17 @@ const EditYourTeam = props => {
             <Text style={styles.subtitle}>Team member name</Text>
             <View style={styles.rowContainer}>
                 <TextInput 
-                style={styles.inputText} 
-                onChangeText={value => onTextChanged(value)}>
-                    Start typing...
+                    style={styles.inputText} 
+                    onChangeText={value => onTextChanged(value)}
+                    onSubmitEditing={() => handleKeyPress()}>
+                Start typing...
                 </TextInput>
                 <Picker style={{borderWidth: 1}}></Picker>
             </View>
             <View style={styles.horizintalLineStyle}/>
             <Text style={styles.subtitle}>Current members:</Text>
-            <TouchableOpacity>
-                <View style={styles.teamContainer}>
-                    <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
-                    <View style={styles.textContainer}>
-                        <Text style={fonts.title_black}>Danielle Dodoo</Text>
-                        <Text style={fonts.story}>Founder</Text>
-                    </View>
-                    <Image source={require('../../assets/cross.png')} style={styles.cross}/>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.teamContainer}>
-                    <Image source={require('../../assets/blankImage.png')} style={styles.circleImage}/>
-                    <View style={styles.textContainer}>
-                        <Text style={fonts.title_black}>Callum Thompson</Text>
-                        <Text style={fonts.story}>Graphic Designer</Text>
-                    </View>
-                    <Image source={require('../../assets/cross.png')} style={styles.cross}/>
-                </View>
-            </TouchableOpacity>
-            <BlackTag props={props.BlackTag}>Done</BlackTag>
+            {teamMembers.map((item) => <TeamMember props={props.TeamMember} callback={value => onPressRemove(value)} userObj={item}/>)}
+            <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
         </View>
     )
 }
