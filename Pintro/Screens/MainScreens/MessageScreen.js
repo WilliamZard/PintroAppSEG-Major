@@ -1,26 +1,13 @@
-import React from 'react';
-import {
-View,
-Text,
-StyleSheet
-} from 'react-native';
+import Connect from '../Connect.js';
+import Chat from '../Chat.js';
 
+import {createStackNavigator} from 'react-navigation-stack';
 
-const MessageScreen = props => {
-
-return (
-    <View style={styles.main}>
-        
-    </View>
-);
-
-};
-
-const styles = StyleSheet.create({
-main:{
-    justifyContent:'center',
-    alignItems:'center'
-}
+export default createStackNavigator({
+  Connect: {
+    screen: Connect,
+  },
+  Chat: {
+    screen: Chat,
+  },
 });
-
-export default MessageScreen;

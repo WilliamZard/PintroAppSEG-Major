@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "339344139567",
+    "firebase_url": "https://pintrobeta.firebaseio.com",
+    "project_id": "pintrobeta",
+    "storage_bucket": "pintrobeta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339344139567:android:35afff05653839db6e6dda",
+        "android_client_info": {
+          "package_name": "com.pintro.messaging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339344139567-4fhv1fdjvcah0odjaatrum96f1a5h4sl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqWnTXPzT9Q1XG2fPvjF_TnbwkFgybhqw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339344139567-4fhv1fdjvcah0odjaatrum96f1a5h4sl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
