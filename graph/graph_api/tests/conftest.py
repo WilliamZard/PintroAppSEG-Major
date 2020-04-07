@@ -26,18 +26,12 @@ def clear_db():
     DROP_SEARCH_TAG_INDEX = "CALL db.index.fulltext.drop(\"SearchTagIndex\")"
     driver = connect()
     with driver.session() as session:
-        print("about to delete")
         session.write_transaction(_run_query, DELETE_ALL_NODES)
         session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
         session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
         session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
         session.write_transaction(_run_query, DROP_SEARCH_TAG_INDEX)
-
-
-"""        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)"""
-
+    driver.close()
 
 def _run_query(tx, query):
     return tx.run(query)
@@ -46,7 +40,6 @@ def _run_query(tx, query):
 @pytest.fixture()
 def populate_db():
     def populate(nodes_to_create=[], relationships_to_create=[]):
-        print('populating')
         driver = connect()
         with driver.session() as session:
             # Create indexes fot full text search.
@@ -57,7 +50,6 @@ def populate_db():
             # Where relationships_to_create is list of dictionaries containing properties and labels for both nodes, plus relationship type
             for relationship in relationships_to_create:
                 session.write_transaction(create_relationship, **relationship)
-        # TODO: do this properly. Move all db stuff connect() function. Use yield.
         driver.close()
     yield populate
     clear_db()
@@ -68,9 +60,5 @@ def app():
     app = create_app()
     app.testing = True
 
-    # TODO: right now this populates and clears the database for all tests, as opposed to every test
-    # Not sure which if this should happen per test or per module.
-    # Figure this out.
     with app.test_client() as client:
-        # NOTE commented out populate db
         yield client
