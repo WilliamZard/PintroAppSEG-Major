@@ -4,7 +4,6 @@ import logging
 
 
 def create_app():
-    # TODO: make logging configurable
     logging.basicConfig(level=logging.DEBUG)
     app = Flask(__name__)
 
