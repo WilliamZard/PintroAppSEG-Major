@@ -2,8 +2,6 @@ from flask import make_response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
-from marshmallow import Schema, fields
-from marshmallow.exceptions import ValidationError
 
 from .helper_functions import *
 from .image_storing import *
