@@ -3,6 +3,7 @@ import { BearerToken }  from '../../Constants/BearerToken';
 export const GETRESULTS = 'GETRESULTS';
 export const getResults = (item) => {
     return async dispatch => {
+        console.log("Keyword for the DB is: " + item);
         const response = await fetch("https://bluej-pintro-project.appspot.com/search/",
             {
               method: 'POST',
@@ -50,6 +51,8 @@ export const getResults = (item) => {
          );
 
         }
+        console.log("2");
+        console.log("In search actions: " + searchResultsArray.length);
         dispatch({type: GETRESULTS,usersArray:searchResultsArray});
     };
 };
