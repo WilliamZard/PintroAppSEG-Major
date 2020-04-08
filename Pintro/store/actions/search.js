@@ -51,8 +51,7 @@ export const getResults = (item) => {
          );
 
         }
-        console.log("2");
-        console.log("In search actions: " + searchResultsArray.length);
+
         dispatch({type: GETRESULTS,usersArray:searchResultsArray});
     };
 };
