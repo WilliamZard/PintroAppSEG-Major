@@ -26,7 +26,7 @@ class Request(Resource):
             created_at = time.time()
             tx = session.begin_transaction()
             response = create_relationship(tx, 'Person', {'email': requester_email}, 'Person', {
-                                           'email': requester_email}, REQUEST_RELATIONSHIPS[relationship_type], {'created_at': created_at})
+                                           'email': request_recipient_email}, REQUEST_RELATIONSHIPS[relationship_type], {'created_at': created_at})
             tx.commit()
             if response.summary().counters.relationships_created == 1:
                 return make_response('', 201)
