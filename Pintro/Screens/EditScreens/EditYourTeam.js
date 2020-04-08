@@ -11,7 +11,7 @@ const EditYourTeam = props => {
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [teamMembers,setMembers] = useState([]);
-    const searchResults = useSelector(state => state.search.usersArray);
+    searchResults = useSelector(state => state.actions.usersArray);
     
 
     function onTextChanged(searchWord) {
@@ -22,10 +22,11 @@ const EditYourTeam = props => {
         setMembers(teamMembers.filter((element)=>element!==value));
     }
 
-    function handleKeyPress() {
-        console.log(searchKeyword);
-        dispatch(SearchActions.getResults(searchKeyword));
-        console.log(searchResults.length);
+    async function handleKeyPress() {
+        console.log("Search keyword: " + searchKeyword);
+        await dispatch(SearchActions.getResults(searchKeyword));
+        console.log("1");
+        console.log("Search results length: " + searchResults.length);
         let personProfiles = searchResults.filter((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
         if(personProfiles.length == 0) {
             Alert.alert('No results found','No users were found that match your search');
@@ -54,7 +55,7 @@ const EditYourTeam = props => {
             </View>
             <View style={styles.horizintalLineStyle}/>
             <Text style={styles.subtitle}>Current members:</Text>
-            {teamMembers.map((item) => <TeamMember props={props.TeamMember} callback={value => onPressRemove(value)} userObj={item}/>)}
+            {teamMembers.map((item) => <TeamMember key={item.email} props={props.TeamMember} callback={value => onPressRemove(value)} userObj={item}/>)}
             <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
         </View>
     )
