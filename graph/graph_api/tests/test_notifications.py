@@ -1,5 +1,6 @@
 import pytest
 import time
+from flask import Flask
 
 from .conftest import app, populate_db
 from .generate_test_data import (Business, Notification, User,
@@ -11,7 +12,7 @@ class TestGET:
     # TODO: test email validity
     # TODO: test only users can make this request
     # TODO: add time of notification to response
-    def test_GET_notifications_for_existing_user(self, app, populate_db):
+    def test_GET_notifications_for_existing_user(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         # Define users
         user_with_notifications = User(email='hasnotificatiosn@test.com')._asdict()
@@ -57,7 +58,7 @@ class TestGET:
         assert json == [notification_b, notification_a]
         # TODO: create user, create inbound request relationships, create requesting users
 
-    def test_GET_notifications_for_existing_user_with_no_notifications(self, app, populate_db):
+    def test_GET_notifications_for_existing_user_with_no_notifications(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         valid_user = User(full_name='Duke Wellington',
                           email='duke@wellington.com')._asdict()

@@ -4,12 +4,15 @@ from graph_api import create_app
 
 from .generate_test_data import create_node, create_relationship, create_full_text_indexes
 import os
-from neo4j import GraphDatabase
+from neo4j import GraphDatabase, Transaction, BoltStatementResult
 from graph_api.apis.image_storing import clear_bucket
 
+from flask import Flask
+from typing import List
 
 
-def connect():
+
+def connect() -> GraphDatabase.driver:
     uri = os.getenv('NEO4J_URI')
     db_user = 'neo4j'
     password = os.getenv("NEO4J_PASSWORD")
@@ -17,7 +20,7 @@ def connect():
     return driver
 
 
-def clear_db():
+def clear_db() -> None:
     clear_bucket()
     DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
     DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
@@ -33,13 +36,13 @@ def clear_db():
         session.write_transaction(_run_query, DROP_SEARCH_TAG_INDEX)
     driver.close()
 
-def _run_query(tx, query):
+def _run_query(tx: Transaction, query: str) -> BoltStatementResult:
     return tx.run(query)
 
 
 @pytest.fixture()
-def populate_db():
-    def populate(nodes_to_create=[], relationships_to_create=[]):
+def populate_db() -> None:
+    def populate(nodes_to_create=[]: List, relationships_to_create=[]: List) None:
         driver = connect()
         with driver.session() as session:
             # Create indexes fot full text search.
@@ -56,7 +59,7 @@ def populate_db():
 
 
 @pytest.fixture()
-def app():
+def app() -> Flask:
     app = create_app()
     app.testing = True
 

@@ -1,4 +1,8 @@
-def prepere_search_responses_for_account_assertion(response):
+from flask import Response
+import json 
+from typing import Union, Dict, List
+
+def prepere_search_responses_for_account_assertion(response: Response) -> json:
     '''Small helper function that formats responses from search POST endpoint to be like accounts stored in database.
         It removes the score and profile type fields and makes sure to propely format the tags field.
     '''
@@ -16,7 +20,7 @@ def prepere_search_responses_for_account_assertion(response):
     
     return json_response
 
-def ordered(obj):
+def ordered(obj: Union[Dict, List]) -> Union[Dict, List]:
     '''Small helper function that sorts by alphabetical order all the elements in arrays 
        of dictionaries.
     '''
