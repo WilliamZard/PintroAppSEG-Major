@@ -3,7 +3,7 @@ import os
 import logging
 
 
-def create_app():
+def create_app() -> Flask:
     logging.basicConfig(level=logging.DEBUG)
     app = Flask(__name__)
 
