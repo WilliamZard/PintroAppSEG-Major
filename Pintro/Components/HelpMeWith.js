@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, Image, View } from 'react-native';
 import Colors from '../Constants/Colors';
-import { fonts } from '../Constants/Fonts';
+
 
 const HelpMeWith = props => {
     return(

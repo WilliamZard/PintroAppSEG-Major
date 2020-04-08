@@ -18,17 +18,6 @@ const EditIntro = props => {
     const [investPic, setInvestPic] = useState((seekingInvest==="True") ? tick : circle);
     const [hiringPic, setHiringPic] = useState((hiring==="True") ? tick : circle);
 
-    const item = {
-        "email": "piing@pong.com",
-        "password": "piin",
-        "full_name": "Piin App Limited",
-        "profile_image": "profile",
-        "phone": "69",
-        "location": "Central London",
-        "short_bio": "Connect in Real Life",
-        "story": "Lorem ipsum dolor sit amet, consecteteur adipiscing elit, sed do eiusmod tempor incididunt utt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut  aliquip ex ea commod consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum."
-    }
-
     const [name,setName] = useState(props.navigation.state.params.business.full_name);
     const [bio,setBio] = useState(props.navigation.state.params.business.short_bio);
     const [story,setStory] = useState(props.navigation.state.params.business.story);

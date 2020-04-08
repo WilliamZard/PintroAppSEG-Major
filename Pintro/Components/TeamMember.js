@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity,StyleSheet,View,Text,Image } from 'react-native';
 import { fonts } from '../Constants/Fonts';
-import Colors from '../Constants/Colors';
+
 
 const TeamMember = props => {
 

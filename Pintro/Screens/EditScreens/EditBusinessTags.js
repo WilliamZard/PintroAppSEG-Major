@@ -28,14 +28,12 @@ const EditBusinessTag = props => {
         if (searchWord.length > 2) {
             
             const regex = new RegExp(`^${searchWord}`,'i');
-            //console.log(tagList.sort().filter(v => regex.test(v)));
             setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
         }
         renderSuggestions();
     }
 
     function onListItemPress(item) {
-        //console.log(item);
        
         setItems(null);
         if(!chosenTags.includes(item)){

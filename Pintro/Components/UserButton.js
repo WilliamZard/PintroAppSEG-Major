@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
-import Colors from '../Constants/Colors.js';
 import { fonts } from '../Constants/Fonts.js';
 const UserButton = props => {
 

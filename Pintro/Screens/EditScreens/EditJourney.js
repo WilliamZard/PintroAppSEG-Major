@@ -62,11 +62,6 @@ const EditJourney = props => {
 
     }
 
-    const item = {
-        Date: "May 2017",
-        Location: "Central London"
-    }
-
     return(
         <ScrollView>
             <View style={styles.primaryContainer}>
