@@ -19,7 +19,7 @@ def get_user_by_email(tx: Transaction, user_email: str) -> BoltStatementResult:
     return tx.run(query)
 
 
-def delete_user_by_email(tx, user_email):
+def delete_user_by_email(tx: Transaction, user_email: str) -> BoltStatementResult:
     '''Deletes user node, all outbound relationships, and all posts.'''
     query = f"""
     MATCH(n: Person {{email: '{user_email}'}})
@@ -28,7 +28,7 @@ def delete_user_by_email(tx, user_email):
     return tx.run(query)
 
 
-def get_posts_of_followings_of_a_user(tx, email):
+def get_posts_of_followings_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
     query = f"""
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
@@ -37,14 +37,14 @@ def get_posts_of_followings_of_a_user(tx, email):
     return tx.run(query)
 
 
-def get_followers_of_a_user(tx, email):
+def get_followers_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
     query = f"""
         MATCH (follower)-[:FOLLOWS]->(:Person {{email: '{email}'}}) RETURN follower.full_name AS full_name, follower.email AS email
     """
     return tx.run(query)
 
 
-def get_followings_of_a_user(tx, email):
+def get_followings_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
     query = f"""
         MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email
     """

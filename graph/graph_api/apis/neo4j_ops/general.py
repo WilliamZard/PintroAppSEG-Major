@@ -6,8 +6,16 @@ from typing import Dict
 Node_properties = Dict[str, str]
 
 
-def get_account_field(tx: Transaction, user_email: str, label: str, field: str) -> BoltStatementResult:
-    query = f"""MATCH(n:{label} {{email:'{user_email}'}})
+def get_account_field(tx: Transaction, account_email: str, label: str, field: str) -> BoltStatementResult:
+        '''
+        Function that returns a specific field related to a node of a given label.
+        It returns a BoltStatementResult.
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        account_email = the email of the user whose data needs to be retrieved.
+    '''
+    query = f"""MATCH(n:{label} {{email:'{account_email}'}})
                 RETURN n.{field} as {field}"""
     return tx.run(query)
 
