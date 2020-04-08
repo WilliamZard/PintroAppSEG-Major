@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -24,7 +24,7 @@ notifications = api.model('Notification', {
 @api.route('/<string:user_email>')
 @api.produces('application/json')
 class Notifications(Resource):
-    def get(self, user_email):
+    def get(self, user_email: str) -> Response:
         '''Get all notification of the given user.'''
 
         with create_session() as session:

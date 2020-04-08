@@ -33,8 +33,16 @@ def close_db(error):
 """ Functions for Users """
 # TODO: start grouping functions by resource type for organisation's sake
 
-def get_account_field(tx, user_email, label, field):
-    query = f"""MATCH(n:{label} {{email:'{user_email}'}})
+def get_account_field(tx, account_email, label, field):
+    '''
+        Function that returns a specific field related to a node of a given label.
+        It returns a BoltStatementResult.
+    '''
+    '''Args:
+        tx = the context from where to run chipher statements and retreiving information from the db.
+        account_email = the email of the user whose data needs to be retrieved.
+    '''
+    query = f"""MATCH(n:{label} {{email:'{account_email}'}})
                 RETURN n.{field} as {field}"""
     return tx.run(query)
 
@@ -62,7 +70,6 @@ def delete_user_by_email(tx, user_email):
     OPTIONAL MATCH(n)--(p: Post)
     DETACH DELETE n, p"""
     return tx.run(query)
-
 
 
 def set_user_fields(tx, user_email, fields):

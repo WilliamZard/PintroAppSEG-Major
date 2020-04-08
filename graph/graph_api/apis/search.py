@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -25,7 +25,7 @@ query = api.model('Query', {'query': restx_fields.String(
 @api.expect(query)
 class SearchPost(Resource):
     @api.doc('search_query')
-    def post(self):
+    def post(self) -> Response:
         '''Search users, business accounts, or co-working spaces given some keywords or tags.
            It returns a record. It limits the result to only contain at most 10 spaces,
            business profiles, or users.

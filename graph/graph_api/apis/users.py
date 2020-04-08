@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -56,7 +56,7 @@ users = api.model('Users', {
 @api.route('/<string:email>')
 @api.produces('application/json')
 class Users(Resource):
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Fetch a user given its email.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -75,7 +75,7 @@ class Users(Resource):
 
     @api.doc('delete_user')
     @api.response(204, 'User deleted.')
-    def delete(self, email):
+    def delete(self, email: str) -> Response:
         '''Delete a user given its email.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -95,7 +95,7 @@ class Users(Resource):
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
     @api.expect(users)
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Update a user by the given fields.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -131,7 +131,7 @@ class UsersPost(Resource):
     @api.response(422, 'Invalid Email')
     @api.response(201, 'User created')
     @api.response(409, 'User with that email already exists')
-    def post(self):
+    def post(self) -> Response:
         '''Create a user.'''
         # TODO:validate email
         if not valid_email(api.payload['email']):
@@ -165,7 +165,7 @@ class UsersPost(Resource):
 @api.produces('application/json')
 class UsersGETFollowers(Resource):
     @api.doc('get followers of a user')
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Get followers of a user'''
         with create_session() as session:
             response = session.read_transaction(
@@ -182,7 +182,7 @@ class UsersGETFollowers(Resource):
 @api.produces('application/json')
 class UsersGETFollowings(Resource):
     @api.doc('Get the users that the given user is following')
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
@@ -197,7 +197,7 @@ class UsersGETFollowings(Resource):
 @api.produces('application/json')
 class UsersGETPostsOfFollowings(Resource):
     @api.doc('Get the posts of users the given user follows.')
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Get the posts of users the given user follows.'''
         with create_session() as session:
             response = session.read_transaction(
@@ -218,7 +218,7 @@ class UsersGETPostsOfFollowings(Resource):
 class Users(Resource):
     @api.doc('deactivate users')
     @api.response(204, 'User deactivated.')
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Deactivate a user account.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -237,7 +237,7 @@ class Users(Resource):
 class Users(Resource):
     @api.doc('activate users')
     @api.response(204, 'User activated.')
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Activate a user account if it has been deactivated.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -254,7 +254,7 @@ class Users(Resource):
 @api.route('/<string:email>/chatrooms')
 @api.produces('application/json')
 class GETUserChatrooms(Resource):
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Gets the chatrooms a user is in.'''
         if not valid_email(email):
             return make_response('', 422)

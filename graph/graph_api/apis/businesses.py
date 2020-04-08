@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -46,7 +46,7 @@ businesses = api.model('Businesses', {
 @api.produces('application/json')
 @api.expect(businesses)
 class Businesses(Resource):
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Fetch a business given its email.'''
         if not valid_email(email):
             return make_response('', 422)

@@ -1,7 +1,7 @@
 import re
 import time
 
-from flask import abort, make_response
+from flask import abort, make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -11,11 +11,11 @@ from .neo4j_ops.tags import get_tags
 
 
 # TODO: refactor these util functions
-def get_time():
+def get_time() -> str:
     return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 
 
-def convert_to_cypher_datetime(datetime):
+def convert_to_cypher_datetime(datetime: float) -> str:
     # Assumes there is a single space separating date and time sections
     # Assumes is in UTC time and is timezone naive
     return datetime.replace(' ', 'T') + '+00:00'
@@ -38,7 +38,7 @@ labels = api.model('Label', {
 @api.produces('application/json')
 @api.expect(labels)
 class Tags(Resource):
-    def post(self):
+    def post(self) -> Response:
         '''Get all tags with the given labels.'''
         if not api.payload or not api.payload['labels']:
             abort(400)

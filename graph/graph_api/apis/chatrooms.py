@@ -1,6 +1,6 @@
 import uuid
 
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -32,7 +32,7 @@ chatrooms = api.model('Chatrooms', {
 class ChatroomsPOST(Resource):
     @api.doc("create_chatroom")
     @api.response(409, 'Chatroom with these users already exists')
-    def post(self, email1, email2):
+    def post(self, email1: str, email2: str) -> Response:
         '''Create a chatroom with the given users in it.'''
         if not valid_email(email1):
             return make_response('', 422)

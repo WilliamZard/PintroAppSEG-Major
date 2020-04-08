@@ -1,12 +1,14 @@
 
 import time
 
-from flask import make_response
+from flask import make_response, Response
 from flask_restx import Namespace, Resource
 
 from .neo4j_ops import create_session
 from .neo4j_ops.general import create_relationship, delete_relationship
 from .request import REQUEST_RELATIONSHIPS
+
+from neo4j import Transaction
 
 api = Namespace(
     'approve', title='For approving user relationships(eg FOLLOW or AFFILIATED_WITH')
@@ -19,7 +21,7 @@ APPROVE_RELATIONSHIPS_MAPPING = {
 @api.route('/<string:relationship_type>/<string:requester_email>/<string:request_recipient_email>')
 @api.produces('application/json')
 class Approve(Resource):
-    def post(self, relationship_type, requester_email, request_recipient_email):
+    def post(self, relationship_type: str, requester_email: str, request_recipient_email: str) -> Response:
         '''
         Replace the existing request relationship with an approved relationship.
         E.g. REQUESTED_FOLLOW => FOLLOWS
@@ -34,7 +36,7 @@ class Approve(Resource):
         # TODO: validate emails
         with create_session() as session:
             created_at = time.time()
-            tx = session.begin_transaction()
+            tx: Transaction = session.begin_transaction()
             del_response = delete_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
                 'email': request_recipient_email}, REQUEST_RELATIONSHIPS[relationship_type])
             create_response = create_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
