@@ -11,8 +11,8 @@ const EditYourTeam = props => {
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [teamMembers,setMembers] = useState([]);
-    searchResults = useSelector(state => state.actions.usersArray);
-    
+    const [searchResults,setResults] = useState([]);
+    const resultArray = useSelector(state => state.search.usersArray);
 
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -25,7 +25,7 @@ const EditYourTeam = props => {
     async function handleKeyPress() {
         console.log("Search keyword: " + searchKeyword);
         await dispatch(SearchActions.getResults(searchKeyword));
-        console.log("1");
+        setResults(resultArray);
         console.log("Search results length: " + searchResults.length);
         let personProfiles = searchResults.filter((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
         if(personProfiles.length == 0) {
@@ -33,10 +33,11 @@ const EditYourTeam = props => {
         } else {
             setMembers(personProfiles);
         }
+        setSearchKeyword(null);
     }
 
     function onPressDone() {
-        console.log("You pressed done(a lot)");
+        console.log("You pressed done");
     }
 
     return (
