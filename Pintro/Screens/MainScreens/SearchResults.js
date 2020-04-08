@@ -22,7 +22,7 @@ const SearchResults = props => {
         props.navigation.navigate('navBusiness');
     }
 
-    businesses = businesses.map((item) => <Company props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
+    businesses = businesses.map((item) => <Company key={item.email} props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
         
 
     function seeAllUsers() {
