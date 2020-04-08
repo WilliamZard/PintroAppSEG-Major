@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import { View,StyleSheet,Text,TouchableOpacity,Image,TextInput,Picker,Alert } from 'react-native';
+import { View,StyleSheet,Text,TextInput,Picker,Alert,ScrollView } from 'react-native';
 import { fonts } from '../../Constants/Fonts';
 import Colors from '../../Constants/Colors';
 import BlackTag from '../../Components/BlackTag';
 import TeamMember from '../../Components/TeamMember';
-import * as SearchActions from "../../store/actions/search";
+import User from '../../Model/User';
+import { BearerToken } from '../../Constants/BearerToken';
 
 const EditYourTeam = props => {
-    const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [teamMembers,setMembers] = useState([]);
-    const [searchResults,setResults] = useState([]);
-    const resultArray = useSelector(state => state.search.usersArray);
+    const [teamEmails,setEmails] = useState([])
 
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -23,24 +21,77 @@ const EditYourTeam = props => {
     }
 
     async function handleKeyPress() {
-        console.log("Search keyword: " + searchKeyword);
-        await dispatch(SearchActions.getResults(searchKeyword));
-        setResults(resultArray);
-        console.log("Search results length: " + searchResults.length);
-        let personProfiles = searchResults.filter((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
-        if(personProfiles.length == 0) {
-            Alert.alert('No results found','No users were found that match your search');
+        const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + searchKeyword,
+        {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': BearerToken       
+            },
+            redirect: 'follow'
+        })
+        console.log(response.status);
+        if(!response.ok) {
+            if(response.status == '404') {
+                Alert.alert('No results found','No users were found that match your search');
+            } else if (response.status == '422') {
+                Alert.alert('Invalid search term','Please enter an email address');
+            } else {
+                const errorResData = await response.json();
+                console.log(errorResData);
+                let message = 'Something went wrong';
+                throw new Error(message);
+            }
         } else {
-            setMembers(personProfiles);
+            const resData = await response.json();
+
+            if(resData === []){
+                Alert.alert('No results found','No users were found that match your search');
+            } else {
+                let searchedUser = new User(resData.education,resData.email,resData.full_name,resData.gender,resData.job_title,resData.location,resData.password,resData.phone,resData.preferred_name,resData.profile_image,resData.profile_type,"",resData.short_bio,resData.story);
+                setEmails(searchedUser.email);
+                teamMembers.push(searchedUser);
+                console.log(teamEmails);
+            }
         }
-        setSearchKeyword(null);
     }
 
-    function onPressDone() {
+    async function onPressDone() {
         console.log("You pressed done");
+        console.log(teamMembers);
+        const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + props.navigation.state.params.business.email,
+        {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': BearerToken
+            },
+            redirect: 'follow',
+            body: JSON.stringify({
+                email: props.navigation.state.params.business.email,
+                password: props.navigation.state.params.business.password,
+                full_name: props.navigation.state.params.business.full_name,
+                profile_image: props.navigation.state.params.business.profile_image,
+                phone: props.navigation.state.params.business.phone,
+                location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
+                short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                tags: props.navigation.state.params.business.tags,
+                date_founded: props.navigation.state.params.business.date_founded,
+                company_size: props.navigation.state.params.business.company_size,
+                funding: props.navigation.state.params.business.funding,
+                team_members: teamMembers,
+                seeking_investment: props.navigation.state.params.business.seeking_investment,
+                currently_hiring: props.navigation.state.params.business.currently_hiring
+            })
+        }
+        );
+        console.log(response.status);
+        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
     }
 
     return (
+    <ScrollView>
         <View style={styles.primaryContainer}>
             <Text style={styles.title}>Edit your team</Text>
             <Text style={styles.search}>Search and invite your people</Text>
@@ -59,6 +110,8 @@ const EditYourTeam = props => {
             {teamMembers.map((item) => <TeamMember key={item.email} props={props.TeamMember} callback={value => onPressRemove(value)} userObj={item}/>)}
             <BlackTag props={props.BlackTag} onPress={() => onPressDone()}>Done</BlackTag>
         </View>
+    </ScrollView>
+        
     )
 }
 
