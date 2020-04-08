@@ -3,7 +3,7 @@ from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 
-from .helper_functions import *
+from .utils import *
 from .image_storing import *
 
 from .neo4j_ops import create_session
