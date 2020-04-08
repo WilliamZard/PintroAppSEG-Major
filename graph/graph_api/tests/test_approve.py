@@ -3,7 +3,7 @@ import pytest
 from .conftest import app, populate_db
 from .generate_test_data import (Business, User, basic_business_node,
                                  basic_user_node)
- from flask import Flask
+from flask import Flask
 
 @pytest.mark.POST_approve
 class TestPOST:

@@ -1,4 +1,5 @@
 from neo4j import Transaction, BoltStatementResult
+from typing import List
 
 
 def delete_tagged_relationships(tx: Transaction, email: str) -> BoltStatementResult:

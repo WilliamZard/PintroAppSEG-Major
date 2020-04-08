@@ -42,7 +42,7 @@ def _run_query(tx: Transaction, query: str) -> BoltStatementResult:
 
 @pytest.fixture()
 def populate_db() -> None:
-    def populate(nodes_to_create=[]: List, relationships_to_create=[]: List) None:
+    def populate(nodes_to_create=[], relationships_to_create=[]) -> None:
         driver = connect()
         with driver.session() as session:
             # Create indexes fot full text search.

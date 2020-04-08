@@ -17,7 +17,7 @@ from .test_data.notifications import *
 from typing import Dict
 
 
-def create_node(tx: Transaction, labels: str, properties, str) -> BoltStatementResult:
+def create_node(tx: Transaction, labels: str, properties: str) -> BoltStatementResult:
     # NOTE: this current code assumes all properties are a string.
     if isinstance(labels, list):
         labels = ':'.join(labels)
@@ -29,7 +29,7 @@ def create_node(tx: Transaction, labels: str, properties, str) -> BoltStatementR
 def create_relationship(tx: Transaction,
                         s_node_properties: str, s_node_labels: str,
                         e_node_properties: str, e_node_labels: str,
-                        relationship_type: str, relationship_properties=None: str) -> BoltStatementResult:
+                        relationship_type: str, relationship_properties=None) -> BoltStatementResult:
     # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
     # properties to match by, and relationship type. Labels already in node objects.
     s_node_properties = ", ".join(
@@ -58,7 +58,7 @@ def basic_chatroom_node(user: User) -> Dict[str, str]:
     return {'properties': dict(user), 'labels': 'Chatroom'}
 
 
-def basic_post_node(post: Post) -> Dict[str, str]::
+def basic_post_node(post: Post) -> Dict[str, str]:
     return {'properties': dict(post), 'labels': 'Post'}
 
 
@@ -70,7 +70,7 @@ def basic_business_node(business: Business) -> Dict[str, str]:
     return {'properties': dict(business), 'labels': 'Business'}
 
 
-def basic_tag_node(tag: Tag, labels='Tag': str) -> Dict[str, str]:
+def basic_tag_node(tag: Tag, labels='Tag') -> Dict[str, str]:
     return {'properties': dict(tag), 'labels': labels}
 
 

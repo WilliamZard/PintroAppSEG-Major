@@ -1,9 +1,9 @@
 from .neo4j_ops.search import get_accounts_with_tag
-from neo4j import Generator, Session
+from neo4j import Record, Session
 from typing import List, Dict
 
 
-def get_accouts_with_tags(tag_records: Generator, session: Session) -> List[Dict[str, str]]:
+def get_accouts_with_tags(tag_records: List[Record], session: Session) -> List[Dict[str, str]]:
     profiles_with_tags = []
     # For every tag, look for normal users, business accounts, or spaces that used that tag, and append them to profile_with_tags.
     for tag_record in tag_records:

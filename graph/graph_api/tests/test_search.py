@@ -1,5 +1,5 @@
 import pytest
-from flask import json Flask
+from flask import json, Flask
 from flask.json import jsonify
 
 from .conftest import app, populate_db
