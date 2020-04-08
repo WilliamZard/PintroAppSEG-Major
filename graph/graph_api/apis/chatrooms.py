@@ -14,9 +14,6 @@ from .neo4j_ops.chatrooms import (check_chatroom_exists,
 from .posts import posts
 from .utils import valid_email
 
-# TODO: enable swagger API spec
-# TODO: email validation
-
 
 api = Namespace('chatrooms', title='Chatroom related operations')
 

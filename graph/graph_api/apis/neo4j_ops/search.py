@@ -25,19 +25,9 @@ def get_nodes_for_tag_search(tx: Transaction, search_string: str) -> BoltStateme
                 RETURN node, score"""
     return tx.run(query)
 
-# def get_users_with_tag(tx, tag):
-#     query = f"""OPTIONAL MATCH (node:Person)-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
-#                 RETURN user LIMIT 10
-#             """
-#     return tx.run(query)
-
 
 def get_accounts_with_tag(tx: Transaction, tag: str, label: str) -> BoltStatementResult:
     query = f"""OPTIONAL MATCH (node:{label})-[:TAGGED]->(tag:Tag {{name:'{tag}'}})
                 RETURN node LIMIT 10
              """
-    # query = f"""MATCH (node:{label})
-    #             WHERE any(x IN node.tags WHERE x = '{tag}')
-    #             RETURN node LIMIT 10
-    #         """
     return tx.run(query)
