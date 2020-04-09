@@ -100,6 +100,9 @@ const BusinessNavigator = createStackNavigator({
     Account:{screen:BusinessAccountScreen,navigationOptions:{
         headerShown: false
     }},
+    Profile:{screen:ViewBusinessAccountScreen,navigationOptions:{
+        headerShown: false,
+    }},
     Intro:{screen:EditIntro,navigationOptions:{
         headerTitle: '',
     }},
@@ -114,9 +117,6 @@ const BusinessNavigator = createStackNavigator({
     }},
     Team:{screen:EditYourTeam,navigationOptions:{
         headerTitle: '',
-    }},
-    Profile:{screen:ViewBusinessAccountScreen,navigationOptions:{
-        headerShown: false,
     }}
 });
 
