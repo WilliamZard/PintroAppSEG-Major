@@ -12,7 +12,8 @@ def get_business_by_email(tx, business_email):
     query = f"""
     MATCH (user:Business {{email: '{business_email}'}})
     OPTIONAL MATCH (user)-->(tag:Tag)
-    RETURN user, COLLECT(tag.name) AS tags"""
+    OPTIONAL MATCH (person:Person)-[:AFFILIATED_WITH]->(user)
+    RETURN user, COLLECT(DISTINCT tag.name) AS tags, COLLECT(person.email) AS team_members"""
     return tx.run(query)
 
 

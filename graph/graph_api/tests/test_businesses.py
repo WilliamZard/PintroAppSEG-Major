@@ -13,7 +13,7 @@ from .generate_test_data import Business, basic_business_node, Tag, basic_tag_no
 class TestGet:
     def test_get_business_with_valid_email_that_exists(self, app, populate_db):
         # Define Nodes
-        tag_a = Tag(name='King Slaying')._asdict()
+        tag_a = Tag(name='King Slayyyying')._asdict()
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'BusinessTag']}
 
         user_1 = User(email='affiliated_user_1@gmail.com')._asdict()
@@ -40,7 +40,7 @@ class TestGet:
             'e_node_properties': {'email': business['email']}, 'e_node_labels': 'Business',
             'relationship_type': 'AFFILIATED_WITH'}
         # Populate
-        populate_db(nodes_to_create=[business_node, tag_a_node],
+        populate_db(nodes_to_create=[business_node, tag_a_node, user_1_node, user_2_node],
                     relationships_to_create=[tagged_a, affiliated_with_1, affiliated_with_2])
 
         # Test
@@ -52,7 +52,12 @@ class TestGet:
         assert len(response) == len(business)
         for key, value in business.items():
             assert key in response
-            assert value == response[key]
+            if isinstance(response[key], list):
+                assert len(value) == len(response[key])
+                for item in value:
+                    assert item in response[key]
+            else:
+                assert value == response[key]
 
     def test_get_business_with_valid_email_that_does_not_exist(self, app, populate_db):
         populate_db()

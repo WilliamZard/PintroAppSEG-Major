@@ -57,6 +57,7 @@ class Businesses(Resource):
                 data = response.data()
                 business = dict(data['user'].items())
                 business['tags'] = data['tags']
+                business['team_members'] = data['team_members']
                 business['profile_image'] = str(
                     get_data_from_gcs(business['profile_image']))
                 return jsonify(**business)
