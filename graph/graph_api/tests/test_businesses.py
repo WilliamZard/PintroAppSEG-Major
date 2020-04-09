@@ -6,7 +6,7 @@ from ast import literal_eval
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import Business, basic_business_node, Tag, basic_tag_node
+from .generate_test_data import Business, basic_business_node, Tag, basic_tag_node, User, basic_user_node
 
 
 @pytest.mark.GET_business
@@ -16,8 +16,14 @@ class TestGet:
         tag_a = Tag(name='King Slaying')._asdict()
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'BusinessTag']}
 
-        business = Business(email='new_business@rona.com',
-                            tags=[tag_a['name']])._asdict()
+        user_1 = User(email='affiliated_user_1@gmail.com')._asdict()
+        user_1_node = {'properties': dict(user_1), 'labels': 'Person'}
+        user_2 = User(email='affiliated_user_2@gmail.com')._asdict()
+        user_2_node = {'properties': dict(user_2), 'labels': 'Person'}
+
+        business_kwargs = dict(email='new_business@rona.com',
+                               tags=[tag_a['name']])
+        business = Business(**business_kwargs)._asdict()
         business_node = basic_business_node(business)
 
         # Define relationships
@@ -25,14 +31,24 @@ class TestGet:
             's_node_properties': {'email': business['email']}, 's_node_labels': 'Business',
             'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
             'relationship_type': 'TAGGED'}
+        affiliated_with_1 = {
+            's_node_properties': {'email': user_1['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': business['email']}, 'e_node_labels': 'Business',
+            'relationship_type': 'AFFILIATED_WITH'}
+        affiliated_with_2 = {
+            's_node_properties': {'email': user_2['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': business['email']}, 'e_node_labels': 'Business',
+            'relationship_type': 'AFFILIATED_WITH'}
         # Populate
-        populate_db(nodes_to_create=[
-                    business_node, tag_a_node], relationships_to_create=[tagged_a])
+        populate_db(nodes_to_create=[business_node, tag_a_node],
+                    relationships_to_create=[tagged_a, affiliated_with_1, affiliated_with_2])
 
         # Test
         response = app.get(f"/businesses/{business['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
+        business_kwargs['team_members'] = [user_1['email'], user_2['email']]
+        business = Business(**business_kwargs)._asdict()
         assert len(response) == len(business)
         for key, value in business.items():
             assert key in response
