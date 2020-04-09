@@ -11,8 +11,22 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import SignInUpButton from '../../Components/SignInUpButton';
 
 const GiveUsDetails = props => {
-const [seekingInvestments,setSeekingInvestments] = useState(false);
-const [currentlyHiring,setCurrentlyHiring] = useState(false);
+
+    const seekingInvestments = props.navigation.getParam('seekingInvestmentsToPass');
+    const currentlyHiring = props.navigation.getParam('currentlyHiringToPass');
+    const companyName = props.navigation.getParam('companyNameToPass');
+    const tagLine = props.navigation.getParam('tagLineToPass');
+    const companyStory = props.navigation.getParam('companyStoryToPass');
+    const businessTags = props.navigation.getParam('BusinessTagsToPass');
+
+
+
+    const [dateFounded,setDateFounded] = useState("");
+    const [location,setLocation] = useState("");
+    const [companySize,setCompanySize] = useState("");
+    const [funding,setFunding] = useState("");
+
+    
 return ( 
     <KeyboardAwareScrollView
     style={{ backgroundColor: '#1a1a1a' }}
@@ -44,8 +58,20 @@ return (
   
     <TouchableOpacity style={styles.Button} onPress={
   () =>
-  props.navigation.navigate({routeName:'BrandLogo'})
-  
+  props.navigation.navigate({routeName:'BrandLogo',params:{
+
+    seekingInvestmentsToPass:seekingInvestments,
+    currentlyHiringToPass:currentlyHiring,
+    companyNameToPass:companyName,
+    tagLineToPass:tagLine,
+    companyStoryToPass:companyStory,
+    BusinessTagsToPass:businessTags,
+    dateFoundedToPass:dateFounded,
+    locationToPass:location,
+    companySizeToPass:companySize,
+    fundingToPass:funding
+    }})
+ 
 
                             }><Text style={styles.TextButton}>Step 3 of 5</Text></TouchableOpacity>
     </View>

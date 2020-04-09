@@ -20,8 +20,8 @@ const ShowUsYourFace = props => {
 
     const phoneNumber = props.navigation.getParam('phoneToPass');
     const email = props.navigation.getParam('emailToPass');
-    const[imageUri,setImage] = useState(null);
-    const [imageEncoding,setImageEncoding] = useState();
+    const[imageUri,setImage] = useState("null");
+    const [imageEncoding,setImageEncoding] = useState("");
 
 
 
@@ -39,10 +39,11 @@ async function pickImage() {
       quality: 1
     });
 
-    console.log(result);
+    
 
     if(!result.cancelled) {
         setImage(result.uri);
+        setImageEncoding("chosen");
     }
 }
 
@@ -52,18 +53,32 @@ async function getPermission() {
         Alert.alert('Permission needed','We need permission to access your camera roll');
     }
 }
-
+const verification = () =>{
+    console.log(imageEncoding);
+    if(imageEncoding.length ===0){
+    
+        Alert.alert("Error","Please choose a picture");
+        return false;
+    }
+ return true;
+    };
 async function onPressDone() {
     console.log("Done was pressed");
+    if(!verification()===false){
     const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
     const imageCode = await result.base64
-    setImageEncoding(imageCode);
-    console.log(imageCode);
+    const formattedImage = "b'" + imageCode+"'";
+   
+    setImageEncoding(formattedImage);
+
     props.navigation.navigate({routeName:'WhatsYourStory',params:{
         phoneToPass:phoneNumber,
         emailToPass:email,
-        photoToPass:imageCode
+        photoToPass:formattedImage
       }})
+    }else{
+        return
+    }
 }
 
 

@@ -30,4 +30,47 @@ export const getBusiness = value => {
 
         dispatch({type: GETBUSINESS,businessObj:searchedBusiness});
     }
-}
+};
+
+
+
+export const create_business = (profile_image,location,story,tags,
+    date_founded,company_size,funding,team_members,seeking_investment,currently_hiring) => {
+    return async (dispatch,getState) => {
+   
+      const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/',
+        {
+          method: 'POST',
+          headers: {'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+getState().auth.tokenToGet},
+             body: JSON.stringify(
+                {
+                    "email": getState().auth.emailToGet,
+                    "password":"6",
+                    "full_name": "Sen",
+                    "profile_image": "",
+                    "phone": "",
+                    "location": location,
+                    "short_bio":"NOT A FIELD" ,
+                    "story": story,
+                    "tags": tags,
+                    "date_founded": date_founded,
+                    "company_size": company_size,
+                    "funding": funding,
+                    "team_members": "",
+                    "seeking_investment": seeking_investment,
+                    "currently_hiring": currently_hiring
+                  }
+        ), redirect: 'follow'
+  
+        }
+      );
+      if (!response.ok) {
+        const errorResData = await response.json();
+        console.log(errorResData);   
+      }
+  console.log("DDD");
+       
+    };
+  };

@@ -5,19 +5,38 @@ import {
     Text,
     TextInput
 } from 'react-native';
+import { useDispatch,useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { CheckBox } from 'react-native-elements'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SignInUpButton from '../../Components/SignInUpButton';
-
+import * as BusinessActions from '../../store/actions/business';
 const BusinessToMain = props => {
+    const dispatch = useDispatch();
+    const seekingInvestments = props.navigation.getParam('seekingInvestmentsToPass');
+    const currentlyHiring = props.navigation.getParam('currentlyHiringToPass');
+    const companyName = props.navigation.getParam('companyNameToPass');
+    const tagLine = props.navigation.getParam('tagLineToPass');
+    const companyStory = props.navigation.getParam('companyStoryToPass');
+    const businessTags = props.navigation.getParam('BusinessTagsToPass');
+    const dateFounded = props.navigation.getParam('dateFoundedToPass');
+    const location = props.navigation.getParam('locationToPass');
+    const companySize = props.navigation.getParam('companySizeToPass');
+    const funding = props.navigation.getParam('fundingToPass');
 return ( 
     
     
 <View style={styles.screen}>
     <Text style={{fontSize:30,fontFamily:'Poppins-Bold'}}>Thank you</Text>
     <Text style={{fontSize:15,fontFamily:'Poppins-Light'}}>You're now ready to use Pintro</Text>
-    <TouchableOpacity style={styles.Button} onPress={() =>props.navigation.navigate({routeName:'routeTwo'})}><Text style={styles.TextButton}>Go To Company Profile</Text></TouchableOpacity>
+    <TouchableOpacity style={styles.Button} 
+    onPress={() =>{
+        
+        dispatch(BusinessActions.create_business("",location,companyStory,businessTags,dateFounded,companySize,funding,"",seekingInvestments,currentlyHiring))
+        props.navigation.navigate({routeName:'routeTwo'})}}><Text style={styles.TextButton}>Go To Company Profile</Text></TouchableOpacity>
+    
+    
+    
     <TouchableOpacity style={styles.Button2} onPress={() =>props.navigation.navigate({routeName:'routeTwo'})}><Text style={{color:'black'}}>Invite Connections</Text></TouchableOpacity>
     
     </View>

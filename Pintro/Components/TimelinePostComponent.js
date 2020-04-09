@@ -20,7 +20,7 @@ return(
 </View>
         </View>
         <View style={{marginTop:5}}>
-        <Text style={{color:'orange'}}>#Buzzword1</Text>
+        <Text style={{color:'orange'}}></Text>
             <Text style = {{color:'white'}}> {props.content}</Text>
             </View>
     </View>

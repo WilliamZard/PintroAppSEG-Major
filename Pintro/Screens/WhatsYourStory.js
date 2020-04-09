@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
@@ -19,11 +19,20 @@ const WhatsYourStory = props => {
     const photo = props.navigation.getParam('photoToPass');
     
 
-    const [name,setName] = useState();
-    const [currentJobTitle,setCurrentJobTitle] = useState();
-    const [currentCompany,setCurrentCompany] = useState();
-    const [story,setStory] = useState();
+    const [name,setName] = useState("");
+    const [currentJobTitle,setCurrentJobTitle] = useState("");
+    const [currentCompany,setCurrentCompany] = useState("");
+    const [story,setStory] = useState("");
 
+
+const verification = () => {
+
+if(name.length===0 || currentJobTitle.length===0 || currentCompany.length===0 ||story.length===0 ){
+    Alert.alert("Error","Please enter all the fields");
+    return false;
+}
+return true;
+};
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -44,7 +53,7 @@ const WhatsYourStory = props => {
                             <TextInput 
                             style={styles.inputBox} 
                             placeholder="Enter your full name"
-                             placeholderTextColor='white'
+                            placeholderTextColor='white'
                              onChangeText={setName}
                              />
  <View style={styles.horizintalLineStyle}></View>
@@ -77,7 +86,8 @@ style={styles.inputBoxFullStory}
  <View style={styles.horizintalLineStyle}></View>
                            
                             <InvertedSignInUpButton onPress={
-  () =>
+  () =>{
+      if(!verification()===false){
   props.navigation.navigate({routeName:'TellUsHistory',params:{
     phoneToPass:phoneNumber,
     emailToPass:email,
@@ -87,8 +97,9 @@ style={styles.inputBoxFullStory}
     currentCompanyToPass:currentCompany,
     storyToPass:story
   }})
+}
 
-                            }>STEP 3 OF 6</InvertedSignInUpButton>
+                            }}>STEP 3 OF 6</InvertedSignInUpButton>
                             
                         </Animatable.View>
                     </View>
@@ -132,7 +143,8 @@ const styles = StyleSheet.create({
         height: 40,
         textAlign:'left',
         fontFamily: 'Poppins-Light',
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        color:'white',
 
     }, signInText: {
         color: 'white',

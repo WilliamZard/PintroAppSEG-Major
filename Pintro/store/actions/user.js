@@ -13,32 +13,32 @@ console.log("Bearer "+getState().auth.tokenToGet);
         'Content-Type': 'application/json',
         'Authorization': 'Bearer '+getState().auth.tokenToGet},
            body: JSON.stringify({
-            "education": university,
-            "email": email,
-            "full_name": full_name,
-            "gender": gender,
-            "help_others":help_Others,
-            "job_title": current_Company,
-            "location": location,
-            "passions": passions,
-            "password": "",
-            "phone": phone_number,
-            "preferred_name": preferrred_name,
-            "previous_Company_Year_Finished": previous_Company_Year_Finished,
-            "profile_image": profile_image,
-            "short_bio": short_bio,
-            "story": story
+            
+              "education": "Amazon",
+              "email": getState().auth.emailToGet,
+              "full_name": "Pos9",
+              "gender": "male",
+              "help_others": ["Agile"],
+              "job_title": "Chief Postman",
+              "location": "Landan",
+              "passions": ["Agile"],
+              "password": "password",
+              "phone": "999",
+              "preferred_name": "Postit",
+              "previous_Company_Year_Finished": "dadaw",
+              "profile_image": profile_image,
+              "short_bio": "posting",
+              "story": "dadawd"
+          
       }), redirect: 'follow'
 
       }
     );
     if (!response.ok) {
-      console.log("shit");
       const errorResData = await response.json();
-      console.log(errorResData);
-   
+      console.log(errorResData);   
     }
-console.log("didnt crash");
+
     dispatch({type: CREATE_USER,
        full_nameTP:full_name,
        preferrred_nameTP:preferrred_name,

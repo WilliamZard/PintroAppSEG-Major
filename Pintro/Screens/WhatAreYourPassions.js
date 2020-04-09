@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import { StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView,TouchableOpacity, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
@@ -118,7 +118,14 @@ const WhatAreYourPassions = props => {
         }
     }
     
+const verification = () => {
 
+    if(chosenTags.length<6){
+Alert.alert("Error","Please choose 6 superpowers");
+        return false;
+    }
+    return true;
+};
     
     return (
         <KeyboardAwareScrollView
@@ -133,7 +140,7 @@ const WhatAreYourPassions = props => {
 
                         <Text style={styles.signInText}>What are your passions?</Text>
                         <View style={styles.BottomMargin}>
-                        <Text style={styles.aboveInputText}>Choose your superpowers(6 minimum). Current Selection:</Text>
+                        <Text style={styles.aboveInputText}>Choose your passion tags (6 minimum). Current Selection:</Text>
 
 
                         <FlatList data ={chosenTags} renderItem={
@@ -241,7 +248,9 @@ clearIcon={null}/>
  />
  
 
- <InvertedSignInUpButton onPress={()=>   props.navigation.navigate({routeName:'HelpOthers',params:{
+ <InvertedSignInUpButton onPress={()=>   {
+     if(!verification()===false){
+     props.navigation.navigate({routeName:'HelpOthers',params:{
      phoneToPass:phoneNumber,
      emailToPass:email,
      nameToPass:name,
@@ -255,7 +264,7 @@ clearIcon={null}/>
      academicLevelToPass:academicLevel,
      passionsToPass:chosenTags,
      photoToPass:photo
-    }})}>STEP 5 OF 6</InvertedSignInUpButton>
+    }})}}}>STEP 5 OF 6</InvertedSignInUpButton>
                             
                        
                     </View>
