@@ -3,9 +3,7 @@ from typing import List
 
 
 def delete_tagged_relationships(tx: Transaction, email: str) -> BoltStatementResult:
-    """Delete all tags that are associated with a user.
-
-    """
+    """Delete all tags that are associated with a user."""
     query = f"""
     MATCH (user {{email: '{email}'}})-[rel:TAGGED]->(:Tag)
     DELETE rel
@@ -14,9 +12,7 @@ def delete_tagged_relationships(tx: Transaction, email: str) -> BoltStatementRes
 
 
 def create_TAGGED_relationships(tx: Transaction, email: str, tag_names: str, tag_labels: str) -> BoltStatementResult:
-    """Create a relationship between a specific user and the given tags.
-
-    """
+    """Create a relationship between a specific user and the given tags."""
     query = f"""
         WITH {tag_names} AS tag_names
         UNWIND tag_names AS tag_name
@@ -28,9 +24,7 @@ def create_TAGGED_relationships(tx: Transaction, email: str, tag_names: str, tag
 
 
 def get_tags(tx: Transaction, labels: List[str]) -> BoltStatementResult:
-    """Get a list of all the tags that match the given labels.
-
-    """
+    """Get a list of all the tags that match the given labels."""
     labels = ' OR '.join(f'tag:{label}' for label in labels)
     query = f"""
         MATCH (tag)
