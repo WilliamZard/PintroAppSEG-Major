@@ -13,6 +13,12 @@ import SignInUpButton from '../../Components/SignInUpButton';
 const LetsGetIntoIt = props => {
 const [seekingInvestments,setSeekingInvestments] = useState(false);
 const [currentlyHiring,setCurrentlyHiring] = useState(false);
+const [companyName,setCompanyName] = useState("");
+const [tagLine,setTagLine] = useState("");
+const [companyStory,setCompanyStory] = useState("");
+
+
+
 return ( 
     <KeyboardAwareScrollView
     style={{ backgroundColor: '#1a1a1a' }}
@@ -29,11 +35,22 @@ return (
     </View>
     </View>
     <View style={styles.main}>
-    <Text>Comapny Name</Text>
-    <TextInput style={styles.inputBox} placeholder="Enter your company name" placeholderTextColor='grey' secureTextEntry={false} />
+    <Text>Comanpy Name</Text>
+    <TextInput 
+    style={styles.inputBox}
+     placeholder="Enter your company name" 
+     placeholderTextColor='grey' 
+     secureTextEntry={false} 
+     onChangeText={(text)=>setCompanyName(text)}
+     />
     <View style={styles.horizintalLineStyle}></View>
     <Text>Tagline</Text>
-    <TextInput style={styles.inputBox} placeholder="Enter your tagline" placeholderTextColor='grey' secureTextEntry={false} />
+    <TextInput style={styles.inputBox}
+     placeholder="Enter your tagline" 
+     placeholderTextColor='grey' 
+     secureTextEntry={false} 
+     onChangeText={(text)=>setTagLine(text)}
+     />
     <View style={styles.horizintalLineStyle}></View>
     <Text>Are you..?</Text>
     <View style={styles.checkBoxes}>
@@ -65,11 +82,19 @@ return (
     placeholder="Tell is about your company" 
     placeholderTextColor='black'
     returnKeyType={'done'}
+    onChangeText={(text)=>setCompanyStory(text)}
     />
     <View style={styles.horizintalLineStyle}></View>
     <TouchableOpacity style={styles.Button} onPress={
   () =>
-  props.navigation.navigate({routeName:'BusinessTags'})
+  props.navigation.navigate({routeName:'BusinessTags', params:{
+
+    seekingInvestmentsToPass:seekingInvestments,
+    currentlyHiringToPass:currentlyHiring,
+    companyNameToPass:companyName,
+    tagLineToPass:tagLine,
+    companyStoryToPass:companyStory
+  }})
 
 
                             }><Text style={styles.TextButton}>Step 1 of 5</Text></TouchableOpacity>

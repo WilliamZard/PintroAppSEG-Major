@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView,TouchableOpacity, ColorPropType } from 'react-native';
+import { Alert, StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView,TouchableOpacity, ColorPropType } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
@@ -124,8 +124,14 @@ const photo = props.navigation.getParam('photoToPass');
         }
     }
 
-console.log("dddd");
-console.log(info);
+    const verification = () => {
+
+        if(chosenTags.length<6){
+    Alert.alert("Error","Please choose 6 superpowers");
+            return false;
+        }
+        return true;
+    };
     return (
         <KeyboardAwareScrollView
             style={{ backgroundColor: '#1a1a1a' }}
@@ -247,11 +253,14 @@ console.log(info);
                             <InvertedSignInUpButton style={{width:'80%'}} 
                          onPress={ //create user
 
-                         ()=> {dispatch(userActions.create_User(industry,academicLevel,
+                         ()=> {
+                             
+                            if(!verification()===false){
+                            dispatch(userActions.create_User(industry,academicLevel,
                             currentCompany,email,name,"NA",chosenTags,"NA",passions,
                             phoneNumber,name,previousCompany,"NA",photo,"NA",story,
                             pastEducation,"NA",workExperience))
-                         props.navigation.navigate({routeName:'BusinessYesNo'})}
+                         props.navigation.navigate({routeName:'BusinessYesNo'})}}
                         
                          }>Finishh</InvertedSignInUpButton>
                             

@@ -27,17 +27,33 @@ const LetsGetStarted = props => {
  
 
 
-const [confirmPassword,setConfirmPassword] = useState();
-const [userEmail,setUserEmail] = useState();
-const [userPassword,setUserPassword]= useState();
-const [phoneNumber,setPhoneNumber] = useState();
+const [confirmPassword,setConfirmPassword] = useState("");
+const [userEmail,setUserEmail] = useState("");
+const [userPassword,setUserPassword]= useState("");
+const [phoneNumber,setPhoneNumber] = useState("");
 const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState();
 const [isSignup, setIsSignup] = useState(false);
 const dispatch = useDispatch();
 
+const verification = () =>{
 
+if(userEmail.length === 0 || userPassword.length === 0||confirmPassword.length === 0){
+
+    Alert.alert("Error","please enter all details");
+    return false;
+}
+if(userPassword !==confirmPassword){
+    Alert.alert("Error","passwords dont match");
+    return false;
+}
+
+};
 const signupHandler = async () => {
+if(verification()===false){
+    return
+}
+
 
 setError(null);
 setIsLoading(true);

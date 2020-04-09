@@ -16,6 +16,15 @@ import {ListItem,SearchBar } from 'react-native-elements';
 const BusinessTags = props => {
 
 
+
+    //NAV
+    const seekingInvestments = props.navigation.getParam('seekingInvestmentsToPass');
+    const currentlyHiring = props.navigation.getParam('currentlyHiringToPass');
+    const companyName = props.navigation.getParam('companyNameToPass');
+    const tagLine = props.navigation.getParam('tagLineToPass');
+    const companyStory = props.navigation.getParam('companyStoryToPass');
+
+
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [suggestions,setSuggestions] = useState([]);
@@ -127,8 +136,8 @@ const BusinessTags = props => {
         <Text>Choose from the full list</Text>
         <SearchBar
 
-containerStyle={{width: 300,backgroundColor:Colors.pintroBlack}}
-inputContainerStyle={{backgroundColor:Colors.pintroBlack ,width: 280,}}
+containerStyle={{width: 300,backgroundColor:Colors.pintroBlack,borderRadius:30}}
+inputContainerStyle={{backgroundColor:Colors.pintroBlack ,width: 280,borderRadius:20}}
 onChangeText={searchWord => onTextChanged(searchWord)}
 value={searchKeyword}
 clearIcon={null}/>
@@ -214,9 +223,20 @@ clearIcon={null}/>
  horizontal={true}
  extraData={currentlyChanging}
  />
- 
+
  <View style={{marginHorizontal:30}}>
-        <TouchableOpacity style={styles.Button} onPress={() =>props.navigation.navigate({routeName:'DetailsBusiness'})}><Text style={styles.TextButton}>Step 2 of 5</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.Button} onPress={() =>props.navigation.navigate({
+            routeName:'DetailsBusiness',params:{
+
+                seekingInvestmentsToPass:seekingInvestments,
+                currentlyHiringToPass:currentlyHiring,
+                companyNameToPass:companyName,
+                tagLineToPass:tagLine,
+                companyStoryToPass:companyStory,
+                BusinessTagsToPass:chosenTags,
+                }
+            
+            })}><Text style={styles.TextButton}>Step 2 of 5</Text></TouchableOpacity>
       </View>
     </View>
     );    
@@ -235,7 +255,8 @@ const styles= StyleSheet.create({
         marginHorizontal:30,
         marginBottom:20
     },smallHeader:{
-        fontSize:14
+        fontSize:14,
+        marginHorizontal:30
     },headerSmallText:{
         marginHorizontal:30
     },

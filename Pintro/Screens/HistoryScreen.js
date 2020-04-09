@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView } from 'react-native';
+import { Alert,StyleSheet, Text, View, Button, FlatList,TextInput,ScrollView } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
@@ -35,11 +35,22 @@ const HistoryScreen = props => {
     const story = props.navigation.getParam('storyToPass');
     const photo =  props.navigation.getParam('photoToPass');
 
-    const [workExperience,setWorkExperience] = useState();
-    const [industry,setIndustry] = useState();
-    const [previousCompany,setPreviousCompany] = useState();
-    const [pastEducation,setPastEducation] = useState();
-    const [academicLevel,setAcademicLevel] = useState();
+    const [workExperience,setWorkExperience] = useState("");
+    const [industry,setIndustry] = useState("");
+    const [previousCompany,setPreviousCompany] = useState("");
+    const [pastEducation,setPastEducation] = useState("");
+    const [academicLevel,setAcademicLevel] = useState("");
+
+    const verification = () =>{
+
+        if(workExperience.length === 0 || industry.length === 0||previousCompany.length === 0||pastEducation.length === 0||academicLevel.length === 0){
+        
+            Alert.alert("Error","please enter all details");
+            return false;
+        }
+ return true;
+        
+        };
 
 
     return (
@@ -109,10 +120,12 @@ const HistoryScreen = props => {
                 { label: 'A-Levels', value: 'Levels' },
             ]}
         />
-       
+        
  <View style={styles.horizintalLineStyle}></View>
                            
- <InvertedSignInUpButton onPress={()=>     props.navigation.navigate({routeName:'Passions',params:{
+ <InvertedSignInUpButton onPress={()=>{
+     if(!verification()===false){
+props.navigation.navigate({routeName:'Passions',params:{
 phoneToPass:phoneNumber,
 emailToPass:email,
 nameToPass:name,
@@ -125,7 +138,9 @@ previousCompanyToPass:previousCompany,
 pastEducationToPass:pastEducation,
 academicLevelToPass:academicLevel,
 photoToPass:photo
- }}) }>STEP 4 OF 6</InvertedSignInUpButton>       
+ }})
+}
+ } }>STEP 4 OF 6</InvertedSignInUpButton>       
                         </Animatable.View>
                     </View>
                 </View>
