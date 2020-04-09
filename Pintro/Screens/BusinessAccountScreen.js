@@ -72,6 +72,10 @@ const BusinessAccountScreen = props => {
         props.navigation.goBack(null);
     }
 
+    function onFollowPress() {
+        //Do nothing
+    }
+
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
@@ -93,8 +97,8 @@ const BusinessAccountScreen = props => {
                 </View>
                 <Text style={styles.businessName}>{businessObj.full_name}</Text>
                 <View style={styles.rowContainer}>
-                    <FollowMe props={props.FollowMe}>+ FOLLOW US</FollowMe>
-                    <MsgMe props={props.MsgMe}>MESSAGE US</MsgMe>
+                    <FollowMe props={props.FollowMe} callback={() => onFollowPress()}>New Post</FollowMe>
+                    <MsgMe props={props.MsgMe}>Edit Profile</MsgMe>
                     <Edit props={props.Edit}>. . .</Edit>
                 </View>
                 <View style={styles.rowContainer}>
