@@ -5,7 +5,7 @@ import Colors from '../Constants/Colors.js';
 const Company = props => {
     
     function onCompanyPress() {
-        props.callback(props.email);
+        props.callback(props.busObj);
     }
 
     return (
