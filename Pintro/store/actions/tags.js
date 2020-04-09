@@ -18,12 +18,13 @@ export const getTags = () => {
       const resData = await response.json();
 
 
-    const tags = resData;
+    const tags = await resData;
     const loadedTags = [];
     for(const element in tags){
-      loadedTags.push(new Tag("2009",tags[element].name,tags[element].uuid));
-   }
-   console.log("Loaded " + loadedTags.length +" Tags");
+      loadedTags.push(new Tag("",tags[element].name,tags[element].uuid));
+    }
+    const tagList = [...tagSet];
+    console.log("Loaded " + tagList.length +" Tags");
 
 
 
@@ -82,9 +83,9 @@ loadedfavTags3.push(new Tag("2009",returnedFaves3[fav3].name,returnedFaves3[fav3
 }
 
 
-console.log("1: " + loadedfavTags1 + " 2: " + loadedfavTags2 + " 3: " + loadedfavTags3);
+//console.log("1: " + loadedfavTags1 + " 2: " + loadedfavTags2 + " 3: " + loadedfavTags3);
 
-    dispatch({type: GETTAGS,tagsArray:loadedTags,favs1:loadedfavTags1,favs2:loadedfavTags2,favs3:loadedfavTags3});
+    dispatch({type: GETTAGS,tagsArray:tagList,favs1:loadedfavTags1,favs2:loadedfavTags2,favs3:loadedfavTags3});
     
     
 
