@@ -561,9 +561,6 @@ definitions:
       funding:
         type: string
         title: amount of funding the comapy currently controls.
-      team_members:
-        type: string
-        title: main team memebers of the company.
       seeking_investment:
         type: string
         title: whether the company is looking for investments.
