@@ -5,36 +5,37 @@ import SignInUpButton from '../Components/SignInUpButton';
 import Colors from '../Constants/Colors';
 
 /**
- * Empty Screen which shows a message when there is no internet connection.
- * The screen consists of a message, a WiFi image and button to internet settings.
+ * Empty Screen which shows an error message when something has gone wrong.
+ * The screen consists of a message, an image and retry button.
  * @param {} props 
  */
-const NetworkEmptyScreen = props => {
+const SomethingWrongScreen = props => {
     return (
         <View style={styles.backGround}>
             <View style={styles.main}>
 
                 <Animatable.View animation="fadeInDownBig">
                 <View style={styles.textContainer}>
-                    <Text style={styles.messageText}>{'No internet connection \n'}</Text>
-                    <Text style={styles.subText}>{'Please check your connection settings.'}</Text>
+                    <Text style={styles.messageText}>{'Oops! \n'}</Text>
+                    <Text style={styles.subText}>{'Something went wrong, please try again.'}</Text>
                 </View>
                 </Animatable.View>
 
                 <View style={styles.imageContainer}>
                     <Animatable.View animation="fadeInUpBig">
-                    <Image style={styles.imageContainer} source={require('../images/noInternet.png')}/>
-                    </Animatable.View>
-                    
+                    <Image style={styles.imageContainer} source={require('../images/somethingWrong.png')}/>
+                    </Animatable.View>   
                 </View>
-                
 
                 <View style={styles.imageButtonContainer}>
                 <Animatable.View animation="fadeInUpBig">
-                    <Image style={styles.imageButtonContainer} source={require('../images/intSettingsButton.png')}/>
+                    <Image style={styles.imageButtonContainer} source={require('../images/retryButton.png')}/>
                     </Animatable.View>
                 </View>
 
+                <View> 
+                    
+                </View>
             </View>
         </View>
     );
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
         //flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        paddingTop: 30
+        paddingTop: 10
     },
     messageText : {
         color: 'black',
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
         //flex: 1,
         width: 350,
         height: 350,
-        paddingBottom: 5,
+        paddingBottom: 25,
         resizeMode: 'contain'
     },
     imageButtonContainer: {
@@ -102,4 +103,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default NetworkEmptyScreen 
+export default SomethingWrongScreen 
