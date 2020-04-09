@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View,Text,StyleSheet,TouchableOpacity } from 'react-native';
+import { View,Text,TouchableOpacity } from 'react-native';
 import Colors from '../Constants/Colors'; 
 
 const FollowMe = props => {
@@ -59,26 +59,5 @@ const FollowMe = props => {
         </TouchableOpacity>
     )
 }
-
-const styles = StyleSheet.create({
-    button:{
-        borderColor: Colors.pintroBlack,
-        backgroundColor: Colors.pintroBlack,
-        borderWidth: 0.5,
-        paddingVertical:12,
-        paddingHorizontal:50,
-        borderRadius:13,
-        marginTop:10,
-        marginRight:10,
-        marginLeft:10,
-        marginBottom:15,
-    },
-    buttonText:{
-        color: Colors.pintroWhite,
-        textAlign: 'center',
-        fontFamily:'Poppins-Regular',
-        fontSize: 10
-    }
-});
 
 export default FollowMe;
