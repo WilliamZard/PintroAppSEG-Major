@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View,StyleSheet,Text,TextInput,Picker,Alert,ScrollView } from 'react-native';
-import { fonts } from '../../Constants/Fonts';
 import Colors from '../../Constants/Colors';
 import BlackTag from '../../Components/BlackTag';
 import TeamMember from '../../Components/TeamMember';
@@ -59,35 +58,39 @@ const EditYourTeam = props => {
     async function onPressDone() {
         console.log("You pressed done");
         console.log(teamMembers);
-        const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + props.navigation.state.params.business.email,
-        {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-                'Authorization': BearerToken
-            },
-            redirect: 'follow',
-            body: JSON.stringify({
-                email: props.navigation.state.params.business.email,
-                password: props.navigation.state.params.business.password,
-                full_name: props.navigation.state.params.business.full_name,
-                profile_image: props.navigation.state.params.business.profile_image,
-                phone: props.navigation.state.params.business.phone,
-                location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
-                short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
-                story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
-                tags: props.navigation.state.params.business.tags,
-                date_founded: props.navigation.state.params.business.date_founded,
-                company_size: props.navigation.state.params.business.company_size,
-                funding: props.navigation.state.params.business.funding,
-                team_members: teamMembers,
-                seeking_investment: props.navigation.state.params.business.seeking_investment,
-                currently_hiring: props.navigation.state.params.business.currently_hiring
-            })
-        }
-        );
-        console.log(response.status);
-        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
+        /*try{
+            const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + props.navigation.state.params.business.email,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'Authorization': BearerToken
+                    },
+                    redirect: 'follow',
+                    body: JSON.stringify({
+                        email: props.navigation.state.params.business.email,
+                        password: props.navigation.state.params.business.password,
+                        full_name: props.navigation.state.params.business.full_name,
+                        profile_image: props.navigation.state.params.business.profile_image,
+                        phone: props.navigation.state.params.business.phone,
+                        location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
+                        short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                        story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                        tags: props.navigation.state.params.business.tags,
+                        date_founded: props.navigation.state.params.business.date_founded,
+                        company_size: props.navigation.state.params.business.company_size,
+                        funding: props.navigation.state.params.business.funding,
+                        team_members: teamMembers,
+                        seeking_investment: props.navigation.state.params.business.seeking_investment,
+                        currently_hiring: props.navigation.state.params.business.currently_hiring
+                    })
+                }
+            );
+            console.log(response.status);
+            dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));  
+        } catch (error) {
+            console.log(error);
+        }*/   
     }
 
     return (
