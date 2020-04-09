@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { StyleSheet, View, Text, ScrollView, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
@@ -13,16 +12,24 @@ const SearchResults = props => {
     const dispatch = useDispatch();
     const [scroll,setScroll] = useState(false);
     const searchResults = useSelector(state => state.search.usersArray);
+    const currentUser = useSelector(state => state.user.email);
 
     let businesses = searchResults.map((item) => (item.profile_type === "business")? item : null).filter(profile => profile !== null);
     let users = searchResults.map((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
     
     function onCompanyPress(value) {
-        dispatch(BusinessActions.getBusiness(value));
-        props.navigation.navigate('navBusiness');
+        dispatch(BusinessActions.getBusiness(value.email));
+        /*if(value.team_members.includes(currentUser)) {
+            props.navigation.navigate('navBusiness');
+        } else {
+            props.navigation.navigate('Profile');
+        }*/
+        console.log(currentUser);
+        props.navigation.navigate('Profile');
+        
     }
 
-    businesses = businesses.map((item) => <Company key={item.email} props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} callback={value => onCompanyPress(value)}/>);
+    businesses = businesses.map((item) => <Company key={item.email} props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} busObj={item} callback={value => onCompanyPress(value)}/>);
         
 
     function seeAllUsers() {
