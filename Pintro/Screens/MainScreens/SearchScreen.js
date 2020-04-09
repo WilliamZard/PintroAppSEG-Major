@@ -6,6 +6,7 @@ import { fonts } from '../../Constants/Fonts.js';
 import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
 import * as SearchActions from "../../store/actions/search";
+import * as TagActions from "../../store/actions/tags";
 import data2 from '../../Constants/data2.json'
 
 const SearchScreen = props => {
@@ -15,7 +16,11 @@ const SearchScreen = props => {
     const [suggestedItems,setItems] = useState([])
 
     const loadedTags = useSelector(state => state.tags.tagsArray);
-    var tagNames = data2.map(function(item) {
+    if(loadedTags.length == 0) {
+        dispatch(TagActions.getTags());
+    }
+
+    var tagNames = loadedTags.map(function(item) {
         return item['name'];
       });
     

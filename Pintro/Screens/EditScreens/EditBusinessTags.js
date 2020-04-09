@@ -7,7 +7,7 @@ import { TextInput, ScrollView } from 'react-native-gesture-handler';
 import data2 from '../../Constants/data2.json';
 import { ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import * as BusinessActions from '../../store/actions/business.js';
 import { BearerToken } from '../../Constants/BearerToken.js';
 
@@ -19,7 +19,12 @@ const EditBusinessTag = props => {
     const [suggestedItems,setItems] = useState([])
     let popularTags = ["Students","Startups","Mindfulness","Work/life Balance","Apple","Social Media","Neuroscience","Nutrition","Innovation","Pre-Seed","Diversity","Teamwork"];
 
-    var tagNames = data2.map(function(item) {
+    const loadedTags = useSelector(state => state.tags.tagsArray);
+    if(loadedTags.length == 0) {
+        dispatch(TagActions.getTags());
+    }
+
+    var tagNames = loadedTags.map(function(item) {
         return item['name'];
     });
 
