@@ -36,7 +36,6 @@ businesses = api.model('Businesses', {
     'date_founded': restx_fields.String(title='date the company was founded.'),
     'company_size': restx_fields.String(title='size of the company.'),
     'funding': restx_fields.String(title='amount of funding the comapy currently controls.'),
-    'team_members': restx_fields.String(title='main team memebers of the company.'),
     'seeking_investment': restx_fields.String(title='whether the company is looking for investments.'),
     'currently_hiring': restx_fields.String(title='whether the company is currently looking for potential employees.')
 })
@@ -58,7 +57,8 @@ class Businesses(Resource):
                 data = response.data()
                 business = dict(data['user'].items())
                 business['tags'] = data['tags']
-                business['profile_image'] = str(get_data_from_gcs(business['profile_image']))
+                business['profile_image'] = str(
+                    get_data_from_gcs(business['profile_image']))
                 return jsonify(**business)
             return make_response('', 404)
 
@@ -71,7 +71,8 @@ class Businesses(Resource):
 
         with create_session() as session:
             # Fetch user image url in gcp storage that needs to be deleted.
-            profile_image_url = (session.read_transaction(get_account_field, email, 'Business', 'profile_image').data())
+            profile_image_url = (session.read_transaction(
+                get_account_field, email, 'Business', 'profile_image').data())
             if len(profile_image_url) > 0:
                 profile_image_url = profile_image_url[0]['profile_image']
             response = session.read_transaction(
