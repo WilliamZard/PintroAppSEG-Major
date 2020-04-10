@@ -17,10 +17,13 @@ class TestGet:
     def test_GET_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         tag_a = Tag(name='King Slaying')._asdict()
-        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
+        tag_b = Tag(name='New King Slayer')._asdict()
+        tag_b_node = {'properties': tag_b, 'labels': ['Tag', 'CanHelpWithTag']}
+        tag_c = Tag(name='Epidemics')._asdict()
+        tag_c_node = {'properties': tag_c, 'labels': ['Tag', 'PassionsTag']}
 
-        valid_user = User(full_name='Duke Wellington',
-                          email='duke@wellington.com', help_others=[tag_a['name']])._asdict()
+        valid_user = User(email='duke@wellington.com')._asdict()
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
 
         # Define relationships
@@ -28,15 +31,38 @@ class TestGet:
             's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
             'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
             'relationship_type': 'TAGGED'}
+        tagged_b = {
+            's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_b['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+        tagged_c = {
+            's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_c['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
 
-        populate_db(nodes_to_create=[valid_user_node, tag_a_node],
-                    relationships_to_create=[tagged_a])
+        populate_db(nodes_to_create=[valid_user_node, tag_a_node, tag_b_node, tag_c_node],
+                    relationships_to_create=[tagged_a, tagged_b, tagged_c])
 
         # Test
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
-        assert len(response) == len(valid_user)
+
+        # Test correct tags returned
+        help_others = [tag_a['name'], tag_b['name']]
+        assert 'help_others' in response
+        assert len(response['help_others']) == len(help_others)
+        for tag in help_others:
+            assert tag in response['help_others']
+
+        passions = [tag_c['name']]
+        assert 'passions' in response
+        assert len(response['passions']) == len(passions)
+        for tag in passions:
+            assert tag in response['passions']
+
+        # Test correct node properties returned
+        assert len(response)-2 == len(valid_user)
         for key, value in valid_user.items():
             assert key in response
             assert value == response[key]
