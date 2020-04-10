@@ -1,7 +1,7 @@
 import time
 import uuid
 
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -14,11 +14,11 @@ from .neo4j_ops.posts import (delete_post,
 from .utils import valid_email
 
 
-def get_time():
+def get_time() -> str:
     return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 
 
-def convert_to_cypher_datetime(datetime):
+def convert_to_cypher_datetime(datetime: float) -> None:
     # Assumes there is a single space separating date and time sections
     # Assumes is in UTC time and is timezone naive
     return datetime.replace(' ', 'T') + 'Z'
@@ -44,7 +44,7 @@ posts = api.model('Post', {
 @api.route('/<string:uuid>')
 @api.produces('application/json')
 class Posts(Resource):
-    def get(self, uuid):
+    def get(self, uuid: str) -> Response:
         '''Fetch a post based on its UUID.'''
 
         with create_session() as session:
@@ -60,7 +60,7 @@ class Posts(Resource):
     @api.doc('update_post')
     @api.response(204, 'Post updated')
     @api.expect(posts)
-    def put(self, uuid):
+    def put(self,uuid: str) -> Response:
         '''Update a Post's content.'''
 
         with create_session() as session:
@@ -76,7 +76,7 @@ class Posts(Resource):
     # TODO It will be necessary to have authorization to do that.
     @api.doc('delete_post')
     @api.response(204, 'Post deleted')
-    def delete(self, uuid):
+    def delete(self, uuid: str) -> Response:
         '''Delete a post given its uuid.'''
         # TODO: assumes only other response is not found. This needs more details.
 
@@ -95,7 +95,7 @@ class Posts(Resource):
 class PostsPost(Resource):
     @api.doc('create_post')
     @api.response(204, 'Post created')
-    def post(self):
+    def post(self) -> Response:
         '''Create a post.'''
         payload = api.payload
         if len(payload['content']) <= 300 and len(payload['content']) == 0:

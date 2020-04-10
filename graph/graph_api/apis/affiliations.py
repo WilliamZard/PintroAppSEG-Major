@@ -1,6 +1,6 @@
 import time
 
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -18,7 +18,7 @@ api = Namespace(
 @api.route('/request/<string:affiliation_requester>/<string:affiliation_request_recipient>')
 @api.produces('application/json')
 class AffiliationRequest(Resource):
-    def post(self, affiliation_requester, affiliation_request_recipient):
+    def post(self, affiliation_requester: str, affiliation_request_recipient: str) -> Response:
         '''Create an AFFILIATION_REQUEST relationship, where affiliation_requester has requested to follow affiliation_request_recipient.'''
         with create_session() as session:
             created_at = time.time()
@@ -31,7 +31,7 @@ class AffiliationRequest(Resource):
                 return make_response('', 201)
             return make_response('', 400)
 
-    def delete(self, affiliation_requester, affiliation_request_recipient):
+    def delete(self, affiliation_requester: str, affiliation_request_recipient: str) -> Response:
         '''Delete the AFFILIATION relationship, where affiliation_requester wants to be affiliated with affiliation_request_recipient'''
         with create_session() as session:
             response = session.write_transaction(

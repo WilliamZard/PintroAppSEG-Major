@@ -1,7 +1,6 @@
 # Production Dockerfile.
 
 FROM python:3.7
-#docker run --rm -it -p 8080:8080 graph_api:prod
 COPY graph_api graph_api
 
 

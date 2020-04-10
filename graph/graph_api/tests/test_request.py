@@ -1,4 +1,5 @@
 import pytest
+from flask import Flask
 
 from .conftest import app, populate_db
 from .generate_test_data import User, basic_user_node
@@ -10,7 +11,7 @@ class TestPOST:
     # TODO: add tests for if given users exist or not
     # TODO: add tests for if given user type can make given request.
     #       e.g. users cannot make affiliation requests to businesses.
-    def test_POST_follow_request_with_valid_users(self, app, populate_db):
+    def test_POST_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
             email='requesting_follow@rona.com')._asdict()
@@ -28,7 +29,7 @@ class TestPOST:
 
         # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
 
-    def test_POST_affiliation_request_with_valid_users(self, app, populate_db):
+    def test_POST_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_affiliation = User(
             email='requesting_affiliation@rona.com')._asdict()
@@ -50,7 +51,7 @@ class TestPOST:
 
 @pytest.mark.DELETE_request
 class TestDELETE:
-    def test_DELETE_follow_request_with_valid_users(self, app, populate_db):
+    def test_DELETE_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
             email='requesting_follow@rona.com')._asdict()
@@ -75,7 +76,7 @@ class TestDELETE:
 
         # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
 
-    def test_DELETE_affiliation_request_with_valid_users(self, app, populate_db):
+    def test_DELETE_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_affiliation = User(
             email='requesting_affiliation@rona.com')._asdict()

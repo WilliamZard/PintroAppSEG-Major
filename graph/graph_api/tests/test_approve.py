@@ -3,7 +3,7 @@ import pytest
 from .conftest import app, populate_db
 from .generate_test_data import (Business, User, basic_business_node,
                                  basic_user_node)
-
+from flask import Flask
 
 @pytest.mark.POST_approve
 class TestPOST:
@@ -11,7 +11,7 @@ class TestPOST:
     # TODO: add tests for if given users exist or not
     # TODO: add tests for if given user type can make given request.
     #       e.g. users cannot make affiliation requests to businesses.
-    def test_POST_approve_follow_request_with_valid_users(self, app, populate_db):
+    def test_POST_approve_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
             email='requesting_follow@rona.com')._asdict()
@@ -36,7 +36,7 @@ class TestPOST:
 
         # TODO: add get request for checking if FOLLOWrelationship was actually created
 
-    def test_POST_approve_affiliation_request_with_valid_users(self, app, populate_db):
+    def test_POST_approve_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         business_requesting_affiliation = Business(
             email='requesting_affiliation@rona.com')._asdict()
