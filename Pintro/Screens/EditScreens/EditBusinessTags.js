@@ -4,7 +4,6 @@ import Colors from '../../Constants/Colors.js';
 import BlackTag from '../../Components/BlackTag.js';
 import GreyTag from '../../Components/GreyTag.js';
 import { TextInput, ScrollView } from 'react-native-gesture-handler';
-import data2 from '../../Constants/data2.json';
 import { ListItem } from 'react-native-elements';
 import { fonts } from '../../Constants/Fonts.js';
 import { useDispatch,useSelector } from 'react-redux';
@@ -24,18 +23,18 @@ const EditBusinessTag = props => {
         dispatch(TagActions.getTags());
     }
 
-    var tagNames = loadedTags.map(function(item) {
-        return item['name'];
-    });
-
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
             
             const regex = new RegExp(`^${searchWord}`,'i');
-            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+            const tagSet = new Set(loadedTags.sort().filter(v => regex.test(v)));
+            const tagSuggestions = [...tagSet];
+            setSuggestions(tagSuggestions); 
         }
-        renderSuggestions();
+        if(suggestions!==null) {
+            renderSuggestions();
+        }
     }
 
     function onListItemPress(item) {
@@ -137,7 +136,7 @@ const EditBusinessTag = props => {
                     <Picker style={{borderWidth: 1}}></Picker>
                 </View>
                 <View style={styles.horizintalLineStyle}/>
-                {suggestedItems}
+                    {suggestedItems}    
                 <Text style={styles.subtitle}>Or choose from the most popular</Text>
                 <View style={styles.tagContainer}>
                     <GreyTag props={props.GreyTag} callback={value => onTagPress(value)} val={"Students"} initial={popularTags[0]}>STUDENTS</GreyTag>
