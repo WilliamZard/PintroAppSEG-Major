@@ -47,8 +47,6 @@ users = api.model('Users', {
     'academic_level': restx_fields.String(),
     'date_of_birth': restx_fields.String(),
     'location': restx_fields.String(title='current city of the user.'),
-    'passions': restx_fields.List(restx_fields.String(), description='List of Passion Tag UUIDs'),
-    'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
     'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
@@ -69,7 +67,8 @@ class Users(Resource):
                 user = dict(data['user'].items())
                 user['passions'] = data['passions']
                 user['help_others'] = data['help_others']
-                user['profile_image'] = str(get_data_from_gcs(user['profile_image']))
+                user['profile_image'] = str(
+                    get_data_from_gcs(user['profile_image']))
                 return jsonify(**user)
             return make_response('', 404)
 
@@ -82,7 +81,8 @@ class Users(Resource):
 
         with create_session() as session:
             # Fetch user image url in gcp storage that needs to be deleted.
-            profile_image_url = (session.read_transaction(get_account_field, email, 'Person', 'profile_image').data())
+            profile_image_url = (session.read_transaction(
+                get_account_field, email, 'Person', 'profile_image').data())
             if len(profile_image_url) > 0:
                 profile_image_url = profile_image_url[0]['profile_image']
             response = session.write_transaction(delete_user_by_email, email)
@@ -172,7 +172,8 @@ class UsersGETFollowers(Resource):
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                return jsonify(data)#TODO iterate on followers and retrieve images, not url.
+                # TODO iterate on followers and retrieve images, not url.
+                return jsonify(data)
             else:
                 return jsonify([])
             return make_response('', 404)
@@ -186,7 +187,7 @@ class UsersGETFollowings(Resource):
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)#TODO iterate on followings and retrieve images, not url.
+                get_followings_of_a_user, email)  # TODO iterate on followings and retrieve images, not url.
             data = response.data()
             if data:
                 return jsonify(data)

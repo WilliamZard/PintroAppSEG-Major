@@ -9,7 +9,7 @@ def get_user_by_email(tx: Transaction, user_email: str) -> BoltStatementResult:
     MATCH (user:Person {{email: '{user_email}'}})
     OPTIONAL MATCH (user)-->(skill_tag:Tag:CanHelpWithTag)
     OPTIONAL MATCH (user)-->(passion_tag:Tag:PassionsTag)
-    RETURN user, COLLECT(skill_tag.name) AS help_others, COLLECT(passion_tag.name) AS passions"""
+    RETURN user, COLLECT(DISTINCT skill_tag.name) AS help_others, COLLECT(DISTINCT passion_tag.name) AS passions"""
     return tx.run(query)
 
 

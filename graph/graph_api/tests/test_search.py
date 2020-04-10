@@ -33,8 +33,6 @@ class TestPOST:
         user_data.append(User(email='user_a@test.com')._asdict())
         user_data.append(User(email='user_b@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -68,8 +66,6 @@ class TestPOST:
         user_data.append(User(email='user_a@test.com')._asdict())
         user_data.append(User(email='user_b@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -108,8 +104,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -149,8 +143,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -198,8 +190,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -256,8 +246,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
 
         # Define tag relationships
@@ -285,7 +273,8 @@ class TestPOST:
         json_response = prepere_search_responses_for_account_assertion(
             response)
         json_response = ordered(json_response)
-        expected_accounts = ordered([matching_business_a, matching_business_b, matching_user_a])
+        expected_accounts = ordered(
+            [matching_business_a, matching_business_b, matching_user_a])
         # Assertion
         assert response.status == '200 OK'
         assert json_response == expected_accounts

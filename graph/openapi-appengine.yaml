@@ -503,16 +503,6 @@ definitions:
       location:
         type: string
         title: current city of the user.
-      passions:
-        type: array
-        description: List of Passion Tag UUIDs
-        items:
-          type: string
-      help_others:
-        type: array
-        description: List of skill Tag UUIDs that user is offering
-        items:
-          type: string
       active:
         type: string
         title: 'DO NOT TOUCH, whether user is active or not.'
