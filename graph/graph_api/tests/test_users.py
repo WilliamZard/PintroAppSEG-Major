@@ -220,7 +220,7 @@ class TestPut:
         user = User(**new_user_fields
                     )._asdict()
 
-        # -2 to to not count tags properties which have been tested above
+        # -2 to not count tags properties which have been tested above
         assert len(response)-2 == len(user)
         for key, value in user.items():
             assert key in response
@@ -270,6 +270,8 @@ class TestPost:
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
+        user['help_others'] = [tag_a['name']]
+
         populate_db(nodes_to_create=[tag_a_node])
 
         # Test
@@ -282,7 +284,19 @@ class TestPost:
         response = app.get(f"/users/{user['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
-        assert len(response) == len(user)
+        # Test correct tags returned
+        help_others = [tag_a['name']]
+        assert 'help_others' in response
+        assert len(response['help_others']) == len(help_others)
+        assert response['help_others'] == help_others
+
+        passions = []
+        assert 'passions' in response
+        assert len(response['passions']) == len(passions)
+        assert response['passions'] == passions
+
+        # -2 to not count array tags that were just removed
+        assert len(response)-1 == len(user)
         for key, value in user.items():
             assert key in response
             assert value == response[key]
