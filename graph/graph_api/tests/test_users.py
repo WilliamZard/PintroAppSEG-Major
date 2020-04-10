@@ -13,7 +13,7 @@ from graph_api.apis.image_storing import *
 
 
 @pytest.mark.GET_user
-class TestGET:
+class TestGet:
     def test_GET_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         tag_a = Tag(name='King Slaying')._asdict()
