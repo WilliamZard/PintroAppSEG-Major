@@ -253,7 +253,7 @@ class TestPost:
         tag_a = Tag(name='King Slaying')._asdict()
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
         user = User(
-            full_name='precious', email='precious@gmail.com', help_others=[tag_a['name']])._asdict()
+            full_name='precious', email='precious@gmail.com')._asdict()
         populate_db(nodes_to_create=[tag_a_node])
 
         # Test
