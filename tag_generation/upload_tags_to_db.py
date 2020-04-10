@@ -50,9 +50,15 @@ def create_tag_node(tx, tag):
     tx.run(query)
 
 
+def delete_all_tags(tx):
+    query = """MATCH(n:Tag) DETACH DELETE n"""
+    return tx.run(query)
+
+
 def main(csv_path):
     driver = connect()
     with driver.session() as session:
+        session.write_transaction(delete_all_tags)
         for tag in generate_tags(csv_path):
             session.write_transaction(create_tag_node, tag)
 
