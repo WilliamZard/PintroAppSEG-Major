@@ -177,9 +177,13 @@ class TestPut:
             's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
             'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
             'relationship_type': 'TAGGED'}
+        tagged_b = {
+            's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_b['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
 
         populate_db(nodes_to_create=[user_node, tag_a_node, tag_b_node],
-                    relationships_to_create=[tagged_a])
+                    relationships_to_create=[tagged_a, tagged_b])
 
         # Test
         image_path = Path(__file__).parent / \
@@ -190,22 +194,34 @@ class TestPut:
         new_user_fields = dict(
             profile_image=str(new_image), full_name='Donald Trump', gender='masculine',
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
-            preferred_name='GOAT', help_others=[tag_b['name']]
-        )
+            preferred_name='GOAT')
         email = user['email']
         response = app.put(
             f"/users/{email}", json=new_user_fields)
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-        # TODO: complete these assertions.
-
+        # Test correct node properties returned
         response = app.get(f"/users/{email}")
         assert response.status == '200 OK'
         response = response.get_json()
+
+        # Test correct tags returned
+        help_others = []
+        assert 'help_others' in response
+        assert len(response['help_others']) == len(help_others)
+        assert response['help_others'] == help_others
+
+        passions = []
+        assert 'passions' in response
+        assert len(response['passions']) == len(passions)
+        assert response['passions'] == passions
+
         user = User(**new_user_fields
                     )._asdict()
-        assert len(response) == len(user)
+
+        # -2 to to not count tags properties which have been tested above
+        assert len(response)-2 == len(user)
         for key, value in user.items():
             assert key in response
             if(key == 'profile_image'):
