@@ -16,6 +16,11 @@ def prepere_search_responses_for_account_assertion(response: Response) -> json:
                 element['tags'] = element['tags'][1:1]
             else:
                 element['tags'] = element['tags'].split()[1:1]
+        if 'team_members' in element:
+            if isinstance(element['team_members'], list):
+                element['team_members'] = element['team_members'][1:1]
+            else:
+                element['team_members'] = element['team_members'].split()[1:1]
 
     
     return json_response
