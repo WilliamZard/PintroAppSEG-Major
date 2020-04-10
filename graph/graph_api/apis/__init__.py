@@ -1,3 +1,8 @@
+"""
+Base file for API module.
+
+Base api object is instantiated here.
+"""
 from flask_restx import Api
 from .users import api as users
 from .businesses import api as businesses

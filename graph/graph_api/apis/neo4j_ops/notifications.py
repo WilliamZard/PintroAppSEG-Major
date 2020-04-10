@@ -1,3 +1,4 @@
+"""Cypher queries specific to Notifications nodes"""
 from neo4j import Transaction, BoltStatementResult
 
 

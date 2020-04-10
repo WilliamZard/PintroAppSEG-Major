@@ -1,3 +1,4 @@
+"""All endpoints for handling Tags nodes."""
 import re
 import time
 

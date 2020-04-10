@@ -1,3 +1,4 @@
+"""Cypher queries specific to User nodes."""
 from neo4j import Transaction, BoltStatementResult
 
 

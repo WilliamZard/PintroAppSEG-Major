@@ -1,3 +1,4 @@
+"""All endpoints for handling Post nodes."""
 import time
 import uuid
 

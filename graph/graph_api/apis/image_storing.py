@@ -1,6 +1,10 @@
 import os
 from google.cloud import storage
 import uuid
+
+# TODO: consider movint this file into dedicated utils folder.
+
+
 def upload_data_to_gcs(data: bytes) -> str:
     '''
         Function that store an image in a given bucket in GCP.
@@ -15,12 +19,13 @@ def upload_data_to_gcs(data: bytes) -> str:
         Raise:
         A credentials related exceptions
     '''
-    if len(data) > 0:#If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
+    if len(data) > 0:  # If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
         try:
-            client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            # This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            client = storage.Client()
             bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
             bucket = client.bucket(bucket_name)
-            target_key = str(uuid.uuid4())# unique file name in the bucket.
+            target_key = str(uuid.uuid4())  # unique file name in the bucket.
             bucket.blob(target_key).upload_from_string(data)
             return bucket.get_blob(target_key, timeout=150).public_url
 
@@ -28,6 +33,7 @@ def upload_data_to_gcs(data: bytes) -> str:
             print(e)
 
     return ''
+
 
 def get_data_from_gcs(file_url: str) -> str:
     '''
@@ -46,22 +52,25 @@ def get_data_from_gcs(file_url: str) -> str:
     '''
     if(len(file_url) > 0):
         try:
-            client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            # This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            client = storage.Client()
             bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
             bucket = client.bucket(bucket_name)
             target_key = get_file_name_from_url(file_url)
-            blob_json = bucket.get_blob(target_key, timeout=150).download_as_string(raw_download=True)# get bucket data as blob
+            blob_json = bucket.get_blob(target_key, timeout=150).download_as_string(
+                raw_download=True)  # get bucket data as blob
             return blob_json
-        
+
         except Exception as e:
             print(e)
 
     return ''
 
+
 def delete_data_from_gcs(file_url: str) -> str:
     '''
          Function that deletes a file stored in GCP buckets.
-    ''' 
+    '''
     '''Params:      
         -bucket_name = the name of the GCP bucket where to look for the given file.
         -file_url = url for the file stored in GCP bucket that needs to be deleted. 
@@ -71,13 +80,15 @@ def delete_data_from_gcs(file_url: str) -> str:
     '''
     if(len(file_url) > 0):
         try:
-            client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            # This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+            client = storage.Client()
             bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
             bucket = client.bucket(bucket_name)
             target_key = get_file_name_from_url(file_url)
             bucket.delete_blob(target_key, timeout=150)
         except Exception as e:
             print(e)
+
 
 def update_data_from_gcs(old_file_url: str, new_data: str) -> str:
     '''
@@ -95,29 +106,33 @@ def update_data_from_gcs(old_file_url: str, new_data: str) -> str:
         A credentials related exceptions or an exception if the file is not found.
     '''
     try:
-        client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+        # This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+        client = storage.Client()
         bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
         bucket = client.bucket(bucket_name)
-        #delete the previously stored file.
+        # delete the previously stored file.
         if(len(old_file_url) > 0):
             old_target_key = get_file_name_from_url(old_file_url)
             bucket.delete_blob(old_target_key)
-        #post the new file.
-        if(len(new_data) > 0):#If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
-            new_target_key = str(uuid.uuid4())# unique file name in the bucket.
+        # post the new file.
+        # If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
+        if(len(new_data) > 0):
+            # unique file name in the bucket.
+            new_target_key = str(uuid.uuid4())
             bucket.blob(new_target_key).upload_from_string(new_data)
             return bucket.get_blob(new_target_key, timeout=150).public_url
-    
+
     except Exception as e:
         print(e)
-    
+
     return ''
+
 
 def clear_bucket() -> None:
     '''
         Function to clear all the existing files in a bucket.
     '''
-    client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
+    client = storage.Client()  # This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
     bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
     bucket = client.bucket(bucket_name)
     try:
