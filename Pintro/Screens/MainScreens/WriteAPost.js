@@ -9,26 +9,33 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import * as productsActions from '../../store/actions/timeline';
 import TimelinePost from '../../Model/TimelinePost';
+import * as userActions from '../../store/actions/user';
 
 const WriteAPost = props => {
 const [usedChars,setUsedChars]  = useState(0);
 const [postContent,setPostContent] = useState(0);
+
 const dispatch = useDispatch();
+
+const username = useSelector(state => state.user.full_name)
     return (
         <View>
             <View style={styles.titleContainer}>
                 <View style={styles.BackContainer}><TouchableHighlight onPress={()=>props.onBack()}><Text>Back</Text></TouchableHighlight></View>
             <Text style={styles.title}>
-               Ben
+              {username}
             </Text>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',marginTop:50}}>
             <View style={styles.textContainer}>
-            <TextInput placeholder='Talk to me about' placeholderTextColor='white' style={{color:'white',margin:20}}
+            <TextInput placeholder={props.titleToShow} placeholderTextColor='white' style={{color:'white',margin:20}}
             onChangeText={(word) =>{
+                
                 setUsedChars(word.length);
                 setPostContent(word);
+          
             }}
+            maxLength={300}
             multiline={true}
             blurOnSubmit={true}
             returnKeyType={'done'}

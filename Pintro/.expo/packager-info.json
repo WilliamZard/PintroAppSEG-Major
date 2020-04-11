@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19003,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 27392,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
   "expoServerNgrokUrl": "https://5h-8jc.anonymous.pintro.exp.direct",
   "packagerNgrokUrl": "https://packager.5h-8jc.anonymous.pintro.exp.direct",
-  "ngrokPid": 27419,
+  "ngrokPid": 28863,
   "webpackServerPort": null
 }

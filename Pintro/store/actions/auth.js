@@ -58,6 +58,7 @@ export const login = (email, password) => {
         if (!response.ok) {
           const errorResData = await response.json();
           const errorId = errorResData.error.message;
+          console.log(errorResData)
           let message = 'Something went wrong!';
           if (errorId === 'EMAIL_EXISTS') {
             message = 'This email exists already!';

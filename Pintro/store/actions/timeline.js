@@ -5,15 +5,16 @@ export const WRITE_POST = 'WRITE_POST';
 
 
 
-async function getNameFromMail(emailAddress) {
+async function getNameFromMail(emailAddress,bear) {
     var response = await fetch('https://bluej-pintro-project.appspot.com/users/'+emailAddress,
     {
         method:'GET',
-        headers:{
-            "Content-Type":"application/json"
-        }
-    }
-    );
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+bear
+        },
+        redirect: 'follow'
+     } );
     const data = await response.json();
 return data.full_name;
  };
@@ -30,7 +31,7 @@ export const fetchTimeline = () => {
  
     return async (dispatch,getState) => {
         const email = getState().auth.email;
-        
+        const bearer = getState().auth.tokenToGet;
         const response = await fetch(
             "https://europe-west2-bluej-pintro-project.cloudfunctions.net/generate_timeline",
             {
@@ -49,7 +50,8 @@ export const fetchTimeline = () => {
        const loadedProduct = [];
        
        for(const element in posts){
-       const nameOfwriter = await getNameFromMail(posts[element].email);
+       const nameOfwriter = await getNameFromMail(posts[element].email,bearer);
+      // const picture = await getNameFromMail(posts[element].email,bearer);
        loadedProduct.push(new TimelinePost(
         posts[element].content,
         posts[element].created,
