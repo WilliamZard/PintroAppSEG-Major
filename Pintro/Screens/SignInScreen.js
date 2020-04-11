@@ -4,11 +4,12 @@ import SignInUpButton from '../Components/SignInUpButton';
 import * as Animatable from 'react-native-animatable';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Colors from '../Constants/Colors';
-import Input from '../Components/Input';
+import * as tagsActions from '../store/actions/tags';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 
 import { useDispatch } from 'react-redux';
 import * as authActions from '../store/actions/auth';
+import * as userActions from '../store/actions/user';
 /**
  * The Sign in screen consisting of the Logo, a header (Text),
  * 2 input fields and 2 buttons. One button takes you to the Main screen after Logging
@@ -17,33 +18,7 @@ import * as authActions from '../store/actions/auth';
  */
 
 
-
-const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
-
-const formReducer = (state, action) => {
-  if (action.type === FORM_INPUT_UPDATE) {
-    const updatedValues = {
-      ...state.inputValues,
-      [action.input]: action.value
-    };
-    const updatedValidities = {
-      ...state.inputValidities,
-      [action.input]: action.isValid
-    };
-    let updatedFormIsValid = true;
-    for (const key in updatedValidities) {
-      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
-    }
-    return {
-      formIsValid: updatedFormIsValid,
-      inputValidities: updatedValidities,
-      inputValues: updatedValues
-    };
-  }
-  return state;
-};
-
-//
+ 
 
 
 
@@ -51,42 +26,35 @@ const formReducer = (state, action) => {
 const SignInScreen = props => {
 
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [isSignup, setIsSignup] = useState(false);
     const dispatch = useDispatch();
     
-    const [formState, dispatchFormState] = useReducer(formReducer, {
-      inputValues: {
-        email: '',
-        password: ''
-      },
-      inputValidities: {
-        email: false,
-        password: false
-      },
-      formIsValid: false
-    });
     useEffect(() => {
-    if (error) {
-      Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
-    }
+      if (error) {
+        Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
+      }
     }, [error]);
+  
     
+
+
     const signupHandler = async () => {
-    let action;
-       action =  authActions.login(
-          formState.inputValues.email,
-          formState.inputValues.password
-    
-      );
-    
+
+
     setError(null);
     setIsLoading(true);
     try {
-      await dispatch(action);
+    await dispatch(authActions.login(email,password));
       console.log("Worked");
-      props.navigation.navigate({routeName:'MainScreen'});
+     await dispatch(userActions.get_User_To_Load());
+     console.log("Worked2");
+     await dispatch(tagsActions.getTags());
+     console.log("GO");
+     props.navigation.navigate({routeName:'routeTwo'});
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -94,17 +62,19 @@ const SignInScreen = props => {
     
     };  
     
-    const inputChangeHandler = useCallback(
-      (inputIdentifier, inputValue, inputValidity) => {
-        dispatchFormState({
-          type: FORM_INPUT_UPDATE,
-          value: inputValue,
-          isValid: inputValidity,
-          input: inputIdentifier
-        });
-      },
-      [dispatchFormState]
-    );
+
+    const PasswordResetHandler = async () =>{
+        if(email===""){
+            Alert.alert("Resert Password","Enter your email in the Email address field and press again");
+        return;
+        }
+      Alert.alert("Resert Password","We sent a reset link to the email in the Email address field");
+        dispatch(userActions.resetPassword(email));
+        return;
+    };
+
+
+
 
     return (
         <KeyboardAwareScrollView
@@ -123,47 +93,24 @@ const SignInScreen = props => {
                         <Text style={styles.aboveInputText}>Login to your account</Text>
                         </View>
                             <Text style={styles.aboveInputText}>Email address</Text>
-                            <Input
-              id="email"
-              label=""
-              placeholder=""
-              keyboardType="email-address"
-              required
-              email
-              autoCapitalize="none"
-              errorText="Please enter a valid email address."
-              onInputChange={inputChangeHandler}
-              initialValue=""
-            />
+                            <TextInput onChangeText={setEmail} style={styles.inputBox}  placeholder="Enter your email" placeholderTextColor='white' />
  <View style={styles.horizintalLineStyle}></View>
                           
  
                             <Text style={styles.aboveInputText}>Password</Text>
-                            <Input
-              id="password"
-              label=""
-              keyboardType="default"
-              secureTextEntry
-              required
-              minLength={5}
-              autoCapitalize="none"
-              errorText="Please enter a valid password."
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              style={styles.inputBox}
-            />
+                            <TextInput onChangeText={setPassword} style={styles.inputBox} placeholder="Enter your password" placeholderTextColor='white' secureTextEntry={true} />
                             <View style={styles.horizintalLineStyle}></View>
                            
 
                             {isLoading?  ( <ActivityIndicator size="small" color={'white'} />
                             ):(
                                 <InvertedSignInUpButton onPress={()=>{
-                                  signupHandler();
-                                  props.navigation.navigate({routeName:'routeTwo'})} 
+                                  signupHandler()
+                                 } 
                                 }>Login</InvertedSignInUpButton>
                              )}
                             
-                            <SignInUpButton>Login with LinkedIn</SignInUpButton>
+                            <SignInUpButton onPress={()=>PasswordResetHandler()}>Forgot password</SignInUpButton>
                         </Animatable.View>
                     </View>
                 </View>

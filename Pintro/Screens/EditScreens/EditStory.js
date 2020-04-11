@@ -1,5 +1,5 @@
-import React from 'react';
-import {useDispatch} from 'react-redux';
+import React,{useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {
     Text,
     View,
@@ -11,6 +11,18 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as userActions from '../../store/actions/user';
 const EditStory = props => {
 const dispatch = useDispatch();
+
+const [name,setName]=useState(useSelector(state => state.user.full_name));
+const [jobTitle,setJobTitle]=useState(useSelector(state => state.user.job_title));
+const [currentCompany,setCurrentCompany]=useState(useSelector(state => state.user.current_Company));
+const [story,setStory]=useState(useSelector(state => state.user.story));
+
+
+const doneHandler = async () => {
+    console.log(name,jobTitle,currentCompany,story);
+    await dispatch(userActions.update_story(name,jobTitle,currentCompany,story))
+    props.navigation.navigate({routeName:'SettingsPage'})
+}
     return(
         <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
@@ -25,26 +37,47 @@ const dispatch = useDispatch();
             <Text>Build your profile</Text>
             </View>
             <Text>Name</Text>
-            <TextInput style={{marginVertical:25}} placeholder="Name"/>
+            <TextInput
+             style={{marginVertical:25}}
+              value={name}
+              onChangeText={(text)=>setName(text)}
+              />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Current job title</Text>
-            <TextInput style={{marginVertical:25}} placeholder="Job title"/>
+            <TextInput 
+            style={{marginVertical:25}} 
+            value={jobTitle}
+            onChangeText={(text)=>setJobTitle(text)}
+            />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Current company</Text>
-            <TextInput style={{marginVertical:25}} placeholder="Company"/>
+            <TextInput 
+            style={{marginVertical:25}} 
+        
+            value={currentCompany}
+            onChangeText={(text)=>setCurrentCompany(text)}
+            />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Your Story</Text>
-            <TextInput style={{marginVertical:0,     height: 10,
+            <TextInput style={{marginVertical:0,     height: 60,
         alignItems:'flex-start',
         justifyContent:'flex-start',
         textAlign:'left',
         fontFamily: 'Poppins-Light',
         fontWeight: 'normal',
         color:'black',
-        textAlignVertical:'top'}} multiline={true} placeholder="Story"/>
+        textAlignVertical:'top'}} 
+        multiline={true} 
+    
+        value={story}
+        onChangeText={(text)=>setStory(text)}
+        />
             <View style={styles.horizintalLineStyle}></View>
                     <View style={{marginTop:20}}> 
-                        <TouchableOpacity onPress={()=>dispatch(userActions.update_story("SSSSSS","fweefewef","feesfsefsefsef"))} style={{backgroundColor:'black',height:40,borderRadius:30, alignItems:'center',justifyContent:'center'}}><Text style={{color:'white'}}>Done</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{
+                            doneHandler()
+                        }
+                            } style={{backgroundColor:'black',height:40,borderRadius:30, alignItems:'center',justifyContent:'center'}}><Text style={{color:'white'}}>Done</Text></TouchableOpacity>
             </View>
                </View>
         </View>

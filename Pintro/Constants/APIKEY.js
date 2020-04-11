@@ -1,0 +1,3 @@
+const APIKEY='AIzaSyCZUeHC1zcLM__APOSB0dCXJkNPsOZuDKM';
+
+export {APIKEY};

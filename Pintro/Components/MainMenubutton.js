@@ -17,7 +17,8 @@ const MainMenuButton = props => {
         setWritingPost(false);
         };
     const [inFocus,setInFocus] = useState(false); 
-    const [writingPost,setWritingPost] = useState(false); 
+    const [writingPost,setWritingPost] = useState(false);
+    const [title,setTitle] = useState(""); 
     return(
         
         <View style = {{position:'absolute', alignItems:'center',flex:1 ,backgroundColor:'orange'}} >
@@ -36,21 +37,16 @@ elevation: 8,
 justifyContent:'center'}}>
 
                     <View style={styles.container}>
-                    <Text style={styles.textStyles}>Whats going on</Text>
-                   
-                   <View style={styles.listofFuncs}>
+                    <Text style={{fontSize:28,fontFamily:'Poppins-Regular'}}>What's going on</Text>
+                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                      <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Check-In</Text></TouchableOpacity></View> 
-                  
-                   </View>
-                   <View style={styles.listofFuncs}>
-                       <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Talk to me about</Text></TouchableOpacity></View> 
-                  
-                   </View>
-                   <View style={styles.listofFuncs}>
-                       <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Ask for help</Text></TouchableOpacity></View> 
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
+                        onPress={()=>{
+                            setInFocus(false);
+                            setTitle("Check-in at:");
+                            setWritingPost(true);
+                        }}
+                       ><Text>Check-in</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
@@ -58,11 +54,37 @@ justifyContent:'center'}}>
                        <View style={styles.buttonsToFunc}><TouchableOpacity
                         onPress={()=>{
                             setInFocus(false);
+                            setTitle("Talk to me about");
+                            setWritingPost(true);
+                        }}
+                       ><Text>Talk to me about</Text></TouchableOpacity></View> 
+                  
+                   </View>
+                   <View style={styles.listofFuncs}>
+                       <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
+                        onPress={()=>{
+                            setInFocus(false);
+                            setTitle("Help me with:");
+                            setWritingPost(true);
+                        }}
+                       ><Text>Ask for help</Text></TouchableOpacity></View> 
+                  
+                   </View>
+                   <View style={styles.listofFuncs}>
+                       <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
+                        onPress={()=>{
+                            setInFocus(false);
+                            setTitle("Introduce me to:");
                             setWritingPost(true);
                         }}
                        ><Text>Request an intro</Text></TouchableOpacity></View> 
                   
                    </View>
+                   
+            
+   
                     <View>
                         <TouchableOpacity style={styles.buttonLayout} onPress={()=>setInFocus(false)}><Text style={{color:'white'}}>Cancel</Text></TouchableOpacity>
                     </View>
@@ -78,7 +100,7 @@ justifyContent:'center'}}>
                }}>
                <View>
                <Modal transparent={false} visible={writingPost} style={{backgroundColor:'green'}}>
-<WriteAPost onBack={backButton}/>
+<WriteAPost onBack={backButton} titleToShow={title}/>
                    </Modal>
                 
                <Image style={{height: 40, width: 40, resizeMode:'contain'}} source= {require('../images/middleLOGO.png')}/>

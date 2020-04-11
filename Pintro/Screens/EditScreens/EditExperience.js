@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
     Text,
     View,
@@ -6,10 +6,18 @@ import {
     TextInput,
     TouchableOpacity,
 } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import RNPickerSelect from 'react-native-picker-select';
+import * as UserActions from '../../store/actions/user';
 const EditExperience = props => {
 
+    const dispatch = useDispatch();
+    const [workExperience,setWorkExperience] = useState(useSelector(state => state.user.years_in_industry));
+    const [industry,setIndustry] = useState(useSelector(state => state.user.Industry));
+    const [previousCompany,setPreviousCompany] = useState(useSelector(state => state.user.previous_Company));
+    const [education,setEducation] = useState(useSelector(state => state.user.education));
+    const [academicLevel,setAcademicLevel] = useState(useSelector(state => state.user.academic_Level));
     return(
         <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
@@ -24,16 +32,32 @@ const EditExperience = props => {
             <Text>Your work experience timeline</Text>
             </View>
             <Text>Work experience</Text>
-            <TextInput style={{marginVertical:25}} placeholder="69 years"/>
+            <TextInput 
+            style={{marginVertical:25}} 
+            value={workExperience}
+            onChangeText={(text)=>setWorkExperience(text)}
+            />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Industry</Text>
-            <TextInput style={{marginVertical:25}} placeholder="industry"/>
+            <TextInput 
+            style={{marginVertical:25}} 
+            value={industry}
+            onChangeText={(text)=>setIndustry(text)}
+            />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Previous company</Text>
-            <TextInput style={{marginVertical:25}} placeholder="company"/>
+            <TextInput
+             style={{marginVertical:25}} 
+            value={previousCompany}
+            onChangeText={(text)=>setPreviousCompany(text)}
+             />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Education</Text>
-            <TextInput style={{marginVertical:25}} placeholder="education"/>
+            <TextInput
+             style={{marginVertical:25}}
+              value={education}
+              onChangeText={(text)=>setEducation(text)}
+              />
             <View style={styles.horizintalLineStyle}></View>
             <Text>Academic Level</Text>
             <RNPickerSelect style={{inputIOS: {
@@ -41,8 +65,9 @@ const EditExperience = props => {
 		paddingTop: 13,
 		paddingHorizontal: 10,
 		paddingBottom: 12,
-	}}}
-            onValueChange={(value) => console.log(value)}
+    }}}
+    value={academicLevel}
+            onValueChange={(value) => setAcademicLevel(value)}
             items={[
                 { label: 'PHD', value: 'PHD',},
                 { label: 'Master', value: 'Master' },
@@ -52,7 +77,13 @@ const EditExperience = props => {
         />
             <View style={styles.horizintalLineStyle}></View>
                     <View style={{marginTop:20}}> 
-                        <TouchableOpacity style={{backgroundColor:'black',height:40,borderRadius:30, alignItems:'center',justifyContent:'center'}}><Text style={{color:'white'}}>Done</Text></TouchableOpacity>
+                        <TouchableOpacity
+                         style={{backgroundColor:'black',height:40,borderRadius:30, alignItems:'center',justifyContent:'center'}}
+                         onPress={()=>{
+                            dispatch(UserActions.update_experience(workExperience,industry,previousCompany,education,academicLevel))
+                            props.navigation.navigate({routeName:'SettingsPage'})
+                         }}
+                         ><Text style={{color:'white'}}>Done</Text></TouchableOpacity>
             </View>
                </View>
         </View>

@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{useEffect,useState,useCallback} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SearchBar, ListItem } from 'react-native-elements';
@@ -7,6 +7,7 @@ import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
 import * as SearchActions from "../../store/actions/search";
 import * as TagActions from "../../store/actions/tags";
+import data2 from '../../Constants/data2.json'
 
 const SearchScreen = props => {
     const dispatch = useDispatch();
@@ -19,18 +20,19 @@ const SearchScreen = props => {
         dispatch(TagActions.getTags());
     }
 
+    var tagNames = loadedTags.map(function(item) {
+        return item['name'];
+      });
+    
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
+            
             const regex = new RegExp(`^${searchWord}`,'i');
-            //console.log(loadedTags.sort().filter(v => regex.test(v)));
-            const tagSet = new Set(loadedTags.sort().filter(v => regex.test(v)));
-            const tagSuggestions = [...tagSet];
-            setSuggestions(tagSuggestions); 
+            //console.log(tagList.sort().filter(v => regex.test(v)));
+            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
         }
-        if(suggestions!==null) {
-            renderSuggestions();
-        }
+        renderSuggestions();
     }
 
     function onListItemPress(item) {
@@ -83,9 +85,7 @@ const SearchScreen = props => {
                     value={searchKeyword}
                     clearIcon={null}
                     onSubmitEditing={() => handleKeyPress()}/>
-                <ScrollView>
-                    {suggestedItems} 
-                </ScrollView>
+                {suggestedItems}
                 <Text style={styles.category}>or Choose a Category</Text>
             </View>
             <View style={styles.rowContainer}>
