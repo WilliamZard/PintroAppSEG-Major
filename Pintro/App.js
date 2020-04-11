@@ -12,6 +12,7 @@ import timeLineReducer from './store/reducers/timeline';
 import tagsReducer from './store/reducers/tags';
 import searchReducer from './store/reducers/search';
 import businessReducer from './store/reducers/business';
+import requestReducer from './store/reducers/request';
 
 import userReducer from './store/reducers/user';
 import firebase from 'firebase';
@@ -38,7 +39,8 @@ const rootReducer = combineReducers({
   tags:tagsReducer,
   search:searchReducer,
   business:businessReducer,
-  user:userReducer
+  user:userReducer,
+  request:requestReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
