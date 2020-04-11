@@ -36,21 +36,35 @@ elevation: 8,
 justifyContent:'center'}}>
 
                     <View style={styles.container}>
-                    <Text style={styles.textStyles}>Whats going on</Text>
-                   
-                   <View style={styles.listofFuncs}>
+                    <Text style={{fontSize:28,fontFamily:'Poppins-Regular'}}>Whats going on</Text>
+                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                      <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Check-In</Text></TouchableOpacity></View> 
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
+                        onPress={()=>{
+                            setInFocus(false);
+                            setWritingPost(true);
+                        }}
+                       ><Text>Check-in</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Talk to me about</Text></TouchableOpacity></View> 
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
+                        onPress={()=>{
+                            setInFocus(false);
+                            setWritingPost(true);
+                        }}
+                       ><Text>Talk to me about</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
                        <View style={styles.icon}><Ionicons name = 'ios-star' size ={22} color={'black'}/></View>
-                       <View style={styles.buttonsToFunc}><TouchableOpacity><Text>Ask for help</Text></TouchableOpacity></View> 
+                       <View style={styles.buttonsToFunc}><TouchableOpacity
+                        onPress={()=>{
+                            setInFocus(false);
+                            setWritingPost(true);
+                        }}
+                       ><Text>Ask for help</Text></TouchableOpacity></View> 
                   
                    </View>
                    <View style={styles.listofFuncs}>
@@ -63,6 +77,9 @@ justifyContent:'center'}}>
                        ><Text>Request an intro</Text></TouchableOpacity></View> 
                   
                    </View>
+                   
+            
+   
                     <View>
                         <TouchableOpacity style={styles.buttonLayout} onPress={()=>setInFocus(false)}><Text style={{color:'white'}}>Cancel</Text></TouchableOpacity>
                     </View>

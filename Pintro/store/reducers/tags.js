@@ -2,20 +2,26 @@ import {
     GETTAGS
     } from '../actions/tags';
     const initialState = {
-      tagsArray: [],
-      favs1: [],
-      favs2: [],
-      favs3: []
+      businessTags:[],
+      passionTags:[],
+      helpOthersWithTags:[],
+      searchTags:[],
+      businessTagsSHUFFLED:[],
+      passionTagsSHUFFLED:[],
+      helpOthersWithTagsSHUFFLED:[],
     };
     
     export default (state = initialState, action) => {
       switch (action.type) {
         case GETTAGS:
           return {
-            tagsArray: action.tagsArray,
-            favs1: action.favs1,
-            favs2: action.favs2,
-            favs3: action.favs3,
+            businessTags:action.businessTagsToGet,
+            passionTags:action.passionTagsToGet,
+            helpOthersWithTags:action.helpOthersWithTagsToGet,
+            searchTags:action.searchTagsToGet,
+            businessTagsSHUFFLED:action.businessTagsSHUFFLEDTOGET,
+            passionTagsSHUFFLED:action.passionTagsSHUFFLEDTOGET,
+            helpOthersWithTagsSHUFFLED:action.helpOthersWithTagsSHUFFLEDTOGET
           };
       }
       return state;

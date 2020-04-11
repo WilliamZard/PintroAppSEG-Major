@@ -18,9 +18,10 @@ export default (state = initialState, action) => {
       }
       case LOGIN:
       return {
-        token: action.token,
+        tokenToGet: action.tokenToGet,
+        refreshToken:action.refreshToken,
         userId: action.userId,
-        email:action.email
+        emailToGet:action.emailToGet
       }
       case LOGOUT:
         return{

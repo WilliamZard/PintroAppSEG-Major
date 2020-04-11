@@ -1,29 +1,80 @@
 import Tag from '../../Model/Tag';
 import { BearerToken } from '../../Constants/BearerToken';
 export const GETTAGS = 'GETTAGS';
-export const getTags = () => {
 
-  return async (dispatch) => {
-    const response = await fetch('https://bluej-pintro-project.appspot.com/tags/',
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+  while (0 !== currentIndex) {
+   
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+export const getTags = () => {
+  return async (dispatch,getState) => {
+        const passionTags = await fetch('https://bluej-pintro-project.appspot.com/tags/',
+          { 
+              method:"POST",
+              headers:{
+                'Content-Type':'application/json',
+                'Authorization': 'Bearer '+ getState().auth.tokenToGet
+              },
+              body: JSON.stringify({
+                "labels":["PassionsTag"]
+              }),
+              redirect: 'follow'
+          }
+      );
+      const helpOtherTags = await fetch('https://bluej-pintro-project.appspot.com/tags/',
       {
           method:"POST",
           headers:{
             'Content-Type':'application/json',
-            'Authorization': BearerToken
-          },
+            'Authorization': 'Bearer '+ getState().auth.tokenToGet
+               },
           body: JSON.stringify({
-            "labels":["Tag"]
+            "labels":["CanHelpWithTag"]
           }),
           redirect: 'follow'
       }
-    );
-  
-    const resData = await response.json();
+  );
+  const businessTags = await fetch('https://bluej-pintro-project.appspot.com/tags/',
+  {
+      method:"POST",
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization': 'Bearer '+ getState().auth.tokenToGet
+      },
+      body: JSON.stringify({
+        "labels":["BusinessTag"]
+      }),
+      redirect: 'follow'
+  },
+);
 
-    const loadedfavTags1 = ["Accounting","Job Evaluation","Jordan","JVM","Kazakhstan","Judge"];
-    const loadedfavTags2 = ["Keyword Research","Lawyer","Lead Generation","Legal Research","Licensing Agreements","Lighting"];
-    const loadedfavTags3 = ["Loan Origination","Local Marketing","Machine Learning Engineer","Maintenance Management","Market Planning","Marketing Expert"];
-    
-    dispatch({type: GETTAGS,tagsArray:resData,favs1:loadedfavTags1,favs2:loadedfavTags2,favs3:loadedfavTags3});
+ 
+      
+      const passionData = await passionTags.json();
+      const helpOthersData = await helpOtherTags.json();
+      const businessData = await businessTags.json();
+      const passionSHUFFLE = shuffle(passionData);
+      const helpOthersSHUFFLE = shuffle(helpOthersData);
+      const businessSHUFFLE = shuffle(businessData);
+console.log("Loaded")
+    dispatch({type: GETTAGS, businessTagsToGet:businessData,
+      passionTagsToGet:passionData,
+      helpOthersWithTagsToGet:helpOthersData,
+      searchTagsToGet:helpOthersData,
+      businessTagsSHUFFLEDTOGET:businessSHUFFLE,
+      passionTagsSHUFFLEDTOGET:passionSHUFFLE,
+      helpOthersWithTagsSHUFFLEDTOGET:helpOthersSHUFFLE});
   };
 };
+ 

@@ -4,8 +4,6 @@ import * as Animatable from 'react-native-animatable';
 import SignInUpButton from '../Components/SignInUpButton';
 import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import Colors from '../Constants/Colors';
-import * as tagsActions from '../store/actions/tags';
-import * as businessActions from '../store/actions/business';
 import {useSelector, useDispatch} from 'react-redux';
 /**
  * Start Screen which allows the user to decide whether he wants to sign in
@@ -15,9 +13,10 @@ import {useSelector, useDispatch} from 'react-redux';
 const StartScreen = props => {
 const dispatch = useDispatch();
 
-const getRequest = () =>{
-console.log("dd");
-    dispatch(tagsActions.getTags());
+const getRequest = async () =>{
+
+  //
+  console.log("dd");
     props.navigation.navigate({routeName:'LetsGetStarted'});
 }
 
@@ -38,6 +37,10 @@ console.log("dd");
                         </View>
                        
                     <InvertedSignInUpButton >Sign up with Linkedn</InvertedSignInUpButton>
+                   
+                   
+                   
+                   
                     <SignInUpButton onPress={    () =>{   getRequest()}}>Sign up with email or phone</SignInUpButton>
 
 
