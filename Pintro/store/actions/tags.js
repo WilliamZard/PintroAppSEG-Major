@@ -58,20 +58,37 @@ export const getTags = () => {
       redirect: 'follow'
   },
 );
-
  
       
+
+const searchTagsReq = await fetch('https://bluej-pintro-project.appspot.com/tags/',
+  {
+      method:"POST",
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization': BearerToken
+      },
+      body: JSON.stringify({
+        "labels":['PassionsTag', 'BusinessTag', 'CanHelpWithTag','HelpMeWithTag', 'IntroMeToTag', 'JobTitleTag']
+      }),
+      redirect: 'follow'
+  }
+);
+    const searchTags = await searchTagsReq.json();
+
       const passionData = await passionTags.json();
       const helpOthersData = await helpOtherTags.json();
       const businessData = await businessTags.json();
       const passionSHUFFLE = shuffle(passionData);
       const helpOthersSHUFFLE = shuffle(helpOthersData);
       const businessSHUFFLE = shuffle(businessData);
-console.log("Loaded")
+
+
     dispatch({type: GETTAGS, businessTagsToGet:businessData,
       passionTagsToGet:passionData,
       helpOthersWithTagsToGet:helpOthersData,
-      searchTagsToGet:helpOthersData,
+      searchTagsToGet:searchTags,
+
       businessTagsSHUFFLEDTOGET:businessSHUFFLE,
       passionTagsSHUFFLEDTOGET:passionSHUFFLE,
       helpOthersWithTagsSHUFFLEDTOGET:helpOthersSHUFFLE});

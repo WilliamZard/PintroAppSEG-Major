@@ -1,4 +1,5 @@
 import {
+
     GETTAGS
     } from '../actions/tags';
     const initialState = {
@@ -26,3 +27,4 @@ import {
       }
       return state;
     };
+

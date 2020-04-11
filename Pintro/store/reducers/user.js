@@ -1,3 +1,4 @@
+ 
 import {
     CREATE_USER,
     UPDATE_STORY,
@@ -85,6 +86,10 @@ export default (state = initialState, action) => {
             return {
                 help_others: action.help_othersToGet,
             }
+        case GETUSER :
+                return{
+                    userObj: action.userObj
+                };    
             default:
                 return state;
   

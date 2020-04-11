@@ -29,39 +29,25 @@ const EditJourney = props => {
     }
 
     async function onPressDone() {
-        try{
-            const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-type': 'application/json',
-                        'Authorization': BearerToken
-                    },
-                    redirect: 'follow',
-                    body: JSON.stringify({
-                        email: props.navigation.state.params.business.email,
-                        password: props.navigation.state.params.business.password,
-                        full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
-                        profile_image: props.navigation.state.params.business.profile_image,
-                        phone: props.navigation.state.params.business.phone,
-                        location: location,
-                        short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
-                        story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
-                        tags: props.navigation.state.params.business.tags,
-                        date_founded: founded,
-                        company_size: companySize,
-                        funding: funding,
-                        team_members: props.navigation.state.params.business.team_members,
-                        seeking_investment: props.navigation.state.params.business.seeking_investment,
-                        currently_hiring: props.navigation.state.params.business.currently_hiring
-                    })
-                }
-            );
-            console.log(response.status);
-            dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
-        } catch (error) {
-            console.log(error);
+        const busObj = {
+            email: props.navigation.state.params.business.email,
+            password: props.navigation.state.params.business.password,
+            full_name: props.navigation.state.params.business.full_name.replace(/'/g,"\\'"),
+            profile_image: props.navigation.state.params.business.profile_image,
+            phone: props.navigation.state.params.business.phone,
+            location: location,
+            short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+            story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+            tags: props.navigation.state.params.business.tags,
+            date_founded: founded,
+            company_size: companySize,
+            funding: funding,
+            team_members: props.navigation.state.params.business.team_members,
+            seeking_investment: props.navigation.state.params.business.seeking_investment,
+            currently_hiring: props.navigation.state.params.business.currently_hiring
         }
+        dispatch(BusinessActions.putBusiness(busObj));
+        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
     }
 
     return(
