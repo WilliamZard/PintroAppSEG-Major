@@ -4,6 +4,8 @@ export const UPDATE_STORY = 'UPDATE_STORY';
 export const UPDATE_EXPERIENCE = 'UPDATE_EXPERIENCE';
 export const UPDATE_PASSIONS = 'UPDATE_PASSIONS';
 export const UPDATE_HELP_OTHERS = 'UPDATE_HELP_OTHERS';
+export const GETUSER = 'GETUSER';
+
 import { APIKEY }  from '../../Constants/APIKEY';
 import User from '../../Model/User';
 import { Alert } from 'react-native';

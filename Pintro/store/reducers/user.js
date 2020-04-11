@@ -1,6 +1,7 @@
  
 import {
     CREATE_USER,
+    GETUSER,
     UPDATE_STORY,
     UPDATE_EXPERIENCE,
     UPDATE_PASSIONS,
