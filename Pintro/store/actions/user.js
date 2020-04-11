@@ -1,6 +1,7 @@
-export const CREATE_USER = 'CREATE_USER';
-
+import User from '../../Model/User';
+import { Alert } from 'react-native';
 import { BearerToken }  from '../../Constants/BearerToken';
+export const CREATE_USER = 'CREATE_USER';
 export const create_User = (Industry,academic_Level,current_Company,email,full_name,gender,help_Others,location,passions,
   phone_number,preferrred_name,previous_Company,previous_Company_Year_Finished,profile_image,short_bio,story,university,
   university_Year_Finished,years_in_industry) => {
@@ -64,15 +65,6 @@ console.log("Bearer "+getState().auth.tokenToGet);
 };
 
 
-
-
-
-
-
-
-
-
-
 export const update_story = (full_name,job_title,story,) => {
   return async (dispatch,getState) => {
 console.log("Updating " + getState().user.email);
@@ -110,11 +102,6 @@ console.log("Updating " + getState().user.email);
     
   };
 };
-
-
-
-
-
 
 
 export const trya = () => {
@@ -206,4 +193,57 @@ fetch('https://bluej-pintro-project.appspot.com/users',
   console.error('Error:', error);
 });
 
+};
+
+export const GETUSER = 'GETUSER';
+export const getUser = searchEmail => {
+  return async dispatch => {
+    try {
+      const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + searchEmail,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': BearerToken
+          },
+          redirect: 'follow'
+        } 
+      );
+      console.log("Get user: " + (response.status));
+
+      if(!response.ok) {
+        if(response.status == '404') {
+          Alert.alert('No results found','No users were found that match your search');
+        } else if (response.status == '422') {
+          Alert.alert('Invalid search term','Please enter an email address');
+        } else {
+          const errorResData = await response.json();
+          console.log(errorResData);
+          let message = 'Something went wrong';
+          throw new Error(message);
+        }
+      } else {
+        const resData = await response.json();
+          let searchedUser = new User(
+            resData.education,
+            resData.email,
+            resData.full_name,
+            resData.gender,
+            resData.job_title,
+            resData.location,
+            resData.password,
+            resData.phone,
+            resData.preferred_name,
+            resData.profile_image,
+            "",
+            "",
+            resData.short_bio,
+            resData.story
+          );
+          dispatch({type: GETUSER,userObj:searchedUser});
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

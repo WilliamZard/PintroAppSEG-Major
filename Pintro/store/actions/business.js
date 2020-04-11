@@ -5,12 +5,12 @@ export const getBusiness = value => {
     return async dispatch => {
         const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + value,
             {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': BearerToken
-                },
-                redirect: 'follow'
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': BearerToken
+              },
+              redirect: 'follow'
             }
         );
 
@@ -24,8 +24,21 @@ export const getBusiness = value => {
 
         const resData = await response.json();
 
-
-        var searchedBusiness = new Business(resData.company_size,resData.currently_hiring,resData.date_founded,resData.email,resData.full_name,resData.funding,resData.location,resData.password,resData.phone,resData.profile_image,resData.seeking_investment,resData.short_bio,resData.story,resData.tags,resData.team_members);
+        var searchedBusiness = new Business(
+          resData.company_size,resData.currently_hiring,
+          resData.date_founded,
+          resData.email,
+          resData.full_name,
+          resData.funding,
+          resData.location,
+          resData.password,
+          resData.phone,
+          resData.profile_image,
+          resData.seeking_investment,
+          resData.short_bio,
+          resData.story,
+          resData.tags,
+          resData.team_members);
         //console.log("New Business = " + searchedBusiness);
 
         dispatch({type: GETBUSINESS,businessObj:searchedBusiness});
@@ -74,3 +87,24 @@ export const create_business = (profile_image,location,story,tags,
        
     };
   };
+
+export const putBusiness = busObj => {
+  return async dispatch => {
+    try{
+      const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + busObj.email,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': BearerToken
+          },
+          redirect: 'follow',
+          body: JSON.stringify(busObj)
+        }
+      );
+      console.log("putBusiness: " + response.status);    
+    } catch (error) {
+      console.log(error);
+    }   
+  }
+};

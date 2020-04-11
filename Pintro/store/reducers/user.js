@@ -1,26 +1,27 @@
 import { 
-    CREATE_USER 
+    CREATE_USER,
+    GETUSER 
     } from '../actions/user';
     const initialState = {
-        full_name:null,
-        preferrred_name:null,
-        profile_image:null,
-        short_bio:null,
-        gender:null,
-        story:null,
-        email:null,
-        phone_number:null,
-        current_Company:null,
-        years_in_industry:null,
-        Industry:null,
-        previous_Company:null,
-        previous_Company_Year_Finished:null,
-        university:null,
-        university_Year_Finished:null,
-        academic_Level:null,
-        location:null,
-        passions:null,
-        help_Others:null,
+        full_name:"Ronald Koeman",
+        preferrred_name:"Ron",
+        profile_image:"",
+        short_bio:"interesting bio",
+        gender:"male",
+        story:"story goes here",
+        email:"ronald@kcl.com",
+        phone_number:"314123213",
+        current_Company:"MC",
+        years_in_industry:"23",
+        Industry:"Health",
+        previous_Company:"KCL",
+        previous_Company_Year_Finished:"2019",
+        university:"KCL",
+        university_Year_Finished:"2019",
+        academic_Level:"PHD",
+        location:"London",
+        passions:["Accounting"],
+        help_Others:["Accounting"],
         
     };
 
@@ -49,6 +50,10 @@ import {
                     help_Others:action.help_OthersTP,
                     
                 };
+            case GETUSER :
+                return{
+                    userObj: action.userObj
+                };    
         }
         return state;
     };
