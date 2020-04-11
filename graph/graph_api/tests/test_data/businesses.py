@@ -1,4 +1,5 @@
 from collections import namedtuple
+
 BUSINESS_PROPERTIES = [
     "password",
     "profile_image",

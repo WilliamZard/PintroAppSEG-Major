@@ -1,4 +1,5 @@
 from collections import namedtuple
+
 NOTIFICATION_PROPERTIES = [
     'requester_email',
     'recipient_email',
