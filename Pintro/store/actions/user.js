@@ -525,10 +525,7 @@ export const isUserVerified = () => {
      
       };
     };
-    
-    
 
-export const GETUSER = 'GETUSER';
 export const getUser = searchEmail => {
   return async dispatch => {
     try {
