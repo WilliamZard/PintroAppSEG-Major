@@ -50,7 +50,7 @@ const SignInScreen = props => {
     try {
     await dispatch(authActions.login(email,password));
       console.log("Worked");
-     await dispatch(userActions.get_User());
+     await dispatch(userActions.get_User_To_Load());
      console.log("Worked2");
      await dispatch(tagsActions.getTags());
      console.log("GO");
