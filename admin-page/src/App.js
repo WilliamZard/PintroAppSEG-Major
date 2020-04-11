@@ -71,10 +71,6 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
 
     async activateUser(){
       try{
-  
-  
-  
-        
       const response = await fetch('/users/activate/'+this.state.userEmail, {
         method: 'PUT', 
         headers: {
@@ -90,6 +86,32 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
   
       }  }
 
+
+      async getUser(){
+        try{
+        const response = await fetch('/users/'+this.state.userEmail, {
+          method: 'GET', 
+          headers: {
+            
+            'Accept': 'application/json',
+            'Authorization': 'Bearer '+this.state.ApiKey
+          }, mode: "cors"
+        })
+    
+        const daza = await response.json();
+        alert("Name = "+ daza.full_name + '\n' +
+        "Email = "+ daza.email + '\n' +
+        "help others = "+ daza.help_others + '\n' +
+        "Passions = "+ daza.passions + '\n' + 
+        "Phone = "+ daza.phone_number + '\n' +
+        "Previous Company = "+ daza.previous_Company + '\n' +
+        "Story = "+ daza.story + '\n' +
+        "Active  = "+ daza.active);
+      }catch(err){
+        alert("done " + err);
+    
+        }  }
+  
 
 
   render(){
@@ -128,7 +150,7 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
         </div> 
         <div>
         <label>
-          ID Token:
+          Auth Token:
           <input type="text" style={{borderRadius:7, height:25, width:150}} value={this.state.ApiKey} onChange={this.handleChangeKey} />
         </label>
     </div> 
@@ -142,8 +164,12 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
 <Button style={{margin:10}} variant="contained" color="primary" onClick={() => this.activateUser()}>
   Activate
 </Button>
+
+<Button style={{margin:10}} variant="contained" color="primary" onClick={() => this.getUser()}>
+  Get User
+</Button>
 </div>
-      
+
       </div>       
   </div>
   );
