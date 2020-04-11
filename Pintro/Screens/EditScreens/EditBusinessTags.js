@@ -18,7 +18,7 @@ const EditBusinessTag = props => {
     const [suggestedItems,setItems] = useState([])
     let popularTags = ["Students","Startups","Mindfulness","Work/life Balance","Apple","Social Media","Neuroscience","Nutrition","Innovation","Pre-Seed","Diversity","Teamwork"];
 
-    const loadedTags = useSelector(state => state.tags.tagsArray);
+    const loadedTags = useSelector(state => state.tags.businessTags);
     if(loadedTags.length == 0) {
         dispatch(TagActions.getTags());
     }
