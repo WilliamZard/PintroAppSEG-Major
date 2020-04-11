@@ -6,7 +6,7 @@ import InvertedSignInUpButton from '../Components/InvertedSignInUpButton';
 import * as Animatable from 'react-native-animatable';
 import { useDispatch,useSelector } from 'react-redux';
 import * as authActions from '../store/actions/auth';
-import Input from '../Components/Input';
+import * as tagsActions from '../store/actions/tags';
 
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
@@ -33,9 +33,15 @@ const [userPassword,setUserPassword]= useState("");
 const [phoneNumber,setPhoneNumber] = useState("");
 const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState();
-const [isSignup, setIsSignup] = useState(false);
+ 
 const dispatch = useDispatch();
-
+ 
+useEffect(() => {
+    if (error) {
+      Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+  
 const verification = () =>{
 
 if(userEmail.length === 0 || userPassword.length === 0||confirmPassword.length === 0){
@@ -60,7 +66,7 @@ setIsLoading(true);
 try {
    await dispatch(authActions.signup(userEmail,userPassword));
   console.log(userEmail);
-
+  await  dispatch(tagsActions.getTags());
   props.navigation.navigate({routeName:'Camera',params:{
     phoneToPass:phoneNumber,
     emailToPass:userEmail}})
@@ -108,9 +114,7 @@ try {
                             {isLoading?  ( <ActivityIndicator size="small" color={'white'} />
                             ):(
                        
-                                <InvertedSignInUpButton onPress={signupHandler
-                                    //()=>   props.navigation.navigate({routeName:'Camera'}) 
-                                }>STEP 1 OF 6</InvertedSignInUpButton>
+                                <InvertedSignInUpButton onPress={()=>signupHandler()}>STEP 1 OF 6</InvertedSignInUpButton>
                              )}
                             
                             

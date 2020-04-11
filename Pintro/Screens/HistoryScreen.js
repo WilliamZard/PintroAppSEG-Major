@@ -113,6 +113,7 @@ const HistoryScreen = props => {
 		paddingBottom: 12,
 	}}}
             onValueChange={(value) => setAcademicLevel(value)}
+          
             items={[
                 { label: 'PHD', value: 'PHD',},
                 { label: 'Master', value: 'Master' },

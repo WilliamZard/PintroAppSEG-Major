@@ -22,8 +22,7 @@ const ShowUsYourFace = props => {
     const email = props.navigation.getParam('emailToPass');
     const[imageUri,setImage] = useState("null");
     const [imageEncoding,setImageEncoding] = useState("");
-
-
+    const [display,setDisplay] =  useState("");
 
 //Camera functions
 
@@ -67,14 +66,14 @@ async function onPressDone() {
     if(!verification()===false){
     const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
     const imageCode = await result.base64
-    const formattedImage = "b'" + imageCode+"'";
-   
-    setImageEncoding(formattedImage);
+
+//   setDisplay(imageCode);
+    setImageEncoding(imageCode);
 
     props.navigation.navigate({routeName:'WhatsYourStory',params:{
         phoneToPass:phoneNumber,
         emailToPass:email,
-        photoToPass:formattedImage
+        photoToPass:imageCode
       }})
     }else{
         return
@@ -92,12 +91,9 @@ async function onPressDone() {
                         <Image source={(imageUri===null)? require('../assets/blankImage.png') : {uri: imageUri}} style={styles.userImage}/>
                         <Text style={styles.add}>+</Text>
                     </TouchableOpacity>
-
-                    <Image source={{uri:
-      `data:image/png;base64,${imageEncoding}`,
-  }} style={styles.userImage}/>
-                </View>
                    
+                </View>
+                <Image source={{uri:`data:image/png;base64,${display}`}} style={styles.userImage}/>
                      
                 </View>
                 <View style={styles.bottomButton}>
