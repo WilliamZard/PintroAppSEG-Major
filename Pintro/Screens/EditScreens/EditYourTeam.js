@@ -5,8 +5,12 @@ import BlackTag from '../../Components/BlackTag';
 import TeamMember from '../../Components/TeamMember';
 import { BearerToken } from '../../Constants/BearerToken';
 import User from '../../Model/User';
+import * as BusinessActions from '../../store/actions/business';
+import { useDispatch } from 'react-redux';
+import * as RequestActions from '../../store/actions/request';
 
 const EditYourTeam = props => {
+    const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
     const [teamMembers,setMembers] = useState([]);
     const [teamEmails,setEmails] = useState((props.navigation.state.params.business.teamMembers)? props.navigation.state.params.business.teamMembers : []);
@@ -86,18 +90,6 @@ const EditYourTeam = props => {
             console.log(error);
         }
 
-        
-
-        /*if(teamMembers !== undefined) {
-                    console.log("You got here");
-                    Update(teamMembers.map((item) => 
-                    <TeamMember 
-                    key={item.email} 
-                    props={props.TeamMember} 
-                    callback={value => onPressRemove(value)} 
-                    userObj={item}/>
-                    )); 
-                }*/ 
         setEmails(teamEmails);
         setMembers(teamMembers);
         console.log("After enter pressed: ");
@@ -108,7 +100,7 @@ const EditYourTeam = props => {
 
     async function onPressDone() {
         console.log("You pressed done");
-        console.log(teamMembers);
+        console.log(teamMembers.length);
         const busObj = {
             email: props.navigation.state.params.business.email,
             password: props.navigation.state.params.business.password,
@@ -126,8 +118,12 @@ const EditYourTeam = props => {
             seeking_investment: props.navigation.state.params.business.seeking_investment,
             currently_hiring: props.navigation.state.params.business.currently_hiring
         }
-        /*dispatch(BusinessActions.putBusiness(busObj));
-        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));*/
+        //dispatch(BusinessActions.putBusiness(busObj));
+        //dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
+        console.log(teamEmails.length);
+        if(teamEmails.length > 0) {
+            teamEmails.map((item) => RequestActions.requestAfil(props.navigation.state.params.business.email,item));
+        }
     }
 
     return (
