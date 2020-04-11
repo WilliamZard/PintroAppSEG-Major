@@ -14,7 +14,7 @@ const SearchScreen = props => {
     const [suggestions,setSuggestions] = useState([]);
     const [suggestedItems,setItems] = useState([])
 
-    const loadedTags = useSelector(state => state.tags.tagsArray);
+    const loadedTags = useSelector(state => state.tags.searchTags);
     if(loadedTags.length == 0) {
         dispatch(TagActions.getTags());
     }
