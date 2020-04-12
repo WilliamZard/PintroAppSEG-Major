@@ -1,13 +1,20 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, Group } from 'react-native';
-import { fonts } from '../Constants/Fonts.js';
-import BlackTag from '../Components/BlackTag.js';
-import WhiteTag from '../Components/WhiteTag.js';
-import Colors from '../Constants/Colors.js';
+import React, { useState } from 'react';
+import { useSelector,useDispatch } from 'react-redux';
+import { Dimensions, StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
-import Edit from '../Components/Edit.js';
+import BlackTag from '../Components/BlackTag.js';
+import WhiteTag from '../Components/WhiteTag.js';
 import HelpMeWith from '../Components/HelpMeWith.js';
+import Edit from '../Components/Edit.js';
+import { fonts } from '../Constants/Fonts.js';
+import PencilBlack from '../Components/PencilBlack.js';
+import PencilWhite from '../Components/PencilWhite.js';
+import Colors from '../Constants/Colors.js';
+import JourneyPoint from '../Components/JourneyPoint.js';
+import TimelinePostComponent from '../Components/TimelinePostComponent.js';
+import UserProfileCircle from '../Components/UserProfileCircle.js';
+import UserMoodCircle from '../Components/UserMoodCircle.js';
 
 /**
  * The account page for a personal account
@@ -18,9 +25,107 @@ import HelpMeWith from '../Components/HelpMeWith.js';
  * @param {*} props
  */
 const UserAccountScreen = props => {
+    const user = useSelector(state => state.user.userObj);
+    const [lines, setLineNumber] = useState(2);
+    const [see, setSee] = useState("More");
+    const [more, setMore] = useState(true);
+
+    function onPressMore(){
+        if(more){
+            setLineNumber(10);
+            setSee("See less");
+            setMore(false);
+        } 
+        else{
+            setLineNumber(4);
+            setSee("More");
+            setMore(true);
+        }   
+    }
+
+    function switchEditStory() {
+        props.navigation.navigate('Story', {user: userObj});
+    }
+
+    function switchEditPassions() {
+        props.navigation.navigate('Passions', {user: userObj});
+    }
+
+    function switchEditHelpOthers() {
+        props.navigation.navigate('HelpOthers', {user: userObj});
+    }
+
+    function switchEditExperience() {
+        props.navigation.navigate('Experience', {user: userObj});
+    }
+
+    function switchEditPhoto() {
+        props.navigation.navigate('Photo', {user: userObj});
+    }
+  
+    function onPressBack() {
+        props.navigation.goBack(null);
+    }
+
+    function onConnectPress() {
+        //Do something
+    }
+
     return(
         <ScrollView style={styles.background}>
-            <View style={styles.name_title}>
+            <View style={styles.accountTop}>
+                <View style={styles.rowContainer}>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => onPressBack()}>
+                        <Image source={require('../assets/backWhite.png')} style={styles.back}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../assets/shareWhite.png')} style={styles.shareImage}/>
+                    </TouchableOpacity> 
+                </View>
+                <Image source={require('../images/blank-profile-picture.png')} style={{ width: 60, height: 60}}/>
+                <PencilWhite onPress={() => switchEditPhoto()}/>
+                <View>
+                    <Text style={fonts.name_black}>John Doe</Text>
+                    <Text style={fonts.title_black}>Founder of John Doe industries</Text>
+                    <Text style={fonts.bio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
+                    <Text style={fonts.location}>King's College London</Text>
+                    </View>
+            </View>
+        </ScrollView>
+    );
+};
+
+const styles = StyleSheet.create({
+    background: {
+        backgroundColor: Colors.pintroWhite,
+        flex: 1
+    },
+    accountTop: {
+        width: 375,
+        height: 160,
+        backgroundColor: Colors.pintroWhite,
+    },
+    helpUs_button: {
+        color: Colors.pintroWhite
+    },
+    back: {
+        height: 20, 
+        width: 20, 
+        marginLeft: 10,
+    },
+    shareImage: {
+        height: 20, 
+        width: 20,  
+        marginRight: 10,
+
+    },
+    rowContainer: {
+        flexDirection: 'row'
+    }
+});
+
+/*
+            <View style={styles.accountTop}>
                 <Image source={require('../images/blank-profile-picture.png')} style={{ width: 60, height: 60}}/>
                 <View>
                     <Text style={fonts.name_black}>John Doe</Text>
@@ -104,25 +209,6 @@ const UserAccountScreen = props => {
                     <Button><Image source={require('../images/blank-profile-picture.png')} style={{ width: 70, width: 70}}/></Button>
                 </View>
             </View>
-        </ScrollView>
-    );
-};
-
-const styles = StyleSheet.create({
-    background: {
-        backgroundColor: Colors.pintroWhite,
-        flex: 1
-    },
-    name_title: {
-        flex: 1,
-        flexDirection: 'row'
-    },
-    helpUs_button: {
-        color: Colors.pintroWhite
-    },
-    rowContainer: {
-        flexDirection: 'row'
-    }
-});
+*/
 
 export default UserAccountScreen;
