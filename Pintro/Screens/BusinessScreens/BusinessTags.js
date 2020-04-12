@@ -31,22 +31,13 @@ const BusinessTags = props => {
     const [currentlyChanging,setCurrentlyChanin] = useState(false);
     const [suggestedItems,setItems] = useState([])
     const [chosenTags,setChosenTags] = useState([])
-    const loadedTags = useSelector(state => state.tags.tagsArray);
-    const favs1 = useSelector(state => state.tags.favs1);
-    const favs2 = useSelector(state => state.tags.favs2);
-    const favs3 = useSelector(state => state.tags.favs3);
-    var tagNames = loadedTags.map(function(item) {
-        return item['name'];
-      });
-      var favsNames1 = favs1.map(function(item) {
-        return item['name'];
-      });
-      var favsNames2 = favs2.map(function(item) {
-        return item['name'];
-      });
-      var favsNames3 = favs3.map(function(item) {
-        return item['name'];
-      });
+  
+    const loadedTags = useSelector(state => state.tags.helpOthersWithTags);
+    const loadedTagsShuffled = useSelector(state => state.tags.helpOthersWithTagsSHUFFLED);
+
+          const favs1 = loadedTagsShuffled.slice(1, 7);
+        const favs2 = loadedTagsShuffled.slice(8, 16);
+        const favs3 = loadedTagsShuffled.slice(20, 27);
 
       function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -54,7 +45,7 @@ const BusinessTags = props => {
             
             const regex = new RegExp(`^${searchWord}`,'i');
             //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+            setSuggestions(loadedTags.sort().filter(v => regex.test(v))); 
         }
         if(suggestions!==null){
         renderSuggestions();
@@ -149,7 +140,7 @@ clearIcon={null}/>
 
         <View style={styles.horizintalLineStyle}></View>
         </View>
-        <FlatList data ={favsNames1} renderItem={
+        <FlatList data ={favs1} renderItem={
   ({item})=> {
      
       if(chosenTags.includes(item)){
@@ -174,7 +165,7 @@ clearIcon={null}/>
  extraData={currentlyChanging}
  />
 
-<FlatList data ={favsNames2} renderItem={
+<FlatList data ={favs2} renderItem={
   ({item})=> {
      
       if(chosenTags.includes(item)){
@@ -199,7 +190,7 @@ clearIcon={null}/>
  extraData={currentlyChanging}
  />
 
-<FlatList data ={favsNames3} renderItem={
+<FlatList data ={favs3} renderItem={
   ({item})=> {
      
       if(chosenTags.includes(item)){
