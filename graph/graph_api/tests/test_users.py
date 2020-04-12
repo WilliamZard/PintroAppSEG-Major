@@ -67,17 +67,13 @@ class TestGet:
             assert key in response
             assert value == response[key]
 
-    def test_GET_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_user_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_GET_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_user_with_invalid_email(self, app: Flask) -> None:
         INVALID_EMAIL = 'invalidateme.now'
         response = app.get(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -120,17 +116,13 @@ class TestDelete:
         response = app.get(f"/users/{user['email']}")
         assert response.status == '404 NOT FOUND'
 
-    def test_DELETE_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_DELETE_user_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.delete(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_DELETE_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_DELETE_user_with_invalid_email(self, app: Flask) -> None:
         INVALID_EMAIL = 'invalidateme.now'
         response = app.delete(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -227,13 +219,12 @@ class TestPut:
                 continue
             assert value == response[key]
 
-    def test_PUT_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
+    def test_PUT_user_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         # Generate test data
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         new_user_fields = dict(
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
         )
-        populate_db()
 
         # Test
         response = app.put(
@@ -241,13 +232,12 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_PUT_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
+    def test_PUT_user_with_invalid_email(self, app: Flask) -> None:
         # Generate test data
         INVALID_EMAIL = 'invalidateme.now'
         new_user_fields = dict(
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
         )
-        populate_db()
 
         # Test
         response = app.put(
@@ -319,7 +309,7 @@ class TestPost:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app: Flask, populate_db: None) -> None:
+    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app: Flask) -> None:
         # Generate Test Data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image3.jpg"
@@ -328,7 +318,6 @@ class TestPost:
 
         user_to_add = User(profile_image=str(image))._asdict()
 
-        populate_db()
 
         # Test
         response = app.post("/users/", json=user_to_add)
@@ -541,9 +530,7 @@ class TestUsersGETFollowings:
         assert user_with_one_following_reduced in json
         assert user_with_no_followings_reduced in json
 
-    def test_GET_followings_of_non_existing_user(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_followings_of_non_existing_user(self, app: Flask) -> None:
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followings")
         assert response.status == '404 NOT FOUND'
@@ -717,9 +704,7 @@ class TestGET:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask) -> None:
         nonexistant_email = 'doesnotexist@test.com'
         response = app.get(f"/users/{nonexistant_email}/chatrooms")
         assert response.status == '200 OK'
