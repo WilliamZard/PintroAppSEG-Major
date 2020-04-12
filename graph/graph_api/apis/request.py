@@ -21,11 +21,15 @@ class Request(Resource):
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
 
+        s_node_label = e_node_label = 'Person'
+        if relationship_type == 'affiliation':
+            s_node_label = 'Business'
+
         # TODO: validate emails
         with create_session() as session:
             created_at = time.time()
             tx = session.begin_transaction()
-            response = create_relationship(tx, 'Person', {'email': requester_email}, 'Person', {
+            response = create_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
                                            'email': request_recipient_email}, REQUEST_RELATIONSHIPS[relationship_type], {'created_at': created_at})
             tx.commit()
             if response.summary().counters.relationships_created == 1:
@@ -34,9 +38,16 @@ class Request(Resource):
 
     def delete(self, relationship_type: str, requester_email: str, request_recipient_email: str) -> Response:
         '''Delete request relationship, effectively denying the request.'''
+        if relationship_type not in REQUEST_RELATIONSHIPS:
+            return make_response('Invalid relationship type entered', 404)
+
+        s_node_label = e_node_label = 'Person'
+        if relationship_type == 'affiliation':
+            s_node_label = 'Business'
+
         with create_session() as session:
             tx = session.begin_transaction()
-            response = delete_relationship(tx, 'Person', {'email': requester_email}, 'Person', {
+            response = delete_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
                                            'email': request_recipient_email}, REQUEST_RELATIONSHIPS[relationship_type])
             tx.commit()
             if response.summary().counters.relationships_deleted == 1:
