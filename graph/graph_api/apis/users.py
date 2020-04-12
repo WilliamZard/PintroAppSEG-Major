@@ -1,31 +1,27 @@
-from flask import make_response, Response
+"""All endpoints for handling User nodes."""
+from operator import itemgetter
+
+from flask import Response, make_response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
+from .image_storing import *
 from .neo4j_ops import create_session
+from .neo4j_ops.chatrooms import get_chatrooms_of_user
+from .neo4j_ops.general import create_node, get_account_field, set_properties
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
-from .neo4j_ops.chatrooms import get_chatrooms_of_user
-from .neo4j_ops.general import set_properties, create_node, get_account_field
-from .neo4j_ops.users import (delete_user_by_email,
-                              get_followers_of_a_user,
+from .neo4j_ops.users import (delete_user_by_email, get_followers_of_a_user,
                               get_followings_of_a_user,
                               get_posts_of_followings_of_a_user,
                               get_user_by_email)
 from .utils import valid_email
-from .image_storing import *
-
-# TODO: enable swagger API spec
-# TODO: email validation
-
 
 api = Namespace('users', title='User related operations')
-# Schema used for serialisations
 
 
-# TODO: update model with new schema
 # Schema used for doc generation
 users = api.model('Users', {
     'full_name': restx_fields.String(required=True, title='The user full name.'),
@@ -47,8 +43,6 @@ users = api.model('Users', {
     'academic_level': restx_fields.String(),
     'date_of_birth': restx_fields.String(),
     'location': restx_fields.String(title='current city of the user.'),
-    'passions': restx_fields.List(restx_fields.String(), description='List of Passion Tag UUIDs'),
-    'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
     'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
@@ -69,7 +63,8 @@ class Users(Resource):
                 user = dict(data['user'].items())
                 user['passions'] = data['passions']
                 user['help_others'] = data['help_others']
-                user['profile_image'] = str(get_data_from_gcs(user['profile_image']))
+                user['profile_image'] = str(
+                    get_data_from_gcs(user['profile_image']))
                 return jsonify(**user)
             return make_response('', 404)
 
@@ -82,7 +77,8 @@ class Users(Resource):
 
         with create_session() as session:
             # Fetch user image url in gcp storage that needs to be deleted.
-            profile_image_url = (session.read_transaction(get_account_field, email, 'Person', 'profile_image').data())
+            profile_image_url = (session.read_transaction(
+                get_account_field, email, 'Person', 'profile_image').data())
             if len(profile_image_url) > 0:
                 profile_image_url = profile_image_url[0]['profile_image']
             response = session.write_transaction(delete_user_by_email, email)
@@ -117,7 +113,6 @@ class Users(Resource):
             create_TAGGED_relationships(
                 tx, email, help_others, 'CanHelpWithTag')
             tx.commit()
-        # TODO: validate payload
         if response.summary().counters.properties_set == len(api.payload):
             return make_response('', 204)
         return make_response('', 404)
@@ -133,7 +128,6 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self) -> Response:
         '''Create a user.'''
-        # TODO:validate email
         if not valid_email(api.payload['email']):
             return make_response('Not a valid email address.', 422)
         payload = api.payload
@@ -172,7 +166,11 @@ class UsersGETFollowers(Resource):
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                return jsonify(data)#TODO iterate on followers and retrieve images, not url.
+                # Retrieve images from storage for followings
+                for person in data:
+                    person['profile_image'] = str(
+                        get_data_from_gcs(person['profile_image']))
+                return jsonify(data)
             else:
                 return jsonify([])
             return make_response('', 404)
@@ -186,9 +184,13 @@ class UsersGETFollowings(Resource):
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)#TODO iterate on followings and retrieve images, not url.
+                get_followings_of_a_user, email)
             data = response.data()
             if data:
+                # Retrieve images from storage for followings
+                for person in data:
+                    person['profile_image'] = str(
+                        get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             return make_response('', 404)
 
@@ -203,11 +205,13 @@ class UsersGETPostsOfFollowings(Resource):
             response = session.read_transaction(
                 get_posts_of_followings_of_a_user, email)
             data = response.data()
-            # Adjusting different in datetime format. Should not be like this.
+            # Adjusting difference in datetime format. Should not be like this.
             for post in data:
+                post = post['posts']
                 for key in post:
                     if key in ['created', 'modified']:
                         post[key] = str(post[key]).replace('+00:00', 'Z')
+            data = list(map(itemgetter('posts'), data))
             if data:
                 return jsonify(data)
             return make_response('', 404)
@@ -223,7 +227,6 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': False}
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Person', 'email', email, fields)
@@ -242,7 +245,6 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': True}
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Person', 'email', email, fields)

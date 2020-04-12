@@ -1,3 +1,4 @@
+"""All endpoints for handling Business nodes."""
 from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
@@ -13,10 +14,6 @@ from .neo4j_ops.businesses import (delete_business_by_email,
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
 from .utils import valid_email
-
-
-# TODO: enable swagger API spec
-# TODO: email validation
 
 
 api = Namespace('businesses', title='Business related operations')
@@ -130,7 +127,6 @@ class BusinessPost(Resource):
         response = None
         with create_session() as session:
             try:
-                # TODO: break up create_business function into different queries.
                 tx = session.begin_transaction()
                 response = create_node(tx, 'Business', payload)
                 create_TAGGED_relationships(

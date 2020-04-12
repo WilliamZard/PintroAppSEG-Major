@@ -1,13 +1,32 @@
+"""Useful functions used by our API endpoints."""
 from .neo4j_ops.search import get_accounts_with_tag
 from neo4j import Record, Session
 from typing import List, Dict
 import re
+from re import Match
 
-def valid_email(email: str) -> bool:
+
+def valid_email(email: str) -> Match:
+    '''
+        Function that checks whether a string matches a standard email format. If 
+        it does it returns a match object for that string, otherwise it returns None.
+    '''
+    '''Args: 
+        -email = The email that needs to be checked.
+    '''
     return re.search(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$', email)
 
 
 def get_accouts_with_tags(tag_records: List[Record], session: Session) -> List[Dict[str, str]]:
+    '''
+        Function that returns at most 10 accounts for each type of account (space, user, or business) 
+        existing in the db that use some given tags.
+    '''
+    '''Args:
+        -tag_records = a list of records (or so called Generator). These will be used to match all the accounts 
+        that use at least one of them.
+        -session = the session where to run all the needed queried on the db.
+    '''
     profiles_with_tags = []
     # For every tag, look for normal users, business accounts, or spaces that used that tag, and append them to profile_with_tags.
     for tag_record in tag_records:
@@ -47,6 +66,12 @@ def get_accouts_with_tags(tag_records: List[Record], session: Session) -> List[D
 
 
 def remove_duplicates(array: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    '''
+        Function that removes all the duplicates dictionaries in a list of dictionaries.
+    '''
+    '''Args:
+        -array = list of dictionaries where to remove potential duplicates.
+    '''
     new_list = []
     for i in range(0, len(array)):
         if array[i] not in array[i+1:]:

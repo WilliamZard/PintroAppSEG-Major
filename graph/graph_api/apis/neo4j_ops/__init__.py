@@ -1,3 +1,4 @@
+"""Base Neo4j module file for handling connection to Neo4j databases."""
 from neo4j import GraphDatabase
 import neo4j
 from flask import g

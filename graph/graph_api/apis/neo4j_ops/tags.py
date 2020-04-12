@@ -1,3 +1,4 @@
+"""Cypher queries specific to Tag nodes."""
 from neo4j import Transaction, BoltStatementResult
 from typing import List
 

@@ -1,3 +1,4 @@
+"""All endpoints for handling Chatroom nodes."""
 import uuid
 
 from flask import make_response, Response

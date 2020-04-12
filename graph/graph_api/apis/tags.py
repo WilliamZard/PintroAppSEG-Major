@@ -1,3 +1,4 @@
+"""All endpoints for handling Tags nodes."""
 import re
 import time
 
@@ -10,7 +11,6 @@ from .neo4j_ops import create_session
 from .neo4j_ops.tags import get_tags
 
 
-# TODO: refactor these util functions
 def get_time() -> str:
     return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 

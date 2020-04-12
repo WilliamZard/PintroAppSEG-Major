@@ -10,7 +10,6 @@ from collections import namedtuple
 NOW = str(datetime.datetime.now()).replace(' ', 'T') + '000Z'
 
 
-# POSTS
 POST_PROPERTIES = [
     "content",
     "hashtags",

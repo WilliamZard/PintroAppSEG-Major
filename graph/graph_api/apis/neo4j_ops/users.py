@@ -1,3 +1,4 @@
+"""Cypher queries specific to User nodes."""
 from neo4j import Transaction, BoltStatementResult
 
 
@@ -9,7 +10,7 @@ def get_user_by_email(tx: Transaction, user_email: str) -> BoltStatementResult:
     MATCH (user:Person {{email: '{user_email}'}})
     OPTIONAL MATCH (user)-->(skill_tag:Tag:CanHelpWithTag)
     OPTIONAL MATCH (user)-->(passion_tag:Tag:PassionsTag)
-    RETURN user, COLLECT(skill_tag.name) AS help_others, COLLECT(passion_tag.name) AS passions"""
+    RETURN user, COLLECT(DISTINCT skill_tag.name) AS help_others, COLLECT(DISTINCT passion_tag.name) AS passions"""
     return tx.run(query)
 
 
@@ -28,14 +29,14 @@ def get_posts_of_followings_of_a_user(tx: Transaction, email: str) -> BoltStatem
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
         -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as user_email"""
+        RETURN DISTINCT {{content:post.content, modified:post.modified, created:post.created, uuid:post.uuid, user_email:user.email}} AS posts"""
     return tx.run(query)
 
 
 def get_followers_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
     """Get all the posts of all the followers of a user."""
     query = f"""
-        MATCH (follower)-[:FOLLOWS]->(:Person {{email: '{email}'}}) RETURN follower.full_name AS full_name, follower.email AS email
+        MATCH (follower)-[:FOLLOWS]->(:Person {{email: '{email}'}}) RETURN follower.full_name AS full_name, follower.email AS email, follower.profile_image AS profile_image
     """
     return tx.run(query)
 
@@ -43,6 +44,6 @@ def get_followers_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
 def get_followings_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
     """Get name and email of all the users a user is following."""
     query = f"""
-        MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email
+        MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email, follower.profile_image AS profile_image
     """
     return tx.run(query)

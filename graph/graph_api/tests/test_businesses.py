@@ -60,17 +60,13 @@ class TestGet:
             else:
                 assert value == response[key]
 
-    def test_get_business_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_get_business_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         nonexistant_business_email = 'does_not_exist@void.com'
         response = app.get(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_get_business_with_invalid_email(self, app, populate_db):
-        populate_db()
-
+    def test_get_business_with_invalid_email(self, app: Flask):
         invalid_email = 'invalidemail.com'
         response = app.get(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -99,7 +95,6 @@ class TestGet:
 
 @pytest.mark.DELETE_business
 class TestDelete:
-    # TODO: some duplicate code here for each endpoint test. Refactor.
     def test_delete_business_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Define Nodes
         tag_a = Tag(name='King Slaying')._asdict()
@@ -127,17 +122,13 @@ class TestDelete:
         response = app.get(f"/businesses/{email}")
         assert response.status == '404 NOT FOUND'
 
-    def test_delete_business_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_delete_business_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         nonexistant_business_email = 'does_not_exist@void.com'
         response = app.delete(f"/businesses/{nonexistant_business_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_delete_business_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_delete_business_with_invalid_email(self, app: Flask) -> None:
         invalid_email = "invalidemaill.com"
         response = app.delete(f"/businesses/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -183,8 +174,7 @@ class TestPut:
                 continue
             assert value == response[key]
 
-    def test_put_business_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_put_business_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         nonexistant_business_email = 'does_not_exist@void.com'
         new_business_fields = dict(
             full_name='new full name', phone='phone', location='new location')
@@ -193,8 +183,7 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_put_business_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_put_business_with_invalid_email(self, app: Flask) -> None:
         invalid_email = 'invalidemail.com'
         new_business_fields = dict(
             full_name='new full name', phone='phone', location='new location')
@@ -202,8 +191,6 @@ class TestPut:
             f"/businesses/{invalid_email}", json=new_business_fields)
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
-
-        # TODO: add test for validating payload
 
 
 @pytest.mark.POST_business
@@ -247,15 +234,14 @@ class TestPost:
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
-    def test_post_business_with_invalid_payload(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_post_business_with_invalid_payload(self, app: Flask) -> None:
         invalid_business = Business(email='bademail.com')._asdict()
         response = app.post(
             "/businesses/", json=dict(invalid_business))
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_business_with_image_posts_correct_image_in_gcs(self, app: Flask, populate_db: None) -> None:
+    def test_POST_business_with_image_posts_correct_image_in_gcs(self, app: Flask) -> None:
         # Generate Test Data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image3.jpg"
@@ -264,8 +250,6 @@ class TestPost:
 
         business_to_add = Business(
             email='business_test@gmail.com', profile_image=str(image))._asdict()
-
-        populate_db()
 
         # Test
         response = app.post("/businesses/", json=business_to_add)

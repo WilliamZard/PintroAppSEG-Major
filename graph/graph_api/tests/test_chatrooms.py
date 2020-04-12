@@ -105,9 +105,7 @@ class TestDelete:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app: Flask) -> None:
         import uuid
         nonexistent_chatroom_id = str(uuid.uuid4())
         response = app.delete(f"/chatrooms/{nonexistent_chatroom_id}")
