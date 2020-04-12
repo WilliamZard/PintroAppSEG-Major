@@ -16,7 +16,6 @@ export const requestFol = (user1, user2) => {
         } catch (error) {
             console.log(error);
         }
-        dispatch({type: REQUESTFOLLOW,responseStatus:"101"});
     }
 };
 
@@ -36,6 +35,5 @@ export const requestAfil = (user1, user2) => {
             const errorResData = await response.text();
             console.log(errorResData); 
         }
-        dispatch({type: REQUESTAFIL,responseStatus:"101"});
     }
 }
