@@ -32,8 +32,8 @@ const BusinessTags = props => {
     const [suggestedItems,setItems] = useState([])
     const [chosenTags,setChosenTags] = useState([])
   
-    const loadedTags = useSelector(state => state.tags.helpOthersWithTags);
-    const loadedTagsShuffled = useSelector(state => state.tags.helpOthersWithTagsSHUFFLED);
+    const loadedTags = useSelector(state => state.tags.businessTags);
+    const loadedTagsShuffled = useSelector(state => state.tags.businessTagsSHUFFLED);
 
           const favs1 = loadedTagsShuffled.slice(1, 7);
         const favs2 = loadedTagsShuffled.slice(8, 16);
