@@ -165,7 +165,9 @@ class UsersGETFollowers(Resource):
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                # TODO iterate on followers and retrieve images, not url.
+                #Retrieve images from storage for followings
+                for person in data:
+                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             else:
                 return jsonify([])
@@ -180,9 +182,12 @@ class UsersGETFollowings(Resource):
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)  # TODO iterate on followings and retrieve images, not url.
+                get_followings_of_a_user, email)  
             data = response.data()
             if data:
+                #Retrieve images from storage for followings
+                for person in data:
+                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             return make_response('', 404)
 
