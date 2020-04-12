@@ -17,7 +17,7 @@ export const getResults = (item) => {
               redirect: 'follow'
             }   
         );
-        console.log(response.status);
+        //console.log("search: " + response.status);
         if(!response.ok) {
           const errorResData = await response.json();
           console.log(errorResData);

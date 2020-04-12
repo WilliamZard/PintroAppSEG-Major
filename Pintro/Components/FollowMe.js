@@ -64,7 +64,7 @@ const FollowMe = props => {
                         setFollow(true)
                         //dispatch(RequestActions.requestFol(currentUser,businessObj.email));
                     )},
-                    {text: 'Cancel', onPress: () => console.log("Request was pressed"), style: 'cancel'}
+                    {text: 'Cancel', onPress: () => console.log("Cancel was pressed"), style: 'cancel'}
                 ] 
             );
         }
