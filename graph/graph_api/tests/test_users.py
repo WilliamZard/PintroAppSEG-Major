@@ -8,7 +8,7 @@ from flask import Flask
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag, Chatroom, basic_chatroom_node
+from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag
 from graph_api.apis.image_storing import *
 
 
@@ -542,87 +542,3 @@ class TestUserPUTActivation:
         response = app.put(
             f"/users/activate/{user['email']}")
         assert response.status == '204 NO CONTENT'
-
-
-@pytest.mark.GET_user_chatrooms
-class TestGET:
-    def test_GET_chatrooms_for_users_that_exist(self, app: Flask, populate_db: None) -> None:
-        # Generate Data
-        users = [
-            User(email='user1@test.com')._asdict(),
-            User(email='user2@test.com')._asdict(),
-            User(email='user3@test.com')._asdict(),
-            User(email='user4@test.com')._asdict(),
-        ]
-        chatrooms = [
-            Chatroom()._asdict(),
-            Chatroom()._asdict(),
-        ]
-
-        # Relationships
-        userA_chatroomA = {
-            's_node_properties': {'email': users[0]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[0]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-        userB_chatroomA = {
-            's_node_properties': {'email': users[1]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[0]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-        userA_chatroomB = {
-            's_node_properties': {'email': users[0]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[1]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-        userC_chatroomB = {
-            's_node_properties': {'email': users[2]['email']}, 's_node_labels': 'Person',
-            'e_node_properties': {'chat_id': chatrooms[1]['chat_id']}, 'e_node_labels': 'Chatroom',
-            'relationship_type': 'CHATS_IN'
-        }
-
-        populate_db(
-            nodes_to_create=list(map(basic_user_node, users)) +
-            list(map(basic_chatroom_node, chatrooms)),
-            relationships_to_create=[
-                userA_chatroomA, userB_chatroomA, userA_chatroomB, userC_chatroomB]
-        )
-
-        response = app.get(f"/users/{users[0]['email']}/chatrooms")
-        assert response.status == '200 OK'
-        # the order of chatrooms is arbitrary and sorted by the frontend,
-        # so turning it into a set allows orderless checking of the data inside
-        json = response.get_json()
-        assert len(json) == 2
-        assert {"chat_id": str(chatrooms[0]['chat_id']),
-                "recipient": users[1]['email']} in json
-        assert {"chat_id": str(chatrooms[1]['chat_id']),
-                "recipient": users[2]['email']} in json
-
-        response = app.get(f"/users/{users[1]['email']}/chatrooms")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 1
-        assert {"chat_id": str(chatrooms[0]['chat_id']),
-                "recipient": users[0]['email']} in json
-
-        response = app.get(f"/users/{users[2]['email']}/chatrooms")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 1
-        assert {"chat_id": str(chatrooms[1]['chat_id']),
-                "recipient": users[0]['email']} in json
-
-        response = app.get(f"/users/{users[3]['email']}/chatrooms")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 0
-
-    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
-        nonexistant_email = 'doesnotexist@test.com'
-        response = app.get(f"/users/{nonexistant_email}/chatrooms")
-        assert response.status == '200 OK'
-        json = response.get_json()
-        assert len(json) == 0

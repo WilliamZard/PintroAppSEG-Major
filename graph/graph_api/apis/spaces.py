@@ -6,6 +6,7 @@ from neo4j.exceptions import ConstraintError
 
 from .image_storing import *
 from .neo4j_ops import create_session
+from .neo4j_ops.chatrooms import get_chatrooms_of_account
 from .neo4j_ops.general import set_properties, create_node, get_account_field
 from .neo4j_ops.spaces import (delete_space_by_email,
                                get_space_by_email)
@@ -102,3 +103,21 @@ class SpacesPost(Resource):
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)
+
+
+@api.route('/<string:email>/chatrooms')
+@api.produces('application/json')
+class GETSpaceChatrooms(Resource):
+    def get(self, email: str) -> Response:
+        '''Gets the chatrooms a space is in.'''
+        if not valid_email(email):
+            return make_response('', 422)
+
+        with create_session() as session:
+            response = session.read_transaction(get_chatrooms_of_account, email)
+            response = response.data()
+            # gets the first label of each node, which is currently
+            # assumed to be the type of the node, e.g. Person, Business, etc.
+            for chat in response:
+                chat["type"] = chat["type"][0]
+            return jsonify(response)

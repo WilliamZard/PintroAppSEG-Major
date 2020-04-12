@@ -10,7 +10,7 @@ from .neo4j_ops import create_session
 from .neo4j_ops.general import create_node, create_relationship
 from .neo4j_ops.chatrooms import (check_chatroom_exists,
                                   check_users_in_chatroom,
-                                  delete_chatroom, get_chatrooms_of_user)
+                                  delete_chatroom)
 from .posts import posts
 from .utils import valid_email
 
@@ -24,12 +24,12 @@ chatrooms = api.model('Chatrooms', {
 })
 
 
-@api.route("/<string:email1>/<string:email2>")
+@api.route("/<string:email1>/<string:type1>/<string:email2>/<string:type2>")
 @api.produces("application/json")
 class ChatroomsPOST(Resource):
     @api.doc("create_chatroom")
     @api.response(409, 'Chatroom with these users already exists')
-    def post(self, email1: str, email2: str) -> Response:
+    def post(self, email1: str, type1: str, email2: str, type2: str) -> Response:
         '''Create a chatroom with the given users in it.'''
         if not valid_email(email1):
             return make_response('', 422)
@@ -44,9 +44,9 @@ class ChatroomsPOST(Resource):
             new_id = str(uuid.uuid4())
             tx = session.begin_transaction()
             create_node(tx, 'Chatroom', {'chat_id': new_id})
-            create_relationship(tx, 'Person', {'email': email1}, 'Chatroom', {
+            create_relationship(tx, type1, {'email': email1}, 'Chatroom', {
                                 'chat_id': new_id}, 'CHATS_IN')
-            create_relationship(tx, 'Person', {'email': email2}, 'Chatroom', {
+            create_relationship(tx, type2, {'email': email2}, 'Chatroom', {
                                 'chat_id': new_id}, 'CHATS_IN')
             tx.commit()
             return jsonify({'chat_id': new_id})
