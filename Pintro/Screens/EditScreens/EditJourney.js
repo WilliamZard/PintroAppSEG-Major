@@ -46,8 +46,8 @@ const EditJourney = props => {
             seeking_investment: props.navigation.state.params.business.seeking_investment,
             currently_hiring: props.navigation.state.params.business.currently_hiring
         }
-        dispatch(BusinessActions.putBusiness(busObj));
-        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
+        await dispatch(BusinessActions.putBusiness(busObj));
+        await dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
     }
 
     return(
