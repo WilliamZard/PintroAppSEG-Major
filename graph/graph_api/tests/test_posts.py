@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 from flask.json import jsonify
-from flask import Flask 
+from flask import Flask
 
 from .conftest import app, populate_db
 from .test_data.posts import Post
@@ -48,9 +48,6 @@ class TestPUT:
             f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
-        # TODO: assert modified was changed properly for all put tests
-        # TODO: assert created was not changed for all put tests
-        # TODO: get request and assertion to check correct update
 
     def test_PUT_non_existent_post(self, app: Flask):
         post = Post(content='content_x', hashtags="#new_tag_a")._asdict()
@@ -67,9 +64,6 @@ class TestPUT:
 
 @pytest.mark.POST_post
 class TestPOST:
-    # TODO: assert modified was changed properly for all put tests
-    # TODO: assert created was not changed for all put tests
-    # TODO: get request and assertion to check correct update
     def test_POST_post_with_valid_payload(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         post = Post(content='content_x', hashtags="#tag_a #tag_b"

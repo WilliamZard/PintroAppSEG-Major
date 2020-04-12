@@ -8,11 +8,8 @@ from flask import Flask
 
 @pytest.mark.POST_approve
 class TestPOST:
-    # TODO: review test functions and if they need to generate everything.
     # TODO: add tests for entering a valid email
     # TODO: add tests for if given users exist or not
-    # TODO: add tests for if given user type can make given request.
-    #       e.g. users cannot make affiliation requests to businesses.
     def test_POST_approve_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(

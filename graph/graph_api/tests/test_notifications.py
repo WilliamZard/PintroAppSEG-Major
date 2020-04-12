@@ -10,8 +10,6 @@ from .generate_test_data import (Business, Notification, User,
 @pytest.mark.GET_notifications
 class TestGET:
     # TODO: test email validity
-    # TODO: test only users can make this request
-    # TODO: add time of notification to response
     def test_GET_notifications_for_existing_user(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         # Define users

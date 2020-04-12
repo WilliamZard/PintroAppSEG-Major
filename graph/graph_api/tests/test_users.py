@@ -104,8 +104,6 @@ class TestGet:
 
 @pytest.mark.DELETE_user
 class TestDelete:
-    # TODO: add tests for ensuring post nodes were deleted
-    # TODO: add tests for ensuring all relationships were deleted
     def test_DELETE_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         user = User(
@@ -121,7 +119,6 @@ class TestDelete:
         # Assert user was actually deleted in the database
         response = app.get(f"/users/{user['email']}")
         assert response.status == '404 NOT FOUND'
-        # TODO: add test to ensure all tagged relationships where deleted.
 
     def test_DELETE_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
@@ -258,12 +255,9 @@ class TestPut:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-       # TODO: add test for validating payload
-
 
 @pytest.mark.POST_user
 class TestPost:
-    # TODO: test creating a user with tag creation
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         tag_a = Tag(name='King Slaying')._asdict()
@@ -519,8 +513,6 @@ class TestUsersGETFollowingsPosts:
     @pytest.mark.xfail
     def test_get_all_posts_of_all_followers_of_non_existing_user(self, app):
         raise NotImplementedError
-
-    # TODO: consider tests at different cardinalities
 
 
 @pytest.mark.PUT_user_activation

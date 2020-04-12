@@ -157,8 +157,6 @@ class TestPut:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-    # TODO: add test for validating payload
-
 
 @pytest.mark.POST_space
 class TestPost:
