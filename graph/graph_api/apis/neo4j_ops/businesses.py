@@ -1,22 +1,18 @@
+from neo4j import Transaction, BoltStatementResult
 
 
-def get_business_by_email(tx, business_email):
-    '''
-        Function that gets all the data related to a user with a particular email.
-        It returns a BoltStatementResult.
-    '''
-    '''Args:
-        tx = the context from where to run chipher statements and retreiving information from the db.
-        user_email = the email of the user whose data needs to be retrieved.
-    '''
+def get_business_by_email(tx: Transaction, business_email: str) -> BoltStatementResult:
+    """Gets all data associated with a business, identified by its email."""
     query = f"""
     MATCH (user:Business {{email: '{business_email}'}})
     OPTIONAL MATCH (user)-->(tag:Tag)
-    RETURN user, COLLECT(tag.name) AS tags"""
+    OPTIONAL MATCH (person:Person)-[:AFFILIATED_WITH]-(user)
+    RETURN user, COLLECT(DISTINCT tag.name) AS tags, COLLECT(person.email) AS team_members"""
     return tx.run(query)
 
 
-def delete_business_by_email(tx, business_email):
+def delete_business_by_email(tx: Transaction, business_email: str) -> BoltStatementResult:
+    """Deletes all data associated with a business, including its posts."""
     query = f"""
     MATCH(n: Business {{email: '{business_email}'}})
     OPTIONAL MATCH(n)--(p: Post)

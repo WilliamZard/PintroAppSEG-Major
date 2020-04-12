@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -34,7 +34,7 @@ spaces = api.model('Spaces', {
 @api.route('/<string:email>')
 @api.produces('application/json')
 class Spaces(Resource):
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Fetch a co-working space given its email.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -51,7 +51,7 @@ class Spaces(Resource):
 
     @api.doc('delete_space')
     @api.response(204, 'Co-working space Deleted')
-    def delete(self, email):
+    def delete(self, email: str) -> Response:
         '''Delete a co-working space given its email.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -69,7 +69,7 @@ class Spaces(Resource):
 
     @api.doc('update_space')
     @api.response(204, 'Co-working Space Fields Deleted')
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Update a co-working space by the given fields.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -89,7 +89,7 @@ class SpacesPost(Resource):
     @api.doc('create_space')
     @api.response(204, 'Co-working space created')
     @api.response(409, 'Co-working space with that email already exists')
-    def post(self):
+    def post(self) -> Response:
         '''Create a co-working space.'''
         payload = api.payload
         if not valid_email(payload['email']):

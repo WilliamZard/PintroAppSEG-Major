@@ -1,5 +1,5 @@
 import pytest
-from flask import json
+from flask import json, Flask
 from flask.json import jsonify
 
 from .conftest import app, populate_db
@@ -11,7 +11,7 @@ from .helper_functions import *
 
 @pytest.mark.POST_search
 class TestPOST:
-    def test_single_character_query_should_return_nothing(self, app, populate_db):
+    def test_single_character_query_should_return_nothing(self, app: Flask, populate_db: None) -> None:
         ''' A query done with a string of length 1 shouldn't return any node because otherwise it would basically
             return all the nodes in the database
         '''
@@ -33,8 +33,6 @@ class TestPOST:
         user_data.append(User(email='user_a@test.com')._asdict())
         user_data.append(User(email='user_b@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -45,7 +43,7 @@ class TestPOST:
         assert response.status == '200 OK'
         assert response.get_json() == []
 
-    def test_empty_query_should_return_nothing(self, app, populate_db):
+    def test_empty_query_should_return_nothing(self, app: Flask, populate_db: None) -> None:
         '''
         A query done with a string of length 0 shouldn't return any node because otherwise it would 
         return all the nodes in the database which doesn't make sense in any situation.
@@ -68,8 +66,6 @@ class TestPOST:
         user_data.append(User(email='user_a@test.com')._asdict())
         user_data.append(User(email='user_b@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -80,7 +76,7 @@ class TestPOST:
         assert response.status == '200 OK'
         assert response.get_json() == []
 
-    def test_query_that_partially_matches_full_names_or_emails_should_return_correct_nodes(self, app, populate_db):
+    def test_query_that_partially_matches_full_names_or_emails_should_return_correct_nodes(self, app: Flask, populate_db: None) -> None:
         ''' A query that partially matches some full names or emails should return all the appropriate accounts.'''
         # Generate Test data
         nodes = []
@@ -108,8 +104,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -126,7 +120,7 @@ class TestPOST:
         assert response.status == '200 OK'
         assert json_response == expected_accounts
 
-    def test_query_that_partially_matches_stories_should_return_correct_nodes(self, app, populate_db):
+    def test_query_that_partially_matches_stories_should_return_correct_nodes(self, app: Flask, populate_db: None) -> None:
         '''
         A query that partially matches some stories in any business account, normal user account, 
         or space should return all the appropriated accounts.
@@ -149,8 +143,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -165,7 +157,7 @@ class TestPOST:
         assert response.status == '200 OK'
         assert json_response == expected_accounts
 
-    def test_query_that_partially_matches_short_bios_should_return_correct_nodes(self, app, populate_db):
+    def test_query_that_partially_matches_short_bios_should_return_correct_nodes(self, app: Flask, populate_db: None) -> None:
         '''
         A query that partially matches some short bios in any business account, normal user account, 
         or space should return all the appropriated accounts.
@@ -198,8 +190,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
         populate_db(nodes_to_create=nodes)
 
@@ -216,7 +206,7 @@ class TestPOST:
         assert response.status == '200 OK'
         assert json_response == expected_accounts
 
-    def test_query_that_partially_matches_tag_returns_correct_user(self, app, populate_db):
+    def test_query_that_partially_matches_tag_returns_correct_user(self, app: Flask, populate_db: None) -> None:
         '''
         A query that partially matches a tag used in any business account, normal user account, 
         or space should return all the appropriated accounts.
@@ -256,8 +246,6 @@ class TestPOST:
         user_data.append(User(email='user_b@test.com')._asdict())
         user_data.append(User(email='user_c@test.com')._asdict())
         for user in user_data:
-            user.pop('passions')
-            user.pop('help_others')
             nodes.append(basic_user_node(user))
 
         # Define tag relationships
@@ -285,7 +273,8 @@ class TestPOST:
         json_response = prepere_search_responses_for_account_assertion(
             response)
         json_response = ordered(json_response)
-        expected_accounts = ordered([matching_business_a, matching_business_b, matching_user_a])
+        expected_accounts = ordered(
+            [matching_business_a, matching_business_b, matching_user_a])
         # Assertion
         assert response.status == '200 OK'
         assert json_response == expected_accounts

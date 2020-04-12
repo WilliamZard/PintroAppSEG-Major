@@ -1,4 +1,5 @@
 import pytest
+from flask import Flask
 
 from .conftest import app, populate_db
 from .generate_test_data import (Chatroom, User, basic_chatroom_node,
@@ -7,7 +8,7 @@ from .generate_test_data import (Chatroom, User, basic_chatroom_node,
 
 @pytest.mark.POST_chatroom
 class TestPost:
-    def test_POST_new_chatroom_for_users_with_no_existing_chatroom(self, app, populate_db):
+    def test_POST_new_chatroom_for_users_with_no_existing_chatroom(self, app: Flask, populate_db: None) -> None:
         users = [
             User(email='user1@test.com')._asdict(),
             User(email='user2@test.com')._asdict(),
@@ -39,7 +40,7 @@ class TestPost:
         assert {"chat_id": new_chat_id,
                 "recipient": users[0]['email']} in json
 
-    def test_POST_new_chatroom_for_users_with_existing_chatroom(self, app, populate_db):
+    def test_POST_new_chatroom_for_users_with_existing_chatroom(self, app: Flask, populate_db: None) -> None:
         users = [
             User(email='user1@test.com')._asdict(),
             User(email='user2@test.com')._asdict(),
@@ -67,7 +68,7 @@ class TestPost:
 
 @pytest.mark.DELETE_chatroom
 class TestDelete:
-    def test_DELETE_chatroom_with_id_that_exists(self, app, populate_db):
+    def test_DELETE_chatroom_with_id_that_exists(self, app: Flask, populate_db: None) -> None:
         users = [
             User(email='user1@test.com')._asdict(),
             User(email='user2@test.com')._asdict(),
@@ -104,7 +105,7 @@ class TestDelete:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app, populate_db):
+    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         import uuid

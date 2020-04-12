@@ -40,7 +40,7 @@ class Approve(Resource):
 
         with create_session() as session:
             created_at = time.time()
-            tx = session.begin_transaction()
+            tx: Transaction = session.begin_transaction()
             del_response = delete_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {
                 'email': request_recipient_email}, REQUEST_RELATIONSHIPS[relationship_type])
             create_response = create_relationship(tx, s_node_label, {'email': requester_email}, e_node_label, {

@@ -13,7 +13,6 @@ from .notifications import api as notifications
 api = Api(
     title='Pintro Graph Api',
     version='0.1',
-    # TODO: there are other parameters to put here that could be useful
 )
 
 api.add_namespace(users)

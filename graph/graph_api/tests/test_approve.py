@@ -3,12 +3,12 @@ import pytest
 from .conftest import app, populate_db
 from .generate_test_data import (Business, User, basic_business_node,
                                  basic_user_node)
-
+from flask import Flask
 
 @pytest.mark.POST_approve
 class TestPOST:
     # TODO: add tests for entering a valid email
-    def test_POST_approve_relation_request_with_invalid_requester_email(self, app, populate_db):
+    def test_POST_approve_relation_request_with_invalid_requester_email(self, app: Flask, populate_db: None) -> None:
         # Define users
         business_requesting_affiliation = Business(
             email='requesting_affiliation@rona.com')._asdict()
@@ -36,7 +36,7 @@ class TestPOST:
         assert response.status == '400 BAD REQUEST'
         assert response.data == b'Requester email invalid format'
 
-    def test_POST_approve_relation_request_with_invalid_receiver_email(self, app, populate_db):
+    def test_POST_approve_relation_request_with_invalid_receiver_email(self, app: Flask, populate_db: None) -> None:
         # Define users
         business_requesting_affiliation = Business(
             email='requesting_affiliation@rona.com')._asdict()
@@ -65,7 +65,7 @@ class TestPOST:
         assert response.data == b'Request recipient email invalid format'
 
         
-    def test_POST_approve_relation_request_with_non_existing_user(self, app, populate_db):
+    def test_POST_approve_relation_request_with_non_existing_user(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
             email='requesting_follow@rona.com')._asdict()
@@ -92,7 +92,7 @@ class TestPOST:
         assert response.data == b'USER NOT FOUND'
 
 
-    def test_POST_approve_affiliation_user_to_business_should_fail(self, app, populate_db):
+    def test_POST_approve_affiliation_user_to_business_should_fail(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_affiliation = User(
             email='receiving_affiliation_request@rona.com')._asdict()
@@ -117,7 +117,7 @@ class TestPOST:
         assert response.status == '404 NOT FOUND'
         assert response.data == b'USER NOT FOUND'
 
-    def test_POST_approve_follow_request_with_valid_users(self, app, populate_db):
+    def test_POST_approve_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
             email='requesting_follow@rona.com')._asdict()
@@ -141,7 +141,7 @@ class TestPOST:
         assert response.data == b''
 
 
-    def test_POST_approve_affiliation_request_with_valid_users(self, app, populate_db):
+    def test_POST_approve_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         business_requesting_affiliation = Business(
             email='requesting_affiliation@rona.com')._asdict()
