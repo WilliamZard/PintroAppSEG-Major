@@ -61,7 +61,7 @@ class Posts(Resource):
     @api.doc('update_post')
     @api.response(204, 'Post updated')
     @api.expect(posts)
-    def put(self,uuid: str) -> Response:
+    def put(self, uuid: str) -> Response:
         '''Update a Post's content.'''
 
         with create_session() as session:
@@ -115,6 +115,7 @@ class PostsPost(Resource):
                 relationship_creation_response = create_relationship(tx, 'Person', {'email': user_email}, 'Post', {
                     'uuid': post_uuid}, 'POSTED')
                 relationship_creation_counters = relationship_creation_response.summary().counters
+                tx.commit()
                 if (node_creation_counters.nodes_created == 1
                     and relationship_creation_counters.relationships_created == 1
                     and node_creation_counters.labels_added == 1  # NOTE: What is this for?
