@@ -64,6 +64,7 @@ def main(csv_path):
     with driver.session() as session:
         for tag in generate_tags(csv_path):
             session.write_transaction(create_tag_node, tag)
+    driver.close()
 
 
 if __name__ == '__main__':
