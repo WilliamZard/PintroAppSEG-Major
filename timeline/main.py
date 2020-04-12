@@ -28,6 +28,8 @@ def generate_timeline(request):
     response = requests.get(
         f'https://bluej-pintro-project.appspot.com/users/{email}/followings/posts',
         headers={'Authorization': user_token})
+    if response.status_code == 401:
+        return "401 UNAUTHORIZED"
     if response.status_code == 404:
         return "404 USER NOT FOUND"
     if response.status_code > 500:

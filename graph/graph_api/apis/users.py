@@ -1,23 +1,23 @@
 """All endpoints for handling User nodes."""
-from flask import make_response, Response
+from operator import itemgetter
+
+from flask import Response, make_response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
 from neo4j.exceptions import ConstraintError
 
+from .image_storing import *
 from .neo4j_ops import create_session
+from .neo4j_ops.chatrooms import get_chatrooms_of_user
+from .neo4j_ops.general import create_node, get_account_field, set_properties
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
-from .neo4j_ops.chatrooms import get_chatrooms_of_user
-from .neo4j_ops.general import set_properties, create_node, get_account_field
-from .neo4j_ops.users import (delete_user_by_email,
-                              get_followers_of_a_user,
+from .neo4j_ops.users import (delete_user_by_email, get_followers_of_a_user,
                               get_followings_of_a_user,
                               get_posts_of_followings_of_a_user,
                               get_user_by_email)
 from .utils import valid_email
-from .image_storing import *
-
 
 api = Namespace('users', title='User related operations')
 
@@ -166,9 +166,10 @@ class UsersGETFollowers(Resource):
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                #Retrieve images from storage for followings
+                # Retrieve images from storage for followings
                 for person in data:
-                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
+                    person['profile_image'] = str(
+                        get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             else:
                 return jsonify([])
@@ -183,12 +184,13 @@ class UsersGETFollowings(Resource):
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)  
+                get_followings_of_a_user, email)
             data = response.data()
             if data:
-                #Retrieve images from storage for followings
+                # Retrieve images from storage for followings
                 for person in data:
-                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
+                    person['profile_image'] = str(
+                        get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             return make_response('', 404)
 
@@ -203,11 +205,13 @@ class UsersGETPostsOfFollowings(Resource):
             response = session.read_transaction(
                 get_posts_of_followings_of_a_user, email)
             data = response.data()
-            # Adjusting different in datetime format. Should not be like this.
+            # Adjusting difference in datetime format. Should not be like this.
             for post in data:
+                post = post['posts']
                 for key in post:
                     if key in ['created', 'modified']:
                         post[key] = str(post[key]).replace('+00:00', 'Z')
+            data = list(map(itemgetter('posts'), data))
             if data:
                 return jsonify(data)
             return make_response('', 404)
