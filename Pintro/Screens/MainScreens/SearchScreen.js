@@ -1,4 +1,4 @@
-import React,{useEffect,useState,useCallback} from 'react';
+import React,{ useState } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SearchBar, ListItem } from 'react-native-elements';
@@ -7,7 +7,6 @@ import Colors from '../../Constants/Colors.js';
 import WorkingSpace from '../../Components/WorkingSpace.js';
 import * as SearchActions from "../../store/actions/search";
 import * as TagActions from "../../store/actions/tags";
-import data2 from '../../Constants/data2.json'
 
 const SearchScreen = props => {
     const dispatch = useDispatch();
@@ -20,9 +19,9 @@ const SearchScreen = props => {
         dispatch(TagActions.getTags());
     }
 
-    var tagNames = loadedTags.map(function(item) {
+    /*var tagNames = loadedTags.map(function(item) {
         return item['name'];
-      });
+      });*/
     
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -30,7 +29,7 @@ const SearchScreen = props => {
             
             const regex = new RegExp(`^${searchWord}`,'i');
             //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(tagNames.sort().filter(v => regex.test(v))); 
+            setSuggestions(loadedTags.sort().filter(v => regex.test(v))); 
         }
         renderSuggestions();
     }
