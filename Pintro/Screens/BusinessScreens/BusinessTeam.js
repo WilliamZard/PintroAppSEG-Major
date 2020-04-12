@@ -21,6 +21,7 @@ const BusinessTeam = props => {
     const location = props.navigation.getParam('locationToPass');
     const companySize = props.navigation.getParam('companySizeToPass');
     const funding = props.navigation.getParam('fundingToPass');
+    const photo = props.navigation.getParam('photoToGet');
  
 return ( 
     <KeyboardAwareScrollView
@@ -60,7 +61,8 @@ return (
     dateFoundedToPass:dateFounded,
     locationToPass:location,
     companySizeToPass:companySize,
-    fundingToPass:funding
+    fundingToPass:funding,
+    photoToGet:photo
     }})
   
 

@@ -11,6 +11,7 @@ import {useDispatch} from 'react-redux';
 
 import SettingsButton from '../Components/SettingsButton';
 import * as authActions from '../store/actions/auth';
+import * as userActions from '../store/actions/user';
 const Settings = props => {
 const dispatch = useDispatch();
 return(
@@ -42,7 +43,7 @@ return(
        title="Edit Skills"/>
        <View style={styles.horizintalLineStyle}></View>
        
-       <SettingsButton title="Push notifiations"/>
+       <SettingsButton title="Send an email verification link" onPress={()=>dispatch(userActions.send_Verification_Mail())}/>
        <View style={styles.horizintalLineStyle}></View>
        <SettingsButton title="Set nearby distance"/>
        <View style={styles.horizintalLineStyle}></View>

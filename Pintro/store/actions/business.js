@@ -59,10 +59,10 @@ export const create_business = (profile_image,location,story,tags,
           'Authorization': 'Bearer '+getState().auth.tokenToGet},
              body: JSON.stringify(
                 {
-                    "email": getState().auth.emailToGet,
+                    "email": getState().user.email,
                     "password":"6",
                     "full_name": "Sen",
-                    "profile_image": "",
+                    "profile_image":"b'" + profile_image+"'" ,
                     "phone": "",
                     "location": location,
                     "short_bio":"NOT A FIELD" ,
@@ -71,7 +71,6 @@ export const create_business = (profile_image,location,story,tags,
                     "date_founded": date_founded,
                     "company_size": company_size,
                     "funding": funding,
-                    "team_members": "",
                     "seeking_investment": seeking_investment,
                     "currently_hiring": currently_hiring
                   }
