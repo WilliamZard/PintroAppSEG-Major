@@ -372,7 +372,6 @@ class TestUsersGETFollowers:
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
         assert response.get_json() == []
 
-
     def test_GET_followers_of_user_with_no_followers(self, app: Flask, populate_db: None) -> None:
         user = User(email='jj@gmail.com')._asdict()
         user_node = basic_user_node(user)
@@ -392,15 +391,17 @@ class TestUsersGETFollowers:
         with image_a_path.open(mode="rb") as imageFile:
             user_a_image = base64.b64encode(imageFile.read())
 
-        user_following_a = User(email='yes_ucl@kcl.ac.uk', profile_image=user_a_image)._asdict()
+        user_following_a = User(email='yes_ucl@kcl.ac.uk',
+                                profile_image=user_a_image)._asdict()
 
         image_b_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image2.jpg"
         with image_b_path.open(mode="rb") as imageFile:
             user_b_image = base64.b64encode(imageFile.read())
-        
-        user_following_b = User(email='lello@gmail.com', profile_image=user_b_image)._asdict()
-        
+
+        user_following_b = User(email='lello@gmail.com',
+                                profile_image=user_b_image)._asdict()
+
         user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
             user_with_followers, user_following_a, user_following_b]]
 
@@ -423,15 +424,15 @@ class TestUsersGETFollowers:
             f"/users/{user_with_followers['email']}/followers")
         assert response.status == '200 OK'
         json = response.get_json()
-        #Create expected essertion values
+        # Create expected essertion values
         results = [{'full_name': user['full_name'], 'email': user['email'], 'profile_image': user['profile_image']}
                    for user in [user_following_a, user_following_b]]
 
         assert len(json) == 2
-        #Prepare json response for image assertions
+        # Prepare json response for image assertions
         for person in json:
             person['profile_image'] = literal_eval(person['profile_image'])
-        #assert actual profiles in response.
+        # assert actual profiles in response.
         assert results[0] in json
         assert results[1] in json
 
@@ -486,15 +487,17 @@ class TestUsersGETFollowings:
         with image_a_path.open(mode="rb") as imageFile:
             user_a_image = base64.b64encode(imageFile.read())
 
-        user_being_followed_a = User(email='yes_ucl@kcl.ac.uk', profile_image=user_a_image)._asdict()
+        user_being_followed_a = User(
+            email='yes_ucl@kcl.ac.uk', profile_image=user_a_image)._asdict()
 
         image_b_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image2.jpg"
         with image_b_path.open(mode="rb") as imageFile:
             user_b_image = base64.b64encode(imageFile.read())
-        
-        user_being_followed_b = User(email='lello@gmail.com', profile_image=user_b_image)._asdict()
-        
+
+        user_being_followed_b = User(
+            email='lello@gmail.com', profile_image=user_b_image)._asdict()
+
         user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
             user_with_followings, user_being_followed_a, user_being_followed_b]]
 
@@ -517,16 +520,16 @@ class TestUsersGETFollowings:
             f"/users/{user_with_followings['email']}/followings")
         assert response.status == '200 OK'
         json = response.get_json()
-        #Create expected essertion values
+        # Create expected essertion values
         user_with_one_following_reduced = {
             'full_name': user_being_followed_a['full_name'], 'email': user_being_followed_a['email'], 'profile_image': user_being_followed_a['profile_image']}
         user_with_no_followings_reduced = {
             'full_name': user_being_followed_b['full_name'], 'email': user_being_followed_b['email'], 'profile_image': user_being_followed_b['profile_image']}
         assert len(json) == 2
-        #Prepare json response for image assertions
+        # Prepare json response for image assertions
         for person in json:
             person['profile_image'] = literal_eval(person['profile_image'])
-        #assert actual profiles in response.
+        # assert actual profiles in response.
         assert user_with_one_following_reduced in json
         assert user_with_no_followings_reduced in json
 
