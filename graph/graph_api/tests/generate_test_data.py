@@ -30,8 +30,6 @@ def create_relationship(tx: Transaction,
                         s_node_properties: str, s_node_labels: str,
                         e_node_properties: str, e_node_labels: str,
                         relationship_type: str, relationship_properties=None) -> BoltStatementResult:
-    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
-    # properties to match by, and relationship type. Labels already in node objects.
     s_node_properties = ", ".join(
         f"""{{{k}: "{v}"}}""" for k, v in s_node_properties.items())
     e_node_properties = ", ".join(

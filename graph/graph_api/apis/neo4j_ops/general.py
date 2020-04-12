@@ -49,8 +49,6 @@ def create_relationship(tx: Transaction,
 
     The nodes are matched by specific fields, and the fields in the relationship itself are initialised by the given fields for it.
     """
-    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
-    # properties to match by, and relationship type. Labels already in node objects.
     s_node_properties = _make_properties_string(s_node_properties)
     e_node_properties = _make_properties_string(e_node_properties)
     if relationship_properties is None:
@@ -71,8 +69,6 @@ def delete_relationship(tx: Transaction,
                         e_node_labels: str, e_node_properties: Node_properties,
                         relationship_type: str) -> BoltStatementResult:
     """Delete a relationship between two nodes, matching each node by specific fields and the relationship's type."""
-    # TODO: the input dictionaries to this function could be constructed differently. No need to specify labels. Just
-    # properties to match by, and relationship type. Labels already in node objects.
     s_node_properties = _make_properties_string(s_node_properties)
     e_node_properties = _make_properties_string(e_node_properties)
     query = f"""

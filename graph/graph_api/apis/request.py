@@ -29,7 +29,6 @@ class Request(Resource):
         if relationship_type == 'affiliation':
             s_node_label = 'Business'
 
-        # TODO: validate emails
         with create_session() as session:
             created_at = time.time()
             tx = session.begin_transaction()

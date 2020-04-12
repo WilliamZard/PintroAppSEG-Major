@@ -88,6 +88,3 @@ class SearchPost(Resource):
             # delete duplicate nodes in data.
             data = remove_duplicates(data)
             return data
-
-
-# TODO delete schemas

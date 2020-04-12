@@ -22,14 +22,11 @@ def convert_to_cypher_datetime(datetime: float) -> None:
     # Assumes there is a single space separating date and time sections
     # Assumes is in UTC time and is timezone naive
     return datetime.replace(' ', 'T') + 'Z'
-# TODO: email validation
-# TODO: docstrings of functions need updating
 
 
 api = Namespace('posts', title='Posting related operations')
 
 
-# TODO: review this
 # Schema used for doc generation
 posts = api.model('Post', {
     'content': restx_fields.String(required=True, title='The content of the post.'),
@@ -60,7 +57,7 @@ class Posts(Resource):
     @api.doc('update_post')
     @api.response(204, 'Post updated')
     @api.expect(posts)
-    def put(self,uuid: str) -> Response:
+    def put(self, uuid: str) -> Response:
         '''Update a Post's content.'''
 
         with create_session() as session:
@@ -72,13 +69,10 @@ class Posts(Resource):
                 return make_response('', 204)
             return make_response('', 404)
 
-    # TODO It will be necessary to have authorization to do that.
-    # TODO It will be necessary to have authorization to do that.
     @api.doc('delete_post')
     @api.response(204, 'Post deleted')
     def delete(self, uuid: str) -> Response:
         '''Delete a post given its uuid.'''
-        # TODO: assumes only other response is not found. This needs more details.
 
         with create_session() as session:
             response = session.read_transaction(
