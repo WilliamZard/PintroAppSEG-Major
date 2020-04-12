@@ -87,7 +87,7 @@ try {
             style={{ backgroundColor: '#1a1a1a' }}
             resetScrollToCoords={{ x: 0, y: 0 }}
             contentContainerStyle={styles.container}
-            scrollEnabled={false}>
+            scrollEnabled={true}>
             <View style={styles.backGround}>
                 <View style={styles.main}>
                   

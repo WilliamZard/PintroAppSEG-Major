@@ -13,6 +13,7 @@ import SignInUpButton from '../../Components/SignInUpButton';
 import * as BusinessActions from '../../store/actions/business';
 const BusinessToMain = props => {
     const dispatch = useDispatch();
+    const email = useSelector(state => state.user.email);
     const seekingInvestments = props.navigation.getParam('seekingInvestmentsToPass');
     const currentlyHiring = props.navigation.getParam('currentlyHiringToPass');
     const companyName = props.navigation.getParam('companyNameToPass');
@@ -23,6 +24,7 @@ const BusinessToMain = props => {
     const location = props.navigation.getParam('locationToPass');
     const companySize = props.navigation.getParam('companySizeToPass');
     const funding = props.navigation.getParam('fundingToPass');
+    const photo = props.navigation.getParam('photoToGet');
 return ( 
     
     
@@ -31,8 +33,8 @@ return (
     <Text style={{fontSize:15,fontFamily:'Poppins-Light'}}>You're now ready to use Pintro</Text>
     <TouchableOpacity style={styles.Button} 
     onPress={() =>{
-        
-        dispatch(BusinessActions.create_business("",location,companyStory,businessTags,dateFounded,companySize,funding,"",seekingInvestments,currentlyHiring))
+        console.log(email);
+        dispatch(BusinessActions.create_business(photo,location,companyStory,businessTags,dateFounded,companySize,funding,"",seekingInvestments,currentlyHiring))
         props.navigation.navigate({routeName:'routeTwo'})}}><Text style={styles.TextButton}>Go To Company Profile</Text></TouchableOpacity>
     
     

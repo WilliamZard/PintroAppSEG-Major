@@ -22,7 +22,7 @@ const EditExperience = props => {
         <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
         contentContainerStyle={styles.container}
-        scrollEnabled={false}>
+        scrollEnabled={true}>
         <View>
             <View style={{marginHorizontal:30,marginTop:30}}>
                 <View style={{marginVertical:20}}>

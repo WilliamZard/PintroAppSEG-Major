@@ -48,7 +48,7 @@ const WhatsYourBrand = props => {
     
         if(!result.cancelled) {
             setImage(result.uri);
-            setImageEncoding("chosen");
+          
         }
     }
     
@@ -60,23 +60,24 @@ const WhatsYourBrand = props => {
     }
     const verification = () =>{
         console.log(imageEncoding);
-        if(imageEncoding.length ===0){
+        if(imageUri==="null"){
         
             Alert.alert("Error","Please choose a picture");
             return false;
         }
      return true;
         };
+
     async function onPressDone() {
         console.log("Done was pressed");
         if(!verification()===false){
         const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
         const imageCode = await result.base64
-        const formattedImage = "b'" + imageCode+"'";
+ 
        
-        setImageEncoding(formattedImage);
+        setImageEncoding(imageCode);
     
-        props.navigation.navigate({routeName:'BusinessTeam',params:{
+        props.navigation.navigate({routeName:'BTeam',params:{
             seekingInvestmentsToPass:seekingInvestments,
             currentlyHiringToPass:currentlyHiring,
             companyNameToPass:companyName,
@@ -90,7 +91,8 @@ const WhatsYourBrand = props => {
             dateFoundedToPass:dateFounded,
             locationToPass:location,
             companySizeToPass:companySize,
-            fundingToPass:funding
+            fundingToPass:funding,
+            photoToGet:imageEncoding
             }})
         }else{
             return
@@ -118,10 +120,7 @@ return (
                         <Text style={styles.add}>+</Text>
                     </TouchableOpacity>
 
-                    <Image source={{uri:
-      `data:image/png;base64,${imageEncoding}`,
-  }} style={styles.userImage}/>
-           
+                   
                    
 </View>
 
@@ -129,7 +128,7 @@ return (
     <View style={{alignItems:'center',justifyContent:'baseline'}}> 
     <TouchableOpacity style={styles.Button} onPress={
   () =>
-  props.navigation.navigate({routeName:'BTeam'})}><Text style={styles.TextButton}>Step 4 of 5</Text></TouchableOpacity>
+  onPressDone()}><Text style={styles.TextButton}>Step 4 of 5</Text></TouchableOpacity>
     </View>
 </View>
 
