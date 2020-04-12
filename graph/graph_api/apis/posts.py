@@ -23,14 +23,11 @@ def convert_to_cypher_datetime(datetime: float) -> None:
     # Assumes there is a single space separating date and time sections
     # Assumes is in UTC time and is timezone naive
     return datetime.replace(' ', 'T') + 'Z'
-# TODO: email validation
-# TODO: docstrings of functions need updating
 
 
 api = Namespace('posts', title='Posting related operations')
 
 
-# TODO: review this
 # Schema used for doc generation
 posts = api.model('Post', {
     'content': restx_fields.String(required=True, title='The content of the post.'),
@@ -73,13 +70,10 @@ class Posts(Resource):
                 return make_response('', 204)
             return make_response('', 404)
 
-    # TODO It will be necessary to have authorization to do that.
-    # TODO It will be necessary to have authorization to do that.
     @api.doc('delete_post')
     @api.response(204, 'Post deleted')
     def delete(self, uuid: str) -> Response:
         '''Delete a post given its uuid.'''
-        # TODO: assumes only other response is not found. This needs more details.
 
         with create_session() as session:
             response = session.read_transaction(
@@ -105,8 +99,10 @@ class PostsPost(Resource):
         post_uuid = uuid.uuid4()
         content = payload['content']
         user_email = payload['user_email']
+        hashtags = payload['hashtags']
         properties = dict(created=created, uuid=post_uuid,
-                          content=content, modified=modified)
+                          content=content, modified=modified,
+                          hashtags=hashtags)
         with create_session() as session:
             try:
                 tx = session.begin_transaction()
@@ -119,7 +115,7 @@ class PostsPost(Resource):
                 if (node_creation_counters.nodes_created == 1
                     and relationship_creation_counters.relationships_created == 1
                     and node_creation_counters.labels_added == 1  # NOTE: What is this for?
-                        and node_creation_counters.properties_set == 4):
+                        and node_creation_counters.properties_set == 5):
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)

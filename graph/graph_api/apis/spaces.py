@@ -13,10 +13,6 @@ from .neo4j_ops.spaces import (delete_space_by_email,
 from .utils import valid_email
 
 
-# TODO: enable swagger API spec
-# TODO: email validation
-
-
 api = Namespace('spaces', title='Space related operations')
 
 
@@ -44,9 +40,9 @@ class Spaces(Resource):
             response = session.read_transaction(get_space_by_email, email)
             space = response.single()
             if space:
-                # TODO: a lot going on here. See if this can be improved.
                 data = dict(space.data()['user'].items())
-                data['profile_image'] = str(get_data_from_gcs(data['profile_image']))
+                data['profile_image'] = str(
+                    get_data_from_gcs(data['profile_image']))
                 return jsonify(**data)
             return make_response('', 404)
 
@@ -59,7 +55,8 @@ class Spaces(Resource):
 
         with create_session() as session:
             # Fetch user image url in gcp storage that needs to be deleted.
-            profile_image_url = (session.read_transaction(get_account_field, email, 'Space', 'profile_image').data())
+            profile_image_url = (session.read_transaction(
+                get_account_field, email, 'Space', 'profile_image').data())
             if len(profile_image_url) > 0:
                 profile_image_url = profile_image_url[0]['profile_image']
             response = session.read_transaction(delete_space_by_email, email)
@@ -75,7 +72,6 @@ class Spaces(Resource):
         if not valid_email(email):
             return make_response('', 422)
 
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Space', 'email', email, api.payload)

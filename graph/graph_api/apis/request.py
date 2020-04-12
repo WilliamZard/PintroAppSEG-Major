@@ -7,7 +7,7 @@ from flask_restx import Namespace, Resource
 from flask import make_response, Response
 from .neo4j_ops import create_session
 from .neo4j_ops.general import create_relationship, delete_relationship
-
+from .utils import valid_email
 import time
 
 api = Namespace(
@@ -24,12 +24,15 @@ class Request(Resource):
         '''Create a request relationship.'''
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
+        if valid_email(requester_email) == None:
+            return make_response('', 422)
+        if valid_email(request_recipient_email) == None:
+            return make_response('', 422)
 
         s_node_label = e_node_label = 'Person'
         if relationship_type == 'affiliation':
             s_node_label = 'Business'
 
-        # TODO: validate emails
         with create_session() as session:
             created_at = time.time()
             tx = session.begin_transaction()
@@ -44,6 +47,10 @@ class Request(Resource):
         '''Delete request relationship, effectively denying the request.'''
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
+        if valid_email(requester_email) == None:
+            return make_response('', 422)
+        if valid_email(request_recipient_email) == None:
+            return make_response('', 422)
 
         s_node_label = e_node_label = 'Person'
         if relationship_type == 'affiliation':

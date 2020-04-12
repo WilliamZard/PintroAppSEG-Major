@@ -99,7 +99,6 @@ class TestGet:
 
 @pytest.mark.DELETE_business
 class TestDelete:
-    # TODO: some duplicate code here for each endpoint test. Refactor.
     def test_delete_business_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Define Nodes
         tag_a = Tag(name='King Slaying')._asdict()
@@ -202,8 +201,6 @@ class TestPut:
             f"/businesses/{invalid_email}", json=new_business_fields)
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
-
-        # TODO: add test for validating payload
 
 
 @pytest.mark.POST_business
