@@ -24,11 +24,12 @@ const SearchResults = props => {
         } else {
             props.navigation.navigate('Profile');
         }*/
-        props.navigation.navigate('Profile');
+        props.navigation.navigate('navBusiness');
     }
 
     function onUserPress(value) {
-        //dispatch(UserActions.getUser(value));
+        dispatch(UserActions.get_Other_User(value));
+        props.navigation.navigate('navUser');
         console.log("You pressed on: " + value);
     }
 
