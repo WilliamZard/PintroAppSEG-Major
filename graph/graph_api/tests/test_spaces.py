@@ -21,8 +21,8 @@ class TestGet:
         # Test
         response = app.get(f"/spaces/{space['email']}")
         assert response.status == '200 OK'
-        # TODO: change below assertion to check for length then each individual field.
-        assert response.data == jsonify(space).data
+        response = response.get_json()
+        assert response == dict(space)
 
     def test_get_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
