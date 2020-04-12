@@ -8,7 +8,6 @@ from flask import Flask
 
 @pytest.mark.POST_approve
 class TestPOST:
-    # TODO: add tests for entering a valid email
     # TODO: add tests for if given users exist or not
     def test_POST_approve_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
@@ -42,6 +41,18 @@ class TestPOST:
 
         response = app.post(
             f"/approve/follow/{'valid_email@email.com'}/{'invalid_email'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+    def test_POST_approve_affiliation_request_with_invalid_emails(self, app: Flask) -> None:
+
+        response = app.post(
+            f"/approve/affiliation/{'invalid_email'}/{'valid_email@email.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+        response = app.post(
+            f"/approve/affiliation/{'valid_email@email.com'}/{'invalid_email'}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
