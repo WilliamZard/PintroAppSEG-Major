@@ -552,10 +552,6 @@ class TestUsersGETFollowings:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.xfail
-    def test_GET_followings_of_user_with_no_followers(self, app):
-        raise NotImplementedError
-
 
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
@@ -619,10 +615,6 @@ class TestUsersGETFollowingsPosts:
         assert len(json) == 2
         assert user_post_a in json
         assert user_post_b in json
-
-    @pytest.mark.xfail
-    def test_get_all_posts_of_all_followers_of_non_existing_user(self, app):
-        raise NotImplementedError
 
 
 @pytest.mark.PUT_user_activation
