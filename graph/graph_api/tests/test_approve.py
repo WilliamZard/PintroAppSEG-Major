@@ -8,7 +8,6 @@ from flask import Flask
 
 @pytest.mark.POST_approve
 class TestPOST:
-    # TODO: add tests for if given users exist or not
     def test_POST_approve_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
