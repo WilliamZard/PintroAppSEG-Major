@@ -61,7 +61,7 @@ class Posts(Resource):
     def put(self, uuid: str) -> Response:
         '''Update a Post's content.'''
         payload = api.payload
-        if len(payload['content']) <= 300 and len(payload['content']) == 0:
+        if len(payload['content']) > 300 or len(payload['content']) == 0:
             return make_response('Post content length must be between 1 and 300.', 422)
 
         with create_session() as session:

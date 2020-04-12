@@ -70,6 +70,14 @@ class TestPUT:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Post content length must be between 1 and 300.'
 
+        too_big_content = "a"*301
+        new_post = Post(content=too_big_content,
+                        hashtags="#new_tag_a")._asdict()
+        response = app.put(
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b'Post content length must be between 1 and 300.'
+
 
 @pytest.mark.POST_post
 class TestPOST:
