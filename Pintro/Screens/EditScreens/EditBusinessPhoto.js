@@ -5,8 +5,11 @@ import Colors from '../../Constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from "expo-image-manipulator";
 import { BearerToken } from '../../Constants/BearerToken';
+import { useDispatch } from 'react-redux';
+import * as BusinessActions from '../../store/actions/business';
 
 const EditBusinessPhoto = props => {
+    const dispatch = useDispatch();
     const[imageUri,setImage] = useState(null);
 
     async function pickImage() {
@@ -38,39 +41,31 @@ const EditBusinessPhoto = props => {
     async function onPressDone() {
         console.log("Done was pressed");
         const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
-        console.log(result.base64.length);
-        try{
-            const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + props.navigation.state.params.business.email,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-type': 'application/json',
-                        'Authorization': BearerToken
-                    },
-                    redirect: 'follow',
-                    body: JSON.stringify({
-                        email: props.navigation.state.params.business.email,
-                        password: props.navigation.state.params.business.password,
-                        full_name: props.navigation.state.params.business.full_name,
-                        profile_image: "'wtf_isgoing_on'",
-                        phone: props.navigation.state.params.business.phone,
-                        location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
-                        short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
-                        story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
-                        tags: props.navigation.state.params.business.tags,
-                        date_founded: props.navigation.state.params.business.date_founded,
-                        company_size: props.navigation.state.params.business.company_size,
-                        funding: props.navigation.state.params.business.funding,
-                        team_members: props.navigation.state.params.business.team_members,
-                        seeking_investment: props.navigation.state.params.business.seeking_investment,
-                        currently_hiring: props.navigation.state.params.business.currently_hiring
-                    })
-                }
-            );
-            console.log(response.status);
-        } catch (error) {
-            console.log(error);
-        }     
+        const imageCode = await result.base64;
+        console.log(imageCode.length);
+        if(imageCode.length===0) {
+            Alert.alert('No image selected','Please choose an image');
+        } else {
+            const busObj = { 
+                email: props.navigation.state.params.business.email,
+                password: props.navigation.state.params.business.password,
+                full_name: props.navigation.state.params.business.full_name,
+                profile_image: "b'" + imageCode + "'",
+                phone: props.navigation.state.params.business.phone,
+                location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
+                short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
+                story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
+                tags: props.navigation.state.params.business.tags,
+                date_founded: props.navigation.state.params.business.date_founded,
+                company_size: props.navigation.state.params.business.company_size,
+                funding: props.navigation.state.params.business.funding,
+                team_members: props.navigation.state.params.business.team_members,
+                seeking_investment: props.navigation.state.params.business.seeking_investment,
+                currently_hiring: props.navigation.state.params.business.currently_hiring
+            }
+            await dispatch(BusinessActions.putBusiness(busObj));
+            await dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
+            }
     }
 
     return(
