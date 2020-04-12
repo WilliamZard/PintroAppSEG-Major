@@ -190,6 +190,9 @@ class UsersGETFollowings(Resource):
                 get_followings_of_a_user, email)  # TODO iterate on followings and retrieve images, not url.
             data = response.data()
             if data:
+                for person in data:
+                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
+                    print(person)
                 return jsonify(data)
             return make_response('', 404)
 
@@ -224,7 +227,6 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': False}
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Person', 'email', email, fields)
@@ -243,7 +245,6 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': True}
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Person', 'email', email, fields)

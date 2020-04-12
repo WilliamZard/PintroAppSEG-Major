@@ -43,6 +43,6 @@ def get_followers_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
 def get_followings_of_a_user(tx: Transaction, email: str) -> BoltStatementResult:
     """Get name and email of all the users a user is following."""
     query = f"""
-        MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email
+        MATCH (:Person {{email: '{email}'}})-[:FOLLOWS]->(follower) RETURN follower.full_name AS full_name, follower.email AS email, follower.profile_image AS profile_image
     """
     return tx.run(query)
