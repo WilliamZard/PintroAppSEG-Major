@@ -1,3 +1,4 @@
+"""Cypher queries that can be used in different situations."""
 from graph_api.apis.image_storing import *
 from ast import literal_eval
 from neo4j import Transaction, BoltStatementResult

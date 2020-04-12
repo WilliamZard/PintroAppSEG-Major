@@ -1,3 +1,4 @@
+"""All endpoints for handling search requests."""
 from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource

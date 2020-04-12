@@ -1,3 +1,10 @@
+"""
+All endpoints for handling user notifications.
+
+User notifications are currently represented as specific types of Neo4j relationships.
+REQUESTED_FOLLOW and REQUESTED_AFFILIATION relationships between users represents requests,
+as well as notifications that a user should see.
+"""
 from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource

@@ -1,4 +1,4 @@
-
+"""All endpoints for approving user requests."""
 import time
 
 from flask import make_response, Response

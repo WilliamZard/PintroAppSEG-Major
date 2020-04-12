@@ -1,3 +1,4 @@
+"""Utility functions and test fixtures."""
 import pytest
 
 from graph_api import create_app
@@ -12,6 +13,7 @@ from typing import List
 
 
 def connect() -> GraphDatabase.driver:
+    """Instantiate a Neo4j database connection."""
     uri = os.getenv('NEO4J_URI')
     db_user = 'neo4j'
     password = os.getenv("NEO4J_PASSWORD")
@@ -20,6 +22,8 @@ def connect() -> GraphDatabase.driver:
 
 
 def clear_db() -> None:
+    """Empty the testing database of all nodes, relationships, and indexes."""
+    # TODO: refactor this function
     clear_bucket()
     DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
     driver = connect()
@@ -34,6 +38,8 @@ def _run_query(tx: Transaction, query: str) -> BoltStatementResult:
 
 @pytest.fixture()
 def populate_db() -> None:
+    """Populate the test database with the given nodes and relationships."""
+    # TODO: add example inputs
     def populate(nodes_to_create=[], relationships_to_create=[]) -> None:
         driver = connect()
         with driver.session() as session:

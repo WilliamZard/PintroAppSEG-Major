@@ -1,4 +1,8 @@
+"""
+All endpoints for handling user requests.
 
+Example requests would be when a user requests to follow another user.
+"""
 from flask_restx import Namespace, Resource
 from flask import make_response, Response
 from .neo4j_ops import create_session

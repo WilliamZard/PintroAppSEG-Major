@@ -1,3 +1,4 @@
+"""Affiliation related endpoints
 import time
 
 from flask import make_response, Response
@@ -9,8 +10,8 @@ from neo4j.exceptions import ConstraintError
 from .neo4j_ops import create_session
 from .neo4j_ops.requests import (create_affiliation_relationship,
                                  delete_affiliation_relationship)
-from .utils import valid_email
-
+from .utils import valid_emai"""l
+# TODO: can this script be deleted?
 api = Namespace(
     'affiliation', title='Operations related to the AFFILIATION relationship')
 

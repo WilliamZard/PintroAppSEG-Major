@@ -1,7 +1,9 @@
+"""Useful functions used by our API endpoints."""
 from .neo4j_ops.search import get_accounts_with_tag
 from neo4j import Record, Session
 from typing import List, Dict
 import re
+
 
 def valid_email(email: str) -> bool:
     return re.search(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$', email)

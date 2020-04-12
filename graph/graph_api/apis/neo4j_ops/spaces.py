@@ -1,3 +1,4 @@
+"""Cypher queries specific to Space nodes."""
 from neo4j import Transaction, BoltStatementResult
 
 
