@@ -7,7 +7,6 @@ from .generate_test_data import User, basic_user_node, Business, basic_business_
 
 @pytest.mark.POST_request
 class TestPOST:
-    # TODO: add tests for entering a valid email
     def test_POST_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
@@ -108,7 +107,6 @@ class TestDELETE:
         populate_db(nodes_to_create=[business_requesting_affiliation_node,
                                      user_receiving_request_node],
                     relationships_to_create=[requested_affiliation])
-        # TODO: fix test not passing when all tests are run
         response = app.delete(
             f"/request/affiliation/{business_requesting_affiliation['email']}/{user_receiving_request['email']}")
         assert response.status == '204 NO CONTENT'
