@@ -381,8 +381,8 @@ class TestUsersGETFollowers:
     def test_GET_followers_of_non_existing_user(self, app):
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
-        assert response.status == '404 NOT FOUND'
-        assert response.data == b''
+        assert response.get_json() == []
+
 
     def test_GET_followers_of_user_with_no_followers(self, app: Flask, populate_db: None) -> None:
         user = User(email='jj@gmail.com')._asdict()
@@ -392,6 +392,59 @@ class TestUsersGETFollowers:
         response = app.get(f"/users/{user['email']}/followers")
         assert response.status == '200 OK'
         assert not response.get_json()
+
+    def test_GET_followers_with_pictures_of_existing_user(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        # Define users
+        user_with_followers = User(email='jj@gmail.com')._asdict()
+
+        image_a_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
+        with image_a_path.open(mode="rb") as imageFile:
+            user_a_image = base64.b64encode(imageFile.read())
+
+        user_following_a = User(email='yes_ucl@kcl.ac.uk', profile_image=user_a_image)._asdict()
+
+        image_b_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image2.jpg"
+        with image_b_path.open(mode="rb") as imageFile:
+            user_b_image = base64.b64encode(imageFile.read())
+        
+        user_following_b = User(email='lello@gmail.com', profile_image=user_b_image)._asdict()
+        
+        user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
+            user_with_followers, user_following_a, user_following_b]]
+
+        # Definge follow relationships
+        follow_a = {
+            's_node_properties': {'email': user_following_a['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_followers['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        follow_b = {
+            's_node_properties': {'email': user_following_b['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_followers['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        populate_db(nodes_to_create=user_nodes,
+                    relationships_to_create=[follow_a, follow_b])
+
+        # Test
+        response = app.get(
+            f"/users/{user_with_followers['email']}/followers")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        #Create expected essertion values
+        results = [{'full_name': user['full_name'], 'email': user['email'], 'profile_image': user['profile_image']}
+                   for user in [user_following_a, user_following_b]]
+
+        assert len(json) == 2
+        #Prepare json response for image assertions
+        for person in json:
+            person['profile_image'] = literal_eval(person['profile_image'])
+        #assert actual profiles in response.
+        assert results[0] in json
+        assert results[1] in json
 
 
 @pytest.mark.GET_user_followings
