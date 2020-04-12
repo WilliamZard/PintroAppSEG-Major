@@ -3,7 +3,7 @@ import pytest
 
 from graph_api import create_app
 
-from .generate_test_data import create_node, create_relationship, create_full_text_indexes
+from .generate_test_data import create_node, create_relationship
 import os
 from neo4j import GraphDatabase, Transaction, BoltStatementResult
 from graph_api.apis.image_storing import clear_bucket
@@ -26,17 +26,9 @@ def clear_db() -> None:
     # TODO: refactor this function
     clear_bucket()
     DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
-    DROP_SEARCH_SPACE_INDEX = "CALL db.index.fulltext.drop(\"SearchSpaceIndex\")"
-    DROP_SEARCH_BUSINESS_INDEX = "CALL db.index.fulltext.drop(\"SearchBusinessIndex\")"
-    DROP_SEARCH_USER_INDEX = "CALL db.index.fulltext.drop(\"SearchUserIndex\")"
-    DROP_SEARCH_TAG_INDEX = "CALL db.index.fulltext.drop(\"SearchTagIndex\")"
     driver = connect()
     with driver.session() as session:
         session.write_transaction(_run_query, DELETE_ALL_NODES)
-        session.write_transaction(_run_query, DROP_SEARCH_SPACE_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_BUSINESS_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_USER_INDEX)
-        session.write_transaction(_run_query, DROP_SEARCH_TAG_INDEX)
     driver.close()
 
 
@@ -51,8 +43,6 @@ def populate_db() -> None:
     def populate(nodes_to_create=[], relationships_to_create=[]) -> None:
         driver = connect()
         with driver.session() as session:
-            # Create indexes fot full text search.
-            session.write_transaction(create_full_text_indexes)
             # Where nodes_to_create is list of dictionaries containing properties and labels
             for node in nodes_to_create:
                 session.write_transaction(create_node, **node)

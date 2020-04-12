@@ -72,17 +72,3 @@ def basic_business_node(business: Business) -> Dict[str, str]:
 
 def basic_tag_node(tag: Tag, labels='Tag') -> Dict[str, str]:
     return {'properties': dict(tag), 'labels': labels}
-
-
-def create_full_text_indexes(tx: Transaction) -> None:
-    queries = []
-    queries.append(
-        "CALL db.index.fulltext.createNodeIndex('SearchSpaceIndex', ['Space'], ['full_name', 'email', 'short_bio', 'story'])")
-    queries.append(
-        "CALL db.index.fulltext.createNodeIndex('SearchUserIndex', ['Person'], ['full_name', 'email', 'short_bio', 'story'])")
-    queries.append(
-        "CALL db.index.fulltext.createNodeIndex('SearchBusinessIndex', ['Business'], ['full_name', 'email', 'short_bio', 'story'])")
-    queries.append(
-        "CALL db.index.fulltext.createNodeIndex('SearchTagIndex', ['Tag'], ['name'])")
-    for query in queries:
-        tx.run(query)
