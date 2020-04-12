@@ -85,27 +85,21 @@ class TestGET:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask) -> None:
         nonexistant_email = 'doesnotexist@test.com'
         response = app.get(f"/users/{nonexistant_email}/chatrooms")
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 0
 
-    def test_GET_chatrooms_for_business_that_does_not_exists(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_chatrooms_for_business_that_does_not_exists(self, app: Flask) -> None:
         nonexistant_email = 'doesnotexist@test.com'
         response = app.get(f"/businesses/{nonexistant_email}/chatrooms")
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 0
 
-    def test_GET_chatrooms_for_space_that_does_not_exists(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_chatrooms_for_space_that_does_not_exists(self, app: Flask) -> None:
         nonexistant_email = 'doesnotexist@test.com'
         response = app.get(f"/spaces/{nonexistant_email}/chatrooms")
         assert response.status == '200 OK'
@@ -154,7 +148,8 @@ class TestPost:
         business = Business(email='business@test.com')._asdict()
 
         populate_db(
-            nodes_to_create=[basic_user_node(user), basic_business_node(business)],
+            nodes_to_create=[basic_user_node(
+                user), basic_business_node(business)],
             relationships_to_create=[]
         )
         response = app.post(
@@ -199,7 +194,8 @@ class TestPost:
             'relationship_type': 'CHATS_IN'
         }
         populate_db(
-            nodes_to_create=list(map(basic_user_node, users)) + [basic_chatroom_node(chatroom)],
+            nodes_to_create=list(map(basic_user_node, users)) +
+            [basic_chatroom_node(chatroom)],
             relationships_to_create=[user1_chats, user2_chats]
         )
         response = app.post(
@@ -246,9 +242,7 @@ class TestDelete:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_DELETE_chatroom_with_id_that_does_not_exist(self, app: Flask) -> None:
         import uuid
         nonexistent_chatroom_id = str(uuid.uuid4())
         response = app.delete(f"/chatrooms/{nonexistent_chatroom_id}")
