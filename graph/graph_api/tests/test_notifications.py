@@ -57,8 +57,11 @@ class TestGET:
             f"/notifications/{user_with_notifications['email']}")
         assert response.status == '200 OK'
         json = response.get_json()
-        assert json == [notification_b, notification_a]
-        # TODO: create user, create inbound request relationships, create requesting users
+        assert len(json) == 2
+        print(json)
+        print(notification_a)
+        assert dict(notification_a) in json
+        assert dict(notification_b) in json
 
     def test_GET_notifications_for_existing_user_with_no_notifications(self, app: Flask, populate_db: None) -> None:
         # Generate test data
@@ -74,3 +77,11 @@ class TestGET:
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 0
+
+    def test_GET_notifications_for_invalid_email(self, app: Flask) -> None:
+
+        # Test
+        response = app.get(
+            f"/notifications/{'invalid_email@email.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
