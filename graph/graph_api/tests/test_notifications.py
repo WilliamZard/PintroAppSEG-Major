@@ -58,8 +58,6 @@ class TestGET:
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 2
-        print(json)
-        print(notification_a)
         assert dict(notification_a) in json
         assert dict(notification_b) in json
 
@@ -82,6 +80,6 @@ class TestGET:
 
         # Test
         response = app.get(
-            f"/notifications/{'invalid_email@email.com'}")
+            f"/notifications/{'invalid_emailemail.com'}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
