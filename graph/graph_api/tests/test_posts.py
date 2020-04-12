@@ -152,7 +152,3 @@ class TestDELETE:
             f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
-
-    @pytest.mark.xfail
-    def test_DELETE_existing_post_deletes_posted_relation(self, app):
-        raise NotImplementedError
