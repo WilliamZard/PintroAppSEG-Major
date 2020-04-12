@@ -5,7 +5,8 @@ import {
     UPDATE_STORY,
     UPDATE_EXPERIENCE,
     UPDATE_PASSIONS,
-    UPDATE_HELP_OTHERS
+    UPDATE_HELP_OTHERS,
+    OTHERUSER
 
 } from '../actions/user';
 const initialState = {
@@ -90,7 +91,11 @@ export default (state = initialState, action) => {
         case GETUSER :
                 return{
                     userObj: action.userObj
-                };    
+                }
+        case OTHERUSER:
+            return{
+                otherUserObj: action.otherUserObj
+            };    
             default:
                 return state;
   
