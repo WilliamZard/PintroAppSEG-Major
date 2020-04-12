@@ -2,8 +2,6 @@ import os
 from google.cloud import storage
 import uuid
 
-# TODO: consider movint this file into dedicated utils folder.
-
 
 def upload_data_to_gcs(data: bytes) -> str:
     '''

@@ -14,7 +14,6 @@ from .utils import valid_email
 api = Namespace(
     'approve', title='For approving user relationships(eg FOLLOW or AFFILIATED_WITH')
 
-# TODO: combine relationship mappings into a nested dict
 APPROVE_RELATIONSHIPS_MAPPING = {
     'follow': 'FOLLOWS', 'affiliation': 'AFFILIATED_WITH'}
 
