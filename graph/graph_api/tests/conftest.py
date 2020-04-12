@@ -9,7 +9,8 @@ from neo4j import GraphDatabase, Transaction, BoltStatementResult
 from graph_api.apis.image_storing import clear_bucket
 
 from flask import Flask
-from typing import List
+
+from typing import List, Dict
 
 
 def connect() -> GraphDatabase.driver:
@@ -38,8 +39,28 @@ def _run_query(tx: Transaction, query: str) -> BoltStatementResult:
 @pytest.fixture()
 def populate_db() -> None:
     """Populate the test database with the given nodes and relationships."""
-    # TODO: add example inputs
-    def populate(nodes_to_create=[], relationships_to_create=[]) -> None:
+    def populate(nodes_to_create: List[Dict] = [], relationships_to_create: List[Dict] = []) -> None:
+        """
+        nodes_to_create example:
+            [{
+                'properties': {
+                    'full_name': 'Default Name', 'preferred_name': 'Defaulter', 'profile_image': '',
+                    'short_bio': 'Default Short Bio', 'gender': 'Default Gender', 'story': 'Default Story',
+                    'email': 'duke@wellington.com', 'phone_number': '000', 'job_title': 'Default Job Title',
+                    'current_company': 'Default Current Company', 'years_in_industry': '100', 'industry': 'Default Industry',
+                    'previous_company': 'Default previous company', 'previous_company_year_finished': '10',
+                    'university': 'Default University', 'university_year_finished': '1812', 'academic_level': 'Default Academic Level',
+                    'location': 'Default Location', 'date_of_birth': '01/01/1812', 'active': 'True'
+                },
+                'labels': 'Person'
+            }]
+        relationships_to_create example: 
+            [{
+                's_node_properties': {'email': 'email@example.com', 's_node_labels': 'Example_label',
+                'e_node_properties': {'email': 'email@example.com' }, 'e_node_labels': 'Example_label',
+                'relationship_type': RELATIONSHIP_EXAMPLE
+            }]
+        """
         driver = connect()
         with driver.session() as session:
             # Where nodes_to_create is list of dictionaries containing properties and labels
