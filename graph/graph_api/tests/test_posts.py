@@ -57,9 +57,18 @@ class TestPUT:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.xfail
-    def test_PUT_existing_post_invalid_changes(self, app: Flask):
-        raise NotImplementedError
+    def test_PUT_existing_post_with_invalid_payload(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
+        new_post = Post(content='', hashtags="#new_tag_a")._asdict()
+        posts = [{'properties': dict(post), 'labels': 'Post'}]
+        populate_db(nodes_to_create=posts)
+
+        # Test
+        response = app.put(
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b'Post content length must be between 1 and 300.'
 
 
 @pytest.mark.POST_post

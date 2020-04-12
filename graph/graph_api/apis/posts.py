@@ -60,10 +60,13 @@ class Posts(Resource):
     @api.expect(posts)
     def put(self, uuid: str) -> Response:
         '''Update a Post's content.'''
+        payload = api.payload
+        if len(payload['content']) <= 300 and len(payload['content']) == 0:
+            return make_response('Post content length must be between 1 and 300.', 422)
 
         with create_session() as session:
-            content = api.payload['content']
-            hashtags = api.payload['hashtags']
+            content = payload['content']
+            hashtags = payload['hashtags']
             response = session.write_transaction(
                 set_properties, 'Post', 'uuid', uuid, {'content': content, 'hashtags': hashtags})
             if response.summary().counters.properties_set == 2:
