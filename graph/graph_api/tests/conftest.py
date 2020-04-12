@@ -23,7 +23,6 @@ def connect() -> GraphDatabase.driver:
 
 def clear_db() -> None:
     """Empty the testing database of all nodes, relationships, and indexes."""
-    # TODO: refactor this function
     clear_bucket()
     DELETE_ALL_NODES = "MATCH(n) DETACH DELETE n"
     driver = connect()
