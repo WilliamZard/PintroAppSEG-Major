@@ -22,13 +22,13 @@ def mocked_requests_get(url, headers):
         def json(self):
             return self.json_data
     if 'Authorization' not in headers:
-        return MockResponse('{}', 401)
+        return MockResponse([], 401)
     if 'invalid_email' in url:
-        return MockResponse('{}', 422)
+        return MockResponse([], 422)
     if 'does.not@exist.com' in url:
-        return MockResponse('{}', 404)
+        return MockResponse([], 404)
 
-    return MockResponse(json.dumps(posts), 200)
+    return MockResponse(posts, 200)
 
 
 class TestFunction(unittest.TestCase):

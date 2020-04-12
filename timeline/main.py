@@ -29,7 +29,7 @@ def generate_timeline(request):
     if response.status_code > 500:
         return response.status_code
 
-    data = json.loads(response.json())
+    data = response.json()
     # Sort by date modified
     data.sort(key=itemgetter('modified'), reverse=True)
     data = {'results': data}
