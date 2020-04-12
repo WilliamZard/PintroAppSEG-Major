@@ -1,5 +1,4 @@
 import {
-
     GETTAGS
     } from '../actions/tags';
     const initialState = {
