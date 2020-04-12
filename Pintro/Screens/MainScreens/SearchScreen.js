@@ -19,19 +19,18 @@ const SearchScreen = props => {
         dispatch(TagActions.getTags());
     }
 
-    /*var tagNames = loadedTags.map(function(item) {
-        return item['name'];
-      });*/
-    
     function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
         if (searchWord.length > 2) {
-            
             const regex = new RegExp(`^${searchWord}`,'i');
-            //console.log(tagList.sort().filter(v => regex.test(v)));
-            setSuggestions(loadedTags.sort().filter(v => regex.test(v))); 
+            //console.log(loadedTags.sort().filter(v => regex.test(v)));
+            const tagSet = new Set(loadedTags.sort().filter(v => regex.test(v)));
+            const tagSuggestions = [...tagSet];
+            setSuggestions(tagSuggestions); 
         }
-        renderSuggestions();
+        if(suggestions!==null) {
+            renderSuggestions();
+        }
     }
 
     function onListItemPress(item) {
@@ -80,11 +79,13 @@ const SearchScreen = props => {
                     inputStyle={styles.searchText}
                     containerStyle={{backgroundColor: 'white',width: 345,borderRadius:30}}
                     inputContainerStyle={{backgroundColor: 'white',width: 330}}
-                    onChangeText={searchWord => onTextChanged(searchWord)}
+                    onChangeText={(searchWord) => onTextChanged(searchWord)}
                     value={searchKeyword}
                     clearIcon={null}
                     onSubmitEditing={() => handleKeyPress()}/>
-                {suggestedItems}
+                <ScrollView>
+                    {suggestedItems} 
+                </ScrollView>
                 <Text style={styles.category}>or Choose a Category</Text>
             </View>
             <View style={styles.rowContainer}>
