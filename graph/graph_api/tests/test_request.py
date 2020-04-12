@@ -24,6 +24,17 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
+    def test_POST_follow_request_with_invalid_email(self, app: Flask) -> None:
+        response = app.post(
+            f"/request/follow/{'invalid_email'}/{'valid_email@email.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+        response = app.post(
+            f"/request/follow/{'valid_email@email.com'}/{'invalid_email'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
     def test_POST_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         business_requesting_affiliation = Business(
@@ -39,6 +50,17 @@ class TestPOST:
         response = app.post(
             f"/request/affiliation/{business_requesting_affiliation['email']}/{user_receiving_request['email']}")
         assert response.status == '201 CREATED'
+        assert response.data == b''
+
+    def test_POST_affiliation_request_with_invalid_email(self, app: Flask) -> None:
+        response = app.post(
+            f"/request/affiliation/{'invalid_email'}/{'valid_email@email.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+        response = app.post(
+            f"/request/affiliation/{'valid_email@email.com'}/{'invalid_email'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
 
