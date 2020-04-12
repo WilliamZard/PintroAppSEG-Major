@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View,Text,TouchableOpacity } from 'react-native';
+import { View,Text,TouchableOpacity,Alert } from 'react-native';
 import Colors from '../Constants/Colors'; 
 
 const FollowMe = props => {
@@ -20,7 +20,7 @@ const FollowMe = props => {
     const[following,setFollow] = useState(props.initial);
     const[textStyle,setTextStyle] = useState((following)? blackText : blackText);
     const[color,setColor] = useState((following)? Colors.pintroWhite : Colors.pintroBlack);
-    const[buttonText,setText] = useState((following)? "+ FOLLOW US" : "UNFOLLOW")
+    const[buttonText,setText] = useState((following)? props.choice2 : props.choice1)
     
     const button = {
         borderColor: Colors.pintroBlack,
@@ -38,17 +38,36 @@ const FollowMe = props => {
 
     function onPress() {
         if(following) {
-            setColor(Colors.pintroBlack);
-            setTextStyle(whiteText);
-            setText("+ FOLLOW US")
-            setFollow(false);
+            Alert.alert(
+                'Unfollow request',
+                'Are you sure you want to delete your request to follow ' + props.name,
+                [
+                    {text: 'Delete', onPress: () => (
+                        setColor(Colors.pintroBlack),
+                        setTextStyle(whiteText),
+                        setText(props.choice1),
+                        setFollow(false)
+                        //dispatch(RequestActions.requestFol(currentUser,businessObj.email));
+                    )},
+                    {text: 'Cancel', onPress: () => console.log("Cancel was pressed"), style: 'cancel'}
+                ] 
+            )
         } else {
-            setColor(Colors.pintroWhite);
-            setTextStyle(blackText);
-            setText("UNFOLLOW")
-            setFollow(true);
+            Alert.alert(
+                'Follow request',
+                'Are you sure you want to request to follow ' + props.name,
+                [
+                    {text: 'Request', onPress: () => (
+                        setColor(Colors.pintroWhite),
+                        setTextStyle(blackText),
+                        setText(props.choice2),
+                        setFollow(true)
+                        //dispatch(RequestActions.requestFol(currentUser,businessObj.email));
+                    )},
+                    {text: 'Cancel', onPress: () => console.log("Request was pressed"), style: 'cancel'}
+                ] 
+            );
         }
-        props.callback();
     }
 
     return (
