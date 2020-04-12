@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 from flask.json import jsonify
-from flask import Flask 
+from flask import Flask
 
 from .conftest import app, populate_db
 from .test_data.posts import Post
@@ -48,9 +48,6 @@ class TestPUT:
             f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
-        # TODO: assert modified was changed properly for all put tests
-        # TODO: assert created was not changed for all put tests
-        # TODO: get request and assertion to check correct update
 
     def test_PUT_non_existent_post(self, app: Flask):
         post = Post(content='content_x', hashtags="#new_tag_a")._asdict()
@@ -60,42 +57,69 @@ class TestPUT:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    @pytest.mark.xfail
-    def test_PUT_existing_post_invalid_changes(self, app: Flask):
-        raise NotImplementedError
+    def test_PUT_existing_post_with_invalid_payload(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
+        new_post = Post(content='', hashtags="#new_tag_a")._asdict()
+        posts = [{'properties': dict(post), 'labels': 'Post'}]
+        populate_db(nodes_to_create=posts)
+
+        # Test
+        response = app.put(
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b'Post content length must be between 1 and 300.'
+
+        too_big_content = "a"*301
+        new_post = Post(content=too_big_content,
+                        hashtags="#new_tag_a")._asdict()
+        response = app.put(
+            f"/posts/{post['uuid']}", json={'content': new_post['content'], 'hashtags': new_post['hashtags']})
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b'Post content length must be between 1 and 300.'
 
 
 @pytest.mark.POST_post
 class TestPOST:
-    # TODO: assert modified was changed properly for all put tests
-    # TODO: assert created was not changed for all put tests
-    # TODO: get request and assertion to check correct update
     def test_POST_post_with_valid_payload(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
-        post = Post(content='content_x', hashtags="#tag_a #tag_b")._asdict()
+        post = Post(content='content_x', hashtags="#tag_a #tag_b"
+                    )._asdict()
         user = User(email='created_post@post.com')._asdict()
         user_node = {'properties': dict(user), 'labels': 'Person'}
-        payload = {'content': post['content'], 'user_email': user['email']}
+        payload = {'content': post['content'],
+                   'user_email': user['email'], 'hashtags': post['hashtags']}
 
         populate_db(nodes_to_create=[user_node])
 
         # Test
         response = app.post(
-            f"/posts/", json=payload)
+            "/posts/", json=payload)
         assert response.status == '201 CREATED'
-        assert response.data == b''
 
-    def test_POST_post_with_invalid_payload(self, app: Flask):
-        user_email = 'test@test.com'
+    def test_POST_post_with_invalid_payload(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        empty_post = Post(content='', hashtags="#tag_a #tag_b"
+                          )._asdict()
+        too_big_post = Post(content='a'*301, hashtags="#tag_a #tag_b"
+                            )._asdict()
+        user = User(email='created_post@post.com')._asdict()
+        user_node = {'properties': dict(user), 'labels': 'Person'}
 
+        populate_db(nodes_to_create=[user_node])
+
+        # Test
+        payload = {'content': empty_post['content'],
+                   'user_email': user['email'], 'hashtags': empty_post['hashtags']}
         response = app.post(
-            f"/posts/", json={'content': '', 'user_email': user_email, 'hashtags': '#hashtag'})
+            "/posts/", json=payload)
         assert response.status == '422 UNPROCESSABLE ENTITY'
-        assert response.data == b"Post content length must be between 1 and 300."
 
-    @pytest.mark.xfail
-    def test_POST_post_creates_posted_relation(self, app: Flask):
-        raise NotImplementedError
+        payload = {'content': too_big_post['content'],
+                   'user_email': user['email'], 'hashtags': empty_post['hashtags']}
+        response = app.post(
+            "/posts/", json=payload)
+        assert response.status == '422 UNPROCESSABLE ENTITY'
 
 
 @pytest.mark.DELETE_post
@@ -128,7 +152,3 @@ class TestDELETE:
             f"/posts/{uuid.uuid4()}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
-
-    @pytest.mark.xfail
-    def test_DELETE_existing_post_deletes_posted_relation(self, app):
-        raise NotImplementedError

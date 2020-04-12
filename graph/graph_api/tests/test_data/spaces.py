@@ -1,4 +1,5 @@
 from collections import namedtuple
+
 SPACE_PROPERTIES = [
     "password",
     "profile_image",

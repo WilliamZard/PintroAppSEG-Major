@@ -1,3 +1,4 @@
+"""All endpoints for handling search requests."""
 from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
@@ -88,6 +89,3 @@ class SearchPost(Resource):
             # delete duplicate nodes in data.
             data = remove_duplicates(data)
             return data
-
-
-# TODO delete schemas

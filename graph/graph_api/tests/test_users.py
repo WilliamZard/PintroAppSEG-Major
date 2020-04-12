@@ -8,7 +8,7 @@ from flask import Flask
 import pytest
 
 from .conftest import app, populate_db
-from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag
+from .generate_test_data import User, basic_user_node, Post, basic_post_node, Tag, Chatroom, basic_chatroom_node
 from graph_api.apis.image_storing import *
 
 
@@ -67,17 +67,13 @@ class TestGet:
             assert key in response
             assert value == response[key]
 
-    def test_GET_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_user_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_GET_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_GET_user_with_invalid_email(self, app: Flask) -> None:
         INVALID_EMAIL = 'invalidateme.now'
         response = app.get(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -104,8 +100,6 @@ class TestGet:
 
 @pytest.mark.DELETE_user
 class TestDelete:
-    # TODO: add tests for ensuring post nodes were deleted
-    # TODO: add tests for ensuring all relationships were deleted
     def test_DELETE_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         user = User(
@@ -121,19 +115,14 @@ class TestDelete:
         # Assert user was actually deleted in the database
         response = app.get(f"/users/{user['email']}")
         assert response.status == '404 NOT FOUND'
-        # TODO: add test to ensure all tagged relationships where deleted.
 
-    def test_DELETE_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_DELETE_user_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.delete(f"/users/{NONEXISTANT_USER_EMAIL}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_DELETE_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_DELETE_user_with_invalid_email(self, app: Flask) -> None:
         INVALID_EMAIL = 'invalidateme.now'
         response = app.delete(f"/users/{INVALID_EMAIL}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -230,13 +219,12 @@ class TestPut:
                 continue
             assert value == response[key]
 
-    def test_PUT_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
+    def test_PUT_user_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         # Generate test data
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         new_user_fields = dict(
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
         )
-        populate_db()
 
         # Test
         response = app.put(
@@ -244,13 +232,12 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_PUT_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
+    def test_PUT_user_with_invalid_email(self, app: Flask) -> None:
         # Generate test data
         INVALID_EMAIL = 'invalidateme.now'
         new_user_fields = dict(
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
         )
-        populate_db()
 
         # Test
         response = app.put(
@@ -258,12 +245,9 @@ class TestPut:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-       # TODO: add test for validating payload
-
 
 @pytest.mark.POST_user
 class TestPost:
-    # TODO: test creating a user with tag creation
     def test_POST_user_with_valid_payload_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         tag_a = Tag(name='King Slaying')._asdict()
@@ -325,7 +309,7 @@ class TestPost:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app: Flask, populate_db: None) -> None:
+    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app: Flask) -> None:
         # Generate Test Data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image3.jpg"
@@ -333,8 +317,6 @@ class TestPost:
             image = base64.b64encode(imageFile.read())
 
         user_to_add = User(profile_image=str(image))._asdict()
-
-        populate_db()
 
         # Test
         response = app.post("/users/", json=user_to_add)
@@ -387,8 +369,7 @@ class TestUsersGETFollowers:
     def test_GET_followers_of_non_existing_user(self, app):
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followers")
-        assert response.status == '404 NOT FOUND'
-        assert response.data == b''
+        assert response.get_json() == []
 
     def test_GET_followers_of_user_with_no_followers(self, app: Flask, populate_db: None) -> None:
         user = User(email='jj@gmail.com')._asdict()
@@ -398,6 +379,61 @@ class TestUsersGETFollowers:
         response = app.get(f"/users/{user['email']}/followers")
         assert response.status == '200 OK'
         assert not response.get_json()
+
+    def test_GET_followers_with_pictures_of_existing_user(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        # Define users
+        user_with_followers = User(email='jj@gmail.com')._asdict()
+
+        image_a_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
+        with image_a_path.open(mode="rb") as imageFile:
+            user_a_image = base64.b64encode(imageFile.read())
+
+        user_following_a = User(email='yes_ucl@kcl.ac.uk',
+                                profile_image=user_a_image)._asdict()
+
+        image_b_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image2.jpg"
+        with image_b_path.open(mode="rb") as imageFile:
+            user_b_image = base64.b64encode(imageFile.read())
+
+        user_following_b = User(email='lello@gmail.com',
+                                profile_image=user_b_image)._asdict()
+
+        user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
+            user_with_followers, user_following_a, user_following_b]]
+
+        # Definge follow relationships
+        follow_a = {
+            's_node_properties': {'email': user_following_a['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_followers['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        follow_b = {
+            's_node_properties': {'email': user_following_b['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_with_followers['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        populate_db(nodes_to_create=user_nodes,
+                    relationships_to_create=[follow_a, follow_b])
+
+        # Test
+        response = app.get(
+            f"/users/{user_with_followers['email']}/followers")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        # Create expected essertion values
+        results = [{'full_name': user['full_name'], 'email': user['email'], 'profile_image': user['profile_image']}
+                   for user in [user_following_a, user_following_b]]
+
+        assert len(json) == 2
+        # Prepare json response for image assertions
+        for person in json:
+            person['profile_image'] = literal_eval(person['profile_image'])
+        # assert actual profiles in response.
+        assert results[0] in json
+        assert results[1] in json
 
 
 @pytest.mark.GET_user_followings
@@ -433,24 +469,74 @@ class TestUsersGETFollowings:
         assert response.status == '200 OK'
         json = response.get_json()
         user_with_one_following_reduced = {
-            'full_name': user_being_followed_a['full_name'], 'email': user_being_followed_a['email']}
+            'full_name': user_being_followed_a['full_name'], 'email': user_being_followed_a['email'], 'profile_image': user_being_followed_a['profile_image']}
         user_with_no_followings_reduced = {
-            'full_name': user_being_followed_b['full_name'], 'email': user_being_followed_b['email']}
+            'full_name': user_being_followed_b['full_name'], 'email': user_being_followed_b['email'], 'profile_image': user_being_followed_b['profile_image']}
         assert len(json) == 2
         assert user_with_one_following_reduced in json
         assert user_with_no_followings_reduced in json
 
-    def test_GET_followings_of_non_existing_user(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_GET_followings_with_pictures_of_existing_user(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        # Define users
+        user_with_followings = User(email='jj@gmail.com')._asdict()
 
+        image_a_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image3.jpg"
+        with image_a_path.open(mode="rb") as imageFile:
+            user_a_image = base64.b64encode(imageFile.read())
+
+        user_being_followed_a = User(
+            email='yes_ucl@kcl.ac.uk', profile_image=user_a_image)._asdict()
+
+        image_b_path = Path(__file__).parent / \
+            "test_data/profile_images/profile_image2.jpg"
+        with image_b_path.open(mode="rb") as imageFile:
+            user_b_image = base64.b64encode(imageFile.read())
+
+        user_being_followed_b = User(
+            email='lello@gmail.com', profile_image=user_b_image)._asdict()
+
+        user_nodes = [{'properties': dict(user), 'labels': 'Person'} for user in [
+            user_with_followings, user_being_followed_a, user_being_followed_b]]
+
+        # Definge follow relationships
+        follow_a = {
+            's_node_properties': {'email': user_with_followings['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_being_followed_a['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        follow_b = {
+            's_node_properties': {'email': user_with_followings['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'email': user_being_followed_b['email']}, 'e_node_labels': 'Person',
+            'relationship_type': 'FOLLOWS'}
+
+        populate_db(nodes_to_create=user_nodes,
+                    relationships_to_create=[follow_a, follow_b])
+
+        # Test
+        response = app.get(
+            f"/users/{user_with_followings['email']}/followings")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        # Create expected essertion values
+        user_with_one_following_reduced = {
+            'full_name': user_being_followed_a['full_name'], 'email': user_being_followed_a['email'], 'profile_image': user_being_followed_a['profile_image']}
+        user_with_no_followings_reduced = {
+            'full_name': user_being_followed_b['full_name'], 'email': user_being_followed_b['email'], 'profile_image': user_being_followed_b['profile_image']}
+        assert len(json) == 2
+        # Prepare json response for image assertions
+        for person in json:
+            person['profile_image'] = literal_eval(person['profile_image'])
+        # assert actual profiles in response.
+        assert user_with_one_following_reduced in json
+        assert user_with_no_followings_reduced in json
+
+    def test_GET_followings_of_non_existing_user(self, app: Flask) -> None:
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         response = app.get(f"/users/{NONEXISTANT_USER_EMAIL}/followings")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
-
-    @pytest.mark.xfail
-    def test_GET_followings_of_user_with_no_followers(self, app):
-        raise NotImplementedError
 
 
 @pytest.mark.GET_user_followings_posts
@@ -516,12 +602,6 @@ class TestUsersGETFollowingsPosts:
         assert user_post_a in json
         assert user_post_b in json
 
-    @pytest.mark.xfail
-    def test_get_all_posts_of_all_followers_of_non_existing_user(self, app):
-        raise NotImplementedError
-
-    # TODO: consider tests at different cardinalities
-
 
 @pytest.mark.PUT_user_activation
 class TestUserPUTActivation:
@@ -542,3 +622,85 @@ class TestUserPUTActivation:
         response = app.put(
             f"/users/activate/{user['email']}")
         assert response.status == '204 NO CONTENT'
+
+
+@pytest.mark.GET_user_chatrooms
+class TestGET:
+    def test_GET_chatrooms_for_users_that_exist(self, app: Flask, populate_db: None) -> None:
+        # Generate Data
+        users = [
+            User(email='user1@test.com')._asdict(),
+            User(email='user2@test.com')._asdict(),
+            User(email='user3@test.com')._asdict(),
+            User(email='user4@test.com')._asdict(),
+        ]
+        chatrooms = [
+            Chatroom()._asdict(),
+            Chatroom()._asdict(),
+        ]
+
+        # Relationships
+        userA_chatroomA = {
+            's_node_properties': {'email': users[0]['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'chat_id': chatrooms[0]['chat_id']}, 'e_node_labels': 'Chatroom',
+            'relationship_type': 'CHATS_IN'
+        }
+        userB_chatroomA = {
+            's_node_properties': {'email': users[1]['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'chat_id': chatrooms[0]['chat_id']}, 'e_node_labels': 'Chatroom',
+            'relationship_type': 'CHATS_IN'
+        }
+        userA_chatroomB = {
+            's_node_properties': {'email': users[0]['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'chat_id': chatrooms[1]['chat_id']}, 'e_node_labels': 'Chatroom',
+            'relationship_type': 'CHATS_IN'
+        }
+        userC_chatroomB = {
+            's_node_properties': {'email': users[2]['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'chat_id': chatrooms[1]['chat_id']}, 'e_node_labels': 'Chatroom',
+            'relationship_type': 'CHATS_IN'
+        }
+
+        populate_db(
+            nodes_to_create=list(map(basic_user_node, users)) +
+            list(map(basic_chatroom_node, chatrooms)),
+            relationships_to_create=[
+                userA_chatroomA, userB_chatroomA, userA_chatroomB, userC_chatroomB]
+        )
+
+        response = app.get(f"/users/{users[0]['email']}/chatrooms")
+        assert response.status == '200 OK'
+        # the order of chatrooms is arbitrary and sorted by the frontend,
+        # so turning it into a set allows orderless checking of the data inside
+        json = response.get_json()
+        assert len(json) == 2
+        assert {"chat_id": str(chatrooms[0]['chat_id']),
+                "recipient": users[1]['email']} in json
+        assert {"chat_id": str(chatrooms[1]['chat_id']),
+                "recipient": users[2]['email']} in json
+
+        response = app.get(f"/users/{users[1]['email']}/chatrooms")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        assert len(json) == 1
+        assert {"chat_id": str(chatrooms[0]['chat_id']),
+                "recipient": users[0]['email']} in json
+
+        response = app.get(f"/users/{users[2]['email']}/chatrooms")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        assert len(json) == 1
+        assert {"chat_id": str(chatrooms[1]['chat_id']),
+                "recipient": users[0]['email']} in json
+
+        response = app.get(f"/users/{users[3]['email']}/chatrooms")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        assert len(json) == 0
+
+    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask) -> None:
+        nonexistant_email = 'doesnotexist@test.com'
+        response = app.get(f"/users/{nonexistant_email}/chatrooms")
+        assert response.status == '200 OK'
+        json = response.get_json()
+        assert len(json) == 0

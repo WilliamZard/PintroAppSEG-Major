@@ -1,3 +1,4 @@
+"""All endpoints for handling User nodes."""
 from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
@@ -17,15 +18,10 @@ from .neo4j_ops.users import (delete_user_by_email,
 from .utils import valid_email
 from .image_storing import *
 
-# TODO: enable swagger API spec
-# TODO: email validation
-
 
 api = Namespace('users', title='User related operations')
-# Schema used for serialisations
 
 
-# TODO: update model with new schema
 # Schema used for doc generation
 users = api.model('Users', {
     'full_name': restx_fields.String(required=True, title='The user full name.'),
@@ -117,7 +113,6 @@ class Users(Resource):
             create_TAGGED_relationships(
                 tx, email, help_others, 'CanHelpWithTag')
             tx.commit()
-        # TODO: validate payload
         if response.summary().counters.properties_set == len(api.payload):
             return make_response('', 204)
         return make_response('', 404)
@@ -133,7 +128,6 @@ class UsersPost(Resource):
     @api.response(409, 'User with that email already exists')
     def post(self) -> Response:
         '''Create a user.'''
-        # TODO:validate email
         if not valid_email(api.payload['email']):
             return make_response('Not a valid email address.', 422)
         payload = api.payload
@@ -172,7 +166,9 @@ class UsersGETFollowers(Resource):
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                # TODO iterate on followers and retrieve images, not url.
+                #Retrieve images from storage for followings
+                for person in data:
+                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             else:
                 return jsonify([])
@@ -187,9 +183,12 @@ class UsersGETFollowings(Resource):
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)  # TODO iterate on followings and retrieve images, not url.
+                get_followings_of_a_user, email)  
             data = response.data()
             if data:
+                #Retrieve images from storage for followings
+                for person in data:
+                    person['profile_image'] = str(get_data_from_gcs(person['profile_image']))
                 return jsonify(data)
             return make_response('', 404)
 
@@ -224,7 +223,6 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': False}
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Person', 'email', email, fields)
@@ -243,7 +241,6 @@ class Users(Resource):
         if not valid_email(email):
             return make_response('', 422)
         fields = {'active': True}
-        # TODO: validate payload
         with create_session() as session:
             response = session.write_transaction(
                 set_properties, 'Person', 'email', email, fields)

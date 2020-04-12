@@ -1,5 +1,4 @@
 from collections import namedtuple
-# TODO: what about using a dictionary to describe data needed for each test? Could give it some structure.
 
 USERS_PROPERTIES = [
     'full_name', 'preferred_name', 'profile_image', 'short_bio', 'gender', 'story',

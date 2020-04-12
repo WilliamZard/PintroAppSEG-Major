@@ -9,9 +9,6 @@ from .generate_test_data import (Business, Notification, User,
 
 @pytest.mark.GET_notifications
 class TestGET:
-    # TODO: test email validity
-    # TODO: test only users can make this request
-    # TODO: add time of notification to response
     def test_GET_notifications_for_existing_user(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         # Define users
@@ -59,14 +56,14 @@ class TestGET:
             f"/notifications/{user_with_notifications['email']}")
         assert response.status == '200 OK'
         json = response.get_json()
-        assert json == [notification_b, notification_a]
-        # TODO: create user, create inbound request relationships, create requesting users
+        assert len(json) == 2
+        assert dict(notification_a) in json
+        assert dict(notification_b) in json
 
     def test_GET_notifications_for_existing_user_with_no_notifications(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         valid_user = User(full_name='Duke Wellington',
                           email='duke@wellington.com')._asdict()
-        # TODO: review how to handle tags at some point.
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
         populate_db(nodes_to_create=[valid_user_node])
 
@@ -76,3 +73,11 @@ class TestGET:
         assert response.status == '200 OK'
         json = response.get_json()
         assert len(json) == 0
+
+    def test_GET_notifications_for_invalid_email(self, app: Flask) -> None:
+
+        # Test
+        response = app.get(
+            f"/notifications/{'invalid_emailemail.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''

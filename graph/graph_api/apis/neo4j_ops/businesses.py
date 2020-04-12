@@ -1,3 +1,4 @@
+"""Cypher queries specific to business nodes"""
 from neo4j import Transaction, BoltStatementResult
 
 
@@ -6,8 +7,8 @@ def get_business_by_email(tx: Transaction, business_email: str) -> BoltStatement
     query = f"""
     MATCH (user:Business {{email: '{business_email}'}})
     OPTIONAL MATCH (user)-->(tag:Tag)
-    OPTIONAL MATCH (person:Person)-[:AFFILIATED_WITH]->(user)
-    RETURN user, COLLECT(DISTINCT tag.name) AS tags, COLLECT(person.email) AS team_members"""
+    OPTIONAL MATCH (person:Person)-[:AFFILIATED_WITH]-(user)
+    RETURN user, COLLECT(DISTINCT tag.name) AS tags, COLLECT(DISTINCT person.email) AS team_members"""
     return tx.run(query)
 
 

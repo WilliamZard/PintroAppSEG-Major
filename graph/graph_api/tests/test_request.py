@@ -7,10 +7,6 @@ from .generate_test_data import User, basic_user_node, Business, basic_business_
 
 @pytest.mark.POST_request
 class TestPOST:
-    # TODO: add tests for entering a valid email
-    # TODO: add tests for if given users exist or not
-    # TODO: add tests for if given user type can make given request.
-    #       e.g. users cannot make affiliation requests to businesses.
     def test_POST_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
@@ -27,7 +23,16 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-        # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
+    def test_POST_follow_request_with_invalid_email(self, app: Flask) -> None:
+        response = app.post(
+            f"/request/follow/{'invalid_email'}/{'valid_email@email.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+        response = app.post(
+            f"/request/follow/{'valid_email@email.com'}/{'invalid_email'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
 
     def test_POST_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
@@ -46,7 +51,16 @@ class TestPOST:
         assert response.status == '201 CREATED'
         assert response.data == b''
 
-        # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
+    def test_POST_affiliation_request_with_invalid_email(self, app: Flask) -> None:
+        response = app.post(
+            f"/request/affiliation/{'invalid_email'}/{'valid_email@email.com'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
+
+        response = app.post(
+            f"/request/affiliation/{'valid_email@email.com'}/{'invalid_email'}")
+        assert response.status == '422 UNPROCESSABLE ENTITY'
+        assert response.data == b''
 
 
 @pytest.mark.DELETE_request
@@ -74,8 +88,6 @@ class TestDELETE:
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-        # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
-
     def test_DELETE_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         business_requesting_affiliation = Business(
@@ -95,7 +107,6 @@ class TestDELETE:
         populate_db(nodes_to_create=[business_requesting_affiliation_node,
                                      user_receiving_request_node],
                     relationships_to_create=[requested_affiliation])
-        # TODO: fix test not passing when all tests are run
         response = app.delete(
             f"/request/affiliation/{business_requesting_affiliation['email']}/{user_receiving_request['email']}")
         assert response.status == '204 NO CONTENT'
