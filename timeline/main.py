@@ -6,7 +6,11 @@ import requests
 
 
 def generate_timeline(request):
-    '''Fetch a users timeline by their email.'''
+    '''
+    Generate a user's timeline.
+
+    Currently consists of getting all of the user's posts and sorting them by date in descending order.
+    '''
     headers = request.headers
     if 'Authorization' not in headers:
         return '401 UNAUTHORIZED'
@@ -30,6 +34,7 @@ def generate_timeline(request):
         return response.status_code
 
     data = response.json()
+
     # Sort by date modified
     data.sort(key=itemgetter('modified'), reverse=True)
     data = {'results': data}
