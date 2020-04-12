@@ -1,5 +1,6 @@
 import pytest
 from flask.json import jsonify
+from flask import Flask
 import base64
 from pathlib import Path
 from ast import literal_eval
@@ -10,7 +11,7 @@ from .generate_test_data import Space, basic_space_node
 
 @pytest.mark.GET_space
 class TestGet:
-    def test_get_space_with_valid_email_that_exists(self, app, populate_db):
+    def test_get_space_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate data
         space = Space(email='space@test.com')._asdict()
         space_node = basic_space_node(space)
@@ -23,14 +24,14 @@ class TestGet:
         # TODO: change below assertion to check for length then each individual field.
         assert response.data == jsonify(space).data
 
-    def test_get_space_with_valid_email_that_does_not_exist(self, app, populate_db):
+    def test_get_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
         nonexistant_space_email = "does@notexist.com"
         response = app.get(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_get_space_with_invalid_email(self, app, populate_db):
+    def test_get_space_with_invalid_email(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         invalid_email = "doesnotexist.com"
@@ -38,7 +39,7 @@ class TestGet:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-    def test_GET_space_with_profile_image_has_its_true_profile_image(self, app, populate_db):
+    def test_GET_space_with_profile_image_has_its_true_profile_image(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image1.jpg"
@@ -61,7 +62,7 @@ class TestGet:
 
 @pytest.mark.DELETE_space
 class TestDelete:
-    def test_delete_space_with_valid_email_that_exists(self, app, populate_db):
+    def test_delete_space_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate data
         space = Space(email='space@test.com')._asdict()
         space_node = basic_space_node(space)
@@ -77,7 +78,7 @@ class TestDelete:
         response = app.get(f"/spaces/{space['email']}")
         assert response.status == '404 NOT FOUND'
 
-    def test_delete_space_with_valid_email_that_does_not_exist(self, app, populate_db):
+    def test_delete_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         nonexistant_space_email = 'does@notexist.com'
@@ -85,7 +86,7 @@ class TestDelete:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_delete_space_with_invalid_email(self, app, populate_db):
+    def test_delete_space_with_invalid_email(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         invalid_email = "testemail.com"
@@ -96,7 +97,7 @@ class TestDelete:
 
 @pytest.mark.PUT_space
 class TestPut:
-    def test_put_space_with_valid_email_that_exists_with_an_image(self, app, populate_db):
+    def test_put_space_with_valid_email_that_exists_with_an_image(self, app: Flask, populate_db: None) -> None:
         # Generate data
         space = Space(email='space@test.com')._asdict()
         space_node = basic_space_node(space)
@@ -129,7 +130,7 @@ class TestPut:
                 continue
             assert value == response[key]
 
-    def test_put_space_with_valid_email_that_does_not_exist(self, app, populate_db):
+    def test_put_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         nonexistant_email = 'does@notexist.com'
         new_space = Space(email='space@test.com',
@@ -142,7 +143,7 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_put_space_with_invalid_email(self, app, populate_db):
+    def test_put_space_with_invalid_email(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         invalid_email = "invalidemail.com"
         new_space = Space(email='space@test.com',
@@ -161,7 +162,7 @@ class TestPut:
 
 @pytest.mark.POST_space
 class TestPost:
-    def test_post_space_with_valid_payload_that_does_not_exist(self, app, populate_db):
+    def test_post_space_with_valid_payload_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         space = Space(email='new_space@test.com')._asdict()
         populate_db()
@@ -177,7 +178,7 @@ class TestPost:
         assert response.status == '200 OK'
         assert response.data == jsonify(space).data
 
-    def test_post_space_with_valid_payload_that_exists(self, app, populate_db):
+    def test_post_space_with_valid_payload_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         space = Space(email='validspace@test.com')._asdict()
         space_node = basic_space_node(space)
@@ -190,7 +191,7 @@ class TestPost:
         assert response.status == '409 CONFLICT'
         assert response.data == b'Node with that email already exists.'
 
-    def test_post_space_with_invalid_payload(self, app, populate_db):
+    def test_post_space_with_invalid_payload(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         space = Space(email='invalidspactest.com')._asdict()
         populate_db()
@@ -201,7 +202,7 @@ class TestPost:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_space_with_image_posts_correct_image_in_gcs(self, app, populate_db):
+    def test_POST_space_with_image_posts_correct_image_in_gcs(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image3.jpg"

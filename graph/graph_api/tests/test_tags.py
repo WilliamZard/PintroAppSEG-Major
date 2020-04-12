@@ -1,4 +1,5 @@
 import json
+from flask import Flask
 
 import pytest
 
@@ -8,7 +9,7 @@ from .test_data.tags import Tag
 
 @pytest.mark.POST_tags
 class TestPOST:
-    def test_POST_tags_with_all_labels(self, app, populate_db):
+    def test_POST_tags_with_all_labels(self, app: Flask, populate_db: None) -> None:
         tag_a = Tag(name='King Slayer')._asdict()
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
         tag_b = Tag(name='King Slayer')._asdict()
@@ -27,12 +28,12 @@ class TestPOST:
         assert tag_a['name'] in response
         assert tag_a['name'] in response
 
-    def test_POST_tags_without_specifying_labels(self, app, populate_db):
+    def test_POST_tags_without_specifying_labels(self, app: Flask, populate_db: None) -> None:
         populate_db()
         response = app.post("/tags/")
         assert response.status == "400 BAD REQUEST"
 
-    def test_POST_tags_with_invalid_labels(self, app, populate_db):
+    def test_POST_tags_with_invalid_labels(self, app: Flask, populate_db: None) -> None:
         populate_db()
         payload = {'labels': ['bad label']}
         response = app.post("/tags/", json=payload)

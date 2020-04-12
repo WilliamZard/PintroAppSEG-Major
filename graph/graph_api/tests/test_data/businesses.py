@@ -15,7 +15,7 @@ BUSINESS_PROPERTIES = [
     "team_members",
     "seeking_investment",
     "currently_hiring"
-    ]
+]
 BUSINESS_DEFAULTS = [
     "Default Password",
     "",
@@ -29,10 +29,9 @@ BUSINESS_DEFAULTS = [
     "Default Date Founded",
     "Default Company Size",
     "Default Funding",
-    "Default Team Members",
+    [],
     "Default Seeking Investment",
     "Default Currently Hiring",
-    
 ]
 
 Business = namedtuple('Business', BUSINESS_PROPERTIES,

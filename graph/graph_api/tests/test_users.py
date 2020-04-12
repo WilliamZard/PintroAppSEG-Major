@@ -3,6 +3,7 @@ import json
 from ast import literal_eval
 import base64
 from pathlib import Path
+from flask import Flask
 
 import pytest
 
@@ -12,14 +13,17 @@ from graph_api.apis.image_storing import *
 
 
 @pytest.mark.GET_user
-class TestGET:
-    def test_GET_user_with_valid_email_that_exists(self, app, populate_db):
+class TestGet:
+    def test_GET_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         tag_a = Tag(name='King Slaying')._asdict()
-        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'Skill']}
+        tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
+        tag_b = Tag(name='New King Slayer')._asdict()
+        tag_b_node = {'properties': tag_b, 'labels': ['Tag', 'CanHelpWithTag']}
+        tag_c = Tag(name='Epidemics')._asdict()
+        tag_c_node = {'properties': tag_c, 'labels': ['Tag', 'PassionsTag']}
 
-        valid_user = User(full_name='Duke Wellington',
-                          email='duke@wellington.com', help_others=[tag_a['name']])._asdict()
+        valid_user = User(email='duke@wellington.com')._asdict()
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
 
         # Define relationships
@@ -27,20 +31,43 @@ class TestGET:
             's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
             'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
             'relationship_type': 'TAGGED'}
+        tagged_b = {
+            's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_b['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
+        tagged_c = {
+            's_node_properties': {'email': valid_user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_c['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
 
-        populate_db(nodes_to_create=[valid_user_node, tag_a_node],
-                    relationships_to_create=[tagged_a])
+        populate_db(nodes_to_create=[valid_user_node, tag_a_node, tag_b_node, tag_c_node],
+                    relationships_to_create=[tagged_a, tagged_b, tagged_c])
 
         # Test
         response = app.get(f"/users/{valid_user['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
-        assert len(response) == len(valid_user)
+
+        # Test correct tags returned
+        help_others = [tag_a['name'], tag_b['name']]
+        assert 'help_others' in response
+        assert len(response['help_others']) == len(help_others)
+        for tag in help_others:
+            assert tag in response['help_others']
+
+        passions = [tag_c['name']]
+        assert 'passions' in response
+        assert len(response['passions']) == len(passions)
+        for tag in passions:
+            assert tag in response['passions']
+
+        # Test correct node properties returned
+        assert len(response)-2 == len(valid_user)
         for key, value in valid_user.items():
             assert key in response
             assert value == response[key]
 
-    def test_GET_user_with_valid_email_that_does_not_exist(self, app, populate_db):
+    def test_GET_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
@@ -48,7 +75,7 @@ class TestGET:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_GET_user_with_invalid_email(self, app, populate_db):
+    def test_GET_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         INVALID_EMAIL = 'invalidateme.now'
@@ -56,7 +83,7 @@ class TestGET:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-    def test_GET_user_with_profile_image_has_the_right_image_stored_in_gcs(self, app, populate_db):
+    def test_GET_user_with_profile_image_has_the_right_image_stored_in_gcs(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image3.jpg"
@@ -79,7 +106,7 @@ class TestGET:
 class TestDelete:
     # TODO: add tests for ensuring post nodes were deleted
     # TODO: add tests for ensuring all relationships were deleted
-    def test_DELETE_user_with_valid_email_that_exists(self, app, populate_db):
+    def test_DELETE_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         user = User(
             university='Gatwick Airpot', full_name='taaj', email='taaj@hotmail.co.uk')._asdict()
@@ -96,7 +123,7 @@ class TestDelete:
         assert response.status == '404 NOT FOUND'
         # TODO: add test to ensure all tagged relationships where deleted.
 
-    def test_DELETE_user_with_valid_email_that_does_not_exist(self, app, populate_db):
+    def test_DELETE_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
@@ -104,7 +131,7 @@ class TestDelete:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_DELETE_user_with_invalid_email(self, app, populate_db):
+    def test_DELETE_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         INVALID_EMAIL = 'invalidateme.now'
@@ -112,7 +139,7 @@ class TestDelete:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b''
 
-    def test_DELETE_user_with_set_profile_image(self, app, populate_db):
+    def test_DELETE_user_with_set_profile_image(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image2.jpg"
@@ -135,7 +162,7 @@ class TestDelete:
 
 @pytest.mark.PUT_user
 class TestPut:
-    def test_PUT_user_with_valid_email_that_exists(self, app, populate_db):
+    def test_PUT_user_with_valid_email_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         tag_a = Tag(name='King Slayer')._asdict()
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
@@ -150,9 +177,13 @@ class TestPut:
             's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
             'e_node_properties': {'name': tag_a['name']}, 'e_node_labels': 'Tag',
             'relationship_type': 'TAGGED'}
+        tagged_b = {
+            's_node_properties': {'email': user['email']}, 's_node_labels': 'Person',
+            'e_node_properties': {'name': tag_b['name']}, 'e_node_labels': 'Tag',
+            'relationship_type': 'TAGGED'}
 
         populate_db(nodes_to_create=[user_node, tag_a_node, tag_b_node],
-                    relationships_to_create=[tagged_a])
+                    relationships_to_create=[tagged_a, tagged_b])
 
         # Test
         image_path = Path(__file__).parent / \
@@ -163,22 +194,34 @@ class TestPut:
         new_user_fields = dict(
             profile_image=str(new_image), full_name='Donald Trump', gender='masculine',
             phone_number='999', short_bio='retired genius', location='Mar O Lago', job_title='Former Best President',
-            preferred_name='GOAT', help_others=[tag_b['name']]
-        )
+            preferred_name='GOAT')
         email = user['email']
         response = app.put(
             f"/users/{email}", json=new_user_fields)
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
 
-        # TODO: complete these assertions.
-
+        # Test correct node properties returned
         response = app.get(f"/users/{email}")
         assert response.status == '200 OK'
         response = response.get_json()
+
+        # Test correct tags returned
+        help_others = []
+        assert 'help_others' in response
+        assert len(response['help_others']) == len(help_others)
+        assert response['help_others'] == help_others
+
+        passions = []
+        assert 'passions' in response
+        assert len(response['passions']) == len(passions)
+        assert response['passions'] == passions
+
         user = User(**new_user_fields
                     )._asdict()
-        assert len(response) == len(user)
+
+        # -2 to not count tags properties which have been tested above
+        assert len(response)-2 == len(user)
         for key, value in user.items():
             assert key in response
             if(key == 'profile_image'):
@@ -187,7 +230,7 @@ class TestPut:
                 continue
             assert value == response[key]
 
-    def test_PUT_user_with_valid_email_that_does_not_exist(self, app, populate_db):
+    def test_PUT_user_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
         new_user_fields = dict(
@@ -201,7 +244,7 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_PUT_user_with_invalid_email(self, app, populate_db):
+    def test_PUT_user_with_invalid_email(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         INVALID_EMAIL = 'invalidateme.now'
         new_user_fields = dict(
@@ -221,12 +264,14 @@ class TestPut:
 @pytest.mark.POST_user
 class TestPost:
     # TODO: test creating a user with tag creation
-    def test_POST_user_with_valid_payload_that_does_not_exist(self, app, populate_db):
+    def test_POST_user_with_valid_payload_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         tag_a = Tag(name='King Slaying')._asdict()
         tag_a_node = {'properties': tag_a, 'labels': ['Tag', 'CanHelpWithTag']}
         user = User(
-            full_name='precious', email='precious@gmail.com', help_others=[tag_a['name']])._asdict()
+            full_name='precious', email='precious@gmail.com')._asdict()
+        user['help_others'] = [tag_a['name']]
+
         populate_db(nodes_to_create=[tag_a_node])
 
         # Test
@@ -239,12 +284,24 @@ class TestPost:
         response = app.get(f"/users/{user['email']}")
         assert response.status == '200 OK'
         response = response.get_json()
-        assert len(response) == len(user)
+        # Test correct tags returned
+        help_others = [tag_a['name']]
+        assert 'help_others' in response
+        assert len(response['help_others']) == len(help_others)
+        assert response['help_others'] == help_others
+
+        passions = []
+        assert 'passions' in response
+        assert len(response['passions']) == len(passions)
+        assert response['passions'] == passions
+
+        # -2 to not count array tags that were just removed
+        assert len(response)-1 == len(user)
         for key, value in user.items():
             assert key in response
             assert value == response[key]
 
-    def test_POST_user_with_valid_payload_that_exists(self, app, populate_db):
+    def test_POST_user_with_valid_payload_that_exists(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         user = User(
             full_name='precious', email='precious@gmail.com')._asdict()
@@ -268,7 +325,7 @@ class TestPost:
         assert response.status == '422 UNPROCESSABLE ENTITY'
         assert response.data == b'Not a valid email address.'
 
-    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app, populate_db):
+    def test_POST_user_with_image_posts_correct_image_in_gcs(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         image_path = Path(__file__).parent / \
             "test_data/profile_images/profile_image3.jpg"
@@ -289,7 +346,7 @@ class TestPost:
 
 @pytest.mark.GET_user_followers
 class TestUsersGETFollowers:
-    def test_GET_followers_of_existing_user(self, app, populate_db):
+    def test_GET_followers_of_existing_user(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         # Define users
         user_with_followers = User(email='jj@gmail.com')._asdict()
@@ -333,7 +390,7 @@ class TestUsersGETFollowers:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_GET_followers_of_user_with_no_followers(self, app, populate_db):
+    def test_GET_followers_of_user_with_no_followers(self, app: Flask, populate_db: None) -> None:
         user = User(email='jj@gmail.com')._asdict()
         user_node = basic_user_node(user)
         populate_db(nodes_to_create=[user_node])
@@ -345,7 +402,7 @@ class TestUsersGETFollowers:
 
 @pytest.mark.GET_user_followings
 class TestUsersGETFollowings:
-    def test_GET_followings_of_existing_user(self, app, populate_db):
+    def test_GET_followings_of_existing_user(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
@@ -383,7 +440,7 @@ class TestUsersGETFollowings:
         assert user_with_one_following_reduced in json
         assert user_with_no_followings_reduced in json
 
-    def test_GET_followings_of_non_existing_user(self, app, populate_db):
+    def test_GET_followings_of_non_existing_user(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         NONEXISTANT_USER_EMAIL = 'does@exist.not'
@@ -398,7 +455,7 @@ class TestUsersGETFollowings:
 
 @pytest.mark.GET_user_followings_posts
 class TestUsersGETFollowingsPosts:
-    def test_GET_all_posts_of_all_followers(self, app, populate_db):
+    def test_GET_all_posts_of_all_followers(self, app: Flask, populate_db: None) -> None:
         # Generate Test Data
         # Define users
         user_with_followings = User(email='jj@gmail.com')._asdict()
@@ -468,7 +525,7 @@ class TestUsersGETFollowingsPosts:
 
 @pytest.mark.PUT_user_activation
 class TestUserPUTActivation:
-    def test_PUT_deactivated_users(self, app, populate_db):
+    def test_PUT_deactivated_users(self, app: Flask, populate_db: None) -> None:
         user = User(email='user@test.com', active='True')._asdict()
         user_node = basic_user_node(user)
         populate_db(nodes_to_create=[user_node])
@@ -477,7 +534,7 @@ class TestUserPUTActivation:
             f"/users/deactivate/{user['email']}")
         assert response.status == '204 NO CONTENT'
 
-    def test_PUT_activated_users(self, app, populate_db):
+    def test_PUT_activated_users(self, app: Flask, populate_db: None) -> None:
         user = User(email='user@test.com', active='False')._asdict()
         user_node = basic_user_node(user)
         populate_db(nodes_to_create=[user_node])
@@ -489,7 +546,7 @@ class TestUserPUTActivation:
 
 @pytest.mark.GET_user_chatrooms
 class TestGET:
-    def test_GET_chatrooms_for_users_that_exist(self, app, populate_db):
+    def test_GET_chatrooms_for_users_that_exist(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         users = [
             User(email='user1@test.com')._asdict(),
@@ -561,7 +618,7 @@ class TestGET:
         json = response.get_json()
         assert len(json) == 0
 
-    def test_GET_chatrooms_for_user_that_does_not_exists(self, app, populate_db):
+    def test_GET_chatrooms_for_user_that_does_not_exists(self, app: Flask, populate_db: None) -> None:
         populate_db()
 
         nonexistant_email = 'doesnotexist@test.com'

@@ -1,4 +1,8 @@
-def get_chatrooms_of_user(tx, email):
+from neo4j import Transaction, BoltStatementResult
+
+
+def get_chatrooms_of_user(tx: Transaction, email: str) -> BoltStatementResult:
+    """Get all the chatrooms of a given user, returning the email of the recipient and the UUID of the chatroom itself."""
     query = f"""
         MATCH (u:Person {{email: \'{email}\'}})-[:CHATS_IN]->(c:Chatroom)
         MATCH (r:Person)-[:CHATS_IN]->(c)
@@ -8,7 +12,8 @@ def get_chatrooms_of_user(tx, email):
     return tx.run(query)
 
 
-def check_users_in_chatroom(tx, email1, email2):
+def check_users_in_chatroom(tx: Transaction, email1: str, email2: str) -> BoltStatementResult:
+    """Check that two users are currently in an existing chatroom with each other."""
     query = f"""
         MATCH (u1:Person {{email: \'{email1}\'}})-[:CHATS_IN]->(c:Chatroom)
         MATCH (u2:Person {{email: \'{email2}\'}})-[:CHATS_IN]->(c)
@@ -17,7 +22,8 @@ def check_users_in_chatroom(tx, email1, email2):
     return tx.run(query)
 
 
-def check_chatroom_exists(tx, chat_id):
+def check_chatroom_exists(tx: Transaction, chat_id: str) -> BoltStatementResult:
+    """Check that a chatroom with the given UUID already exists in the database."""
     query = f"""
         MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
         RETURN CASE WHEN c IS NULL THEN false ELSE true END AS result
@@ -25,7 +31,8 @@ def check_chatroom_exists(tx, chat_id):
     return tx.run(query)
 
 
-def delete_chatroom(tx, chat_id):
+def delete_chatroom(tx: Transaction, chat_id: str) -> BoltStatementResult:
+    """Delete a chatroom from the database, identified by its UUID."""
     query = f"""
         MATCH (c:Chatroom {{chat_id: \'{chat_id}\'}})
         DETACH DELETE c

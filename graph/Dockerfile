@@ -1,7 +1,6 @@
 # Production Dockerfile.
 
 FROM python:3.7
-#docker run --rm -it -p 8080:8080 graph_api:prod
 COPY graph_api graph_api
 
 
@@ -15,7 +14,6 @@ ENV ENV=prod
 ENV FLASK_APP=graph_api:create_app
 ENV FLASK_RUN_PORT=8080
 ENV FLASK_RUN_HOST=0.0.0.0
-ENV GOOGLE_APPLICATION_CREDENTIALS="./pintro-service-key.json" 
 ENV IMAGES_BUCKET_NAME=profile-pics-prod
 
 EXPOSE 8080:8080 

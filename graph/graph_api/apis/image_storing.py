@@ -1,13 +1,19 @@
 import os
 from google.cloud import storage
 import uuid
-def upload_data_to_gcs(data):
-    '''Function that store an image in a given bucket in GCP.
-    Params:
+def upload_data_to_gcs(data: bytes) -> str:
+    '''
+        Function that store an image in a given bucket in GCP.
+    '''
+    '''Args:
         -bucket_name = the name of the GCP bucket where to store the image in.
         -data = an array of bytes rapresenting the image to store.
-    Return:
+        
+        Return:
         The public URL where the file is stored or an empty String if an exception occurs.
+
+        Raise:
+        A credentials related exceptions
     '''
     if len(data) > 0:#If it is a string of length 0 abort the oreration. Otherwise it assumes data is bytes representing a file.
         try:
@@ -23,15 +29,19 @@ def upload_data_to_gcs(data):
 
     return ''
 
-def get_data_from_gcs(file_url):
-    '''Function that gets a file stored in GCP buckets and returns a bytes object.
-    Params:
+def get_data_from_gcs(file_url: str) -> str:
+    '''
+        Function that gets a file stored in GCP buckets and returns a bytes object.
+    '''
+    '''Params:
         -bucket_name = the name of the GCP bucket where to look for the given file.
         -file_url = url for the file stored in GCP bucket that needs to be retrieved. 
-    Return:
+        
+        Return:
         A byte object that represents the retrieved file or an empty String  if an error 
         occurs or file_url is of length 0.
-    Raise:
+        
+        Raise:
         A credentials related exceptions or an exception if the file is not found.
     '''
     if(len(file_url) > 0):
@@ -48,12 +58,15 @@ def get_data_from_gcs(file_url):
 
     return ''
 
-def delete_data_from_gcs(file_url):
-    '''Function that deletes a file stored in GCP buckets.
-    Params:
+def delete_data_from_gcs(file_url: str) -> str:
+    '''
+         Function that deletes a file stored in GCP buckets.
+    ''' 
+    '''Params:      
         -bucket_name = the name of the GCP bucket where to look for the given file.
         -file_url = url for the file stored in GCP bucket that needs to be deleted. 
-    Raise:
+        
+        Raise:
         A credentials related exceptions or an exception if the file is not found.
     '''
     if(len(file_url) > 0):
@@ -66,15 +79,19 @@ def delete_data_from_gcs(file_url):
         except Exception as e:
             print(e)
 
-def update_data_from_gcs(old_file_url, new_data):
-    '''Function that update an image in a given bucket in GCP and returns its new url.
-    Params:
+def update_data_from_gcs(old_file_url: str, new_data: str) -> str:
+    '''
+        Function that update an image in a given bucket in GCP and returns its new url.
+    '''
+    '''Params:
         -bucket_name = the name of the GCP bucket where to store the image in.
         -old_file_url = url of the old file in GCP bucket that needs to be deleted from it.
         -new_data = new data in bytes that must be stored in a GCP bucket.
-    Return:
+        
+        Return:
         The public URL where the new file is stored or an empty String if an exception occurs.
-    Raise:
+        
+        Raise:
         A credentials related exceptions or an exception if the file is not found.
     '''
     try:
@@ -96,8 +113,9 @@ def update_data_from_gcs(old_file_url, new_data):
     
     return ''
 
-def clear_bucket():
-    '''Function to clear all the existing files in a bucket.
+def clear_bucket() -> None:
+    '''
+        Function to clear all the existing files in a bucket.
     '''
     client = storage.Client()#This will look for a GOOGLE_APPLICATION_CREDENTIALS env variable.
     bucket_name = os.environ.get('IMAGES_BUCKET_NAME')
@@ -108,5 +126,5 @@ def clear_bucket():
         print(e)
 
 
-def get_file_name_from_url(file_url):
+def get_file_name_from_url(file_url: str) -> str:
     return str(os.path.split(file_url)[1])

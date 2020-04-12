@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, Response
 from flask.json import jsonify
 from flask_restx import Namespace, Resource
 from flask_restx import fields as restx_fields
@@ -47,8 +47,6 @@ users = api.model('Users', {
     'academic_level': restx_fields.String(),
     'date_of_birth': restx_fields.String(),
     'location': restx_fields.String(title='current city of the user.'),
-    'passions': restx_fields.List(restx_fields.String(), description='List of Passion Tag UUIDs'),
-    'help_others': restx_fields.List(restx_fields.String(), description='List of skill Tag UUIDs that user is offering'),
     'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
 })  # title for accounts that needs to be created.
 
@@ -56,7 +54,7 @@ users = api.model('Users', {
 @api.route('/<string:email>')
 @api.produces('application/json')
 class Users(Resource):
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Fetch a user given its email.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -69,20 +67,22 @@ class Users(Resource):
                 user = dict(data['user'].items())
                 user['passions'] = data['passions']
                 user['help_others'] = data['help_others']
-                user['profile_image'] = str(get_data_from_gcs(user['profile_image']))
+                user['profile_image'] = str(
+                    get_data_from_gcs(user['profile_image']))
                 return jsonify(**user)
             return make_response('', 404)
 
     @api.doc('delete_user')
     @api.response(204, 'User deleted.')
-    def delete(self, email):
+    def delete(self, email: str) -> Response:
         '''Delete a user given its email.'''
         if not valid_email(email):
             return make_response('', 422)
 
         with create_session() as session:
             # Fetch user image url in gcp storage that needs to be deleted.
-            profile_image_url = (session.read_transaction(get_account_field, email, 'Person', 'profile_image').data())
+            profile_image_url = (session.read_transaction(
+                get_account_field, email, 'Person', 'profile_image').data())
             if len(profile_image_url) > 0:
                 profile_image_url = profile_image_url[0]['profile_image']
             response = session.write_transaction(delete_user_by_email, email)
@@ -95,7 +95,7 @@ class Users(Resource):
     @api.doc('update_user')
     @api.response(204, 'User Fields Deleted')
     @api.expect(users)
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Update a user by the given fields.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -131,7 +131,7 @@ class UsersPost(Resource):
     @api.response(422, 'Invalid Email')
     @api.response(201, 'User created')
     @api.response(409, 'User with that email already exists')
-    def post(self):
+    def post(self) -> Response:
         '''Create a user.'''
         # TODO:validate email
         if not valid_email(api.payload['email']):
@@ -165,14 +165,15 @@ class UsersPost(Resource):
 @api.produces('application/json')
 class UsersGETFollowers(Resource):
     @api.doc('get followers of a user')
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Get followers of a user'''
         with create_session() as session:
             response = session.read_transaction(
                 get_followers_of_a_user, email)
             data = response.data()
             if data:
-                return jsonify(data)#TODO iterate on followers and retrieve images, not url.
+                # TODO iterate on followers and retrieve images, not url.
+                return jsonify(data)
             else:
                 return jsonify([])
             return make_response('', 404)
@@ -182,11 +183,11 @@ class UsersGETFollowers(Resource):
 @api.produces('application/json')
 class UsersGETFollowings(Resource):
     @api.doc('Get the users that the given user is following')
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Get the users that the given user is following'''
         with create_session() as session:
             response = session.read_transaction(
-                get_followings_of_a_user, email)#TODO iterate on followings and retrieve images, not url.
+                get_followings_of_a_user, email)  # TODO iterate on followings and retrieve images, not url.
             data = response.data()
             if data:
                 return jsonify(data)
@@ -197,7 +198,7 @@ class UsersGETFollowings(Resource):
 @api.produces('application/json')
 class UsersGETPostsOfFollowings(Resource):
     @api.doc('Get the posts of users the given user follows.')
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Get the posts of users the given user follows.'''
         with create_session() as session:
             response = session.read_transaction(
@@ -218,7 +219,7 @@ class UsersGETPostsOfFollowings(Resource):
 class Users(Resource):
     @api.doc('deactivate users')
     @api.response(204, 'User deactivated.')
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Deactivate a user account.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -237,7 +238,7 @@ class Users(Resource):
 class Users(Resource):
     @api.doc('activate users')
     @api.response(204, 'User activated.')
-    def put(self, email):
+    def put(self, email: str) -> Response:
         '''Activate a user account if it has been deactivated.'''
         if not valid_email(email):
             return make_response('', 422)
@@ -254,7 +255,7 @@ class Users(Resource):
 @api.route('/<string:email>/chatrooms')
 @api.produces('application/json')
 class GETUserChatrooms(Resource):
-    def get(self, email):
+    def get(self, email: str) -> Response:
         '''Gets the chatrooms a user is in.'''
         if not valid_email(email):
             return make_response('', 422)

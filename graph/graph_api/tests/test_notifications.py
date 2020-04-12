@@ -1,5 +1,6 @@
 import pytest
 import time
+from flask import Flask
 
 from .conftest import app, populate_db
 from .generate_test_data import (Business, Notification, User,
@@ -11,17 +12,21 @@ class TestGET:
     # TODO: test email validity
     # TODO: test only users can make this request
     # TODO: add time of notification to response
-    def test_GET_notifications_for_existing_user(self, app, populate_db):
+    def test_GET_notifications_for_existing_user(self, app: Flask, populate_db: None) -> None:
         # Generate Data
         # Define users
-        user_with_notifications = User(email='hasnotificatiosn@test.com')._asdict()
+        user_with_notifications = User(
+            email='hasnotificatiosn@test.com')._asdict()
         user_with_notifications_node = basic_user_node(user_with_notifications)
 
-        user_requesting_follow = User(email='requesting_follow@rona.com')._asdict()
+        user_requesting_follow = User(
+            email='requesting_follow@rona.com')._asdict()
         user_requesting_follow_node = basic_user_node(user_requesting_follow)
 
-        business_requesting_affiliation = Business(email='request_affiliation@rona.com')._asdict()
-        business_requesting_affiliation_node = basic_business_node(business_requesting_affiliation)
+        business_requesting_affiliation = Business(
+            email='request_affiliation@rona.com')._asdict()
+        business_requesting_affiliation_node = basic_business_node(
+            business_requesting_affiliation)
 
         follow_time = time.time()
 
@@ -57,13 +62,11 @@ class TestGET:
         assert json == [notification_b, notification_a]
         # TODO: create user, create inbound request relationships, create requesting users
 
-    def test_GET_notifications_for_existing_user_with_no_notifications(self, app, populate_db):
+    def test_GET_notifications_for_existing_user_with_no_notifications(self, app: Flask, populate_db: None) -> None:
         # Generate test data
         valid_user = User(full_name='Duke Wellington',
                           email='duke@wellington.com')._asdict()
         # TODO: review how to handle tags at some point.
-        valid_user.pop('passions')
-        valid_user.pop('help_others')
         valid_user_node = {'properties': dict(valid_user), 'labels': 'Person'}
         populate_db(nodes_to_create=[valid_user_node])
 
