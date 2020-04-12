@@ -1,1 +1,9 @@
-{}
+{
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 112448,
+  "expoServerNgrokUrl": "https://r2-ic3.anonymous.pintro.exp.direct",
+  "packagerNgrokUrl": "https://packager.r2-ic3.anonymous.pintro.exp.direct",
+  "ngrokPid": 124488
+}

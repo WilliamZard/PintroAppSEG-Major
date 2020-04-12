@@ -24,8 +24,7 @@ const SearchResults = props => {
         } else {
             props.navigation.navigate('Profile');
         }*/
-        console.log(currentUser);
-        props.navigation.navigate('Profile');
+        props.navigation.navigate('navBusiness');
         
     }
 
