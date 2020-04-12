@@ -30,9 +30,9 @@ class Approve(Resource):
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
         if valid_email(requester_email) == None:
-            return make_response('Requester email invalid format', 400)
+            return make_response('', 422)
         if valid_email(request_recipient_email) == None:
-            return make_response('Request recipient email invalid format', 400)
+            return make_response('', 422)
 
         s_node_label = e_node_label = 'Person'
         if relationship_type == 'affiliation':

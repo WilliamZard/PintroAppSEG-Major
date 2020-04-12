@@ -104,8 +104,10 @@ class PostsPost(Resource):
         post_uuid = uuid.uuid4()
         content = payload['content']
         user_email = payload['user_email']
+        hashtags = payload['hashtags']
         properties = dict(created=created, uuid=post_uuid,
-                          content=content, modified=modified)
+                          content=content, modified=modified,
+                          hashtags=hashtags)
         with create_session() as session:
             try:
                 tx = session.begin_transaction()
@@ -114,10 +116,11 @@ class PostsPost(Resource):
                 relationship_creation_response = create_relationship(tx, 'Person', {'email': user_email}, 'Post', {
                     'uuid': post_uuid}, 'POSTED')
                 relationship_creation_counters = relationship_creation_response.summary().counters
+                tx.commit()
                 if (node_creation_counters.nodes_created == 1
                     and relationship_creation_counters.relationships_created == 1
                     and node_creation_counters.labels_added == 1  # NOTE: What is this for?
-                        and node_creation_counters.properties_set == 4):
+                        and node_creation_counters.properties_set == 5):
                     return make_response('', 201)
             except ConstraintError:
                 return make_response('Node with that email already exists.', 409)

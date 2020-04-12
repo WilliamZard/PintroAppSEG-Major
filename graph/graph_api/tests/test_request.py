@@ -8,9 +8,6 @@ from .generate_test_data import User, basic_user_node, Business, basic_business_
 @pytest.mark.POST_request
 class TestPOST:
     # TODO: add tests for entering a valid email
-    # TODO: add tests for if given users exist or not
-    # TODO: add tests for if given user type can make given request.
-    #       e.g. users cannot make affiliation requests to businesses.
     def test_POST_follow_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
         user_requesting_follow = User(
@@ -26,8 +23,6 @@ class TestPOST:
             f"/request/follow/{user_requesting_follow['email']}/{user_receiving_request['email']}")
         assert response.status == '201 CREATED'
         assert response.data == b''
-
-        # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
 
     def test_POST_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users
@@ -45,8 +40,6 @@ class TestPOST:
             f"/request/affiliation/{business_requesting_affiliation['email']}/{user_receiving_request['email']}")
         assert response.status == '201 CREATED'
         assert response.data == b''
-
-        # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
 
 
 @pytest.mark.DELETE_request
@@ -73,8 +66,6 @@ class TestDELETE:
             f"/request/follow/{user_requesting_follow['email']}/{user_receiving_request['email']}")
         assert response.status == '204 NO CONTENT'
         assert response.data == b''
-
-        # TODO: add get request for checking if FOLLOW_REQUEST relationship was actually created
 
     def test_DELETE_affiliation_request_with_valid_users(self, app: Flask, populate_db: None) -> None:
         # Define users

@@ -6,6 +6,7 @@ from flask_restx import fields as restx_fields
 from .neo4j_ops import create_session
 from .neo4j_ops.notifications import get_notifications
 from .request import REQUEST_RELATIONSHIPS
+from .utils import valid_email
 
 REVERSED_REQUEST_RELATIONSHIPS = {
     value: key for key, value in REQUEST_RELATIONSHIPS.items()}
@@ -26,13 +27,16 @@ notifications = api.model('Notification', {
 class Notifications(Resource):
     def get(self, user_email: str) -> Response:
         '''Get all notification of the given user.'''
+        if not valid_email(user_email):
+            return make_response('', 422)
 
         with create_session() as session:
             response = session.read_transaction(get_notifications, user_email)
             if response:
                 data = [{key: REVERSED_REQUEST_RELATIONSHIPS[notification[key]] if notification[key] in REVERSED_REQUEST_RELATIONSHIPS else notification[key] for key in notification}
                         for notification in response.data()]
-
-            data.sort(key=lambda n: n['created_at'] * -1)
+            for resp in data:
+                resp['created_at'] = float(resp['created_at'])
+            data.sort(key=lambda n: n['created_at'], reverse=True)
             return jsonify(data)
         return make_response('', 400)
