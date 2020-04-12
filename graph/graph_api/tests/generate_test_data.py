@@ -106,7 +106,7 @@ def basic_space_node(space: Space) -> Dict[str, str]:
     '''Args:
         space = a space that needs to be formatted into a Space node.
     '''
-    return {'properties': dict(s[ace]), 'labels': 'Space'}
+    return {'properties': dict(space), 'labels': 'Space'}
 
 
 def basic_business_node(business: Business) -> Dict[str, str]:
