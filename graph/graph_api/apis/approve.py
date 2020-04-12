@@ -9,6 +9,7 @@ from .neo4j_ops.general import create_relationship, delete_relationship
 from .request import REQUEST_RELATIONSHIPS
 
 from neo4j import Transaction
+from .utils import valid_email
 
 api = Namespace(
     'approve', title='For approving user relationships(eg FOLLOW or AFFILIATED_WITH')
@@ -28,12 +29,15 @@ class Approve(Resource):
         '''
         if relationship_type not in REQUEST_RELATIONSHIPS:
             return make_response('Invalid relationship type entered', 404)
+        if valid_email(requester_email) == None:
+            return make_response('', 422)
+        if valid_email(request_recipient_email) == None:
+            return make_response('', 422)
 
         s_node_label = e_node_label = 'Person'
         if relationship_type == 'affiliation':
             s_node_label = 'Business'
 
-        # TODO: validate emails
         with create_session() as session:
             created_at = time.time()
             tx: Transaction = session.begin_transaction()
