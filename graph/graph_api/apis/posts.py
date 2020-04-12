@@ -96,7 +96,7 @@ class PostsPost(Resource):
     def post(self) -> Response:
         '''Create a post.'''
         payload = api.payload
-        if len(payload['content']) <= 300 and len(payload['content']) == 0:
+        if len(payload['content']) > 300 or len(payload['content']) == 0:
             return make_response('Post content length must be between 1 and 300.', 422)
         created = modified = convert_to_cypher_datetime(get_time())
         post_uuid = uuid.uuid4()

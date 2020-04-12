@@ -96,34 +96,30 @@ class TestPOST:
         response = app.post(
             "/posts/", json=payload)
         assert response.status == '201 CREATED'
-        """json = response.get_json()
-        assert len(json) == 1
-        assert 'uuid' in json
-        uuid = json['uuid']
 
-        response = app.get(
-            f"/posts/{uuid}")
-        assert response.status == '200 OK'
-        response = response.get_json()
-        assert len(response) == len(post)
+    def test_POST_post_with_invalid_payload(self, app: Flask, populate_db: None) -> None:
+        # Generate Test Data
+        empty_post = Post(content='', hashtags="#tag_a #tag_b"
+                          )._asdict()
+        too_big_post = Post(content='a'*301, hashtags="#tag_a #tag_b"
+                            )._asdict()
+        user = User(email='created_post@post.com')._asdict()
+        user_node = {'properties': dict(user), 'labels': 'Person'}
 
-        assert 'content' in response
-        assert response['content'] == post['content']
+        populate_db(nodes_to_create=[user_node])
 
-        assert 'hashtags' in response
-        assert response['hashtags'] == post['hashtags']"""
-
-    def test_POST_post_with_invalid_payload(self, app: Flask):
-        user_email = 'test@test.com'
-
+        # Test
+        payload = {'content': empty_post['content'],
+                   'user_email': user['email'], 'hashtags': empty_post['hashtags']}
         response = app.post(
-            f"/posts/", json={'content': '', 'user_email': user_email, 'hashtags': '#hashtag'})
+            "/posts/", json=payload)
         assert response.status == '422 UNPROCESSABLE ENTITY'
-        assert response.data == b"Post content length must be between 1 and 300."
 
-    @pytest.mark.xfail
-    def test_POST_post_creates_posted_relation(self, app: Flask):
-        raise NotImplementedError
+        payload = {'content': too_big_post['content'],
+                   'user_email': user['email'], 'hashtags': empty_post['hashtags']}
+        response = app.post(
+            "/posts/", json=payload)
+        assert response.status == '422 UNPROCESSABLE ENTITY'
 
 
 @pytest.mark.DELETE_post
