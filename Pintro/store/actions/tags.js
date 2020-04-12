@@ -24,7 +24,7 @@ export const getTags = () => {
               method:"POST",
               headers:{
                 'Content-Type':'application/json',
-                'Authorization': 'Bearer '+ getState().auth.tokenToGet
+                'Authorization': BearerToken
               },
               body: JSON.stringify({
                 "labels":["PassionsTag"]
@@ -37,7 +37,7 @@ export const getTags = () => {
           method:"POST",
           headers:{
             'Content-Type':'application/json',
-            'Authorization': 'Bearer '+ getState().auth.tokenToGet
+            'Authorization': BearerToken
                },
           body: JSON.stringify({
             "labels":["CanHelpWithTag"]
@@ -50,7 +50,7 @@ export const getTags = () => {
       method:"POST",
       headers:{
         'Content-Type':'application/json',
-        'Authorization': 'Bearer '+ getState().auth.tokenToGet
+        'Authorization': BearerToken
       },
       body: JSON.stringify({
         "labels":["BusinessTag"]

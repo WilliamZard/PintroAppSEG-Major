@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
-import { Dimensions, StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { Dimensions, StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
 import BlackTag from '../Components/BlackTag.js';
@@ -10,13 +10,15 @@ import { fonts } from '../Constants/Fonts.js';
 import Colors from '../Constants/Colors.js';
 import JourneyPoint from '../Components/JourneyPoint.js';
 import TimelinePostComponent from '../Components/TimelinePostComponent.js';
-
+import * as RequestActions from '../store/actions/request.js';
 
 const ViewBusinessAccountScreen = props => {
+    const dispatch = useDispatch();
     const businessObj = useSelector(state => state.business.businessObj);
     const [lines,setLineNumber] = useState(4);
     const [see,setSee] = useState("More");
     const [more,setMore] = useState(true);
+    const currentUser = useSelector(state => state.user.email);
     //console.log(businessObj.email);
 
     function onPressMore() {
@@ -50,10 +52,6 @@ const ViewBusinessAccountScreen = props => {
         props.navigation.navigate('Results')
     }
 
-    function onFollowPress() {
-        //console.log("You pressed follow button");
-    }
-
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
@@ -73,7 +71,12 @@ const ViewBusinessAccountScreen = props => {
                 </View>
                 <Text style={styles.businessName}>{businessObj.full_name}</Text>
                 <View style={styles.rowContainer}>
-                    <FollowMe props={props.FollowMe} initial={true} callback={() => onFollowPress()}>+ FOLLOW US</FollowMe>
+                    <FollowMe 
+                        props={props.FollowMe} 
+                        initial={false}  
+                        choice1={"+ FOLLOW US"}
+                        choice2={"REQUESTED"}
+                        name={businessObj.full_name}/>
                     <MsgMe props={props.MsgMe}>MESSAGE US</MsgMe>
                     <Edit props={props.Edit}>. . .</Edit>
                 </View>

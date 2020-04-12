@@ -1,9 +1,10 @@
 import { BearerToken } from '../../Constants/BearerToken';
 export const REQUESTFOLLOW = 'REQUESTFOLLOW';
-export const requestFol = (user1,user2) => {
+export const REQUESTAFIL = 'REQUESTAFIL';
+export const requestFol = (user1, user2) => {
     return async dispatch => {
         try{
-            const response = await fetch("https://bluej-pintro-project.appspot.com/request/follow/" + user1 + "/" + user2 + "/",
+            const response = await fetch("https://bluej-pintro-project.appspot.com/request/follow/" + user1 + "/" + user2,
             {
                 method: 'POST',
                 headers: {
@@ -18,10 +19,8 @@ export const requestFol = (user1,user2) => {
     }
 };
 
-export const REQUESTAFIL = 'REQUESTAFIL';
-export const requestAfil = (user1,user2) => {
+export const requestAfil = (user1, user2) => {
     return async dispatch => {
-        console.log("You got here");
         const response = await fetch("https://bluej-pintro-project.appspot.com/request/affiliation/" + user1 + "/" + user2,
         {
             method: 'POST',
@@ -31,12 +30,10 @@ export const requestAfil = (user1,user2) => {
             redirect: 'follow'
         });
         console.log("affiliation request: " + response.status);
-        const resData = await response.text();
         
         if(!response.ok) {
-            const errorResData = await response.json();
+            const errorResData = await response.text();
             console.log(errorResData); 
         }
-        dispatch({type: REQUESTAFIL,responseStatus:"101"});
     }
 }

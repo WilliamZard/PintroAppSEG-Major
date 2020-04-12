@@ -5,7 +5,6 @@ import BlackTag from '../../Components/BlackTag';
 import TeamMember from '../../Components/TeamMember';
 import { BearerToken } from '../../Constants/BearerToken';
 import User from '../../Model/User';
-import * as BusinessActions from '../../store/actions/business';
 import { useDispatch } from 'react-redux';
 import * as RequestActions from '../../store/actions/request';
 
@@ -23,9 +22,6 @@ const EditYourTeam = props => {
     function onPressRemove(value) {
         setMembers(teamMembers.filter((element) => element!==value));
         setEmails(teamEmails.filter((element) => element!==value.email));
-        console.log("After remove pressed: ");
-        console.log(teamMembers);
-        console.log(teamEmails);
     }
 
     async function handleKeyPress() {
@@ -92,37 +88,13 @@ const EditYourTeam = props => {
 
         setEmails(teamEmails);
         setMembers(teamMembers);
-        console.log("After enter pressed: ");
-        console.log(teamEmails);
-        console.log(teamMembers);
-        //console.log(teamMembers);
     }
 
     async function onPressDone() {
         console.log("You pressed done");
-        console.log(teamMembers.length);
-        const busObj = {
-            email: props.navigation.state.params.business.email,
-            password: props.navigation.state.params.business.password,
-            full_name: props.navigation.state.params.business.full_name,
-            profile_image: props.navigation.state.params.business.profile_image,
-            phone: props.navigation.state.params.business.phone,
-            location: props.navigation.state.params.business.location.replace(/'/g,"\\'"),
-            short_bio: props.navigation.state.params.business.short_bio.replace(/'/g,"\\'"),
-            story: props.navigation.state.params.business.story.replace(/'/g,"\\'"),
-            tags: props.navigation.state.params.business.tags,
-            date_founded: props.navigation.state.params.business.date_founded,
-            company_size: props.navigation.state.params.business.company_size,
-            funding: props.navigation.state.params.business.funding,
-            team_members: teamMembers,
-            seeking_investment: props.navigation.state.params.business.seeking_investment,
-            currently_hiring: props.navigation.state.params.business.currently_hiring
-        }
-        //dispatch(BusinessActions.putBusiness(busObj));
-        //dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));
-        console.log(teamEmails.length);
+        console.log("team emails: " + teamEmails.length);
         if(teamEmails.length > 0) {
-            teamEmails.map((item) => RequestActions.requestAfil(props.navigation.state.params.business.email,item));
+            teamEmails.map((item) => dispatch(RequestActions.requestAfil(props.navigation.state.params.business.email,item)));
         }
     }
 

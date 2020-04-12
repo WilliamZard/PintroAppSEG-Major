@@ -66,8 +66,8 @@ const EditIntro = props => {
             seeking_investment: seekingInvest,
             currently_hiring: hiring
         }
-        dispatch(BusinessActions.putBusiness(busObj));
-        dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));       
+        await dispatch(BusinessActions.putBusiness(busObj));
+        await dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));       
     }
 
     function updateName(newName) {
