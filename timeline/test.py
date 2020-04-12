@@ -1,7 +1,6 @@
 import unittest
 
 import requests
-from flask import jsonify
 
 from main import generate_timeline
 from unittest import mock
