@@ -4,11 +4,12 @@ import requests
 
 from main import generate_timeline
 from unittest import mock
+import json
 
 
 posts = [{"content": "Post A Content", "modified": "2020-03-10T15:23:33.020296000Z",
           "uuid": "6566d860-d71f-4258-a222-7bb013086620"},
-         {"content": "Post B Content", "modified": "2020-03-11T15:23:33.020296000Z",
+         {"content": "Post B Content", "modified": "2020-03-09T15:23:33.020296000Z",
           "uuid": "791a95b0-77f9-4ccb-940f-04cec294b05e"}]
 
 
@@ -21,13 +22,13 @@ def mocked_requests_get(url, headers):
         def json(self):
             return self.json_data
     if 'Authorization' not in headers:
-        return MockResponse({}, 401)
+        return MockResponse('{}', 401)
     if 'invalid_email' in url:
-        return MockResponse({}, 422)
+        return MockResponse('{}', 422)
     if 'does.not@exist.com' in url:
-        return MockResponse({}, 404)
+        return MockResponse('{}', 404)
 
-    return MockResponse(posts, 200)
+    return MockResponse(json.dumps(posts), 200)
 
 
 class TestFunction(unittest.TestCase):
@@ -40,7 +41,7 @@ class TestFunction(unittest.TestCase):
         data = {'email': email}
         mocked_request.get_json = mock.Mock(return_value=data)
 
-        response = generate_timeline(mocked_request)
+        response = json.loads(generate_timeline(mocked_request))
 
         self.assertEqual(len(response), 1)
         results = response['results']

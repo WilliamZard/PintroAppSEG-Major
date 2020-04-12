@@ -1,6 +1,8 @@
-import requests
+import json
 import re
 from operator import itemgetter
+
+import requests
 
 
 def generate_timeline(request):
@@ -27,13 +29,12 @@ def generate_timeline(request):
     if response.status_code > 500:
         return response.status_code
 
-    data = response.json()
-
+    data = json.loads(response.json())
     # Sort by date modified
     data.sort(key=itemgetter('modified'), reverse=True)
     data = {'results': data}
 
-    return data
+    return json.dumps(data)
 
 
 def _valid_email(email):
