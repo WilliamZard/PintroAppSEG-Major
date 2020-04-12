@@ -28,13 +28,11 @@ class TestPOST:
         assert tag_a['name'] in response
         assert tag_a['name'] in response
 
-    def test_POST_tags_without_specifying_labels(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_POST_tags_without_specifying_labels(self, app: Flask) -> None:
         response = app.post("/tags/")
         assert response.status == "400 BAD REQUEST"
 
-    def test_POST_tags_with_invalid_labels(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_POST_tags_with_invalid_labels(self, app: Flask) -> None:
         payload = {'labels': ['bad label']}
         response = app.post("/tags/", json=payload)
 

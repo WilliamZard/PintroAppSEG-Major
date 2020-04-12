@@ -24,16 +24,13 @@ class TestGet:
         response = response.get_json()
         assert response == dict(space)
 
-    def test_get_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
+    def test_get_space_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         nonexistant_space_email = "does@notexist.com"
         response = app.get(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_get_space_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_get_space_with_invalid_email(self, app: Flask) -> None:
         invalid_email = "doesnotexist.com"
         response = app.get(f"/spaces/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -78,17 +75,13 @@ class TestDelete:
         response = app.get(f"/spaces/{space['email']}")
         assert response.status == '404 NOT FOUND'
 
-    def test_delete_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_delete_space_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         nonexistant_space_email = 'does@notexist.com'
         response = app.delete(f"/spaces/{nonexistant_space_email}")
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_delete_space_with_invalid_email(self, app: Flask, populate_db: None) -> None:
-        populate_db()
-
+    def test_delete_space_with_invalid_email(self, app: Flask) -> None:
         invalid_email = "testemail.com"
         response = app.delete(f"/spaces/{invalid_email}")
         assert response.status == '422 UNPROCESSABLE ENTITY'
@@ -130,12 +123,11 @@ class TestPut:
                 continue
             assert value == response[key]
 
-    def test_put_space_with_valid_email_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
+    def test_put_space_with_valid_email_that_does_not_exist(self, app: Flask) -> None:
         # Generate Data
         nonexistant_email = 'does@notexist.com'
         new_space = Space(email='space@test.com',
                           short_bio='not default')._asdict()
-        populate_db()
 
         # Test
         response = app.put(
@@ -143,13 +135,12 @@ class TestPut:
         assert response.status == '404 NOT FOUND'
         assert response.data == b''
 
-    def test_put_space_with_invalid_email(self, app: Flask, populate_db: None) -> None:
+    def test_put_space_with_invalid_email(self, app: Flask) -> None:
         # Generate Data
         invalid_email = "invalidemail.com"
         new_space = Space(email='space@test.com',
                           short_bio='not default')._asdict()
 
-        populate_db()
 
         # Test
         response = app.put(
@@ -160,10 +151,9 @@ class TestPut:
 
 @pytest.mark.POST_space
 class TestPost:
-    def test_post_space_with_valid_payload_that_does_not_exist(self, app: Flask, populate_db: None) -> None:
+    def test_post_space_with_valid_payload_that_does_not_exist(self, app: Flask) -> None:
         # Generate Data
         space = Space(email='new_space@test.com')._asdict()
-        populate_db()
 
         # Test
         response = app.post(
