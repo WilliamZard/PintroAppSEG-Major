@@ -56,9 +56,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingTop: 60,
-        //justifyContent:'center',
         flexDirection: 'column',
-        //backgroundColor:'blue'
+
     },
     inputController: {
         flex: 1,

@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import * as authActions from '../store/actions/auth';
 import * as userActions from '../store/actions/user';
 /**
+ * 
  * The Sign in screen consisting of the Logo, a header (Text),
  * 2 input fields and 2 buttons. One button takes you to the Main screen after Logging
  * in sucessfully and the other one takes you back to the start screen.
@@ -18,13 +19,7 @@ import * as userActions from '../store/actions/user';
  */
 
 
- 
-
-
-
-
 const SignInScreen = props => {
-
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,10 +35,7 @@ const SignInScreen = props => {
     }, [error]);
   
     
-
-
     const signupHandler = async () => {
-
 
     setError(null);
     setIsLoading(true);
@@ -61,19 +53,17 @@ const SignInScreen = props => {
     }
     
     };  
-    
+
 
     const PasswordResetHandler = async () =>{
         if(email===""){
-            Alert.alert("Resert Password","Enter your email in the Email address field and press again");
+            Alert.alert("Reset Password","Enter your email in the Email address field and press again");
         return;
         }
-      Alert.alert("Resert Password","We sent a reset link to the email in the Email address field");
+      Alert.alert("Reset Password","We sent a reset link to the email in the Email address field");
         dispatch(userActions.resetPassword(email));
         return;
     };
-
-
 
 
     return (
@@ -121,6 +111,7 @@ const SignInScreen = props => {
 };
 
 
+
 const styles = StyleSheet.create({
     backGround: {
         backgroundColor: '#1a1a1a',
@@ -148,6 +139,7 @@ const styles = StyleSheet.create({
     inputTexts: {
         color: 'black'
     },
+
 
     inputBox: {
         height: 40,
@@ -179,4 +171,5 @@ const styles = StyleSheet.create({
         marginBottom:60
     }
 });
+
 export default SignInScreen;
