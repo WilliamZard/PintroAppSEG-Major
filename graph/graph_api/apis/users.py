@@ -9,11 +9,12 @@ from neo4j.exceptions import ConstraintError
 
 from .image_storing import *
 from .neo4j_ops import create_session
-from .neo4j_ops.chatrooms import get_chatrooms_of_user
-from .neo4j_ops.general import create_node, get_account_field, set_properties
 from .neo4j_ops.tags import (create_TAGGED_relationships,
                              delete_tagged_relationships)
-from .neo4j_ops.users import (delete_user_by_email, get_followers_of_a_user,
+from .neo4j_ops.chatrooms import get_chatrooms_of_account
+from .neo4j_ops.general import set_properties, create_node, get_account_field
+from .neo4j_ops.users import (delete_user_by_email,
+                              get_followers_of_a_user,
                               get_followings_of_a_user,
                               get_posts_of_followings_of_a_user,
                               get_user_by_email)
@@ -44,7 +45,7 @@ users = api.model('Users', {
     'date_of_birth': restx_fields.String(),
     'location': restx_fields.String(title='current city of the user.'),
     'active': restx_fields.String(title='DO NOT TOUCH, whether user is active or not.')
-})  # title for accounts that needs to be created.
+})
 
 
 @api.route('/<string:email>')
@@ -262,6 +263,11 @@ class GETUserChatrooms(Resource):
             return make_response('', 422)
 
         with create_session() as session:
-            response = session.read_transaction(get_chatrooms_of_user, email)
+            response = session.read_transaction(
+                get_chatrooms_of_account, email)
             response = response.data()
+            # gets the first label of each node, which is currently
+            # assumed to be the type of the node, e.g. Person, Business, etc.
+            for chat in response:
+                chat["type"] = chat["type"][0]
             return jsonify(response)
