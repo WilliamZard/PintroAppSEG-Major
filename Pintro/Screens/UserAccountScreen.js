@@ -14,7 +14,7 @@ import UserProfileCircle from '../Components/UserProfileCircle.js';
 import UserMoodCircle from '../Components/UserMoodCircle.js';
 import Svg, { Ellipse } from "react-native-svg";
 import ConnectButton from '../Components/ConnectButton.js';
-
+import UserActions from '../store/actions/user.js';
 import Color from '../Constants/Colors';
 
 /**
@@ -31,7 +31,7 @@ const UserAccountScreen = props => {
     const [see, setSee] = useState("More");
     const [more, setMore] = useState(true);
 
-   
+    const userObj = useSelector(state => state.user.otherUserObj);
     
     const job_title = useSelector(state => state.user.job_title);
     const currentCompany = useSelector(state => state.user.current_Company);
@@ -172,7 +172,7 @@ const UserAccountScreen = props => {
             
             <View style ={{marginHorizontal:20}}>
                 <View style={styles.rowContainer}>
-                <Text style={{fontSize:20,fontFamily:'Poppins-Bold'}}>Experience</Text>
+                <Text style={{fontSize:14,fontFamily:'Poppins-Bold'}}>Experience</Text>
                 <PencilBlack onPress={() => switchEditExperience()}/>
                 
                 </View>
@@ -184,11 +184,21 @@ const UserAccountScreen = props => {
 
             </View>
 
+            <View>
+                <Text style={styles.reportUser}>If you wish to report this user, please contact pintro.report@outlook.com</Text>
+            </View>
+
         </ScrollView>
     );
 };
  
 const styles = StyleSheet.create({
+    reportUser:{
+        fontSize: 9,
+        color: Colors.pintroBlack,
+        paddingLeft: 20,
+        paddingTop: 20
+    },
     accountTop: {
         marginBottom: 0,
         marginTop: 15,
