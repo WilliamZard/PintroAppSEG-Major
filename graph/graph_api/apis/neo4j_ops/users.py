@@ -29,7 +29,7 @@ def get_posts_of_followings_of_a_user(tx: Transaction, email: str) -> BoltStatem
         MATCH (:Person {{email: '{email}'}})
         -[:FOLLOWS]->(user:Person)
         -[:POSTED]->(post:Post)
-        RETURN post.content AS content, post.modified AS modified, post.uuid AS uuid, post.created AS created, user.email as user_email"""
+        RETURN DISTINCT {{content:post.content, modified:post.modified, created:post.created, uuid:post.uuid, user_email:user.email}} AS posts"""
     return tx.run(query)
 
 
