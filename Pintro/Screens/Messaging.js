@@ -105,14 +105,19 @@ class Messaging extends Component {
   }
 
   async loadChats() {
+    let userType = this.props.userType === "Business" ? 'businesses' : 'users';
     let chatData = await fetch(
-      `https://bluej-pintro-project.appspot.com/users/${this.props.email}/chatrooms`,
+      `https://bluej-pintro-project.appspot.com/${userType}/${this.props.email}/chatrooms/`,
       {
         method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + this.props.token,
+        },
+        redirect: 'follow',
       }
     );
     this.setState({
-      chats: await chatData.json(),
+      chats: chatData.status !== 200 ? [] : await chatData.json(),
       loading: false,
     });
   }
@@ -148,7 +153,13 @@ class Messaging extends Component {
   }
 }
 
-export default connect(state => ({email: state.auth.email}))(Messaging);
+export default connect(state => {
+  return {
+    email: state.user.email,
+    token: state.auth.tokenToGet,
+    userType: state.hasOwnProperty('businessObj') ? 'Business' : "Person",
+  };
+})(Messaging);
 
 const styles = StyleSheet.create({
   container: {
