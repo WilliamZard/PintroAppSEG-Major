@@ -3,13 +3,13 @@ import { BearerToken } from '../../Constants/BearerToken';
 export const GETBUSINESS = 'GETBUSINESS';
 export const LOGOUT = 'LOGOUT';
 export const getBusiness = value => {
-    return async dispatch => {
+    return async (dispatch,getState) => {
         const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + value,
             {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': BearerToken
+                  'Authorization': 'Bearer ' + getState().auth.tokenToGet
               },
               redirect: 'follow'
             }
@@ -98,14 +98,14 @@ export const create_business = (profile_image,location,story,tags,
   };
 
 export const putBusiness = busObj => {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try{
       const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + busObj.email,
         {
           method: 'PUT',
           headers: {
             'Content-type': 'application/json',
-            'Authorization': BearerToken
+            'Authorization': 'Bearer ' + getState().auth.tokenToGet
           },
           redirect: 'follow',
           body: JSON.stringify(busObj)

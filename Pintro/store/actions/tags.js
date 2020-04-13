@@ -24,7 +24,7 @@ export const getTags = () => {
               method:"POST",
               headers:{
                 'Content-Type':'application/json',
-                'Authorization': BearerToken
+                'Authorization': 'Bearer ' + getState().auth.tokenToGet
               },
               body: JSON.stringify({
                 "labels":["PassionsTag"]
@@ -37,7 +37,7 @@ export const getTags = () => {
           method:"POST",
           headers:{
             'Content-Type':'application/json',
-            'Authorization': BearerToken
+            'Authorization': 'Bearer ' + getState().auth.tokenToGet
                },
           body: JSON.stringify({
             "labels":["CanHelpWithTag"]
@@ -50,7 +50,7 @@ export const getTags = () => {
       method:"POST",
       headers:{
         'Content-Type':'application/json',
-        'Authorization': BearerToken
+        'Authorization': 'Bearer ' + getState().auth.tokenToGet
       },
       body: JSON.stringify({
         "labels":["BusinessTag"]
@@ -66,7 +66,7 @@ const searchTagsReq = await fetch('https://bluej-pintro-project.appspot.com/tags
       method:"POST",
       headers:{
         'Content-Type':'application/json',
-        'Authorization': BearerToken
+        'Authorization': 'Bearer ' + getState().auth.tokenToGet
       },
       body: JSON.stringify({
         "labels":['PassionsTag', 'BusinessTag', 'CanHelpWithTag','HelpMeWithTag', 'IntroMeToTag', 'JobTitleTag']

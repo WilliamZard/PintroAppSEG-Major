@@ -3,14 +3,14 @@ import { BearerToken }  from '../../Constants/BearerToken';
 export const LOGOUT = 'LOGOUT';
 export const GETRESULTS = 'GETRESULTS';
 export const getResults = (item) => {
-    return async dispatch => {
+    return async (dispatch,getState) => {
         const response = await fetch("https://bluej-pintro-project.appspot.com/search/",
             {
               method: 'POST',
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': BearerToken
+                'Authorization': 'Bearer ' + getState().auth.tokenToGet
               },
               body: JSON.stringify({
                 query: item

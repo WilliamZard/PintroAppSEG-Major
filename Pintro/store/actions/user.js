@@ -531,14 +531,14 @@ export const isUserVerified = () => {
     };
 
 export const getUser = searchEmail => {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + searchEmail,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': BearerToken
+            'Authorization': 'Bearer ' + getState().auth.tokenToGet
           },
           redirect: 'follow'
         } 
@@ -586,14 +586,14 @@ export const getUser = searchEmail => {
 }
 
 export const get_Other_User = searchEmail => {
-  return async dispatch => {
+  return async (dispatch,getState) => {
     try {
       const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + searchEmail,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': BearerToken
+            'Authorization': 'Bearer ' + getState().auth.tokenToGet
           },
           redirect: 'follow'
         } 

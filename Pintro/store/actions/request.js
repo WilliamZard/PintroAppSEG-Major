@@ -5,13 +5,13 @@ export const LOGOUT = 'LOGOUT';
 
 export const requestFol = (user1, user2) => {
 
-    return async dispatch => {
+    return async (dispatch,getState) => {
         try{
             const response = await fetch("https://bluej-pintro-project.appspot.com/request/follow/" + user1 + "/" + user2,
             {
                 method: 'POST',
                 headers: {
-                    'Authorization': getState().auth.tokenToGet
+                    'Authorization': 'Bearer ' + getState().auth.tokenToGet
                 },
                 redirect: 'follow'
             });
@@ -30,7 +30,7 @@ export const requestAfil = (user1,user2) => {
         {
             method: 'POST',
             headers: {
-                'Authorization': getState().auth.tokenToGet
+                'Authorization': 'Bearer ' + getState().auth.tokenToGet
             },
             redirect: 'follow'
         });
