@@ -10,9 +10,9 @@ function Index(props) {
           strokeWidth={1}
           fill="#1a1a1a"
           stroke="#f1f1f1"
-          cx={41}
+          cx={45}
           cy={45}
-          rx={40}
+          rx={45}
           ry={45}
         ></Ellipse>
       </Svg>
@@ -22,11 +22,11 @@ function Index(props) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 82,
+    width: 90,
     height: 90
   },
   ellipse: {
-    width: 82,
+    width: 90,
     height: 90
   }
 });

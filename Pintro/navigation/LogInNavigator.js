@@ -220,7 +220,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     thirdScreen:{
-        screen:BusinessNavigator,navigationOptions:{
+        screen: UserNavigator ,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 

@@ -41,7 +41,8 @@
     "redux-thunk": "^2.3.0",
     "rn-sliding-up-panel": "^2.4.0",
     "expo-image-picker": "~8.0.1",
-    "expo-image-manipulator": "~8.0.0"
+    "expo-image-manipulator": "~8.0.0",
+    "react-native-svg": "9.13.3"
   },
   "devDependencies": {
     "babel-preset-expo": "~8.0.0",
