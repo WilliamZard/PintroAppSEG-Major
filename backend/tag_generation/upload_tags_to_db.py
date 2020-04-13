@@ -1,16 +1,15 @@
 '''Script for taking a CSV of tags and uploading each tag as a node into the given Neo4j database.'''
-from neo4j import GraphDatabase
 import sys
-import os
-import pandas as pd
 import time
 
+from neo4j import GraphDatabase
 
-def connect():
+import pandas as pd
+
+
+def connect(uri, password):
     """Create a new connection object to the NEO4J database."""
-    uri = os.getenv('NEO4J_URI')
     db_user = 'neo4j'
-    password = os.getenv("NEO4J_PASSWORD")
     driver = GraphDatabase.driver(uri, auth=(db_user, password))
     return driver
 
@@ -58,10 +57,16 @@ def create_tag_node(tx, tag):
     tx.run(query)
 
 
-def main(csv_path):
+def delete_all_tags(tx):
+    query = """MATCH(n:Tag) DETACH DELETE n"""
+    return tx.run(query)
+
+
+def main(csv_path, bolt_uri, password):
     """Main function for orchestrating tag deployments."""
-    driver = connect()
+    driver = connect(bolt_uri, password)
     with driver.session() as session:
+        session.write_transaction(delete_all_tags)
         for tag in generate_tags(csv_path):
             session.write_transaction(create_tag_node, tag)
     driver.close()
@@ -69,4 +74,6 @@ def main(csv_path):
 
 if __name__ == '__main__':
     csv_path = sys.argv[1]
-    main(csv_path)
+    bolt_uri = sys.argv[2]
+    password = sys.argv[3]
+    main(csv_path, bolt_uri, password)
