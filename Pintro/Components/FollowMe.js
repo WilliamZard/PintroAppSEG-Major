@@ -18,7 +18,7 @@ const FollowMe = props => {
     }
     
     const[following,setFollow] = useState(props.initial);
-    const[textStyle,setTextStyle] = useState((following)? blackText : blackText);
+    const[textStyle,setTextStyle] = useState((following)? blackText : whiteText);
     const[color,setColor] = useState((following)? Colors.pintroWhite : Colors.pintroBlack);
     const[buttonText,setText] = useState((following)? props.choice2 : props.choice1)
     

@@ -64,7 +64,7 @@ const EditIntro = props => {
             funding: props.navigation.state.params.business.funding,
             seeking_investment: seekingInvest,
             currently_hiring: hiring
-        }
+        };
         await dispatch(BusinessActions.putBusiness(busObj));
         await dispatch(BusinessActions.getBusiness(props.navigation.state.params.business.email));       
     }
