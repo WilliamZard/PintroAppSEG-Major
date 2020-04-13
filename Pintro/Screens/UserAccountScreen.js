@@ -184,7 +184,7 @@ const UserAccountScreen = props => {
             </View>
 
             <View>
-                <Text style={styles.reportUser}>If you wish to report this user, please contact pintro.report@outlook.com</Text>
+                <Text style={styles.reportUser}>If you wish to report this user, please contact pintro.admn@outlook.com</Text>
             </View>
 
         </ScrollView>
