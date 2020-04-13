@@ -1,7 +1,7 @@
 import { REQUESTFOLLOW,REQUESTAFIL,LOGOUT } from "../actions/request"
 
 const initialState = {
-    statusCode: null
+    statusCode: "200"
 }
 
 export default (state = initialState,action) => {

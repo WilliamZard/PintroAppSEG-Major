@@ -15,7 +15,7 @@ export const getBusiness = value => {
             }
         );
 
-        console.log(response.status);
+        console.log("getBusiness: " + response.status);
         if(!response.ok) {
             const errorResData = await response.json();
             console.log(errorResData);

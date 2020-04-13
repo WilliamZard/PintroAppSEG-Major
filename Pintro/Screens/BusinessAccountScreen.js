@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { Dimensions, StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-import FollowMe from '../Components/FollowMe.js';
 import MsgMe from '../Components/MsgMe.js';
 import BlackTag from '../Components/BlackTag.js';
-import HelpMeWith from '../Components/HelpMeWith.js';
+import HelpUsWith from '../Components/HelpMeWith.js';
 import Edit from '../Components/Edit.js';
 import { fonts } from '../Constants/Fonts.js';
 import PencilBlack from '../Components/PencilBlack.js';
@@ -12,6 +11,7 @@ import PencilWhite from '../Components/PencilWhite.js';
 import Colors from '../Constants/Colors.js';
 import JourneyPoint from '../Components/JourneyPoint.js';
 import TimelinePostComponent from '../Components/TimelinePostComponent.js';
+import NewPost from '../Components/NewPost.js';
 
 
 const BusinessAccountScreen = props => {
@@ -72,10 +72,6 @@ const BusinessAccountScreen = props => {
         props.navigation.goBack(null);
     }
 
-    function onFollowPress() {
-        //Do nothing
-    }
-
     return(
         <ScrollView style={{backgroundColor: '#cacaca'}}>
             <View style={styles.imageContainer}>
@@ -97,7 +93,7 @@ const BusinessAccountScreen = props => {
                 </View>
                 <Text style={styles.businessName}>{businessObj.full_name}</Text>
                 <View style={styles.rowContainer}>
-                    <FollowMe props={props.FollowMe} callback={() => onFollowPress()}>New Post</FollowMe>
+                    <NewPost props={props.NewPost}/>
                     <MsgMe props={props.MsgMe}>Edit Profile</MsgMe>
                     <Edit props={props.Edit}>. . .</Edit>
                 </View>
@@ -126,9 +122,9 @@ const BusinessAccountScreen = props => {
                     <BlackTag props={props.BlackTag}>{(businessObj.tags[5]!==undefined)? businessObj.tags[5].toUpperCase() : null}</BlackTag>
                 </ScrollView>
                 <ScrollView style={styles.helpContainer} horizontal={true}>
-                    <HelpMeWith props={props.HelpMeWith}>Business Modelling</HelpMeWith>
-                    <HelpMeWith props={props.HelpMeWith}>Crepe Investments</HelpMeWith>
-                    <HelpMeWith props={props.HelpMeWith}>Home Workouts</HelpMeWith>
+                    <HelpUsWith props={props.HelpMeWith}>Business Modelling</HelpUsWith>
+                    <HelpUsWith props={props.HelpMeWith}>Crepe Investments</HelpUsWith>
+                    <HelpUsWith props={props.HelpMeWith}>Home Workouts</HelpUsWith>
                 </ScrollView>
                 <View>
                     <View style={styles.rowContainer}>

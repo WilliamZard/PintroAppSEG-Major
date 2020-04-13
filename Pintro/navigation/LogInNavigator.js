@@ -14,6 +14,7 @@ import Colors from '../Constants/Colors';
 import WhatAreYourPassions from '../Screens/WhatAreYourPassions';
 import HowCanYouHelpOthers from '../Screens/HowCanYouHelpOthers';
 
+import UserAccountScreen from '../Screens/UserAccountScreen';
 import EditExperience from '../Screens/EditScreens/EditExperience';
 import EditPhoto from '../Screens/EditScreens/EditPhoto';
 import EditHelpOthers from '../Screens/EditScreens/EditHelpOthers';
@@ -130,6 +131,27 @@ const BusinessNavigator = createStackNavigator({
     }}
 });
 
+const UserNavigator = createStackNavigator({
+    Account:{screen:UserAccountScreen, navigationOptions:{
+        headerShown: false,
+    }},
+    Story:{screen:EditStory, navigationOptions:{
+        headerTitle: '',
+    }},
+    Passions:{screen:EditPassions, navigationOptions:{
+        headerTitle: '',
+    }},
+    HelpOthers:{screen:EditHelpOthers, navigationOptions:{
+        headerTitle: '',
+    }},
+    Experience:{screen:EditExperience, navigationOptions:{
+        headerTitle: '',
+    }},
+    Photo:{screen:EditPhoto, navigationOptions:{
+        headerTitle: '',
+    }}
+});
+
 const MainSearchNav = createStackNavigator({
     navSearch: {screen:SearchNavigator, navigationOptions:{
         headerShown: false,
@@ -137,6 +159,9 @@ const MainSearchNav = createStackNavigator({
     navBusiness: {screen:BusinessNavigator, navigationOptions: {
         headerShown: false,
     }},
+    navUser: {screen: UserNavigator, navigationOptions: {
+        headerShown: false,
+    }}
 });
 
 const MainNav = createBottomTabNavigator({
@@ -205,7 +230,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     thirdScreen:{
-        screen:BusinessNavigator,navigationOptions:{
+        screen: UserNavigator ,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
             return   <Image 

@@ -3,12 +3,12 @@ import { Text, StyleSheet, TouchableOpacity, Image, View } from 'react-native';
 import Colors from '../Constants/Colors';
 
 
-const HelpMeWith = props => {
+const HelpUsWith = props => {
     return(
 
         <TouchableOpacity style={styles.tag} onPress={props.onPress} activeOpacity={0.6}>
                 <View style={styles.textContainer}>
-                    <Text style={styles.tag_text}>Help me with</Text>
+                    <Text style={styles.tag_text}>Help us with</Text>
                     <Text style={styles.userHelp}>{props.children}</Text>
                 </View>
                 <Image source={require('../assets/helpMeMsg.png')} style={styles.msgImage}/> 
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HelpMeWith;
+export default HelpUsWith;

@@ -6,6 +6,8 @@ export const UPDATE_PASSIONS = 'UPDATE_PASSIONS';
 export const UPDATE_HELP_OTHERS = 'UPDATE_HELP_OTHERS';
 export const GETUSER = 'GETUSER';
 export const LOGOUT = 'LOGOUT';
+export const OTHERUSER = 'OTHERUSER';
+
 
 import { APIKEY }  from '../../Constants/APIKEY';
 import User from '../../Model/User';
@@ -579,6 +581,57 @@ export const getUser = searchEmail => {
   }
 }
 
-
-
+export const get_Other_User = searchEmail => {
+  return async dispatch => {
+    try {
+      const response = await fetch('https://bluej-pintro-project.appspot.com/users/' + searchEmail,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': BearerToken
+          },
+          redirect: 'follow'
+        } 
+      );
+      console.log("Get user: " + (response.status));
+      if(!response.ok) {
+        if(response.status == '404') {
+          Alert.alert('No results found','No users were found that match your search');
+        } else if (response.status == '422') {
+          Alert.alert('Invalid search term','Please enter an email address');
+        } else {
+          const errorResData = await response.json();
+          console.log(errorResData);
+          let message = 'Something went wrong';
+          throw new Error(message);
+        }
+      } else {
+        const resData = await response.json();
+        const pic = await resData.profile_image;
+        const image = pic.substring(2, pic.length - 1);
+          
+        let searchedUser = new User(
+          resData.education,
+          resData.email,
+          resData.full_name,
+          resData.gender,
+          resData.job_title,
+          resData.location,
+          resData.password,
+          resData.phone,
+          resData.preferred_name,
+          image,
+          "",
+          "",
+          resData.short_bio,
+          resData.story
+          );
+          dispatch({type: OTHERUSER,otherUserObj:searchedUser});
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
 

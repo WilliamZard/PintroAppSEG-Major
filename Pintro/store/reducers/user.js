@@ -6,7 +6,8 @@ import {
     UPDATE_EXPERIENCE,
     UPDATE_PASSIONS,
     UPDATE_HELP_OTHERS,
-    LOGOUT
+    LOGOUT,
+    OTHERUSER
 
 } from '../actions/user';
 const initialState = {
@@ -111,7 +112,11 @@ export default (state = initialState, action) => {
                     previous_Company: "Facebook",
                     profile_image: "'b '",
                     story: "great story"
-                };    
+                }  
+        case OTHERUSER:
+            return{
+                otherUserObj: action.otherUserObj
+            };    
             default:
                 return state;
   
