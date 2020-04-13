@@ -1,10 +1,9 @@
 {
-  "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 21799,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
-  "webpackServerPort": null
+  "expoServerNgrokUrl": "https://ai-gjd.anonymous.pintro.exp.direct",
+  "packagerNgrokUrl": "https://packager.ai-gjd.anonymous.pintro.exp.direct",
+  "ngrokPid": 22252,
+  "devToolsPort": 19002,
+  "packagerPort": 19003,
+  "packagerPid": 22224
 }
