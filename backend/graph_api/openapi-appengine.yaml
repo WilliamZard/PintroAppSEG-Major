@@ -1,0 +1,637 @@
+swagger: '2.0'
+schemes:
+- "https"
+host: "bluej-pintro-project.appspot.com"
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    # Replace YOUR-PROJECT-ID with your project ID
+    x-google-issuer: "https://securetoken.google.com/bluej-pintro-project"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "bluej-pintro-project"
+security:
+  - firebase: []
+basePath: /
+paths:
+  '/approve/{relationship_type}/{requester_email}/{request_recipient_email}':
+    parameters:
+      - name: relationship_type
+        in: path
+        required: true
+        type: string
+      - name: requester_email
+        in: path
+        required: true
+        type: string
+      - name: request_recipient_email
+        in: path
+        required: true
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Replace the existing request relationship with an approved relationship
+      description: E.g. REQUESTED_FOLLOW => FOLLOWS
+      operationId: post_approve
+      tags:
+        - approve
+  /businesses:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Businesses'
+    post:
+      responses:
+        '204':
+          description: Business created
+        '409':
+          description: Business with that email already exists
+      summary: Create a business
+      operationId: create_business
+      tags:
+        - businesses
+  '/businesses/{email}':
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Businesses'
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a business given its email
+      operationId: get_businesses
+      tags:
+        - businesses
+    delete:
+      responses:
+        '204':
+          description: Business Deleted
+      summary: Delete a business given its email
+      operationId: delete_business
+      tags:
+        - businesses
+    put:
+      responses:
+        '204':
+          description: Business Fields Deleted
+      summary: Update a business by the given fields
+      operationId: update_business
+      tags:
+        - businesses
+  '/businesses/{email}/chatrooms':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the chatrooms a business is in
+      operationId: get_get_business_chatrooms
+      tags:
+        - businesses
+  '/chatrooms/{chat_id}':
+    parameters:
+      - name: chat_id
+        in: path
+        required: true
+        type: string
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Deletes the chatroom with the given ID
+      operationId: delete_chatrooms_delete
+      tags:
+        - chatrooms
+  '/chatrooms/{email1}/{type1}/{email2}/{type2}':
+    parameters:
+      - name: email1
+        in: path
+        required: true
+        type: string
+      - name: type1
+        in: path
+        required: true
+        type: string
+      - name: email2
+        in: path
+        required: true
+        type: string
+      - name: type2
+        in: path
+        required: true
+        type: string
+    post:
+      responses:
+        '409':
+          description: Chatroom with these users already exists
+      summary: Create a chatroom with the given users in it
+      operationId: create_chatroom
+      tags:
+        - chatrooms
+  '/notifications/{user_email}':
+    parameters:
+      - name: user_email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get all notification of the given user
+      operationId: get_notifications
+      tags:
+        - notifications
+  /posts:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Post'
+    post:
+      responses:
+        '204':
+          description: Post created
+      summary: Create a post
+      operationId: create_post
+      tags:
+        - posts
+  '/posts/{uuid}':
+    parameters:
+      - name: uuid
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a post based on its UUID
+      operationId: get_posts
+      tags:
+        - posts
+    delete:
+      responses:
+        '204':
+          description: Post deleted
+      summary: Delete a post given its uuid
+      operationId: delete_post
+      tags:
+        - posts
+    put:
+      responses:
+        '204':
+          description: Post updated
+      summary: Update a Post's content
+      operationId: update_post
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Post'
+      tags:
+        - posts
+  '/request/{relationship_type}/{requester_email}/{request_recipient_email}':
+    parameters:
+      - name: relationship_type
+        in: path
+        required: true
+        type: string
+      - name: requester_email
+        in: path
+        required: true
+        type: string
+      - name: request_recipient_email
+        in: path
+        required: true
+        type: string
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: 'Delete request relationship, effectively denying the request'
+      operationId: delete_request
+      tags:
+        - request
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Create a request relationship
+      operationId: post_request
+      tags:
+        - request
+  /search:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Query'
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: 'Search users, business accounts, or co-working spaces given some keywords or tags'
+      description: |-
+        It returns a record. It limits the result to only contain at most 10 spaces,
+        business profiles, or users.
+      operationId: search_query
+      tags:
+        - search
+  /spaces:
+    post:
+      responses:
+        '204':
+          description: Co-working space created
+        '409':
+          description: Co-working space with that email already exists
+      summary: Create a co-working space
+      operationId: create_space
+      tags:
+        - spaces
+  '/spaces/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a co-working space given its email
+      operationId: get_spaces
+      tags:
+        - spaces
+    delete:
+      responses:
+        '204':
+          description: Co-working space Deleted
+      summary: Delete a co-working space given its email
+      operationId: delete_space
+      tags:
+        - spaces
+    put:
+      responses:
+        '204':
+          description: Co-working Space Fields Deleted
+      summary: Update a co-working space by the given fields
+      operationId: update_space
+      tags:
+        - spaces
+  '/spaces/{email}/chatrooms':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the chatrooms a space is in
+      operationId: get_get_space_chatrooms
+      tags:
+        - spaces
+  /tags:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Label'
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Get all tags with the given labels
+      operationId: post_tags
+      tags:
+        - tags
+  /users:
+    parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Users'
+    post:
+      responses:
+        '201':
+          description: User created
+        '409':
+          description: User with that email already exists
+        '422':
+          description: Invalid Email
+      summary: Create a user
+      operationId: create_user
+      tags:
+        - users
+  '/users/activate/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    put:
+      responses:
+        '204':
+          description: User activated.
+      summary: Activate a user account if it has been deactivated
+      operationId: activate users
+      tags:
+        - users
+  '/users/deactivate/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    put:
+      responses:
+        '204':
+          description: User deactivated.
+      summary: Deactivate a user account
+      operationId: deactivate users
+      tags:
+        - users
+  '/users/{email}':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Fetch a user given its email
+      operationId: get_users
+      tags:
+        - users
+    delete:
+      responses:
+        '204':
+          description: User deleted.
+      summary: Delete a user given its email
+      operationId: delete_user
+      tags:
+        - users
+    put:
+      responses:
+        '204':
+          description: User Fields Deleted
+      summary: Update a user by the given fields
+      operationId: update_user
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Users'
+      tags:
+        - users
+  '/users/{email}/chatrooms':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the chatrooms a user is in
+      operationId: get_get_user_chatrooms
+      tags:
+        - users
+  '/users/{email}/followers':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get followers of a user
+      operationId: get followers of a user
+      tags:
+        - users
+  '/users/{email}/followings':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get the users that the given user is following
+      operationId: Get the users that the given user is following
+      tags:
+        - users
+  '/users/{email}/followings/posts':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get the posts of users the given user follows
+      operationId: Get the posts of users the given user follows.
+      tags:
+        - users
+info:
+  title: Pintro Graph Api
+  version: '0.1'
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: users
+  - name: businesses
+  - name: spaces
+  - name: posts
+  - name: tags
+    description: Tag related operations.
+  - name: request
+  - name: approve
+  - name: search
+  - name: chatrooms
+  - name: notifications
+definitions:
+  Users:
+    required:
+      - email
+      - full_name
+    properties:
+      full_name:
+        type: string
+        title: The user full name.
+      preferred_name:
+        type: string
+        title: The user preferred name.
+      profile_image:
+        type: string
+        title: image saved as array of Bytes representing the user's profile pic.
+      short_bio:
+        type: string
+        title: short bio describing the user of maximum 250 characters.
+      gender:
+        type: string
+        title: The User's geneder
+      story:
+        type: string
+        title: story describing the user of maximum 250 words.
+      email:
+        type: string
+        title: The user email.
+      phone_number:
+        type: string
+        title: The user's phone number.
+      job_title:
+        type: string
+        title: current job title of the user.
+      current_company:
+        type: string
+      years_in_industry:
+        type: string
+      industry:
+        type: string
+      previous_company:
+        type: string
+      previous_company_year_finished:
+        type: string
+      university:
+        type: string
+      university_year_finished:
+        type: string
+      academic_level:
+        type: string
+      date_of_birth:
+        type: string
+      location:
+        type: string
+        title: current city of the user.
+      active:
+        type: string
+        title: 'DO NOT TOUCH, whether user is active or not.'
+    type: object
+  Businesses:
+    required:
+      - email
+      - full_name
+      - password
+    properties:
+      email:
+        type: string
+        title: The business email.
+      password:
+        type: string
+        title: The business password.
+      full_name:
+        type: string
+        title: The business full name.
+      profile_image:
+        type: string
+        title: image saved as array of Bytes representing the business's profile pic.
+      phone:
+        type: string
+        title: The business's phone number.
+      location:
+        type: string
+        title: current city of the business.
+      short_bio:
+        type: string
+        title: short bio describing the business of maximum 250 characters.
+      story:
+        type: string
+        title: story describing the business of maximum 250 words.
+      tags:
+        type: array
+        description: List of tag UUIDs that the business is related to.
+        items:
+          type: string
+      date_founded:
+        type: string
+        title: date the company was founded.
+      company_size:
+        type: string
+        title: size of the company.
+      funding:
+        type: string
+        title: amount of funding the comapy currently controls.
+      seeking_investment:
+        type: string
+        title: whether the company is looking for investments.
+      currently_hiring:
+        type: string
+        title: whether the company is currently looking for potential employees.
+    type: object
+  Post:
+    required:
+      - content
+    properties:
+      content:
+        type: string
+        title: The content of the post.
+      hashtags:
+        type: string
+        title: The post's hashtags
+      uuid:
+        type: string
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+      user_email:
+        type: string
+    type: object
+  Label:
+    properties:
+      labels:
+        type: array
+        items:
+          type: string
+    type: object
+  Query:
+    required:
+      - query
+    properties:
+      query:
+        type: string
+        title: String to look for relevant search.
+    type: object
+responses:
+  ParseError:
+    description: When a mask can't be parsed
+  MaskError:
+    description: When any error occurs on mask
