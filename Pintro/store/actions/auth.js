@@ -2,6 +2,9 @@ export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 import {APIKEY} from '../../Constants/APIKEY';
+
+import firebase from "firebase";
+
 export const signup = (email, password) => {
   return async dispatch => {
     const response = await fetch(
@@ -18,7 +21,7 @@ export const signup = (email, password) => {
             })
           }
         );
-    
+
         if (!response.ok) {
             const errorResData = await response.json();
             const errorId = errorResData.error.message;
@@ -28,12 +31,13 @@ export const signup = (email, password) => {
             }
             throw new Error(message);
           }
-    
+
         const resData = await response.json();
        const tokenID = await resData.idToken;
         console.log("ID="+email);
         console.log("REFRESh"+resData.refreshToken);
         console.log("MM"+tokenID);
+        await firebase.auth().signInWithEmailAndPassword(email, password);
         dispatch({ type: SIGNUP, tokenToGet:tokenID,refreshToken:resData.refreshToken, userId: resData.localId, emailToGet:email});
 
       };
@@ -65,7 +69,7 @@ export const login = (email, password) => {
           }
           throw new Error(message);
         }
-    
+
         const resData = await response.json();
        const tokenID = await resData.idToken;
         console.log("ID="+email);
@@ -74,9 +78,9 @@ export const login = (email, password) => {
         dispatch({ type: LOGIN, tokenToGet:tokenID,refreshToken:resData.refreshToken, userId: resData.localId, emailToGet:email});
 
       };
- 
+
     };
-    
+
 
     export const logout = () => {
       return { type: LOGOUT };
@@ -99,7 +103,7 @@ export const login = (email, password) => {
               })
             }
           );
-      
+
           if (!response.ok) {
             const errorResData = await response.json();
             const errorId = errorResData.error.message;
@@ -111,9 +115,9 @@ export const login = (email, password) => {
             }
             throw new Error(message);
           }
-      
+
           const resData = await response.json();
           console.log(resData);
-          
+
         };
     }

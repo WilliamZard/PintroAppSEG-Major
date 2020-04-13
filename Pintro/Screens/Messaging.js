@@ -42,6 +42,7 @@ class ChatroomEntry extends Component {
       });
 
     let recipientType = this.props.type === 'Business' ? 'businesses' : 'users';
+    console.log("loading data for " + this.props.recipient);
     let recipientData = await fetch(
       `https://bluej-pintro-project.appspot.com/${recipientType}/${this.props.recipient}`,
       {
@@ -52,6 +53,7 @@ class ChatroomEntry extends Component {
         redirect: 'follow',
       }
     );
+    console.log("done");
     this.setState({
       lastSeen,
       lastMessage,
@@ -76,19 +78,24 @@ class ChatroomEntry extends Component {
           this.props.navigation.navigate('Chat', {
             email: this.props.email,
             recipient: this.props.recipient,
+            recipientName: this.state.recipientData.full_name,
             chat_id: this.props.chat_id,
             updateLastMessage: this.updateLastMessage,
           });
         }}>
         <View style={styles.profileContainer}>
-          <Image
-            source={{
-              uri: 'data:image/png;base64,' + this.props.recipientData.profile_image,
-            }}
-            style={styles.profileImage}
-          />
+          {this.state.recipientData == null ? null :
+            <Image
+              source={{
+                uri: 'data:image/png;base64,' + this.state.recipientData.profile_image,
+              }}
+              style={styles.profileImage}
+            />
+          }
           <View style={styles.profileText}>
-            <Text style={styles.profileName} numberOfLines={1}>{this.props.recipientData.full_name}</Text>
+            <Text style={styles.profileName} numberOfLines={1}>{
+              this.state.recipientData == null ? '...' : this.state.recipientData.full_name
+            }</Text>
             <View style={styles.messageText}>
               {this.state.lastMessage == null ? null :
                 <>

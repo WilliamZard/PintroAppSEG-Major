@@ -40,7 +40,7 @@ class AcceptChoiceNotif extends Component {
     if (this.state.recipientData == null) {
       return null;
     }
-    console.log(JSON.stringify(Object.keys(this.state.recipientData)));
+    console.log(this.props.token);
     return (
       <View style={styles.notifContainer}>
         <Image
