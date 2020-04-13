@@ -67,7 +67,6 @@ async function onPressDone() {
     const result = await ImageManipulator.manipulateAsync(imageUri, [], {base64: true});
     const imageCode = await result.base64
 
-//   setDisplay(imageCode);
     setImageEncoding(imageCode);
 
     props.navigation.navigate({routeName:'WhatsYourStory',params:{
@@ -98,11 +97,7 @@ async function onPressDone() {
                 </View>
                 <View style={styles.bottomButton}>
                 <InvertedSignInUpButton onPress={
- /* () =>
-  props.navigation.navigate({routeName:'WhatsYourStory',params:{
-    phoneToPass:phoneNumber,
-    emailToPass:email,
-  }})*/
+
 
   ()=>onPressDone()
 
@@ -134,7 +129,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignContent: 'center',
         width: '80%',
-//        backgroundColor:'green'
 
     },
     textContainer: {
