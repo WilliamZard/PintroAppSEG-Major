@@ -9,94 +9,143 @@ import {
 } from 'react-native';
 import Spinner from "react-native-loading-spinner-overlay";
 import TimeAgo from "react-native-timeago";
+import {connect} from "react-redux";
 
-function acceptChoiceNotif(props, message, accept, decline) {
-  return (
-    <View style={styles.notifContainer}>
-      <Image
-        source={{
-          uri: 'https://www.gravatar.com/avatar/'
-        }}
-        style={styles.profileImage}
-      />
-      <View style={styles.notifText}>
-        <Text style={styles.notifMessage} numberOfLines={1}>{message}</Text>
-        <TimeAgo time={props.notification.created_at * 1000} style={styles.timeAgoText}/>
+class AcceptChoiceNotif extends Component {
+  // (props, message, accept, decline)
+  constructor(props) {
+    super(props);
+    this.state = {
+      recipientData: null,
+    };
+  }
+
+  async componentDidMount() {
+    let recipientData = await fetch(
+      `https://bluej-pintro-project.appspot.com/${this.props.requesterType}/${this.props.notification.requester_email}`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + this.props.token
+        },
+        redirect: 'follow',
+      }
+    );
+    this.setState({
+      recipientData: await recipientData.json()
+    });
+  }
+
+  render() {
+    if (this.state.recipientData == null) {
+      return null;
+    }
+    console.log(this.props.token);
+    return (
+      <View style={styles.notifContainer}>
+        <Image
+            source={{
+              uri: 'data:image/png;base64,' + this.state.recipientData.profile_image,
+            }}
+            style={styles.profileImage}
+        />
+        <View style={styles.notifText}>
+          <Text style={styles.notifMessage} numberOfLines={1}>{this.state.recipientData.full_name}{this.props.message}</Text>
+          <TimeAgo time={this.props.notification.created_at * 1000} style={styles.timeAgoText}/>
+        </View>
+        <View style={styles.choiceButtonContainer}>
+          <TouchableOpacity
+              onPress={this.props.decline}
+          >
+            <Image
+                source={require('../assets/buttonDecline.png')}
+                style={styles.choiceButtonStyle}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={this.props.accept}
+          >
+            <Image
+                source={require('../assets/buttonAccept.png')}
+                style={styles.choiceButtonStyle}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.choiceButtonContainer}>
-        <TouchableOpacity
-          onPress={decline}
-        >
-          <Image
-            source={require('../assets/buttonDecline.png')}
-            style={styles.choiceButtonStyle}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={accept}
-        >
-          <Image
-            source={require('../assets/buttonAccept.png')}
-            style={styles.choiceButtonStyle}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  }
 }
 
 const notifTypes = {
   follow(props) {
-    return acceptChoiceNotif(
-      props,
-      `User ${props.notification.requester_email} sent you a follow request.`,
-      async () => {
+    return <AcceptChoiceNotif
+      {...props}
+      message=" sent you a follow request."
+      requesterType="users"
+      accept={async () => {
         await fetch(
           `https://bluej-pintro-project.appspot.com/approve/follow/${props.notification.requester_email}/${this.props.email}`,
           {
             method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + props.token,
+            },
+            redirect: 'follow',
           }
         );
         props.deleteNotif();
-      },
-      async () => {
+      }}
+      decline={async () => {
         await fetch(
           `https://bluej-pintro-project.appspot.com/request/follow/${props.notification.requester_email}/${this.props.email}`,
           {
             method: 'DELETE',
+            headers: {
+              'Authorization': 'Bearer ' + props.token,
+            },
+            redirect: 'follow',
           }
         );
         props.deleteNotif();
-      }
-    );
+      }}
+    />;
   },
   affiliation(props) {
-    return acceptChoiceNotif(
-      props,
-      `Business ${props.notification.requester_email} sent you an affiliation request.`,
-      async () => {
+    return <AcceptChoiceNotif
+      {...props}
+      message=" sent you an affiliation request."
+      requesterType="businesses"
+      accept={async () => {
         await fetch(
           `https://bluej-pintro-project.appspot.com/approve/affiliation/${props.notification.requester_email}/${this.props.email}`,
           {
             method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + props.token,
+            },
+            redirect: 'follow',
           }
         );
         props.deleteNotif();
-      },
-      async () => {
+      }}
+      decline={async () => {
         await fetch(
           `https://bluej-pintro-project.appspot.com/request/affiliation/${props.notification.requester_email}/${this.props.email}`,
           {
             method: 'DELETE',
+            headers: {
+              'Authorization': 'Bearer ' + props.token,
+            },
+            redirect: 'follow',
           }
         );
         props.deleteNotif();
-      }
-    );
+      }}
+    />;
   },
 };
 
-export default class Notifications extends Component {
+class Notifications extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -110,6 +159,10 @@ export default class Notifications extends Component {
       `https://bluej-pintro-project.appspot.com/notifications/${this.props.email}`,
       {
         method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + this.props.token,
+        },
+        redirect: 'follow',
       }
     );
     this.setState({
@@ -126,7 +179,11 @@ export default class Notifications extends Component {
 
   mapNotif = ({item, index}) => {
     let NotificationType = notifTypes[item.relationship_type];
-    return <NotificationType notification={item} deleteNotif={this.deleteNotif(index)}/>;
+    return <NotificationType
+      notification={item}
+      deleteNotif={this.deleteNotif(index)}
+      token={this.props.token}
+    />;
   };
 
   render() {
@@ -142,7 +199,15 @@ export default class Notifications extends Component {
       </View>
     );
   }
-};
+}
+
+export default connect(state => {
+  return {
+    email: state.user.email,
+    token: state.auth.tokenToGet,
+    userType: state.hasOwnProperty('businessObj') ? 'Business' : "Person",
+  };
+})(Notifications);
 
 const styles = StyleSheet.create({
   container: {
