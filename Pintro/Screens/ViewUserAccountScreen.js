@@ -62,9 +62,14 @@ const UserAccountScreen = props => {
     return(
         <ScrollView style={styles.background}>
             <View style={styles.actionContainer}>
-            <TouchableOpacity onPress={()=>props.navigation.navigate('Settings')} style={{marginHorizontal:19,marginTop:10}} >
-                    <Image source={require('../assets/settings.png')} style={styles.back}/>
-                </TouchableOpacity>
+            <View style={styles.rowContainer}>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => onPressBack()}>
+                        <Image source={require('../assets/backBlack.png')} style={styles.back}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../assets/shareBlack.png')} style={styles.shareImage}/>
+                    </TouchableOpacity> 
+                </View>
             </View>
             <View style={styles.accountTop}>
                 <View style={styles.ellipseStackRow}>
