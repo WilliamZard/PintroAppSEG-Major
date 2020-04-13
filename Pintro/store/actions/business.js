@@ -25,8 +25,17 @@ export const getBusiness = value => {
 
         const resData = await response.json();
 
+        const pic = await resData.profile_image;
+        let image;
+        if(pic.length>2){
+          image = pic.substring(2, pic.length - 1);
+        } else {
+          image = pic;
+        }
+
         var searchedBusiness = new Business(
-          resData.company_size,resData.currently_hiring,
+          resData.company_size,
+          resData.currently_hiring,
           resData.date_founded,
           resData.email,
           resData.full_name,
@@ -34,7 +43,7 @@ export const getBusiness = value => {
           resData.location,
           resData.password,
           resData.phone,
-          resData.profile_image,
+          image,
           resData.seeking_investment,
           resData.short_bio,
           resData.story,
