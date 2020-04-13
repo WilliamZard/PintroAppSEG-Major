@@ -15,6 +15,8 @@ import UserMoodCircle from '../Components/UserMoodCircle.js';
 import Svg, { Ellipse } from "react-native-svg";
 import ConnectButton from '../Components/ConnectButton.js';
 
+import Color from '../Constants/Colors';
+
 /**
  * The account page for a personal account
  *  being viewed by another user consisting 
@@ -28,6 +30,21 @@ const UserAccountScreen = props => {
     const [lines, setLineNumber] = useState(2);
     const [see, setSee] = useState("More");
     const [more, setMore] = useState(true);
+
+   
+    
+    const job_title = useSelector(state => state.user.job_title);
+    const currentCompany = useSelector(state => state.user.current_Company);
+    const story = useSelector(state => state.user.story);
+    const profilePic = useSelector(state => state.user.profile_image);
+    const passions = useSelector(state => state.user.passions);
+    const helpothers = useSelector(state => state.user.help_others);
+    const name = useSelector(state => state.user.full_name);
+    const education = useSelector(state => state.user.education);
+    const academic_Level = useSelector(state => state.user.academic_Level);
+    const years_in_industry = useSelector(state => state.user.years_in_industry);
+    const previous_Company = useSelector(state => state.user.previous_Company);
+    
 
     function onPressMore(){
         if(more){
@@ -43,28 +60,28 @@ const UserAccountScreen = props => {
     }
 
     function switchEditStory() {
-        props.navigation.navigate('Story', {user: userObj});
+        console.log("EEE");
+        props.navigation.navigate('Story');
     }
 
     function switchEditPassions() {
-        props.navigation.navigate('Passions', {user: userObj});
+        props.navigation.navigate('Passions');
     }
 
     function switchEditHelpOthers() {
-        props.navigation.navigate('HelpOthers', {user: userObj});
+        props.navigation.navigate('HelpOthers');
     }
 
     function switchEditExperience() {
-        props.navigation.navigate('Experience', {user: userObj});
+        props.navigation.navigate('Experience');
     }
 
     function switchEditPhoto() {
-        props.navigation.navigate('Photo', {user: userObj});
+        
+        props.navigation.navigate('Photo');
     }
   
-    function onPressBack() {
-        props.navigation.goBack(null);
-    }
+   
 
     function onConnectPress() {
         //Follow Request functionality
@@ -73,26 +90,23 @@ const UserAccountScreen = props => {
     return(
         <ScrollView style={styles.background}>
             <View style={styles.actionContainer}>
-                <TouchableOpacity style={{flex: 1}} onPress={() => onPressBack()}>
-                    <Image source={require('../assets/backBlack.png')} style={styles.back}/>
+            <TouchableOpacity onPress={()=>props.navigation.navigate('Settings')} style={{marginHorizontal:19,marginTop:10}} >
+                    <Image source={require('../assets/settings.png')} style={styles.back}/>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Image source={require('../assets/shareBlack.png')} style={styles.shareImage}/>
-                </TouchableOpacity> 
             </View>
             <View style={styles.accountTop}>
                 <View style={styles.ellipseStackRow}>
                     <View style={styles.ellipseStack}>
                         <Svg viewBox="0 0 90.27 90.39" style={styles.profileImage}>
-                            <Ellipse
-                                strokeWidth={1}
-                                fill="#1a1a1a"
-                                stroke="rgba(230, 230, 230,1)"
-                                cx={45}
-                                cy={45}
-                                rx={45}
-                                ry={45}
-                            ></Ellipse>
+                        <Image
+        style={styles.userImage}
+        source={{
+          uri:
+            'data:image/png;base64,'+profilePic,
+        }}
+      />
+
+      
                         </Svg>
                         <Svg viewBox="0 0 45 45" style={styles.moodCircle}>
                             <Ellipse
@@ -107,10 +121,11 @@ const UserAccountScreen = props => {
                         </Svg>                    
                     </View>
                     <View>
-                        <Text style={styles.fullnameBlack}>John Doe</Text>
-                        <Text style={styles.currentJob}>Founder of John Doe industries</Text>
-                        <Text style={styles.shortBio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
-                        <Text style={styles.location}>King's College London</Text>
+        <Text style={styles.fullnameBlack}>{name}</Text>
+    <Text style={styles.currentJob}> {job_title}</Text>
+    <Text style={styles.currentJob}> {currentCompany}</Text>
+    
+    <Text style={styles.location}>{education} </Text>
                         <PencilBlack onPress={() => switchEditPhoto()}/>
                     </View>    
                 </View>
@@ -118,7 +133,7 @@ const UserAccountScreen = props => {
             <View style= {styles.rowContainer}>
                 <ConnectButton props={props.ConnectButton}/> 
                 <MsgMe props={props.MsgMe}>MESSAGE ME</MsgMe>
-                <Edit props={props.Edit}>. . .</Edit>
+               
             </View>
             <ScrollView style={styles.helpContainer} horizontal={true}>
                     <HelpMeWith props={props.HelpMeWith}>Business Modelling</HelpMeWith>
@@ -128,22 +143,47 @@ const UserAccountScreen = props => {
             <View>
             <PencilBlack onPress={() => switchEditStory()}/>
             <Text style={styles.myStoryHead}>My Story</Text>
-
+    <Text style={{marginHorizontal:20}}>{story}</Text>
             <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
             </View>
-            <ScrollView style={styles.tagContainer} horizontal={true}>
+            
             <Text style={styles.myStoryHead}>I am passionate about</Text>
+            <FlatList data ={passions}  renderItem={
+  ({item})=> {
+     
+     return (<TouchableOpacity key={item} style ={styles.passionTags}><Text style={{color:'white'}}>{item}</Text></TouchableOpacity>);
+       
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ />
+
+
             <PencilBlack onPress={() => switchEditPassions()}/>
-            </ScrollView>
-            <ScrollView style={styles.tagContainer} horizontal={true}>
+        
+             
             <Text style={styles.myStoryHead}>I can help with</Text>
             <PencilBlack onPress={() => switchEditHelpOthers()}/>
-            </ScrollView>
-            <View>
+            <FlatList data ={helpothers} renderItem={
+  ({item})=> {
+     
+     return (<TouchableOpacity key={item} style ={styles.helpTags}><Text style={{color:'black'}}>{item}</Text></TouchableOpacity>);
+       
+  }}
+ keyExtractor={item => item}
+ horizontal={true}
+ />
+            
+            <View style ={{marginHorizontal:20}}>
                 <View style={styles.rowContainer}>
-                <Text style={styles.journey}>Experience</Text>
+                <Text style={{fontSize:20,fontFamily:'Poppins-Bold'}}>Experience</Text>
                 <PencilBlack onPress={() => switchEditExperience()}/>
+                
                 </View>
+                <View style={{flexDirection:'row'}}><Text style={{color:Color.pintroYellow}}>{'\u2B24'}</Text><Text style={{marginVertical:4}}> Academic Level: {academic_Level}</Text></View>
+
+                <View style={{flexDirection:'row'}}><Text style={{color:Color.pintroYellow}}>{'\u2B24'}</Text><Text style={{marginVertical:4}}> Years in industry: {years_in_industry} </Text></View>
+                <View style={{flexDirection:'row'}}><Text style={{color:Color.pintroYellow}}>{'\u2B24'}</Text><Text style={{marginVertical:4}}> Previous Company: {previous_Company}</Text></View>
 
 
             </View>
@@ -151,39 +191,7 @@ const UserAccountScreen = props => {
         </ScrollView>
     );
 };
-
-/*
-{userObj.full_name}
-{userObj.job_title}
-{userObj.short_bio}
-{userObj.location}
-
-            <Text style={styles.storyContent} numberOfLines={lines}>
-                {userObj.story}
-            </Text>
-
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[0]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[1]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[2]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[3]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[4]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[5]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
-
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[0]!==undefined)? userObj.help_Others[0].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[1]!==undefined)? userObj.help_Others[1].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[2]!==undefined)? userObj.help_Others[2].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[3]!==undefined)? userObj.help_Others[0].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[4]!==undefined)? userObj.help_Others[1].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[5]!==undefined)? userObj.help_Others[2].toUpperCase() : null}</WhiteTag>
-
-                    <JourneyPoint default={"Work Experience:"} userData={userObj.years_in_industry}/>
-                    <JourneyPoint default={"Industry:"} userData={userObj.Industry}/>
-                    <JourneyPoint default={"Current Company"} userData={userObj.current_Company}/>
-                    <JourneyPoint default={"Previous Company:"} userData={userObj.previous_Company}/>
-                    <JourneyPoint default={"Education:"} userData={userObj.university}/>
-                    <JourneyPoint default={"Academic Level:"} userData={userObj.academic_level}/>
-*/
-
+ 
 const styles = StyleSheet.create({
     accountTop: {
         marginBottom: 0,
@@ -199,6 +207,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 30,
         marginBottom: 10,
+        alignItems:'flex-end',
+        justifyContent:'flex-end'
     },
     back: {
         height: 20, 
@@ -219,7 +229,7 @@ const styles = StyleSheet.create({
         left: 0,
         width: 90,
         height: 90,
-        position: "absolute"        
+        position: "absolute"      
     },
     moodCircle:{
         top: 55,
@@ -295,7 +305,26 @@ const styles = StyleSheet.create({
     background: {
         backgroundColor: Colors.pintroWhite,
         flex: 1,
-    }
+    },
+    userImage: {
+        height: 100, 
+        width: 100, 
+        borderRadius: 100
+    },
+    passionTags:{
+        backgroundColor:'black',
+       borderWidth: 1,
+       padding:10,
+       borderRadius:20,
+       margin:10,
+       },
+       helpTags:{
+    backgroundColor:Colors.pintroWhite,
+       borderWidth: 1,
+       padding:10,
+       borderRadius:20,
+       margin:10,
+       }
 });
 
 export default UserAccountScreen;

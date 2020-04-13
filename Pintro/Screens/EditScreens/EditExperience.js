@@ -81,7 +81,7 @@ const EditExperience = props => {
                          style={{backgroundColor:'black',height:40,borderRadius:30, alignItems:'center',justifyContent:'center'}}
                          onPress={()=>{
                             dispatch(UserActions.update_experience(workExperience,industry,previousCompany,education,academicLevel))
-                            props.navigation.navigate({routeName:'SettingsPage'})
+                            props.navigation.navigate({routeName:'Account'})
                          }}
                          ><Text style={{color:'white'}}>Done</Text></TouchableOpacity>
             </View>

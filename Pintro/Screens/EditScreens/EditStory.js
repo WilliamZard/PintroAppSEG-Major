@@ -21,7 +21,7 @@ const [story,setStory]=useState(useSelector(state => state.user.story));
 const doneHandler = async () => {
     console.log(name,jobTitle,currentCompany,story);
     await dispatch(userActions.update_story(name,jobTitle,currentCompany,story))
-    props.navigation.navigate({routeName:'SettingsPage'})
+    props.navigation.navigate({routeName:'Account'})
 }
     return(
         <KeyboardAwareScrollView

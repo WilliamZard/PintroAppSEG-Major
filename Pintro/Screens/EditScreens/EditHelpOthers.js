@@ -195,7 +195,7 @@ clearIcon={null}/>
                         style={{backgroundColor:'black',height:40,borderRadius:30, alignItems:'center',justifyContent:'center'}}
                         onPress={()=>{
                             dispatch(userAction.update_passions(chosenTags));
-                            props.navigation.navigate({routeName:'SettingsPage'})
+                            props.navigation.navigate({routeName:'Account'})
                         }}
                         ><Text style={{color:'white'}}>Done</Text></TouchableOpacity>
             </View>

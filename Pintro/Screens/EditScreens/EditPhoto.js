@@ -65,7 +65,7 @@ const dispatch = useDispatch();
            
             setImageEncoding(imageCode);
             await dispatch(userAction.update_Photo(imageCode));
-        props.navigation.navigate({routeName:'SettingsPage'})
+        props.navigation.navigate({routeName:'Account'})
         }else{
             return
         }

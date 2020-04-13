@@ -149,7 +149,11 @@ const UserNavigator = createStackNavigator({
     }},
     Photo:{screen:EditPhoto, navigationOptions:{
         headerTitle: '',
+    }},
+    Settings:{screen:Settings, navigationOptions:{
+        headerTitle: '',
     }}
+
 });
 
 const MainSearchNav = createStackNavigator({
@@ -213,7 +217,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     messageScreen:{
-        screen:editProvileNav,navigationOptions:{
+        screen:null,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 

@@ -82,7 +82,7 @@ const EditPassion = props => {
 
     const doneHandler = async () => {
         await dispatch(userAction.update_passions(chosenTags));
-        props.navigation.navigate({routeName:'SettingsPage'})
+        props.navigation.navigate({routeName:'Account'})
         
     }
 

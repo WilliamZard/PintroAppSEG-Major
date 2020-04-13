@@ -22,26 +22,8 @@ return(
    
            <Text style={{fontSize:10}}>Personal</Text>
        </View>
-       <SettingsButton 
-       onPress={()=>    props.navigation.navigate({routeName:'StoryPage'})}
-       title="Edit Story"/>
-       <View style={styles.horizintalLineStyle}></View>
-       <SettingsButton 
-       onPress={()=>    props.navigation.navigate({routeName:'ExperiencePage'})}
-       title="Edit History"/>
-       <View style={styles.horizintalLineStyle}></View>
-       <SettingsButton 
-       onPress={()=>    props.navigation.navigate({routeName:'PhotoPage'})}
-       title="Edit Picture"/>
-       <View style={styles.horizintalLineStyle}></View>
-       <SettingsButton 
-       onPress={()=>    props.navigation.navigate({routeName:'PassionsPage'})}
-       title="Edit Passions"/>
-       <View style={styles.horizintalLineStyle}></View>
-       <SettingsButton 
-       onPress={()=>    props.navigation.navigate({routeName:'HelpOthersPage'})}
-       title="Edit Skills"/>
-       <View style={styles.horizintalLineStyle}></View>
+   
+        
        
        <SettingsButton title="Send an email verification link" onPress={()=>dispatch(userActions.send_Verification_Mail())}/>
        <View style={styles.horizintalLineStyle}></View>
