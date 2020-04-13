@@ -20,12 +20,12 @@ const SearchResults = props => {
     
     function onCompanyPress(value) {
         dispatch(BusinessActions.getBusiness(value.email));
-        /*if(value.team_members.includes(currentUser)) {
+        if(value.team_members.includes(currentUser)) {
             props.navigation.navigate('navBusiness');
         } else {
             props.navigation.navigate('Profile');
-        }*/
-        props.navigation.navigate('navBusiness');
+        }
+        //props.navigation.navigate('navBusiness');
     }
 
     async function onUserPress(value) {
