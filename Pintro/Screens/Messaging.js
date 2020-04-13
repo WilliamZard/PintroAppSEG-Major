@@ -83,12 +83,12 @@ class ChatroomEntry extends Component {
         <View style={styles.profileContainer}>
           <Image
             source={{
-              uri: 'data:image/png;base64,' + this.props.recipientData.profileImage,
+              uri: 'data:image/png;base64,' + this.props.recipientData.profile_image,
             }}
             style={styles.profileImage}
           />
           <View style={styles.profileText}>
-            <Text style={styles.profileName} numberOfLines={1}>{this.props.recipientData.profileName}</Text>
+            <Text style={styles.profileName} numberOfLines={1}>{this.props.recipientData.full_name}</Text>
             <View style={styles.messageText}>
               {this.state.lastMessage == null ? null :
                 <>
