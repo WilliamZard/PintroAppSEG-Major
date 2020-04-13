@@ -52,11 +52,21 @@ const businessSignUp = createStackNavigator({
 })
 const editProvileNav = createStackNavigator({
     SettingsPage:Settings,
-    ExperiencePage:EditExperience,
-    HelpOthersPage:EditHelpOthers,
-    PassionsPage:EditPassions,
-    PhotoPage:EditPhoto,
-    StoryPage:EditStory
+    ExperiencePage:{screen:EditExperience,navigationOptions:{
+        headerTitle: ' Edit Experience'
+    }},
+    HelpOthersPage:{screen:EditHelpOthers,navigationOptions:{
+        headerTitle: ' Edit Help Others'
+    }},
+    PassionsPage:{screen:EditPassions,navigationOptions:{
+        headerTitle: ' Edit Passions'
+    }},
+    PhotoPage:{screen:EditPhoto,navigationOptions:{
+        headerTitle: ' Edit Photo'
+    }},
+    StoryPage:{screen:EditStory,navigationOptions:{
+        headerTitle: ' Edit Story'
+    }}
 })
 
 

@@ -76,7 +76,7 @@ const WhatsYourBrand = props => {
  
        
         setImageEncoding(imageCode);
-    
+    console.log(imageEncoding);
         props.navigation.navigate({routeName:'BTeam',params:{
             seekingInvestmentsToPass:seekingInvestments,
             currentlyHiringToPass:currentlyHiring,

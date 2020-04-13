@@ -5,7 +5,9 @@ export const UPDATE_EXPERIENCE = 'UPDATE_EXPERIENCE';
 export const UPDATE_PASSIONS = 'UPDATE_PASSIONS';
 export const UPDATE_HELP_OTHERS = 'UPDATE_HELP_OTHERS';
 export const GETUSER = 'GETUSER';
+export const LOGOUT = 'LOGOUT';
 export const OTHERUSER = 'OTHERUSER';
+
 
 import { APIKEY }  from '../../Constants/APIKEY';
 import User from '../../Model/User';
@@ -100,7 +102,7 @@ export const get_User_To_Load = () => {
 
       const pic = await resData.profile_image;
       const image = pic.substring(2, pic.length - 1);
-    const active = resData.active;
+      const active = resData.active;
     console.log("User is "+active);
     if(active==="False"){
       throw new Error("You're blocked");
@@ -487,7 +489,7 @@ export const isUserVerified = () => {
     })
     });
     if (!response.ok) {
-      console.log("shit");
+
       const errorResData = await response.json();
       console.log(errorResData);
    

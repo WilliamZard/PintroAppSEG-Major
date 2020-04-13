@@ -1,4 +1,4 @@
-import { REQUESTFOLLOW,REQUESTAFIL } from "../actions/request"
+import { REQUESTFOLLOW,REQUESTAFIL,LOGOUT } from "../actions/request"
 
 const initialState = {
     statusCode: "200"
@@ -14,6 +14,10 @@ export default (state = initialState,action) => {
             return{
                 statusCode: responseStatus
             }
+            case LOGOUT:
+                return{
+                    statusCode: null
+                }
     }
 
     return state;

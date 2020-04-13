@@ -25,6 +25,14 @@ const BusinessToMain = props => {
     const companySize = props.navigation.getParam('companySizeToPass');
     const funding = props.navigation.getParam('fundingToPass');
     const photo = props.navigation.getParam('photoToGet');
+
+const handleDone = async () => {
+console.log(photo);
+console.log("Moin meister");
+    await dispatch(BusinessActions.create_business(photo,location,companyStory,businessTags,dateFounded,companySize,funding,"",seekingInvestments,currentlyHiring))
+    props.navigation.navigate({routeName:'routeTwo'})
+}
+
 return ( 
     
     
@@ -32,14 +40,11 @@ return (
     <Text style={{fontSize:30,fontFamily:'Poppins-Bold'}}>Thank you</Text>
     <Text style={{fontSize:15,fontFamily:'Poppins-Light'}}>You're now ready to use Pintro</Text>
     <TouchableOpacity style={styles.Button} 
-    onPress={() =>{
-        console.log(email);
-        dispatch(BusinessActions.create_business(photo,location,companyStory,businessTags,dateFounded,companySize,funding,"",seekingInvestments,currentlyHiring))
-        props.navigation.navigate({routeName:'routeTwo'})}}><Text style={styles.TextButton}>Go To Company Profile</Text></TouchableOpacity>
+    onPress={() =>handleDone()}><Text style={styles.TextButton}>Go To Company Profile</Text></TouchableOpacity>
     
     
     
-    <TouchableOpacity style={styles.Button2} onPress={() =>props.navigation.navigate({routeName:'routeTwo'})}><Text style={{color:'black'}}>Invite Connections</Text></TouchableOpacity>
+    <TouchableOpacity style={styles.Button2} onPress={() =>{}}><Text style={{color:'black'}}>Invite Connections</Text></TouchableOpacity>
     
     </View>
 

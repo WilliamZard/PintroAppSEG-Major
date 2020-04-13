@@ -6,6 +6,7 @@ import {
     UPDATE_EXPERIENCE,
     UPDATE_PASSIONS,
     UPDATE_HELP_OTHERS,
+    LOGOUT,
     OTHERUSER
 
 } from '../actions/user';
@@ -92,6 +93,26 @@ export default (state = initialState, action) => {
                 return{
                     userObj: action.userObj
                 }
+                case LOGOUT :
+                return{
+                    Industry: "Tech",
+                    current_Company: "Google",
+                    academic_Level: "PHD",
+                    years_in_industry: "3",
+                    education: "KCL",
+                    email: "moin@meister.de",
+                    full_name: "Max",
+                    gender: "NA",
+                    help_others: ["Accounting"],
+                    job_title: "CEO",
+                    location: "London",
+                    passions: ["Accounting"],
+                    phone: "2222222",
+                    preferred_name: "Maxi",
+                    previous_Company: "Facebook",
+                    profile_image: "'b '",
+                    story: "great story"
+                }  
         case OTHERUSER:
             return{
                 otherUserObj: action.otherUserObj

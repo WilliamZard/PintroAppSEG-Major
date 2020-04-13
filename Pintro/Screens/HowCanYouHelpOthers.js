@@ -12,6 +12,8 @@ import Color from '../Constants/Colors';
 import { fonts } from '../Constants/Fonts.js';
 import Colors from '../Constants/Colors';
 import * as userActions from '../store/actions/user';
+import * as reqActions from '../store/actions/request';
+
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
  * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
@@ -241,6 +243,7 @@ const photo = props.navigation.getParam('photoToPass');
                          ()=> {
                              
                             if(!verification()===false){
+                                
                            dispatch(userActions.create_User(industry,academicLevel,currentCompany,email,name,"NA",chosenTags,"NA",passions,phoneNumber,name,previousCompany,photo,story,pastEducation,currentJobTitle,workExperience))
                          props.navigation.navigate({routeName:'BusinessYesNo'})}}
                         

@@ -42,6 +42,7 @@ async () => {
 
 const [isLoading,setIsLoading] = useState(false);
 const timelinePosts = useSelector(state => state.timelinePosts.availablePosts);
+ 
 
 
 const getFiltered = () => {
@@ -59,7 +60,7 @@ useEffect(()=>{
 setIsLoading(true);
 loadPosts().then(() => { setIsLoading(false);});
 
-},[dispatch,loadPosts]);
+},[loadPosts,dispatch]);
 
 if(isLoading){
 return(<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
@@ -102,7 +103,7 @@ return(<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
         
   onRefresh={loadPosts}
   refreshing={refreshing}
-  style={{width:'100%'}}
+  style={{width:'100%',height:'100%'}}
   numColumns={2}
    data={getFiltered()}
    keyExtractor={item => item.uuid}
@@ -114,6 +115,8 @@ content={itemData.item.content}
  modified={itemData.item.modified}
   email={itemData.item.email}
   name={itemData.item.name}
+  photo={itemData.item.photo}
+ 
   />
  
        )

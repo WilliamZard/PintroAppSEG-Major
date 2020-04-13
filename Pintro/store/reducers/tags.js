@@ -1,5 +1,7 @@
 import {
-    GETTAGS
+
+    GETTAGS,
+    LOGOUT
     } from '../actions/tags';
     const initialState = {
       businessTags:[],
@@ -22,7 +24,17 @@ import {
             businessTagsSHUFFLED:action.businessTagsSHUFFLEDTOGET,
             passionTagsSHUFFLED:action.passionTagsSHUFFLEDTOGET,
             helpOthersWithTagsSHUFFLED:action.helpOthersWithTagsSHUFFLEDTOGET
-          };
+          }
+          case LOGOUT:
+            return {
+              businessTags:[],
+      passionTags:[],
+      helpOthersWithTags:[],
+      searchTags:[],
+      businessTagsSHUFFLED:[],
+      passionTagsSHUFFLED:[],
+      helpOthersWithTagsSHUFFLED:[],
+            }
       }
       return state;
     };

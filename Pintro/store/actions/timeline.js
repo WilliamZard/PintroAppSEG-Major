@@ -2,10 +2,18 @@ import TimelinePost from '../../Model/TimelinePost';
 
 export const GET_TIMELINE = 'GET_TIMELINE';
 export const WRITE_POST = 'WRITE_POST';
-
-
-
-async function getNameFromMail(emailAddress,bear) {
+export const LOGOUT = 'LOGOUT';
+function cleanTags(property, array) {
+    var mySet = new Set();
+    return array.filter(function(x) {
+      var key = property(x), isNew = !mySet.has(key);
+      if (isNew) mySet.add(key);
+      return isNew;
+    });
+  }
+  
+async function getPicFromMail(emailAddress,bear) {
+    console.log("Pic called");
     var response = await fetch('https://bluej-pintro-project.appspot.com/users/'+emailAddress,
     {
         method:'GET',
@@ -15,8 +23,45 @@ async function getNameFromMail(emailAddress,bear) {
         },
         redirect: 'follow'
      } );
-    const data = await response.json();
-return data.full_name;
+
+     if(!response.ok){
+        const errorResData = await response.text();
+        console.log(errorResData); 
+    }
+  
+const data = await response.json();
+const name = await data.full_name;
+const pic = await data.profile_image;
+const image = pic.substring(2, pic.length - 1);
+const missing = {
+    user_name:name,
+    img:image,
+
+}
+return missing;
+ };
+
+
+async function getNameFromMail(emailAddress,bear) {
+    console.log("CALEED");
+    var response = await fetch('https://bluej-pintro-project.appspot.com/users/'+emailAddress,
+    {
+        method:'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+bear
+        },
+        redirect: 'follow'
+     } );
+
+     if(!response.ok){
+        const errorResData = await response.text();
+        console.log(errorResData); 
+    }
+  
+const data = await response.json();
+const name = await data.full_name;
+return name;
  };
 
 
@@ -28,42 +73,50 @@ return data;
  };
 
 export const fetchTimeline = () => {
- 
+    console.log("MOIN");
     return async (dispatch,getState) => {
-        const email = getState().auth.email;
+        const email = getState().user.email;
         const bearer = getState().auth.tokenToGet;
         const response = await fetch(
-            "https://europe-west2-bluej-pintro-project.cloudfunctions.net/generate_timeline",
+            "https://europe-west2-bluej-pintro-project.cloudfunctions.net/generate_timeline/",
             {
                 method:"POST",
                 headers:{
-                    "Content-Type":"application/json"
+                    "Content-Type":"application/json",
+                    'Authorization': 'Bearer '+getState().auth.tokenToGet
                 },body:JSON.stringify({
                 email:email
                 })
                 
             }
         );
-    
+        if(!response.ok){
+            const errorResData = await response.text();
+            console.log(errorResData); 
+        }
+ 
         const resData = await response.json();
+ 
        const posts = resData.results;
+    
        const loadedProduct = [];
-       
        for(const element in posts){
-       const nameOfwriter = await getNameFromMail(posts[element].email,bearer);
-      // const picture = await getNameFromMail(posts[element].email,bearer);
+       const data = await getPicFromMail(posts[element].user_email,bearer);
        loadedProduct.push(new TimelinePost(
         posts[element].content,
         posts[element].created,
-        posts[element].email,
+        posts[element].user_email,
         posts[element].modified,
         posts[element].uuid,
-        nameOfwriter)
+        data.user_name,
+        data.img)
+        
         );
        }
+ 
+       const filterdTags = cleanTags(x => x.uuid, loadedProduct);
 
-
-    dispatch({type: GET_TIMELINE,timelinePosts:loadedProduct});
+    dispatch({type: GET_TIMELINE,timelinePosts:filterdTags});
 
  
     };
@@ -94,31 +147,51 @@ export const fetchTimeline = () => {
 };
 
 */
-export const uploadPost = (postContent) => {
+export const uploadPost = (postContent,hashtag) => {
   
     return async (dispatch,getState) => {
-        const email = getState().auth.email;
+    const email = getState().user.email;
     const uuidKey = await apiGetAll();
     const content = postContent.replace(/(\r\n|\n|\r)/gm, "");
     const uuid =  uuidKey.replace(/(\r\n|\n|\r)/gm, "");
+console.log(email);
+console.log(content);
+console.log(uuid);
 
-    console.log
-    const response = await fetch('https://bluej-pintro-project.appspot.com/posts',{
+ 
+    const response = await fetch('https://bluej-pintro-project.appspot.com/posts/',{
     method: 'POST',
     headers:{
-      'Content-Type':'application/json'  
+      'Content-Type':'application/json',
+      'Authorization': 'Bearer '+getState().auth.tokenToGet
     },
     body:JSON.stringify({
+        
             "content": content,
-            "uuid":uuid,
-            "created": "2020-03-10T16:38:50.711Z",
-            "modified": "2020-03-10T16:38:50.711Z",
+            "uuid": uuidKey,
+            "created": "2020-04-12T08:05:30.839Z",
+            "modified": "2020-04-12T08:05:30.839Z",
             "user_email": email,
+            "hashtags": hashtag
+          
+          
+          
     })
 
     }
+
+
     
     );
+
+
+if(!response.ok){
+    const errorResData = await response.text();
+    console.log(errorResData); 
+}
+console.log("Mojn");
+console.log(response.status);
+
 
 
 dispatch({
@@ -141,3 +214,8 @@ dispatch({
 }
 
  */
+
+
+export const logout = () => {
+    return { type: LOGOUT };
+  };

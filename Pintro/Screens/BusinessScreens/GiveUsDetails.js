@@ -44,16 +44,22 @@ return (
     </View>
     <View style={styles.main}>
     <Text>Date Founded</Text>
-    <TextInput style={styles.inputBox} placeholder="Enter number of years" placeholderTextColor='grey' secureTextEntry={false} />
+    <TextInput 
+    style={styles.inputBox}
+     placeholder="Enter number of years"
+      placeholderTextColor='grey'
+      onChangeText={(text)=setDateFounded(text)}
+      secureTextEntry={false} 
+      />
     <View style={styles.horizintalLineStyle}></View>
     <Text>Location</Text>
-    <TextInput style={styles.inputBox} placeholder="Enter your company location" placeholderTextColor='grey' secureTextEntry={false} />
+    <TextInput   onChangeText={(text)=setLocation(text)} style={styles.inputBox} placeholder="Enter your company location" placeholderTextColor='grey' secureTextEntry={false} />
     <View style={styles.horizintalLineStyle}></View>
     <Text>Company Size</Text>
-    <TextInput style={styles.inputBox} placeholder="How big is your team?" placeholderTextColor='grey' secureTextEntry={false} />
+    <TextInput  onChangeText={(text)=setCompanySize(text)} style={styles.inputBox} placeholder="How big is your team?" placeholderTextColor='grey' secureTextEntry={false} />
     <View style={styles.horizintalLineStyle}></View>
     <Text>Funding</Text>
-    <TextInput style={styles.inputBox} placeholder="Have you received funding?" placeholderTextColor='grey' secureTextEntry={false} />
+    <TextInput  onChangeText={(text)=setFunding(text)} style={styles.inputBox} placeholder="Have you received funding?" placeholderTextColor='grey' secureTextEntry={false} />
     <View style={styles.horizintalLineStyle}></View>
   
     <TouchableOpacity style={styles.Button} onPress={

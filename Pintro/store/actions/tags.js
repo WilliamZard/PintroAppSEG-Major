@@ -1,7 +1,7 @@
 import Tag from '../../Model/Tag';
 import { BearerToken } from '../../Constants/BearerToken';
 export const GETTAGS = 'GETTAGS';
-
+export const LOGOUT = 'LOGOUT';
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -95,3 +95,7 @@ const searchTagsReq = await fetch('https://bluej-pintro-project.appspot.com/tags
   };
 };
  
+
+export const logout = () => {
+  return { type: LOGOUT };
+};

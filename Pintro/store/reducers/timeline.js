@@ -1,6 +1,7 @@
 
 import {
-GET_TIMELINE
+GET_TIMELINE,
+LOGOUT
 } from '../actions/timeline';
 const initialState = {
   availablePosts: []
@@ -11,6 +12,10 @@ export default (state = initialState, action) => {
     case GET_TIMELINE:
       return {
         availablePosts: action.timelinePosts
+      }
+      case LOGOUT:
+      return {
+        availablePosts: []
       };
   }
   return state;
