@@ -562,11 +562,14 @@ export const getUser = searchEmail => {
             resData.email,
             resData.full_name,
             resData.gender,
+            resData.help_others,
             resData.job_title,
             resData.location,
+            resData.passions,
             resData.password,
             resData.phone,
             resData.preferred_name,
+            resData.previous_Company_Year_Finished,
             resData.profile_image,
             "",
             "",
@@ -594,7 +597,7 @@ export const get_Other_User = searchEmail => {
           redirect: 'follow'
         } 
       );
-      console.log("Get user: " + (response.status));
+      console.log("Get other user: " + (response.status));
       if(!response.ok) {
         if(response.status == '404') {
           Alert.alert('No results found','No users were found that match your search');
@@ -609,7 +612,13 @@ export const get_Other_User = searchEmail => {
       } else {
         const resData = await response.json();
         const pic = await resData.profile_image;
-        const image = pic.substring(2, pic.length - 1);
+        let image;
+        if(pic.length>2){
+          image = pic.substring(2, pic.length - 1);
+        } else {
+          image = pic;
+        }
+        
           
         let searchedUser = new User(
           resData.education,
@@ -621,13 +630,14 @@ export const get_Other_User = searchEmail => {
           resData.password,
           resData.phone,
           resData.preferred_name,
-          image,
+          resData.profile_image,
           "",
           "",
           resData.short_bio,
           resData.story
-          );
-          dispatch({type: OTHERUSER,otherUserObj:searchedUser});
+        );
+
+        dispatch({type: OTHERUSER,otherUserObj:searchedUser});
       }
     } catch (error) {
       console.log(error);

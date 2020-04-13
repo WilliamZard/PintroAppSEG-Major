@@ -14,6 +14,7 @@ import Colors from '../Constants/Colors';
 import WhatAreYourPassions from '../Screens/WhatAreYourPassions';
 import HowCanYouHelpOthers from '../Screens/HowCanYouHelpOthers';
 
+import ViewUserAccountScreen from '../Screens/ViewUserAccountScreen';
 import UserAccountScreen from '../Screens/UserAccountScreen';
 import EditExperience from '../Screens/EditScreens/EditExperience';
 import EditPhoto from '../Screens/EditScreens/EditPhoto';
@@ -133,6 +134,9 @@ const BusinessNavigator = createStackNavigator({
 
 const UserNavigator = createStackNavigator({
     Account:{screen:UserAccountScreen, navigationOptions:{
+        headerShown: false,
+    }},
+    UserProfile:{screen:ViewUserAccountScreen,navigationOptions:{
         headerShown: false,
     }},
     Story:{screen:EditStory, navigationOptions:{

@@ -28,10 +28,9 @@ const SearchResults = props => {
         props.navigation.navigate('navBusiness');
     }
 
-    function onUserPress(value) {
-        dispatch(UserActions.get_Other_User(value));
-        props.navigation.navigate('navUser');
-        console.log("You pressed on: " + value);
+    async function onUserPress(value) {
+        await dispatch(UserActions.get_Other_User(value));
+        props.navigation.navigate('UserProfile');
     }
 
     businesses = businesses.map((item) => <Company key={item.email} props={props.Company} name={item.full_name} bio={item.short_bio} email={item.email} busObj={item} callback={value => onCompanyPress(value)}/>);
