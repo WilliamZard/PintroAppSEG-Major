@@ -169,38 +169,6 @@ const UserAccountScreen = props => {
     );
 };
 
-/*
-{userObj.full_name}
-{userObj.job_title}
-{userObj.short_bio}
-{userObj.location}
-
-            <Text style={styles.storyContent} numberOfLines={lines}>
-                {userObj.story}
-            </Text>
-
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[0]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[1]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[2]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[3]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[4]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
-                    <BlackTag props={props.BlackTag}>{(userObj.passions[5]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
-
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[0]!==undefined)? userObj.help_Others[0].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[1]!==undefined)? userObj.help_Others[1].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[2]!==undefined)? userObj.help_Others[2].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[3]!==undefined)? userObj.help_Others[0].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[4]!==undefined)? userObj.help_Others[1].toUpperCase() : null}</WhiteTag>
-                    <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[5]!==undefined)? userObj.help_Others[2].toUpperCase() : null}</WhiteTag>
-
-                    <JourneyPoint default={"Work Experience:"} userData={userObj.years_in_industry}/>
-                    <JourneyPoint default={"Industry:"} userData={userObj.Industry}/>
-                    <JourneyPoint default={"Current Company"} userData={userObj.current_Company}/>
-                    <JourneyPoint default={"Previous Company:"} userData={userObj.previous_Company}/>
-                    <JourneyPoint default={"Education:"} userData={userObj.university}/>
-                    <JourneyPoint default={"Academic Level:"} userData={userObj.academic_level}/>
-*/
-
 const styles = StyleSheet.create({
     accountTop: {
         marginBottom: 0,
