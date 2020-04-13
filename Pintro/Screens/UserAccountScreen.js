@@ -121,9 +121,9 @@ const UserAccountScreen = props => {
                 <Edit props={props.Edit}>. . .</Edit>
             </View>
             <ScrollView style={styles.helpContainer} horizontal={true}>
-                    <HelpMeWith props={props.HelpMeWith}>Business Modelling</HelpMeWith>
-                    <HelpMeWith props={props.HelpMeWith}>Crepe Investments</HelpMeWith>
-                    <HelpMeWith props={props.HelpMeWith}>Home Workouts</HelpMeWith>
+                    <HelpMeWith props={props.HelpMeWith}>{(userObj.passions[0]!==undefined)? userObj.passions[1].toUpperCase() : null}</HelpMeWith>
+                    <HelpMeWith props={props.HelpMeWith}>{(userObj.passions[1]!==undefined)? userObj.passions[1].toUpperCase() : null}</HelpMeWith>
+                    <HelpMeWith props={props.HelpMeWith}>{(userObj.passions[2]!==undefined)? userObj.passions[1].toUpperCase() : null}</HelpMeWith>
             </ScrollView>
             <View>
             <PencilBlack onPress={() => switchEditStory()}/>
@@ -135,7 +135,7 @@ const UserAccountScreen = props => {
             </View>
             <ScrollView style={styles.tagContainer} horizontal={true}>
             <Text style={styles.myStoryHead}>I am passionate about</Text>
-            <BlackTag props={props.BlackTag}>{(userObj.passions[0]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
+                <BlackTag props={props.BlackTag}>{(userObj.passions[0]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
                 <BlackTag props={props.BlackTag}>{(userObj.passions[1]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
                 <BlackTag props={props.BlackTag}>{(userObj.passions[2]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
                 <BlackTag props={props.BlackTag}>{(userObj.passions[3]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
