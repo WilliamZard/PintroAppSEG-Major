@@ -62,7 +62,6 @@ const EditIntro = props => {
             date_founded: props.navigation.state.params.business.date_founded,
             company_size: props.navigation.state.params.business.company_size,
             funding: props.navigation.state.params.business.funding,
-            team_members: props.navigation.state.params.business.team_members,
             seeking_investment: seekingInvest,
             currently_hiring: hiring
         }

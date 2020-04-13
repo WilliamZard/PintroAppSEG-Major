@@ -95,7 +95,6 @@ const EditBusinessTag = props => {
                 date_founded: props.navigation.state.params.business.date_founded,
                 company_size: props.navigation.state.params.business.company_size,
                 funding: props.navigation.state.params.business.funding,
-                team_members: props.navigation.state.params.business.team_members,
                 seeking_investment: props.navigation.state.params.business.seeking_investment,
                 currently_hiring: props.navigation.state.params.business.currently_hiring,
             }

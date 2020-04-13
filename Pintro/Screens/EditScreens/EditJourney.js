@@ -42,7 +42,6 @@ const EditJourney = props => {
             date_founded: founded,
             company_size: companySize,
             funding: funding,
-            team_members: props.navigation.state.params.business.team_members,
             seeking_investment: props.navigation.state.params.business.seeking_investment,
             currently_hiring: props.navigation.state.params.business.currently_hiring
         }
