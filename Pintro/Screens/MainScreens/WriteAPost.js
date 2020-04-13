@@ -14,6 +14,7 @@ import * as userActions from '../../store/actions/user';
 const WriteAPost = props => {
 const [usedChars,setUsedChars]  = useState(0);
 const [postContent,setPostContent] = useState(0);
+const [hashtag,setHashtag] = useState("");
 
 const dispatch = useDispatch();
 
@@ -46,10 +47,11 @@ const username = useSelector(state => state.user.full_name)
             marginBottom: 20, marginHorizontal:10}}><Text style={{color:'white'}}>{usedChars}/300 Characters</Text></View>
             </View>
             <View style={styles.postButtonContainer}>
+             
             <TouchableHighlight onPress={()=>{
                 console.log("creating a post");
                 
-                dispatch(productsActions.uploadPost(postContent));
+                dispatch(productsActions.uploadPost(postContent,hashtag));
                 props.onBack();
             }} style={styles.buttonLayout} ><Text style={{color:'white'}}>Post</Text></TouchableHighlight>
             </View>

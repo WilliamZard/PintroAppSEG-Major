@@ -1,5 +1,5 @@
 import { 
-    GETRESULTS 
+    GETRESULTS,LOGOUT
     } from '../actions/search';
     const initialState = {
         usersArray: []
@@ -10,6 +10,10 @@ import {
             case GETRESULTS:
                 return {
                     usersArray: action.usersArray
+                }
+                case LOGOUT:
+                return {
+                    usersArray: []
                 };              
         }
 

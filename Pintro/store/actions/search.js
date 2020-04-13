@@ -1,5 +1,6 @@
 import User from '../../Model/User';
 import { BearerToken }  from '../../Constants/BearerToken';
+export const LOGOUT = 'LOGOUT';
 export const GETRESULTS = 'GETRESULTS';
 export const getResults = (item) => {
     return async dispatch => {
@@ -52,4 +53,9 @@ export const getResults = (item) => {
         }
         dispatch({type: GETRESULTS,usersArray:searchResultsArray});
     };
+};
+
+
+export const logout = () => {
+  return { type: LOGOUT };
 };

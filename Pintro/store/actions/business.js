@@ -1,6 +1,7 @@
 import Business from '../../Model/Business';
 import { BearerToken } from '../../Constants/BearerToken';
 export const GETBUSINESS = 'GETBUSINESS';
+export const LOGOUT = 'LOGOUT';
 export const getBusiness = value => {
     return async dispatch => {
         const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/' + value,
@@ -50,7 +51,7 @@ export const getBusiness = value => {
 export const create_business = (profile_image,location,story,tags,
     date_founded,company_size,funding,team_members,seeking_investment,currently_hiring) => {
     return async (dispatch,getState) => {
-   
+   console.log(profile_image);
       const response = await fetch('https://bluej-pintro-project.appspot.com/businesses/',
         {
           method: 'POST',
@@ -60,10 +61,10 @@ export const create_business = (profile_image,location,story,tags,
              body: JSON.stringify(
                 {
                     "email": getState().user.email,
-                    "password":"6",
-                    "full_name": "Sen",
+                    "password":"not here",
+                    "full_name": getState().user.full_name,
                     "profile_image":"b'" + profile_image+"'" ,
-                    "phone": "",
+                    "phone": getState().user.phone,
                     "location": location,
                     "short_bio":"NOT A FIELD" ,
                     "story": story,
@@ -106,4 +107,9 @@ export const putBusiness = busObj => {
       console.log(error);
     }   
   }
+};
+
+
+export const logout = () => {
+  return { type: LOGOUT };
 };
