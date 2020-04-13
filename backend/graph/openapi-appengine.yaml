@@ -90,6 +90,20 @@ paths:
       operationId: update_business
       tags:
         - businesses
+  '/businesses/{email}/chatrooms':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the chatrooms a business is in
+      operationId: get_get_business_chatrooms
+      tags:
+        - businesses
   '/chatrooms/{chat_id}':
     parameters:
       - name: chat_id
@@ -104,13 +118,21 @@ paths:
       operationId: delete_chatrooms_delete
       tags:
         - chatrooms
-  '/chatrooms/{email1}/{email2}':
+  '/chatrooms/{email1}/{type1}/{email2}/{type2}':
     parameters:
       - name: email1
         in: path
         required: true
         type: string
+      - name: type1
+        in: path
+        required: true
+        type: string
       - name: email2
+        in: path
+        required: true
+        type: string
+      - name: type2
         in: path
         required: true
         type: string
@@ -274,6 +296,20 @@ paths:
           description: Co-working Space Fields Deleted
       summary: Update a co-working space by the given fields
       operationId: update_space
+      tags:
+        - spaces
+  '/spaces/{email}/chatrooms':
+    parameters:
+      - name: email
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the chatrooms a space is in
+      operationId: get_get_space_chatrooms
       tags:
         - spaces
   /tags:
@@ -565,6 +601,9 @@ definitions:
       content:
         type: string
         title: The content of the post.
+      hashtags:
+        type: string
+        title: The post's hashtags
       uuid:
         type: string
       created:
