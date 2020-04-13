@@ -48,6 +48,7 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
     const json = await response.json();
 */
   async blockUser(){
+    const key = await this.LOGIN();
     try{
 
 
@@ -58,7 +59,7 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
       headers: {
         
         'Accept': 'application/json',
-        'Authorization': 'Bearer '+this.state.ApiKey
+        'Authorization': 'Bearer '+key
       }, mode: "cors"
     })
 
@@ -70,13 +71,14 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
 
 
     async activateUser(){
+      const key = await this.LOGIN();
       try{
       const response = await fetch('/users/activate/'+this.state.userEmail, {
         method: 'PUT', 
         headers: {
           
           'Accept': 'application/json',
-          'Authorization': 'Bearer '+this.state.ApiKey
+          'Authorization': 'Bearer '+key
         }, mode: "cors"
       })
   
