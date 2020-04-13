@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 18292,
-  "expoServerNgrokUrl": "https://ks-hev.anonymous.pintro.exp.direct",
-  "packagerNgrokUrl": "https://packager.ks-hev.anonymous.pintro.exp.direct",
-  "ngrokPid": 11520,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }

@@ -107,10 +107,10 @@ const UserAccountScreen = props => {
                         </Svg>                    
                     </View>
                     <View>
-                        <Text style={styles.fullnameBlack}>John Doe</Text>
-                        <Text style={styles.currentJob}>Founder of John Doe industries</Text>
-                        <Text style={styles.shortBio}>"Upon visualising tig bits I made my glorious snacc company"</Text>
-                        <Text style={styles.location}>King's College London</Text>
+                        <Text style={styles.fullnameBlack}>{userObj.full_name}</Text>
+                        <Text style={styles.currentJob}>{userObj.job_title}</Text>
+                        <Text style={styles.shortBio}>{userObj.short_bio}</Text>
+                        <Text style={styles.location}>{userObj.location}</Text>
                         <PencilBlack onPress={() => switchEditPhoto()}/>
                     </View>    
                 </View>
@@ -128,26 +128,43 @@ const UserAccountScreen = props => {
             <View>
             <PencilBlack onPress={() => switchEditStory()}/>
             <Text style={styles.myStoryHead}>My Story</Text>
-
+                <Text style={styles.storyContent} numberOfLines={lines}>
+                    {userObj.story}
+                </Text>
             <Text style={styles.more} onPress={() => onPressMore()}>{see}</Text>
             </View>
             <ScrollView style={styles.tagContainer} horizontal={true}>
             <Text style={styles.myStoryHead}>I am passionate about</Text>
+            <BlackTag props={props.BlackTag}>{(userObj.passions[0]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
+                <BlackTag props={props.BlackTag}>{(userObj.passions[1]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
+                <BlackTag props={props.BlackTag}>{(userObj.passions[2]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
+                <BlackTag props={props.BlackTag}>{(userObj.passions[3]!==undefined)? userObj.passions[0].toUpperCase() : null}</BlackTag>
+                <BlackTag props={props.BlackTag}>{(userObj.passions[4]!==undefined)? userObj.passions[1].toUpperCase() : null}</BlackTag>
+                <BlackTag props={props.BlackTag}>{(userObj.passions[5]!==undefined)? userObj.passions[2].toUpperCase() : null}</BlackTag>
             <PencilBlack onPress={() => switchEditPassions()}/>
             </ScrollView>
             <ScrollView style={styles.tagContainer} horizontal={true}>
             <Text style={styles.myStoryHead}>I can help with</Text>
             <PencilBlack onPress={() => switchEditHelpOthers()}/>
+                <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[0]!==undefined)? userObj.help_Others[0].toUpperCase() : null}</WhiteTag>
+                <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[1]!==undefined)? userObj.help_Others[1].toUpperCase() : null}</WhiteTag>
+                <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[2]!==undefined)? userObj.help_Others[2].toUpperCase() : null}</WhiteTag>
+                <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[3]!==undefined)? userObj.help_Others[0].toUpperCase() : null}</WhiteTag>
+                <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[4]!==undefined)? userObj.help_Others[1].toUpperCase() : null}</WhiteTag>
+                <WhiteTag props={props.WhiteTag}>{(userObj.help_Others[5]!==undefined)? userObj.help_Others[2].toUpperCase() : null}</WhiteTag>
             </ScrollView>
             <View>
                 <View style={styles.rowContainer}>
                 <Text style={styles.journey}>Experience</Text>
                 <PencilBlack onPress={() => switchEditExperience()}/>
+                    <JourneyPoint default={"Work Experience:"} userData={userObj.years_in_industry}/>
+                    <JourneyPoint default={"Industry:"} userData={userObj.Industry}/>
+                    <JourneyPoint default={"Current Company"} userData={userObj.current_Company}/>
+                    <JourneyPoint default={"Previous Company:"} userData={userObj.previous_Company}/>
+                    <JourneyPoint default={"Education:"} userData={userObj.university}/>
+                    <JourneyPoint default={"Academic Level:"} userData={userObj.academic_level}/>
                 </View>
-
-
             </View>
-
         </ScrollView>
     );
 };
