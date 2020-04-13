@@ -14,18 +14,19 @@ const SearchResults = props => {
     const [scroll,setScroll] = useState(false);
     const searchResults = useSelector(state => state.search.usersArray);
     const currentUser = useSelector(state => state.user.email);
+    const busObj = useSelector(state => state.business.businessObj);
 
     let businesses = searchResults.map((item) => (item.profile_type === "business")? item : null).filter(profile => profile !== null);
     let users = searchResults.map((item) => (item.profile_type === "person")? item : null).filter(profile => profile !== null);
     
-    function onCompanyPress(value) {
-        dispatch(BusinessActions.getBusiness(value.email));
-        if(value.team_members.includes(currentUser)) {
+    async function onCompanyPress(value) {
+        await dispatch(BusinessActions.getBusiness(value.email));
+        if(busObj.team_members.includes(currentUser)) {
             props.navigation.navigate('navBusiness');
         } else {
             props.navigation.navigate('Profile');
         }
-        //props.navigation.navigate('navBusiness');
+        props.navigation.navigate('navBusiness');
     }
 
     async function onUserPress(value) {

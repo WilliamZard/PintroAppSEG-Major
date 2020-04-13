@@ -105,10 +105,25 @@ export const putBusiness = busObj => {
           method: 'PUT',
           headers: {
             'Content-type': 'application/json',
-            'Authorization': 'Bearer ' + getState().auth.tokenToGet
+            'Authorization': 'Bearer ' +getState().auth.tokenToGet
           },
           redirect: 'follow',
-          body: JSON.stringify(busObj)
+          body: JSON.stringify({
+            "email": busObj.email,
+            "password": busObj.password,
+            "full_name": busObj.full_name,
+            "profile_image": "b'"+ busObj.profile_image + "'",
+            "phone": busObj.phone,
+            "location": busObj.location,
+            "short_bio": busObj.short_bio,
+            "story": busObj.story,
+            "tags": busObj.tags,
+            "date_founded": busObj.date_founded,
+            "company_size": busObj.company_size,
+            "funding": busObj.funding,
+            "seeking_investment": busObj.seeking_investment,
+            "currently_hiring": busObj.currently_hiring
+          })
         }
       );
       console.log("putBusiness: " + response.status);    
