@@ -217,7 +217,7 @@ const MainNav = createBottomTabNavigator({
         }
     },
     messageScreen:{
-        screen:null,navigationOptions:{
+        screen:FirstScreen,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
                return  <Image 

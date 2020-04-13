@@ -26,7 +26,7 @@ import Color from '../Constants/Colors';
  * @param {*} props
  */
 const UserAccountScreen = props => {
-    const user = useSelector(state => state.user.userObj);
+ 
     const [lines, setLineNumber] = useState(2);
     const [see, setSee] = useState("More");
     const [more, setMore] = useState(true);
@@ -135,11 +135,7 @@ const UserAccountScreen = props => {
                 <MsgMe props={props.MsgMe}>MESSAGE ME</MsgMe>
                
             </View>
-            <ScrollView style={styles.helpContainer} horizontal={true}>
-                    <HelpMeWith props={props.HelpMeWith}>{(userObj.passions[0]!==undefined)? userObj.passions[1].toUpperCase() : null}</HelpMeWith>
-                    <HelpMeWith props={props.HelpMeWith}>{(userObj.passions[1]!==undefined)? userObj.passions[1].toUpperCase() : null}</HelpMeWith>
-                    <HelpMeWith props={props.HelpMeWith}>{(userObj.passions[2]!==undefined)? userObj.passions[1].toUpperCase() : null}</HelpMeWith>
-            </ScrollView>
+            
             <View>
             <PencilBlack onPress={() => switchEditStory()}/>
             <Text style={styles.myStoryHead}>My Story</Text>

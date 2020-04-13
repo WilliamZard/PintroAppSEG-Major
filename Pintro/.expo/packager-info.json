@@ -2,8 +2,8 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://ai-gjd.anonymous.pintro.exp.direct",
   "packagerNgrokUrl": "https://packager.ai-gjd.anonymous.pintro.exp.direct",
-  "ngrokPid": 22252,
+  "ngrokPid": 22544,
   "devToolsPort": 19002,
   "packagerPort": 19003,
-  "packagerPid": 22224
+  "packagerPid": 22534
 }
