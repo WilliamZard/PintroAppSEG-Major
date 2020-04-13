@@ -41,7 +41,7 @@ export default class Chat extends Component {
           createdAt: new Date(child.val().createdAt),
           user: {
             _id: child.val().user._id,
-            avatar: 'https://www.gravatar.com/avatar/',
+            avatar: 'data:image/png;base64,' + this.props.recipientAvatar,
           },
         });
       });
