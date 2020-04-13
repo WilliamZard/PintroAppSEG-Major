@@ -7,6 +7,7 @@ import Company from '../../Components/Company.js';
 import Group from '../../Components/Groups.js';
 import UserButton from '../../Components/UserButton.js';
 import * as BusinessActions from '../../store/actions/business';
+import * as UserActions from '../../store/actions/user';
 
 const SearchResults = props => {
     const dispatch = useDispatch();
