@@ -16,7 +16,7 @@ import * as reqActions from '../store/actions/request';
 
 /**
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
- * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
+ * 2 buttons, and the logo. Furthermore, the input fields will move up if the keyboard hides them.
  * 
  * @param {} props 
  */
@@ -39,7 +39,6 @@ const passions = props.navigation.getParam('passionsToPass');
 const photo = props.navigation.getParam('photoToPass');
 
 
-
     const dispatch = useDispatch();
     const [currentlyChanging,setCurrentlyChanin] = useState(false);
     const [searchKeyword,setSearchKeyword] = useState();
@@ -50,7 +49,7 @@ const photo = props.navigation.getParam('photoToPass');
     const loadedTags = useSelector(state => state.tags.helpOthersWithTags);
     const loadedTagsShuffled = useSelector(state => state.tags.helpOthersWithTagsSHUFFLED);
 
-          const favs1 = loadedTagsShuffled.slice(1, 7);
+        const favs1 = loadedTagsShuffled.slice(1, 7);
         const favs2 = loadedTagsShuffled.slice(8, 16);
         const favs3 = loadedTagsShuffled.slice(20, 27);
       function onTextChanged(searchWord) {
@@ -200,7 +199,6 @@ const photo = props.navigation.getParam('photoToPass');
         }}style ={styles.choosenButton}><Text style={{color:Color.pintroYellow}}>{item}</Text></TouchableOpacity>);
       }else{
         return (<TouchableOpacity key={item}  onPress={()=>{
-          
           
             chosenTags.push(item);
            
