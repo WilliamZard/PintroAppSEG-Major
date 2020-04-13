@@ -37,12 +37,7 @@ const FinalSignUp = props => {
 
 
                             }>GO TO YOUR PROFIL</InvertedSignInUpButton>
-                                            <SignInUpButton onPress={
-  () =>
-  props.navigation.navigate({routeName:'routeTwo'})
-
-
-                            }>Invite Connections</SignInUpButton></View>
+                                          </View>
  <TouchableOpacity
  style={{marginTop:100,height:'100%',width:'100%',backgroundColor:'white' ,borderRadius:20}}
  onPress={()=>props.navigation.navigate({routeName:'LetsStartBusimess'})}><Text style={{fontSize:30,textAlign:'center',marginTop:30}}>Do you have a business?</Text><Text style={{fontSize:10,textAlign:'center',marginTop:30}}>Swipe up to build a business profile</Text></TouchableOpacity>
