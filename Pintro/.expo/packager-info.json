@@ -1,9 +1,1 @@
-{
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://tq-g3z.anonymous.pintro.exp.direct",
-  "packagerNgrokUrl": "https://packager.tq-g3z.anonymous.pintro.exp.direct",
-  "ngrokPid": 144620,
-  "devToolsPort": 19002,
-  "packagerPort": 19001,
-  "packagerPid": 141328
-}
+{}

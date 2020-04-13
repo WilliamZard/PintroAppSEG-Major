@@ -79,6 +79,7 @@ class ChatroomEntry extends Component {
             email: this.props.email,
             recipient: this.props.recipient,
             recipientName: this.state.recipientData.full_name,
+            recipientAvatar: this.state.recipientData.profile_image,
             chat_id: this.props.chat_id,
             updateLastMessage: this.updateLastMessage,
           });

@@ -7,6 +7,7 @@ import Colors from '../Constants/Colors';
 /**
  * Empty Screen which shows a message when there is no internet connection.
  * The screen consists of a message, a WiFi image and button to internet settings.
+ * 
  * @param {} props 
  */
 const NetworkEmptyScreen = props => {
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
         fontFamily:'Poppins-Regular'
     },
     textContainer: {
-        //flex: 1,
+
         flexDirection: 'column',
         alignItems: 'center',
         paddingTop: 30
@@ -83,18 +84,17 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         textAlign: 'center',
         paddingBottom: 20,
-        //paddingBottom: 100,
         fontSize: 12
     },
     imageContainer: {
-        //flex: 1,
+
         width: 350,
         height: 350,
         paddingBottom: 5,
         resizeMode: 'contain'
     },
     imageButtonContainer: {
-        //flex: 1,
+
         width: 350,
         height: 350,
         paddingBottom: 5,
