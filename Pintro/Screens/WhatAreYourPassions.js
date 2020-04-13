@@ -11,15 +11,16 @@ import Colors from '../Constants/Colors';
 import Color from '../Constants/Colors';
 import {ListItem,SearchBar } from 'react-native-elements';
 /**
+ * 
  * Sign Up Screen to allow the user to sign up. The Screen consists of 5 required input fields,
  * 2 buttons, and the Logo. Furthermore the input fields move up if the keyboard hides them.
  * 
  * @param {} props 
+ * 
  */
 
 
 const WhatAreYourPassions = props => {
-
 
     const phoneNumber = props.navigation.getParam('phoneToPass');
     const email = props.navigation.getParam('emailToPass');
@@ -34,7 +35,6 @@ const WhatAreYourPassions = props => {
     const academicLevel = props.navigation.getParam('academicLevelToPass');
     const photo = props.navigation.getParam('photoToPass');
   
-
  
     const dispatch = useDispatch();
     const [searchKeyword,setSearchKeyword] = useState();
@@ -46,9 +46,8 @@ const WhatAreYourPassions = props => {
     const loadedTagsShuffled = useSelector(state => state.tags.passionTagsSHUFFLED);
 
     const favs1 = loadedTagsShuffled.slice(1, 7);
-const favs2 = loadedTagsShuffled.slice(8, 16);
-const favs3 = loadedTagsShuffled.slice(20, 27);
-
+    const favs2 = loadedTagsShuffled.slice(8, 16);
+    const favs3 = loadedTagsShuffled.slice(20, 27);
 
       function onTextChanged(searchWord) {
         setSearchKeyword(searchWord);
@@ -62,6 +61,7 @@ const favs3 = loadedTagsShuffled.slice(20, 27);
         renderSuggestions();
         }
     }
+
 
     function onListItemPress(item) {
         //console.log(item);
@@ -78,6 +78,7 @@ const favs3 = loadedTagsShuffled.slice(20, 27);
     
     }
     
+
     function renderSuggestions() {
         if(suggestions.length === 0 || searchKeyword.length < 3 || suggestions===null) {
             setItems(null);
@@ -188,6 +189,7 @@ clearIcon={null}/>
  extraData={currentlyChanging}
  />
 
+
 <FlatList data ={favs2} renderItem={
   ({item})=> {
      
@@ -238,6 +240,7 @@ clearIcon={null}/>
  />
  
 
+
  <InvertedSignInUpButton onPress={()=>   {
      if(!verification()===false){
      props.navigation.navigate({routeName:'HelpOthers',params:{
@@ -266,6 +269,7 @@ clearIcon={null}/>
 };
 
 
+
 const styles = StyleSheet.create({
     backGround: {
         backgroundColor: '#1a1a1a',
@@ -275,9 +279,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingTop: 20,
-        //justifyContent:'center',
+
         flexDirection: 'column',
-        //backgroundColor:'blue'
+
     },tagButton:{
     borderColor:'white',
       borderWidth: 1,
@@ -307,6 +311,7 @@ const styles = StyleSheet.create({
     inputTexts: {
         color: 'black'
     },
+
 
     inputBox: {
         height: 40,
@@ -339,6 +344,7 @@ const styles = StyleSheet.create({
         marginBottom:60
     },
 
+
     inputBoxFullStory: {
         height: 110,
         alignItems:'flex-start',
@@ -349,6 +355,7 @@ const styles = StyleSheet.create({
         color:'white',
         textAlignVertical:'top'
 
+
     },textInputCentered:{
         alignItems: 'flex-start',
         textAlignVertical: 'top',
@@ -356,7 +363,7 @@ const styles = StyleSheet.create({
     },list:{
         flexGrow:1,
   justifyContent:'flex-end',
-    //  alignItems:'center'  
+
     },listItem:{
         borderColor:'#ccc',
         borderWidth: 1,
