@@ -44,12 +44,7 @@ const getRequest = async () =>{
                     <SignInUpButton onPress={    () =>{   getRequest()}}>Sign up with email or phone</SignInUpButton>
 
 
-                    <SignInUpButton onPress={
-                        () =>{
-                 
-                     props.navigation.navigate({routeName:'routeTwo'})
-                        }
-                    }>Dummy Login</SignInUpButton>
+                   
                     <View style = {styles.additionalText}>
                         <View style={styles.footerText}>
                         <Text style={styles.LoginText}>Already have an account? </Text>
@@ -131,3 +126,16 @@ const styles = StyleSheet.create({
 });
 
 export default StartScreen;
+
+
+
+/*
+
+ <SignInUpButton onPress={
+                        () =>{
+                 
+                     props.navigation.navigate({routeName:'routeTwo'})
+                        }
+                    }>Dummy Login</SignInUpButton>
+
+*/
