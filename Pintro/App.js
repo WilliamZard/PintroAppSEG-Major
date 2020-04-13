@@ -18,14 +18,14 @@ import userReducer from './store/reducers/user';
 import firebase from 'firebase';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCZCyQcrrz5h-RcBT4SlXEopYH9F4tjuA8",
-  authDomain: "pintrobeta.firebaseapp.com",
-  databaseURL: "https://pintrobeta.firebaseio.com",
-  projectId: "pintrobeta",
-  storageBucket: "pintrobeta.appspot.com",
-  messagingSenderId: "339344139567",
-  appId: "1:339344139567:web:5633c6995c07fae26e6dda",
-  measurementId: "G-J0CMZ9VZM0"
+  apiKey: "AIzaSyCZUeHC1zcLM__APOSB0dCXJkNPsOZuDKM",
+  authDomain: "bluej-pintro-project.firebaseapp.com",
+  databaseURL: "https://bluej-pintro-project.firebaseio.com",
+  projectId: "bluej-pintro-project",
+  storageBucket: "bluej-pintro-project.appspot.com",
+  messagingSenderId: "655115997330",
+  appId: "1:655115997330:web:3358fc0cc9cfc1857c964b",
+  measurementId: "G-LXXBCXSPH7"
 };
 firebase.initializeApp(firebaseConfig);
 

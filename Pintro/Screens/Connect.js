@@ -23,22 +23,6 @@ export default class Connect extends Component {
     headerShown: false,
   };
 
-  async tryLogin() {
-    //this.setState({ errorMessage: null, loading: true });
-    //const { email, password } = this.state;
-    const email = 'example1@gmail.com';
-    const password = '123456';
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        //this.setState({ loading: false });
-      })
-      .catch(error => {
-        console.log(error.message);
-      });
-  }
-
   render() {
     let currentScreen;
     switch (this.state.screen) {

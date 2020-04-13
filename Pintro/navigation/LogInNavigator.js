@@ -9,7 +9,7 @@ import StartScreen from '../Screens/StartScreen';
 import LetsGetStarted from '../Screens/LetsGetStarted';
 import ShowUsYourFace from '../Screens/ShowUsYourFace';
 import React from 'react';
-import {Image} from 'react-native' ; 
+import {Image} from 'react-native' ;
 import Colors from '../Constants/Colors';
 import WhatAreYourPassions from '../Screens/WhatAreYourPassions';
 import HowCanYouHelpOthers from '../Screens/HowCanYouHelpOthers';
@@ -84,9 +84,9 @@ const defaultStackNavOptions = {
     title:' '
 };
 const mapOrFeed = createSwitchNavigator({
-    
-    
-    Feed:TimelinePage, 
+
+
+    Feed:TimelinePage,
     Map:MapScreen
 });
 
@@ -122,7 +122,7 @@ const BusinessNavigator = createStackNavigator({
         headerTitle: '',
     }},
     Journey:{screen:EditJourney,navigationOptions:{
-        headerTitle: '',  
+        headerTitle: '',
     }},
     Photo:{screen:EditBusinessPhoto,navigationOptions:{
         headerTitle: '',
@@ -177,7 +177,7 @@ const MainNav = createBottomTabNavigator({
         screen:mapOrFeed, navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
-               return  <Image 
+               return  <Image
                         style={{height: 25, width: 30}}
                         source= {require('../images/homeIcon.png')} />
             },
@@ -194,9 +194,9 @@ const MainNav = createBottomTabNavigator({
         screen:MainSearchNav,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
-               return  <Image 
+               return  <Image
                         style={{height: 25, width: 25}}
-                        
+
                         source= {require('../images/searchIcon.png')} />
             },
             tabBarOptions:{
@@ -204,7 +204,7 @@ const MainNav = createBottomTabNavigator({
                activeTintColor:'white',
                style: {
                  backgroundColor: 'white',
-               }, 
+               },
            }
         }
     },
@@ -215,16 +215,16 @@ const MainNav = createBottomTabNavigator({
                 showLabel: false,
                 activeTintColor:'white',
                 style: {
-                  backgroundColor: 'white' 
-                }, 
+                  backgroundColor: 'white'
+                },
             }
         }
     },
     messageScreen:{
-        screen:FirstScreen,navigationOptions:{
+        screen:MessageScreen,navigationOptions:{
             //tabBarLabel:'Screen 1',
             tabBarIcon: (tabInfo) => {
-               return  <Image 
+               return  <Image
                         style={{height: 25, width: 25,resizeMode:'contain'}}
                         source= {require('../images/messageTab.png')} />
             },
@@ -233,7 +233,7 @@ const MainNav = createBottomTabNavigator({
                showLabel: false,
                style: {
                  backgroundColor: 'white',
-               }, 
+               },
            }
         }
     },
@@ -241,7 +241,7 @@ const MainNav = createBottomTabNavigator({
         screen: UserNavigator ,navigationOptions:{
             tabBarLabel:null,
         tabBarIcon: (tabInfo) => {
-            return   <Image 
+            return   <Image
                     style={{height: 25, width: 30}}
                     source= {require('../images/profileIcon.png')} />
         },
@@ -250,10 +250,10 @@ const MainNav = createBottomTabNavigator({
                 showLabel: false,
             style: {
               backgroundColor: 'white',
-             
-            }, 
+
+            },
         }
-      
+
         }
     },
 });
@@ -268,7 +268,7 @@ const LogInNavigator = createStackNavigator({
         screen:LetsGetStarted},
         Camera:{screen:ShowUsYourFace},
     WhatsYourStory:{screen:WhatsYourStory},
-    
+
     TellUsHistory:{screen:HistoryScreen},
     Passions:{screen:WhatAreYourPassions},
     HelpOthers:{screen:HowCanYouHelpOthers},
@@ -321,8 +321,8 @@ const Onboarder = createSwitchNavigator({
 
 const MySwitchNavigator = createSwitchNavigator(
     {
-    routeOne: Onboarder, 
-    routeTwo: MainNav  
+    routeOne: Onboarder,
+    routeTwo: MainNav
     },
   );
 export default createAppContainer(MySwitchNavigator);

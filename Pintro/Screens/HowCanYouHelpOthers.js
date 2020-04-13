@@ -247,7 +247,7 @@ const photo = props.navigation.getParam('photoToPass');
                            dispatch(userActions.create_User(industry,academicLevel,currentCompany,email,name,"NA",chosenTags,"NA",passions,phoneNumber,name,previousCompany,photo,story,pastEducation,currentJobTitle,workExperience))
                          props.navigation.navigate({routeName:'BusinessYesNo'})}}
                         
-                         }>Finishh</InvertedSignInUpButton>
+                         }>Finish</InvertedSignInUpButton>
                             
                 
 
