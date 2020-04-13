@@ -11,6 +11,7 @@ export const OTHERUSER = 'OTHERUSER';
 
 import { APIKEY }  from '../../Constants/APIKEY';
 import User from '../../Model/User';
+import FullUser from '../../Model/FullUser';
 import { Alert } from 'react-native';
 import { BearerToken }  from '../../Constants/BearerToken';
 
@@ -620,23 +621,24 @@ export const get_Other_User = searchEmail => {
         }
         
           
-        let searchedUser = new User(
+        let searchedUser = new FullUser(
           resData.education,
           resData.email,
           resData.full_name,
           resData.gender,
+          resData.help_others,
           resData.job_title,
           resData.location,
+          resData.passions,
           resData.password,
           resData.phone,
           resData.preferred_name,
-          resData.profile_image,
-          "",
-          "",
+          resData.previous_Company_Year_Finished,
+          image,
           resData.short_bio,
           resData.story
         );
-
+        
         dispatch({type: OTHERUSER,otherUserObj:searchedUser});
       }
     } catch (error) {

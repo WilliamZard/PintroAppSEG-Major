@@ -31,16 +31,8 @@ const UserAccountScreen = props => {
     const [see, setSee] = useState("More");
     const [more, setMore] = useState(true);
 
-    console.log(userObj.job_title);
-
-    //const job_title = useSelector(state => state.user.job_title);
     const currentCompany = useSelector(state => state.user.current_Company);
-    //const story = useSelector(state => state.user.story);
     const profilePic = useSelector(state => state.user.profile_image);
-    //const passions = useSelector(state => state.user.passions);
-    //const helpothers = useSelector(state => state.user.help_others);
-    //const name = useSelector(state => state.user.full_name);
-    //const education = useSelector(state => state.user.education);
     const academic_Level = useSelector(state => state.user.academic_Level);
     const years_in_industry = useSelector(state => state.user.years_in_industry);
     const previous_Company = useSelector(state => state.user.previous_Company);
