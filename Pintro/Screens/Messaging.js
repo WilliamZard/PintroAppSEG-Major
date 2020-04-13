@@ -18,6 +18,7 @@ class ChatroomEntry extends Component {
     this.state = {
       lastMessage: null,
       lastSeen: null,
+      recipientData: null,
     }
   }
 
@@ -39,9 +40,22 @@ class ChatroomEntry extends Component {
           return true;
         });
       });
+
+    let recipientType = this.props.type === 'Business' ? 'businesses' : 'users';
+    let recipientData = await fetch(
+      `https://bluej-pintro-project.appspot.com/${recipientType}/${this.props.recipient}`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + this.props.token
+        },
+        redirect: 'follow',
+      }
+    );
     this.setState({
       lastSeen,
       lastMessage,
+      recipientData: await recipientData.json(),
     });
   }
 
@@ -69,12 +83,12 @@ class ChatroomEntry extends Component {
         <View style={styles.profileContainer}>
           <Image
             source={{
-              uri: 'https://www.gravatar.com/avatar/',
+              uri: 'data:image/png;base64,' + this.props.recipientData.profileImage,
             }}
             style={styles.profileImage}
           />
           <View style={styles.profileText}>
-            <Text style={styles.profileName} numberOfLines={1}>User: {this.props.recipient}</Text>
+            <Text style={styles.profileName} numberOfLines={1}>{this.props.recipientData.profileName}</Text>
             <View style={styles.messageText}>
               {this.state.lastMessage == null ? null :
                 <>
@@ -107,7 +121,7 @@ class Messaging extends Component {
   async loadChats() {
     let userType = this.props.userType === "Business" ? 'businesses' : 'users';
     let chatData = await fetch(
-      `https://bluej-pintro-project.appspot.com/${userType}/${this.props.email}/chatrooms/`,
+      `https://bluej-pintro-project.appspot.com/${userType}/${this.props.email}/chatrooms`,
       {
         method: 'GET',
         headers: {
@@ -132,6 +146,8 @@ class Messaging extends Component {
       recipient={item.recipient}
       chat_id={item.chat_id}
       email={this.props.email}
+      type={item.type}
+      token={this.props.token}
     />;
   };
 
