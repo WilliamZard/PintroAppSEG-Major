@@ -103,7 +103,7 @@ return(<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
         
   onRefresh={loadPosts}
   refreshing={refreshing}
-  style={{width:'100%',height:'100%',backgroundColor:'green'}}
+  style={{width:'100%',height:'100%'}}
   numColumns={2}
    data={getFiltered()}
    keyExtractor={item => item.uuid}
