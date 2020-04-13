@@ -87,14 +87,41 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
       }  }
 
 
+
+
+
+      async LOGIN(){
+          
+        const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCZUeHC1zcLM__APOSB0dCXJkNPsOZuDKM', {
+          
+        method: 'POST', 
+        headers: {
+
+          'Accept': 'application/json'
+        },body: JSON.stringify({
+          "email":"admin@admin.test",
+          "password":"fewfewf353n2l!",
+          "returnSecureToken":true
+        })
+
+      })
+  
+      const daza = await response.json();
+      const toke =  await daza.idToken
+      return toke;
+      
+      }
+
+
       async getUser(){
+        const key = await this.LOGIN();
         try{
         const response = await fetch('/users/'+this.state.userEmail, {
           method: 'GET', 
           headers: {
             
             'Accept': 'application/json',
-            'Authorization': 'Bearer '+this.state.ApiKey
+            'Authorization': 'Bearer '+key
           }, mode: "cors"
         })
     
@@ -112,6 +139,11 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
     
         }  }
   
+
+
+        
+        
+        
 
 
   render(){
@@ -149,10 +181,6 @@ fetch('https://bluej-pintro-project.appspot.com/users/activate/222dd22@wflefkn.c
         </label>
         </div> 
         <div>
-        <label>
-          Auth Token:
-          <input type="text" style={{borderRadius:7, height:25, width:150}} value={this.state.ApiKey} onChange={this.handleChangeKey} />
-        </label>
     </div> 
  
  
